@@ -1,5 +1,9 @@
-# XXX STEP 1
-# calculate Ml for given origin time, station, data, metadata
+# exercise A
+# - read earthquake data
+# - use manually specified PAZ to simulate Wood Anderson seismometer
+# - trim to around manually specified origin time
+# - determine peak-to-peak amplitudes as simple min/max on both N and E component
+# - use manually specified hypocentral distance to calculate local magnitude
 
 from obspy.core import UTCDateTime, read
 
@@ -19,20 +23,17 @@ st.trim(t-5, t+40)
 st_n = st.select(component="N")
 tr_n = st_n[0]
 print tr_n
-
 ampl_n = tr_n.data.max() - tr_n.data.min()
 
 st_e = st.select(component="E")
 tr_e = st_e[0]
 print tr_e
-
 ampl_e = tr_e.data.max() - tr_e.data.min()
+
+ampl = (ampl_n + ampl_e) / 2
 
 hypo_dist = 7.1
 
 from math import *
-ml_n = log10(ampl_n / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-ml_e = log10(ampl_e / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-
-ml = (ml_n + ml_e) / 2
+ml = log10(ampl / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
 print ml

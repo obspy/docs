@@ -1,5 +1,6 @@
-# XXX STEP 4
-# modify program of part c) to trim waveform based on a stalta trigger time
+# exercise F
+# - modify program of exercise C:
+# - trim waveform data based on the event onset as determined via a recursive STALTA trigger like in exercise E
 
 import obspy.neries
 client_n = obspy.neries.Client()
@@ -34,14 +35,14 @@ st.trim(t_trig-1, t_trig+40)
 st_n = st.select(component="N")
 tr_n = st_n[0]
 print tr_n
-
 ampl_n = tr_n.data.max() - tr_n.data.min()
 
 st_e = st.select(component="E")
 tr_e = st_e[0]
 print tr_e
-
 ampl_e = tr_e.data.max() - tr_e.data.min()
+
+ampl = (ampl_n + ampl_e) / 2
 
 from obspy.signal import utlGeoKm
 dx, dy = utlGeoKm(event['longitude'], event['latitude'],
@@ -50,8 +51,5 @@ dz = event['depth'] - (st[0].stats.coordinates['elevation'] / 1000.0)
 from math import *
 hypo_dist = sqrt(dx**2 + dy**2 + dz**2)
 
-ml_n = log10(ampl_n / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-ml_e = log10(ampl_e / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-
-ml = (ml_n + ml_e) / 2
+ml = log10(ampl / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
 print ml

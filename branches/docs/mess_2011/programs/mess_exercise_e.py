@@ -1,5 +1,6 @@
-# XXX STEP 1
-# calculate Ml for given origin time, station, data, metadata
+# exercise E
+# - read earthquake data and run a recursive STALTA trigger (e.g. 0.5 and 10 sec) on the data
+# - determine the event onset as maximum of the trigger function
 
 from obspy.core import read
 

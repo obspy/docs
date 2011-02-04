@@ -1,5 +1,6 @@
-# XXX STEP 2
-# check determined magnitude information against EMSC catalog data
+# exercise B
+# - fetch earthquake information used in exercise A from EMSC catalog
+# - compare magnitude in catalog to magnitude determined in exercise A
 
 import obspy.neries
 client_n = obspy.neries.Client()

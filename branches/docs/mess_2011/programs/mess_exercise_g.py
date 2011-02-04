@@ -1,5 +1,6 @@
-# XXX STEP 4
-# use list of stations and loop
+# exercise G
+# - modifiy program of exercise F:
+# - use list of stations (RJOB, RMOA, RNON) and calculate the magnitude looping over this list
 
 import obspy.neries
 client_n = obspy.neries.Client()
@@ -38,14 +39,14 @@ for station in stations:
     st_n = st.select(component="N")
     tr_n = st_n[0]
     print tr_n
-
     ampl_n = tr_n.data.max() - tr_n.data.min()
 
     st_e = st.select(component="E")
     tr_e = st_e[0]
     print tr_e
-
     ampl_e = tr_e.data.max() - tr_e.data.min()
+
+    ampl = (ampl_n + ampl_e) / 2
 
     from obspy.signal import utlGeoKm
     dx, dy = utlGeoKm(event['longitude'], event['latitude'],
@@ -54,8 +55,5 @@ for station in stations:
     from math import *
     hypo_dist = sqrt(dx**2 + dy**2 + dz**2)
 
-    ml_n = log10(ampl_n / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-    ml_e = log10(ampl_e / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
-
-    ml = (ml_n + ml_e) / 2
+    ml = log10(ampl / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
     print ml
