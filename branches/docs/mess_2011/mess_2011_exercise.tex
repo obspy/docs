@@ -135,4 +135,26 @@ call inside a \verb#try/except# statement like this:
 }
 \vspace*{3.0em}
 
+\exercise{Try Program with Events in Vogtland Swarm Region}\\
+By now, the program is rather flexible. We can now change to a completely
+different set of events. Modify exc. 10 and change the event request from EMSC
+to use events in the Vogtland swarm area (roughly 50.2 N, 12.2 E) at the
+north-eastern Bavarian border. There are two magnitude 4+ events in EMSC in
+2008 that we can use, for example. Either use one single event like before or
+add an additional for loop going through all requested events.
+\vspace*{3.0em}
+
+\exercise{Organize Magnitude Estimation in New Python Module}\\
+At the end we can clean up the program we wrote by extracting the magnitude
+estimation steps in a separate, new Python module. Make a new Python file
+\verb#mess_exercise_12_module.py# with a function called
+\verb#estimate_magnitude(...)#. This function should take four arguments:
+\begin{inparaenum}[\itshape a\upshape)] \item a \verb#Stream# object with Z, N
+and E traces with attached paz and coordinate information, \item the longitude
+of the event, \item the latitude of the event and \item the depth of the event.
+\end{inparaenum} Move and adjust the signal processing steps to this new module
+and modify exc. 11 to import and use the function
+\verb#estimate_magnitude(...)#.
+\vspace*{3.0em}
+
 \end{document}
