@@ -12,46 +12,56 @@
 %
 \vspace*{1cm}
 \begin{center}
-\textbf{\Large Exercise}
+\textbf{\Large Practical}
 \end{center}
 %
 % -----------------------------------------------------------------------------
 %
-In this exercise the task is to calculate local magnitudes for an earthquake in
-the Hochstaufen massif. Using this example, we will see how to develop an
-easily readable and extensible, automated processing workflow using ObsPy. For
-every part of the exercise there is a Python file with a few comments and tips
-to build upon, as well as a file with a complete solution.
-\quad\\[1ex]
+In this practical the task is to estimate local magnitudes for an earthquake in
+the Hochstaufen massif in south-eastern Bavaria. Using this example, we will
+see how to develop an easily readable and extensible, automated processing
+workflow using ObsPy. We will start with simple programs with many manually
+specified, hard-coded values and build on them step by step to make the program
+more flexible and dynamic.\\
+For every part of the exercise there is a Python file with a few comments and
+tips to build upon, as well as a file with a complete solution. The recommended
+way to do the exercises is to use a text editor to work on the program and run
+the program in a IPython shell via \verb#>>> run -i myfile.py#. This lets you
+continue work interactively after the program is executed. It is best to quit
+and start a new IPython shell often (to avoid confusion with "old" variables
+from prior program executions).
+\vspace*{2.0em}
 
 \begin{center}
 \includegraphics[width=0.8\textwidth]{rh.jpg}
 \\[-1ex]{\tiny [http://earth.google.com]}
 \end{center}
+\vspace*{2.0em}
 
-\exercise{Calculate the Local Magnitude}\\
+\exercise{Estimate Local Magnitude}\\
 Use the file \verb#RJOB_WA_CUT.MSEED# to read \verb#MiniSEED# waveform data
 from the earthquake. These data have already been simulated to displacement on
-a Wood-Anderson seismometer and trimmed to the right time span. Estimate the
-peak-to-peak amplitude $amp_{pp}$ as the mean of the maximum minus minimum
-amplitude on North and East components in the given short time window. Estimate
-the local magnitude $M_l$ using a hypocentral distance of $d_{hypo}=7.1$ (km)
-given the formula:
+a Wood-Anderson seismometer (m) and trimmed to the right time span. Estimate
+the zero-to-peak amplitude $amp_{zp}$ as half the mean of the maximum minus
+minimum amplitude on North and East components in the given short time window.
+Estimate the local magnitude $M_l$ using a hypocentral distance of
+$d_{hypo}=7.1$ (km) given the formula (\verb#Bakun&Joyner, BSSA, 1984#):
+
 \[
-M_l = \log_{10}(\frac{amp_{pp}}{2*1000}) + \log_{10}(\frac{d_{hypo}}{100}) + 0.00301 * (d_{hypo} - 100) + 3
+M_l = \log_{10}\left(\frac{amp_{zp}}{1000\mathrm{\frac{mm}{m}}}\right) + \log_{10}\left(\frac{d_{hypo}}{100\mathrm{km}}\right) + 0.00301 * (d_{hypo} - 100\mathrm{km}) + 3
 \]
 \vspace*{3.0em}
 
-\exercise{Simulate the Wood-Anderson Seismometer}\\
+\exercise{Simulate Wood-Anderson Seismometer}\\
 Use the file \verb#RJOB.MSEED# to read the original \verb#MiniSEED# waveform
-data. Set up two dictionaries containing the response information of both the
-original instrument (an \verb#STS-2#) and the Wood-Anderson seismometer in
-poles-and-zeros formulation. Each \verb#paz# dictionary needs to contain
-\verb#sensitivity# (overall sensitivity), \verb#gain# (normalization factor),
-\verb#poles# and \verb#zeros#. After the instrument simulation, trim the
-waveform to a short time window around the origin time
+data (m/s). Set up two dictionaries containing the response information of both
+the original instrument (an \verb#STS-2#) and the Wood-Anderson seismometer in
+poles-and-zeros (\verb#PAZ#) formulation. Each \verb#PAZ# dictionary needs to
+contain \verb#sensitivity# (overall sensitivity), \verb#gain# (normalization
+factor), \verb#poles# and \verb#zeros#. After the instrument simulation, trim
+the waveform to a short time window around the origin time
 (\verb#2008-04-17T16:00:32Z#) and calculate $M_l$ like in exc. 1. Use the
-following values (can be found in the Python file XXX):
+following values for the \verb#PAZ# dictionaries:
 {\footnotesize
 \begin{verbatim}
     STS-2: 'sensitivity': 2516778600.0
@@ -59,8 +69,8 @@ following values (can be found in the Python file XXX):
            'poles': [-0.037004+0.037016j, -0.037004-0.037016j, -251.33+0j,
                      -131.04-467.29j, -131.04+467.29j]
            'zeros': [0j, 0j]
-    Wood-Anderson: 'sensitivity': 1
-                   'gain': 2800
+    Wood-Anderson: 'gain': 1
+                   'sensitivity': 2800
                    'poles': [-6.2832-4.7124j, -6.2832+4.7124j]
                    'zeros': [0j]
 \end{verbatim}
@@ -69,24 +79,28 @@ following values (can be found in the Python file XXX):
 
 \exercise{Compare to EMSC Catalog}\\
 Fetch a list of events from NERIES/EMSC for the time of the earthquake in the
-Hochstaufen region (47.75 N, 12.85 E) using \verb#obspy.neries#. Check the magnitude information in the
+Hochstaufen region (47.75 N, 12.85 E) using \verb#obspy.neries#. Check if the
+estimated magnitudes so far roughly match the magnitude information in the
 catalog.
 \vspace*{3.0em}
 
 \exercise{Fetch Data from WebDC}\\
-Modify exc. 2 to fetch the data via ArcLink from WebDC using
-\verb#obspy.arclink#. Use option \verb#getPAZ=True# to fetch response
-information along with the waveform. During instrument simulation use option
-\verb#paz_remove='self'# to use the attached \verb#paz# information fetched
+Modify exc. 2 to fetch the waveform data via ArcLink from WebDC using the
+\verb#Client# provided in \verb#obspy.arclink#. Use option \verb#getPAZ=True#
+to fetch response information along with the waveform. The \verb#PAZ#
+information will get attached to the \verb#Stats# object of all traces in the
+returned \verb#Stream# object. During instrument simulation use option
+\verb#paz_remove='self'# to use the attached \verb#PAZ# information fetched
 from WebDC. Calculate $M_l$ like in exc. 2.
 \vspace*{3.0em}
 
 \exercise{Compute Hypocentral Distance}\\
 Modify exc. 4 to fetch coordinate information for station \verb#RJOB# along
-with the waveform. Use exc. 3 to fetch the event information from NERIES/EMSC.
-Use the origin time (stored as \verb#datetime# in the event dictionary) during
-the data request instead of the previously hardcoded value. Also calculate the
-hypocentral distance dynamically. Use function \verb#utlGeoKm# from module
+with the waveform (in a similar manner to the \verb#PAZ#). Use exc. 3 to fetch
+the event information from NERIES/EMSC. Use the origin time (stored as
+\verb#datetime# in the event dictionary) during the data request from WebDC
+instead of the previously hard-coded value. Also calculate the hypocentral
+distance dynamically. Use function \verb#utlGeoKm# from module
 \verb#obspy.signal# to compute horizontal distances from geographic
 coordinates. Calculate $M_l$ like in exc. 4 using the computed hypocentral
 distance.
@@ -95,21 +109,22 @@ distance.
 \exercise{Determine Event Onset Using a Triggering Algorithm}\\
 Read waveform data from file \verb#RJOB.MSEED# and run a recursive STA/LTA
 trigger on the Z component of the data. Compute the approximate event onset
-time from \verb#starttime# and \verb#sampling_rate# of the traces and from the
-position of the maximum in the triggered data. Store this time in an
-\verb#UTCDateTime# object.
+time from \verb#starttime# and \verb#sampling_rate# of the trace and from the
+position of the maximum in the triggered data (see built-in methods of
+\verb#numpy.ndarray# objects: \verb#http://docs.scipy.org#
+\verb#/doc/numpy/reference# \verb#/generated/numpy.ndarray.html#). Store this
+time in an \verb#UTCDateTime# object.
 \vspace*{3.0em}
 
-\exercise{Use Trigger Time in Magnitude Estimation}\\
+\exercise{Use Trigger Time for Time Window Selection}\\
 Modify exc. 5 to use a dynamically determined trigger time like in exc. 6 for
-trimming operations on the data. Calculate $M_l$ like in exc. 5.
+the trimming operations on the waveform data. Calculate $M_l$ like in exc. 5.
 \vspace*{3.0em}
 
 \exercise{Estimate Magnitudes for a List of Stations}\\
 Modify exc. 7 and use a list of stations (e.g. \verb#RJOB#, \verb#RMOA# and
-\verb#RNON#). Loop over this list and estimate the magnitude for each station
-individually. (The event onset time and hypocentral distance should be computed
-dynamically like in exc. 7.)
+\verb#RNON#) instead of just a single one. Loop over this list and estimate the
+magnitude for each station individually.
 \vspace*{3.0em}
 
 \exercise{Fetch List of Available Stations from WebDC}\\
@@ -120,10 +135,11 @@ WebDC. Print the station code for every station in the list.
 
 \exercise{Estimate Magnitudes at All Available Stations}\\
 Modify exc. 8 to fetch a list of stations like in exc. 9. Loop over this list,
-fetch the data and estimate the magnitude for each of the stations.\\ Note:
-There is a bug in the station request via arclink such that not all stations in
-the response really have data available, you can put the \verb#getWaveform()#
-call inside a \verb#try/except# statement like this:
+fetch the data and estimate the magnitude for each of the stations.\\ Note: Not
+all reported stations really have waveforms for that time span. You can put the
+\verb#getWaveform()# call inside a \verb#try/except# statement (see Python API)
+like this to handle the error and avoid the program execution being
+interrupted:
 {\footnotesize
 \begin{verbatim}
             try:
@@ -136,24 +152,25 @@ call inside a \verb#try/except# statement like this:
 \vspace*{3.0em}
 
 \exercise{Try Program with Events in Vogtland Swarm Region}\\
-By now, the program is rather flexible. We can now change to a completely
-different set of events. Modify exc. 10 and change the event request from EMSC
-to use events in the Vogtland swarm area (roughly 50.2 N, 12.2 E) at the
-north-eastern Bavarian border. There are two magnitude 4+ events in EMSC in
-2008 that we can use, for example. Either use one single event like before or
-add an additional for loop going through all requested events.
+By now, the program is rather flexible. We can now simply switch to a
+completely different set of events. Modify exc. 10 and change the event request
+from EMSC to use events in the Vogtland swarm area (roughly 50.2 N, 12.2 E) at
+the north-eastern Bavarian border. There are two magnitude 4+ events in the
+EMSC catalog in 2008 that we can use, for instance. Either use one single event
+like before or add an additional \verb#for# loop going through all requested
+events.
 \vspace*{3.0em}
 
 \exercise{Organize Magnitude Estimation in New Python Module}\\
 At the end we can clean up the program we wrote by extracting the magnitude
 estimation steps in a separate, new Python module. Make a new Python file
 \verb#mess_exercise_12_module.py# with a function called
-\verb#estimate_magnitude(...)#. This function should take four arguments:
+\verb#def estimate_magnitude(...)#. This function should expect four arguments:
 \begin{inparaenum}[\itshape a\upshape)] \item a \verb#Stream# object with Z, N
-and E traces with attached paz and coordinate information, \item the longitude
-of the event, \item the latitude of the event and \item the depth of the event.
-\end{inparaenum} Move and adjust the signal processing steps to this new module
-and modify exc. 11 to import and use the function
+and E traces with attached \verb#PAZ# and coordinate information, \item the
+longitude of the event, \item the latitude of the event and \item the depth of
+the event.  \end{inparaenum} Move the signal processing steps to this new
+module and modify exc. 11 to import and use the function
 \verb#estimate_magnitude(...)#.
 \vspace*{3.0em}
 

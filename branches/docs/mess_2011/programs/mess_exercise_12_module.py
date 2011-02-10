@@ -1,7 +1,7 @@
 from obspy.signal import utlGeoKm
 from math import *
 
-PAZ_WA = {'gain': 2800, 'zeros': [0j], 'sensitivity': 1,
+PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
           'poles': [-6.2832-4.7124j, -6.2832+4.7124j]}
 
 def estimate_magnitude(st, event_longitude, event_latitude, event_depth):
@@ -26,12 +26,12 @@ def estimate_magnitude(st, event_longitude, event_latitude, event_depth):
     st_e = st.select(component="E")
     ampl_e = st_e[0].data.max() - st_e[0].data.min()
 
-    ampl = (ampl_n + ampl_e) / 2
+    ampl = (ampl_n + ampl_e) / 2 / 2
 
     dx, dy = utlGeoKm(event_longitude, event_latitude,
                       st[0].stats.coordinates['longitude'], st[0].stats.coordinates['latitude'])
     dz = event_depth - (st[0].stats.coordinates['elevation'] / 1000.0)
     hypo_dist = sqrt(dx**2 + dy**2 + dz**2)
 
-    ml = log10(ampl / 2.0 * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
+    ml = log10(ampl / 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
     return ml

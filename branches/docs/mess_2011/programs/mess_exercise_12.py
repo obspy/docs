@@ -9,12 +9,16 @@
 import obspy.neries
 from obspy.core import UTCDateTime
 import obspy.arclink
+#import obspy.seishub
 from mess_exercise_12_module import estimate_magnitude
 
 client_N = obspy.neries.Client()
+#client = obspy.seishub.Client("http://localhost:8080")
 
 events = client_N.getEvents(min_latitude=49, max_latitude=52, min_longitude=11, max_longitude=14,
                             min_datetime="2008-01-01", max_datetime="2009-01-01", min_magnitude=4)
+#events = client.event.getList(min_latitude=49, max_latitude=52, min_longitude=11, max_longitude=14,
+#                              min_datetime="2008-01-01", max_datetime="2009-01-01", min_magnitude=4)
 
 client_A = obspy.arclink.Client()
 
@@ -25,12 +29,15 @@ for event in events:
     t = UTCDateTime(event['datetime'])
 
     stations = client_A.getStations(t-100, t+100, "BW")
+    #stations = client.station.getList("BW")
 
     for station in stations:
 
         try:
             st = client_A.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
                                       starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
+            #st = client.waveform.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
+            #                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
         except:
             print "no data for station ", station['code']
             continue

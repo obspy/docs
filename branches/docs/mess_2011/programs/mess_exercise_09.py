@@ -4,12 +4,15 @@
 
 from obspy.core import UTCDateTime
 import obspy.arclink
+#import obspy.seishub
 
 client = obspy.arclink.Client()
+#client = obspy.seishub.Client("http://localhost:8080")
 
 t = UTCDateTime("2008-04-17T16:00:32Z")
 
 stations = client.getStations(t-100, t+100, "BW")
+#stations = client.station.getList(network="BW")
 
 for station in stations:
 
