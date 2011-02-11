@@ -17,3 +17,4 @@ stations = client.getStations(t-100, t+100, "BW")
 for station in stations:
 
     print station['code']
+    #print station['station_id']

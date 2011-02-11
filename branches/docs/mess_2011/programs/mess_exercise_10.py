@@ -18,7 +18,7 @@ client_N = obspy.neries.Client()
 events = client_N.getEvents(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
                             min_datetime="2008-04-17", max_datetime="2008-04-18")
 #events = client.event.getList(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
-#                              min_datetime=UTCDateTime("2008-04-17"), max_datetime=UTCDateTime("2008-04-18"))
+#                              min_datetime="2008-04-17", max_datetime="2008-04-18", min_magnitude=3)
 
 event = events[0]
 
@@ -37,10 +37,11 @@ for station in stations:
     try:
         st = client_A.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
                                   starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
-        #st = client.waveform.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
+        #st = client.waveform.getWaveform(network="BW", station=station['station_id'], location="", channel="EH*",
         #                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
     except:
-        print "no data for station ", station
+        print "no data for station ", station['code']
+        #print "no data for station ", station['station_id']
         continue
 
     st.simulate(paz_remove="self", paz_simulate=PAZ_WA)

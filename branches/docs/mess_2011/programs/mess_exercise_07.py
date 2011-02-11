@@ -17,7 +17,7 @@ client_N = obspy.neries.Client()
 events = client_N.getEvents(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
                             min_datetime="2008-04-17", max_datetime="2008-04-18")
 #events = client.event.getList(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
-#                              min_datetime=UTCDateTime("2008-04-17"), max_datetime=UTCDateTime("2008-04-18"))
+#                              min_datetime="2008-04-17", max_datetime="2008-04-18", min_magnitude=3)
 
 event = events[0]
 

@@ -24,7 +24,7 @@ client_A = obspy.arclink.Client()
 
 for event in events:
     
-    print event['datetime']
+    print event['datetime'], event['magnitude']
 
     t = UTCDateTime(event['datetime'])
 
@@ -36,10 +36,11 @@ for event in events:
         try:
             st = client_A.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
                                       starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
-            #st = client.waveform.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
+            #st = client.waveform.getWaveform(network="BW", station=station['station_id'], location="", channel="EH*",
             #                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
         except:
-            print "no data for station ", station['code']
+            print "no data for station", station['code']
+            #print "no data for station", station['station_id']
             continue
 
         ml = estimate_magnitude(st, event['longitude'], event['latitude'], event['depth'])
