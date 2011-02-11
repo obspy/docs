@@ -18,5 +18,5 @@ ampl = (ampl_n + ampl_e) / 2 / 2
 
 hypo_dist = 7.1
 
-ml = log10(ampl / 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
+ml = log10(ampl * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
 print ml

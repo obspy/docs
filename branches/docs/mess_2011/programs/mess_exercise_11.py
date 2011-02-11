@@ -64,6 +64,6 @@ for event in events:
         dz = event['depth'] - (st[0].stats.coordinates['elevation'] / 1000.0)
         hypo_dist = sqrt(dx**2 + dy**2 + dz**2)
 
-        ml = log10(ampl / 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
+        ml = log10(ampl * 1000) + log10(hypo_dist / 100.0) + 0.00301 * (hypo_dist - 100.0) + 3.0
         print st[0].stats.station
         print ml
