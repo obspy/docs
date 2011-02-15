@@ -1,6 +1,6 @@
 # exercise 1
 # - read earthquake data ("RJOB_WA_CUT.MSEED", already simulated and trimmed)
-# - estimate peak-to-peak amplitudes as simple min/max on both N and E component
+# - estimate zero-to-peak amplitudes as simply half the mean of min/max on both N and E component
 # - use manually specified hypocentral distance to calculate local magnitude
 
 from obspy.core import read

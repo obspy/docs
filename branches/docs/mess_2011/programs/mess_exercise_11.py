@@ -2,10 +2,10 @@
 # - modify program of exercise 10:
 #   - use events in the Vogtland swarm region (roughly 50.2 N, 12.2 E) and calculate local magnitudes
 #     (there are two magnitude 4+ events in the EMSC catalog in 2008 that you can use)
-#   - either use a single event like before or loop over both events in an additional for loop
+#   - either use a single event like before or loop over both events in an additional for-loop
 
-import obspy.neries
 from obspy.core import UTCDateTime
+import obspy.neries
 import obspy.arclink
 #import obspy.seishub
 from obspy.signal import utlGeoKm
@@ -52,7 +52,7 @@ for event in events:
         samples = st_trig[0].data.argmax()
         t_trig = st[0].stats.starttime + (samples / st[0].stats.sampling_rate)
 
-        st.trim(t_trig-1, t_trig+40)
+        st.trim(t_trig - 1, t_trig + 40)
 
         st_n = st.select(component="N")
         ampl_n = st_n[0].data.max() - st_n[0].data.min()

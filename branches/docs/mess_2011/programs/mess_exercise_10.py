@@ -5,8 +5,8 @@
 #     (the availability check in arclink is buggy, put a try/except around getWaveform())
 #   - estimate magnitude for each station
 
-import obspy.neries
 from obspy.core import UTCDateTime
+import obspy.neries
 import obspy.arclink
 #import obspy.seishub
 from obspy.signal import utlGeoKm
@@ -51,7 +51,7 @@ for station in stations:
     samples = st_trig[0].data.argmax()
     t_trig = st[0].stats.starttime + (samples / st[0].stats.sampling_rate)
 
-    st.trim(t_trig-1, t_trig+40)
+    st.trim(t_trig - 1, t_trig + 40)
 
     st_n = st.select(component="N")
     ampl_n = st_n[0].data.max() - st_n[0].data.min()

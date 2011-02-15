@@ -23,7 +23,7 @@ PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
 
 st.simulate(paz_remove="self", paz_simulate=PAZ_WA)
 
-st.trim(t-5, t+40)
+st.trim(t - 5, t + 40)
 
 st_n = st.select(component="N")
 ampl_n = st_n[0].data.max() - st_n[0].data.min()

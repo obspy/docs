@@ -9,6 +9,7 @@ def estimate_magnitude(st, event_longitude, event_latitude, event_depth):
     Estimates the magnitude for a given Stream object (Z, N and E components)
     with attached PAZ and coordinate information. Longitude, latitude and depth
     (km, positive up) of event must also be specified.
+
     Returns estimated magnitude as a float.
     """
     st.simulate(paz_remove="self", paz_simulate=PAZ_WA)
@@ -18,7 +19,7 @@ def estimate_magnitude(st, event_longitude, event_latitude, event_depth):
     samples = st_trig[0].data.argmax()
     t_trig = st[0].stats.starttime + (samples / st[0].stats.sampling_rate)
 
-    st.trim(t_trig-1, t_trig+40)
+    st.trim(t_trig - 1, t_trig + 40)
 
     st_n = st.select(component="N")
     ampl_n = st_n[0].data.max() - st_n[0].data.min()

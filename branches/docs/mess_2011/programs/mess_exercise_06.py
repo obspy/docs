@@ -1,6 +1,6 @@
 # exercise 6
 # - read earthquake data ("RJOB.MSEED")
-# - run a recursive STALTA trigger on the data
+# - run a recursive STA/LTA trigger on the data
 # - estimate the event onset time as the maximum of the trigger function
 
 from obspy.core import read

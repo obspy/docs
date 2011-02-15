@@ -3,8 +3,8 @@
 #   - use a list of stations (RJOB, RMOA, RNON)
 #   - do the magnitude estimation looping over this list
 
-import obspy.neries
 from obspy.core import UTCDateTime
+import obspy.neries
 import obspy.arclink
 #import obspy.seishub
 from obspy.signal import utlGeoKm
@@ -43,7 +43,7 @@ for station in stations:
     num_samples = st_trig[0].data.argmax()
     t_trig = st[0].stats.starttime + (num_samples / st[0].stats.sampling_rate)
 
-    st.trim(t_trig-1, t_trig+40)
+    st.trim(t_trig - 1, t_trig + 40)
 
     st_n = st.select(component="N")
     ampl_n = st_n[0].data.max() - st_n[0].data.min()

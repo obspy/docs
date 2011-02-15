@@ -6,8 +6,8 @@
 #     returns the estimated magnitude for an event with given longitude,
 #     latitude and depth
 
-import obspy.neries
 from obspy.core import UTCDateTime
+import obspy.neries
 import obspy.arclink
 #import obspy.seishub
 from mess_exercise_12_module import estimate_magnitude

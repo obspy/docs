@@ -1,0 +1,334 @@
+\documentclass[utf8,10pt,table]{beamer}
+
+\usetheme[compress]{LMU}
+\setbeamercovered{dynamic} % shows items in white grey before active
+
+%no navigational bars:
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{listings}   % syntax highlighting
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{verbatim}
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+
+
+\hypersetup{pdfpagemode=FullScreen}
+\hypersetup{breaklinks=false}
+\hypersetup{colorlinks=true}
+\hypersetup{urlcolor=blue}
+
+\title[]{\parbox[c][][c]{0.7\paperwidth}{\centering MESS 2011 -- ObsPy Introduction}}
+\author[]{Robert Barsch, Tobias Megies}
+\date[MESS 2011-02-20/25]{2011-02-22}
+\institute{Department für Geo- and Umweltwissenschaften (Geophysik)\\ Ludwig-Maximilians-Universit\"at M\"unchen}
+%\institute{ }
+
+\begin{document}
+\lstset{%
+language=Python,          % choose the language of the code
+basicstyle=\footnotesize, % the size of the fonts that are used for the code
+numbers=none,             % where to put the line-numbers
+numberstyle=\footnotesize,% the size of the fonts that are used for the line-numbers
+stepnumber=1,             % step between line-numbers. For 1 each line will be numbered
+numbersep=5pt,            % how far the line-numbers are from the code
+%backgroundcolor=\color{white}, % choose the background color.
+showspaces=false,         % show spaces adding particular underscores
+showstringspaces=false,   % underline spaces within strings
+showtabs=false,           % show tabs within strings adding particular underscores
+frame=none,               % e.g. single, adds a frame around the code
+tabsize=2,                % sets default tabsize to 2 spaces
+captionpos=b,             % sets the caption-position to bottom
+breaklines=true,          % sets automatic line breaking
+breakatwhitespace=false,  % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},    % if you want to add a comment within your code
+%keywordstyle=\color{red}\bfseries\emph,
+}
+\maketitle
+
+%\section{Overview}
+%\subsection{Overview}
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- Why bother?}
+    %Why bother to define object classes??\\
+    \begin{itemize}
+    \item ... we want to unify data from different sources in a common structure.
+    \begin{verbatim}
+    st = read("file.mseed")
+    st += read("file.sac")
+    st += client_arclink.getWaveform(...)
+    st += client_iris.getWaveform(...)
+    \end{verbatim}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- Why bother?}
+    %Why bother to define object classes??\\
+    \begin{itemize}
+    \item ... they know how to behave by themselves if we tell them once.
+    \begin{verbatim}
+    utcdatetime + 10
+    st += st2
+    st.filter("lowpass", freq=1)
+    \end{verbatim}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- Why bother?}
+    %Why bother to define object classes??\\
+    \begin{itemize}
+    \item ... there is less room for user errors.
+    \begin{verbatim}
+    #st = client.getWaveform(..., channel="BHZ")
+    st = client.getWaveform(..., channel="HHZ")
+    data = st[0].data
+
+    data = obspy.signal.lowpass(data, freq=1, df=20)
+    \end{verbatim}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- Why bother?}
+    %Why bother to define object classes??\\
+    \begin{itemize}
+    \item ... the code gets much shorter and better readable.\\
+    \vspace*{1.0em}
+    How about...
+    \begin{verbatim}
+    st = read("file")
+    from obspy.signal import lowpass
+    num_traces = len(st)
+    for i in range(num_traces):
+        df = st[i].stats.sampling_rate
+        st[i].data = lowpass(st[i].data, freq=1, df=df)
+    \end{verbatim}
+    ...against:
+    \begin{verbatim}
+    st = read("file")
+    st.filter("lowpass", freq=1)
+    \end{verbatim}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- Overview}
+    \begin{itemize}
+    \item \verb#UTCDateTime#
+        \begin{itemize}
+        \item extension of the Python \verb#datetime# object
+        \item stores a time stamp
+        \end{itemize}
+    \item \verb#Stats#
+        \begin{itemize}
+        \item extension of the Python \verb#dict# object
+        \item stores header information of waveforms
+        \end{itemize}
+    \item \verb#Trace#
+        \begin{itemize}
+        \item stores a single-channel, continuous piece of waveform data
+        \item consisting of waveform data and header information
+        \end{itemize}
+    \item \verb#Stream#
+        \begin{itemize}
+        \item stores multiple traces (e.g. Z, N, E traces of one station)
+        \end{itemize}
+    \item all of them defined in \verb#obspy.core#
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- \tt{UTCDateTime}}
+    \begin{itemize}
+    \item \verb#UTCDateTime#
+        \begin{itemize}
+        \item used to handle all time information in ObsPy
+        \item initialize via
+            \begin{itemize}
+            \item \verb#t = UTCDateTime("2011-02-21T08:00:00.00Z")#
+            \item \verb#t = UTCDateTime(2011, 2, 21, 8)#
+            \item ...
+            \end{itemize}
+        \item several attributes/methods\\ (e.g. \verb#t.microsecond#, \verb#t.julday#, \verb#t.weekday()#, ...)
+        \item important operations
+            \begin{itemize}
+            \item subtracting two \verb#UTCDateTime# objects gives time difference in seconds
+            \item adding/subtracting \verb#int#/\verb#float# returns new \verb#UTCDateTime# object
+            \end{itemize}
+        \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.utcdatetime.UTCDateTime.html}{ObsPy documentation}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- \tt{Stats}}
+    \begin{itemize}
+    \item \verb#Stats# -- header information for waveform data
+        \begin{itemize}
+        \item contains at least the following keys
+            \begin{itemize}
+            \item \verb#stats.network# -- network code (\verb#str#)
+            \item \verb#stats.station# -- station code (\verb#str#)
+            \item \verb#stats.location# -- location code (\verb#str#)
+            \item \verb#stats.channel# -- channel code (\verb#str#)
+            \item \verb#stats.starttime# -- time of first sample (\verb#UTCDateTime#)
+            \item \verb#stats.sampling_rate# -- sampling rate in \verb#Hz# (\verb#float#)
+            \item \verb#stats.npts# -- number of samples (\verb#int#)
+            \end{itemize}
+        \item derived keys
+            \begin{itemize}
+            \item \verb#stats.endtime# -- time of last sample (\verb#UTCDateTime#)
+            \item \verb#stats.delta# -- time interval between two samples (\verb#float#)
+            \end{itemize}
+        \item optional keys
+            \begin{itemize}
+            \item \verb#stats._format# -- format of original data file (\verb#str#, e.g. \verb#"MSEED"#)
+            \item \verb#stats.paz# -- poles, zeros, sensitivity and gain of instrument (\verb#dict#)
+            \item \verb#stats.coordinates# -- longitude, latitude and elevation of station (\verb#dict#)
+            \item ...
+            \end{itemize}
+        \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.trace.Stats.html}{ObsPy documentation}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- \tt{Trace}}
+    \begin{itemize}
+    \item \verb#Trace# -- continuous waveform data
+        \begin{itemize}
+        \item usually constructed internally during \verb#read(...)# or \verb#getWaveform(...)#
+        \item consists of
+            \begin{itemize}
+            \item \verb#tr.data# -- waveform data as a \verb#numpy.ndarray# instance
+            \item \verb#tr.stats# -- header information as a \verb#Stats# instance
+            \end{itemize}
+        \item built-in methods
+            \begin{itemize}
+            \item \verb#tr.id# -- complete channel id in SEED standard (e.g. \verb#"BW.RJOB..BHZ"#)
+            \item \verb#tr.plot()# -- shows preview plot of trace
+            \item \verb#tr.copy()# -- returns copy of trace (most operations work in-place)
+            \item \verb#tr.trim(starttime, endtime)# -- cut trace to specified time span
+            \item \verb#tr.filter("type", **kwargs)# -- filter waveform data
+            \item \verb#tr.simulate(paz_remove, paz_simulate, **kwargs)#\\ -- apply instrument correction/simulation
+            \item \verb#tr.write("filename", "format")# -- write waveform to local file
+            \item ...
+            \end{itemize}
+        \item many built-in methods on \verb#tr.data# (\verb#numpy.ndarray#)!
+        \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.trace.Trace.html}{ObsPy documentation}
+        \item see \href{file:///home/messuser/obspy/python/numpy-docs/index.html}{Numpy documentation -- ndarray}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy Data Types -- \tt{Stream}}
+    \begin{itemize}
+    \item \verb#Stream# -- collection of \verb#Trace# objects in a \verb#list#-like container
+        \begin{itemize}
+        \item usually returned by a \verb#read(...)# or \verb#getWaveform(...)# call
+        \item \verb#print st# -- prints summary of all traces
+        \item \verb#print len(st)# -- prints number of traces in stream
+        \item \verb#list#-like operations
+            \begin{itemize}
+            \item \verb#st[i]# -- return trace at index \verb#i#
+            \item \verb#st.append(tr)# -- add a single trace
+            \item \verb#st.extend(st)# -- add a list of traces
+            \item \verb#st.remove(tr)# -- remove specified trace from stream
+            \item \verb#st.pop(i)# -- remove trace at specified index and return it
+            \item \verb#st.sort(...)# -- sort traces in stream according to specified criteria
+            \end{itemize}
+        \item other built-in methods
+            \begin{itemize}
+            \item \verb#st.select(**kwargs)#\\ -- return new stream with matching traces (e.g. \verb#component="Z"#)
+            \item \verb#st.merge(method)# -- merge traces with identical id
+            \item \verb#st.printGaps()# -- prints summary of gaps in the stream
+            \end{itemize}
+        \item many built-in methods of \verb#Trace# (\verb#trim#, \verb#filter#, \verb#simulate#,... )
+        \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.stream.Stream.html}{ObsPy documentation}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Getting Help..}
+    IPython
+    \begin{itemize}
+    \item get help for a function: \verb#>>> command?#
+    \item have a look at the implementation: \verb#>>> command??#
+    \item search for variables/functions/modules starting with "ab": \verb#>>> ab<Tab>#
+    \item what's the value? \verb#>>> variable#
+    \item what's the type? \verb#>>> type(variable)#
+    \item which variables are assigned anyway?? \verb#>>> whos#
+    \item what attributes/methods are there? \verb#>>> variable.<Tab>#
+    \item get help for a variable's method: \verb#>>> variable.command?#
+    \item what functions are available in a module? \verb#>>> module.<Tab>#
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Getting Help..}
+    \begin{itemize}
+    \item ObsPy web pages
+        \begin{itemize}
+        \item Tutorial
+            \begin{itemize}
+            \item \url{http://obspy.org/wiki/ObspyTutorial}
+            \item \url{file:///home/messuser/obspy/tutorial/ObspyTutorial.html}
+            \end{itemize}
+        \item API
+            \begin{itemize}
+            \item \url{http://docs.obspy.org/}
+            \item \url{file:///home/messuser/obspy/docs/index.html}
+            \end{itemize}
+        \end{itemize}
+    \item Python/Numpy/Scipy API
+        \begin{itemize}
+        \item \url{http://docs.python.org/}
+        \item \url{file:///home/messuser/obspy/python/python-docs/index.html}
+        \item \url{http://docs.scipy.org/doc/numpy/reference/}
+        \item \url{file:///home/messuser/obspy/python/numpy-docs/index.html}
+        \item \url{http://docs.scipy.org/doc/scipy/reference/}
+        \item \url{file:///home/messuser/obspy/python/scipy-docs/index.html}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{How to Work on the Practicals..}
+    \begin{itemize}
+    \item Either..
+        \begin{itemize}
+        \item work line by line in IPython shell
+        \item when it's working: save history and condense it
+    \begin{verbatim}
+    >>> %history [number_of_lines] [-n] [-f output_file]
+    \end{verbatim}
+        \end{itemize}
+    \item or..
+        \begin{itemize}
+        \item work on your program in a text editor
+        \item in a second window, run program in an IPython shell and continue work at the end
+    \begin{verbatim}
+    $ ipython -i
+    >>> run -i PROGRAM.PY
+    \end{verbatim}
+            \begin{itemize}
+            \item (caution: best do this in a "fresh" IPython shell)
+            \end{itemize}
+        \item extend program with appropriate lines of code and run it again in a new IPython shell
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%\begin{frame}[fragile]
+%    \frametitle{Useful Constructs}
+%    \begin{itemize}
+%    \item loop over all traces in a stream \verb#for trace in stream: tr.data = tr.data - tr.data.mean()#
+%    \end{itemize}
+%\end{frame}
+
+\end{document}

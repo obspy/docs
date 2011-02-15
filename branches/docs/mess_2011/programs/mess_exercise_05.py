@@ -1,10 +1,11 @@
 # exercise 5
-# - modify program of exercise 4:
-#   - fetch coordinate information for station RJOB along with the waveforms via arclink from WebDC
 # - use code from exercise 3:
 #   - fetch event information from EMSC
 #   - dynamically compute hypocentral distance using event and station coordinates
 #   - use function utlGeoKm() from module obspy.signal to calculate distances from geographical coordinates
+# - modify program of exercise 4:
+#   - use origin time in waveform request
+#   - fetch coordinate information for station RJOB along with the waveforms via arclink from WebDC
 # - estimate magnitude like in 4
 
 from obspy.core import UTCDateTime
@@ -37,8 +38,7 @@ PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
           'poles': [-6.2832-4.7124j, -6.2832+4.7124j]}
 
 st.simulate(paz_remove="self", paz_simulate=PAZ_WA)
-
-st.trim(t-5, t+40)
+st.trim(t - 5, t + 40)
 
 st_n = st.select(component="N")
 ampl_n = st_n[0].data.max() - st_n[0].data.min()

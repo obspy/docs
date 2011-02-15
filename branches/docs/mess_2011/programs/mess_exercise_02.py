@@ -1,7 +1,7 @@
 # exercise 2
 # - change program of exercise 1:
 #   - read raw earthquake data ("RJOB.MSEED")
-#   - use manually specified PAZ to simulate Wood Anderson seismometer
+#   - use manually specified PAZ to simulate Wood-Anderson seismometer
 #   - trim to around manually specified origin time
 # - estimate magnitude like in 1
 
@@ -18,7 +18,7 @@ PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
 st.simulate(paz_remove=PAZ_STS2, paz_simulate=PAZ_WA)
 
 t = UTCDateTime("2008-04-17T16:00:32Z")
-st.trim(t-5, t+40)
+st.trim(t - 5, t + 40)
 
 st_n = st.select(component="N")
 ampl_n = st_n[0].data.max() - st_n[0].data.min()
