@@ -7,17 +7,13 @@
 from obspy.core import UTCDateTime
 import obspy.neries
 import obspy.arclink
-#import obspy.seishub
 from obspy.signal import utlGeoKm
 from math import *
 
 client_N = obspy.neries.Client()
-#client = obspy.seishub.Client("http://localhost:8080")
 
 events = client_N.getEvents(min_latitude=49, max_latitude=52, min_longitude=11, max_longitude=14,
                             min_datetime="2008-01-01", max_datetime="2009-01-01", min_magnitude=4)
-#events = client.event.getList(min_latitude=49, max_latitude=52, min_longitude=11, max_longitude=14,
-#                              min_datetime="2008-01-01", max_datetime="2009-01-01", min_magnitude=4)
 
 PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
           'poles': [-6.2832-4.7124j, -6.2832+4.7124j]}
@@ -31,18 +27,14 @@ for event in events:
     t = UTCDateTime(event['datetime'])
 
     stations = client_A.getStations(t-100, t+100, "BW")
-    #stations = client.station.getList(network="BW")
 
     for station in stations:
 
         try:
             st = client_A.getWaveform(network="BW", station=station['code'], location="", channel="EH*",
                                       starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
-            #st = client.waveform.getWaveform(network="BW", station=station['station_id'], location="", channel="EH*",
-            #                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
         except:
             print "no data for station", station['code']
-            #print "no data for station", station['station_id']
             continue
 
         st.simulate(paz_remove="self", paz_simulate=PAZ_WA)

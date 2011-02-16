@@ -9,30 +9,21 @@
 # - estimate magnitude like in 4
 
 from obspy.core import UTCDateTime
-import obspy.neries
-import obspy.arclink
-#import obspy.seishub
+import obspy.seishub
 from obspy.signal import utlGeoKm
 from math import *
 
-client_N = obspy.neries.Client()
-#client = obspy.seishub.Client("http://localhost:8080")
+client = obspy.seishub.Client("http://localhost:8080")
 
-events = client_N.getEvents(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
-                            min_datetime="2008-04-17", max_datetime="2008-04-18")
-#events = client.event.getList(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
-#                              min_datetime="2008-04-17", max_datetime="2008-04-18", min_magnitude=3)
+events = client.event.getList(min_latitude=47.6, max_latitude=47.8, min_longitude=12.7, max_longitude=13,
+                              min_datetime="2008-04-17", max_datetime="2008-04-18", min_magnitude=3)
 
 event = events[0]
 
 t = UTCDateTime(event['datetime'])
 
-client_A = obspy.arclink.Client()
-
-st = client_A.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
-                          starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
-#st = client.waveform.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
-#                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
+st = client.waveform.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
+                                 starttime=t-30, endtime=t+120, getPAZ=True, getCoordinates=True)
 
 PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
           'poles': [-6.2832-4.7124j, -6.2832+4.7124j]}

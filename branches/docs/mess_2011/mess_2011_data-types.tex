@@ -19,9 +19,9 @@
 \hypersetup{colorlinks=true}
 \hypersetup{urlcolor=blue}
 
-\title[]{\parbox[c][][c]{0.7\paperwidth}{\centering MESS 2011 -- ObsPy Introduction}}
+\title[]{\parbox[c][][c]{0.7\paperwidth}{\centering MESS 2011\\ Python/ObsPy Introduction}}
 \author[]{Robert Barsch, Tobias Megies}
-\date[MESS 2011-02-20/25]{2011-02-22}
+\date[MESS 2011-02-20/25]{2011-02-21}
 \institute{Department für Geo- and Umweltwissenschaften (Geophysik)\\ Ludwig-Maximilians-Universit\"at M\"unchen}
 %\institute{ }
 
@@ -137,6 +137,9 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
         \item stores multiple traces (e.g. Z, N, E traces of one station)
         \end{itemize}
     \item all of them defined in \verb#obspy.core#
+        \begin{itemize}
+        \item \verb#from obspy.core import UTCDateTime#
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -160,6 +163,33 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
             \end{itemize}
         \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.utcdatetime.UTCDateTime.html}{ObsPy documentation}
         \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{UTCDateTime}}
+    \begin{itemize}
+    \item the morning sessions start at 8 and are 3 hours..\\ we are
+          superstitious and want to have the coffee break 1234 seconds and 5
+          microseconds before the session ends. What time is the break?
+    \item assume you had your last cup of coffee yesterday at breakfast. How many
+          minutes did you last with that cup of coffee?
+    \end{itemize}
+    \vspace*{0.5em}
+    \begin{itemize}
+    \item<2> how many days from today is your birthday this year?
+    \item<2> what day of week is it?
+    \item<2> you want to have your birthday party at the first saturday after your
+          birthday, what date is the party?
+    \end{itemize}
+    \vspace*{0.5em}
+    \begin{itemize}
+    \item<2> some of your friends always seem to find an excuse not to come..\\
+          for the next fifty years print the date of your party sticking to
+          that scheme
+    \item<2> again, we are superstitious and do not leave the house on friday
+          13th..\\ print a list of dates and count the days  we have to take off
+          from now till the end of next year..
     \end{itemize}
 \end{frame}
 

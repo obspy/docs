@@ -4,19 +4,15 @@
 # - estimate magnitude like in 2
 
 from obspy.core import UTCDateTime
-import obspy.arclink
-#import obspy.seishub
+import obspy.seishub
 from math import *
 
-client = obspy.arclink.Client()
-#client = obspy.seishub.Client("http://localhost:8080")
+client = obspy.seishub.Client("http://localhost:8080")
 
 t = UTCDateTime("2008-04-17T16:00:32Z")
 
-st = client.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
-                        starttime=t-30, endtime=t+120, getPAZ=True)
-#st = client.waveform.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
-#                                 starttime=t-30, endtime=t+120, getPAZ=True)
+st = client.waveform.getWaveform(network="BW", station="RJOB", location="", channel="EH*",
+                                 starttime=t-30, endtime=t+120, getPAZ=True)
 
 PAZ_WA = {'sensitivity': 2800, 'zeros': [0j], 'gain': 1,
           'poles': [-6.2832-4.7124j, -6.2832+4.7124j]}
