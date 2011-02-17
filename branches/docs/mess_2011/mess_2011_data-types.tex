@@ -49,68 +49,139 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
 
 %\section{Overview}
 %\subsection{Overview}
+%\begin{frame}[fragile]
+%    \frametitle{ObsPy Data Types -- Why bother?}
+%    %Why bother to define object classes??\\
+%    \begin{itemize}
+%    \item ... we want to unify data from different sources in a common structure.
+%    \begin{verbatim}
+%    st = read("file.mseed")
+%    st += read("file.sac")
+%    st += client_arclink.getWaveform(...)
+%    st += client_iris.getWaveform(...)
+%    \end{verbatim}
+%    \end{itemize}
+%\end{frame}
+
+%\begin{frame}[fragile]
+%    \frametitle{ObsPy Data Types -- Why bother?}
+%    %Why bother to define object classes??\\
+%    \begin{itemize}
+%    \item ... they know how to behave by themselves if we tell them once.
+%    \begin{verbatim}
+%    utcdatetime + 10
+%    st += st2
+%    st.filter("lowpass", freq=1)
+%    \end{verbatim}
+%    \end{itemize}
+%\end{frame}
+
+%\begin{frame}[fragile]
+%    \frametitle{ObsPy Data Types -- Why bother?}
+%    %Why bother to define object classes??\\
+%    \begin{itemize}
+%    \item ... there is less room for user errors.
+%    \begin{verbatim}
+%    #st = client.getWaveform(..., channel="BHZ")
+%    st = client.getWaveform(..., channel="HHZ")
+%    data = st[0].data
+%
+%    data = obspy.signal.lowpass(data, freq=1, df=20)
+%    \end{verbatim}
+%    \end{itemize}
+%\end{frame}
+
+%\begin{frame}[fragile]
+%    \frametitle{ObsPy Data Types -- Why bother?}
+%    %Why bother to define object classes??\\
+%    \begin{itemize}
+%    \item ... the code gets much shorter and better readable.\\
+%    \vspace*{1.0em}
+%    How about...
+%    \begin{verbatim}
+%    st = read("file")
+%    from obspy.signal import lowpass
+%    num_traces = len(st)
+%    for i in range(num_traces):
+%        df = st[i].stats.sampling_rate
+%        st[i].data = lowpass(st[i].data, freq=1, df=df)
+%    \end{verbatim}
+%    ...against:
+%    \begin{verbatim}
+%    st = read("file")
+%    st.filter("lowpass", freq=1)
+%    \end{verbatim}
+%    \end{itemize}
+%\end{frame}
+
 \begin{frame}[fragile]
-    \frametitle{ObsPy Data Types -- Why bother?}
-    %Why bother to define object classes??\\
+    \frametitle{How to Work on the Practicals..}
     \begin{itemize}
-    \item ... we want to unify data from different sources in a common structure.
+    \item Either..
+        \begin{itemize}
+        \item work line by line in IPython shell
+        \item when it's working: save history and condense it
     \begin{verbatim}
-    st = read("file.mseed")
-    st += read("file.sac")
-    st += client_arclink.getWaveform(...)
-    st += client_iris.getWaveform(...)
+    >>> %history [number_of_lines] [-n] [-f output_file]
     \end{verbatim}
+        \end{itemize}
+    \item or..
+        \begin{itemize}
+        \item work on your program in a text editor
+        \item in a second window, run program in an IPython shell and continue work at the end
+    \begin{verbatim}
+    $ ipython -i
+    >>> run -i PROGRAM.PY
+    \end{verbatim}
+            \begin{itemize}
+            \item (caution: best do this in a "fresh" IPython shell)
+            \end{itemize}
+        \item extend program with appropriate lines of code and run it again in a new IPython shell
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{ObsPy Data Types -- Why bother?}
-    %Why bother to define object classes??\\
+    \frametitle{Getting Help..}
+    IPython
     \begin{itemize}
-    \item ... they know how to behave by themselves if we tell them once.
-    \begin{verbatim}
-    utcdatetime + 10
-    st += st2
-    st.filter("lowpass", freq=1)
-    \end{verbatim}
+    \item get help for a function: \verb#>>> command?#
+    \item have a look at the implementation: \verb#>>> command??#
+    \item search for variables/functions/modules starting with "ab": \verb#>>> ab<Tab>#
+    \item what's the value? \verb#>>> variable#
+    \item what's the type? \verb#>>> type(variable)#
+    \item which variables are assigned anyway?? \verb#>>> whos#
+    \item what attributes/methods are there? \verb#>>> variable.<Tab>#
+    \item get help for a variable's method: \verb#>>> variable.command?#
+    \item what functions are available in a module? \verb#>>> module.<Tab>#
     \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-    \frametitle{ObsPy Data Types -- Why bother?}
-    %Why bother to define object classes??\\
+    \frametitle{Getting Help..}
     \begin{itemize}
-    \item ... there is less room for user errors.
-    \begin{verbatim}
-    #st = client.getWaveform(..., channel="BHZ")
-    st = client.getWaveform(..., channel="HHZ")
-    data = st[0].data
-
-    data = obspy.signal.lowpass(data, freq=1, df=20)
-    \end{verbatim}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{ObsPy Data Types -- Why bother?}
-    %Why bother to define object classes??\\
-    \begin{itemize}
-    \item ... the code gets much shorter and better readable.\\
-    \vspace*{1.0em}
-    How about...
-    \begin{verbatim}
-    st = read("file")
-    from obspy.signal import lowpass
-    num_traces = len(st)
-    for i in range(num_traces):
-        df = st[i].stats.sampling_rate
-        st[i].data = lowpass(st[i].data, freq=1, df=df)
-    \end{verbatim}
-    ...against:
-    \begin{verbatim}
-    st = read("file")
-    st.filter("lowpass", freq=1)
-    \end{verbatim}
+    \item ObsPy web pages
+        \begin{itemize}
+        \item Tutorial
+            \begin{itemize}
+            \item \url{http://obspy.org/wiki/ObspyTutorial}
+            \item \url{file:///home/messuser/obspy/tutorial/ObspyTutorial.html}
+            \end{itemize}
+        \item API
+            \begin{itemize}
+            \item \url{http://docs.obspy.org/}
+            \item \url{file:///home/messuser/obspy/docs/index.html}
+            \end{itemize}
+        \end{itemize}
+    \item Python/Numpy/Scipy API
+        \begin{itemize}
+        \item \url{http://docs.python.org/}
+        \item \url{file:///home/messuser/obspy/python/python-docs/index.html}
+        \item \url{http://docs.scipy.org/doc/numpy/reference/}
+        \item \url{file:///home/messuser/obspy/python/numpy-docs/index.html}
+        \item \url{http://docs.scipy.org/doc/scipy/reference/}
+        \item \url{file:///home/messuser/obspy/python/scipy-docs/index.html}
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -367,77 +438,6 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
         \item filter the Z components with a highpass at 5Hz
         \item display the preview plot of the Z component stream
         \item display the preview plot of the original stream
-        \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Getting Help..}
-    IPython
-    \begin{itemize}
-    \item get help for a function: \verb#>>> command?#
-    \item have a look at the implementation: \verb#>>> command??#
-    \item search for variables/functions/modules starting with "ab": \verb#>>> ab<Tab>#
-    \item what's the value? \verb#>>> variable#
-    \item what's the type? \verb#>>> type(variable)#
-    \item which variables are assigned anyway?? \verb#>>> whos#
-    \item what attributes/methods are there? \verb#>>> variable.<Tab>#
-    \item get help for a variable's method: \verb#>>> variable.command?#
-    \item what functions are available in a module? \verb#>>> module.<Tab>#
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{Getting Help..}
-    \begin{itemize}
-    \item ObsPy web pages
-        \begin{itemize}
-        \item Tutorial
-            \begin{itemize}
-            \item \url{http://obspy.org/wiki/ObspyTutorial}
-            \item \url{file:///home/messuser/obspy/tutorial/ObspyTutorial.html}
-            \end{itemize}
-        \item API
-            \begin{itemize}
-            \item \url{http://docs.obspy.org/}
-            \item \url{file:///home/messuser/obspy/docs/index.html}
-            \end{itemize}
-        \end{itemize}
-    \item Python/Numpy/Scipy API
-        \begin{itemize}
-        \item \url{http://docs.python.org/}
-        \item \url{file:///home/messuser/obspy/python/python-docs/index.html}
-        \item \url{http://docs.scipy.org/doc/numpy/reference/}
-        \item \url{file:///home/messuser/obspy/python/numpy-docs/index.html}
-        \item \url{http://docs.scipy.org/doc/scipy/reference/}
-        \item \url{file:///home/messuser/obspy/python/scipy-docs/index.html}
-        \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-    \frametitle{How to Work on the Practicals..}
-    \begin{itemize}
-    \item Either..
-        \begin{itemize}
-        \item work line by line in IPython shell
-        \item when it's working: save history and condense it
-    \begin{verbatim}
-    >>> %history [number_of_lines] [-n] [-f output_file]
-    \end{verbatim}
-        \end{itemize}
-    \item or..
-        \begin{itemize}
-        \item work on your program in a text editor
-        \item in a second window, run program in an IPython shell and continue work at the end
-    \begin{verbatim}
-    $ ipython -i
-    >>> run -i PROGRAM.PY
-    \end{verbatim}
-            \begin{itemize}
-            \item (caution: best do this in a "fresh" IPython shell)
-            \end{itemize}
-        \item extend program with appropriate lines of code and run it again in a new IPython shell
         \end{itemize}
     \end{itemize}
 \end{frame}
