@@ -169,27 +169,34 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
 \begin{frame}[fragile]
     \frametitle{Exercises -- \tt{UTCDateTime}}
     \begin{itemize}
-    \item the morning sessions start at 8 and are 3 hours..\\ we are
-          superstitious and want to have the coffee break 1234 seconds and 5
-          microseconds before the session ends. What time is the break?
-    \item assume you had your last cup of coffee yesterday at breakfast. How many
-          minutes did you last with that cup of coffee?
+    \item A
+        \begin{itemize}
+        \item the morning sessions start at 8 and are 3 hours..\\ assume we
+              want to have the coffee break 1234 seconds and 5 microseconds before
+              the session ends. What time is the break?
+        \item assume you had your last cup of coffee yesterday at breakfast. How many
+              minutes do you have to survive with that cup of coffee?
+        \end{itemize}
     \end{itemize}
-    \vspace*{0.5em}
     \begin{itemize}
-    \item<2> how many days from today is your birthday this year?
-    \item<2> what day of week is it?
-    \item<2> you want to have your birthday party at the first saturday after your
-          birthday, what date is the party?
+    \item<2> B
+        \begin{itemize}
+        \item<2> how many days from today is your birthday this year?
+        \item<2> what day of week is it?
+        \item<2> you want to have your birthday party at the first saturday after your
+              birthday, what date is the party?
+        \end{itemize}
     \end{itemize}
-    \vspace*{0.5em}
     \begin{itemize}
-    \item<2> some of your friends always seem to find an excuse not to come..\\
-          for the next fifty years print the date of your party sticking to
-          that scheme
-    \item<2> again, we are superstitious and do not leave the house on friday
-          13th..\\ print a list of dates and count the days  we have to take off
-          from now till the end of next year..
+    \item<2> C
+        \begin{itemize}
+        \item<2> some of your friends always seem to find an excuse not to come..\\
+              for the next fifty years print the date of your party sticking to
+              that scheme
+        \item<2> we are superstitious and do not leave the house on friday 13th..\\
+              print a list of dates and count the days we have to take off from
+              now till the end of next year..
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -211,7 +218,7 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
         \item derived keys
             \begin{itemize}
             \item \verb#stats.endtime# -- time of last sample (\verb#UTCDateTime#)
-            \item \verb#stats.delta# -- time interval between two samples (\verb#float#)
+            \item \verb#stats.delta# -- sampling interval (\verb#float#)
             \end{itemize}
         \item optional keys
             \begin{itemize}
@@ -255,6 +262,45 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
 \end{frame}
 
 \begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{Trace}}
+    \begin{itemize}
+    \item A
+        \begin{itemize}
+        \item make a trace with all zeros (e.g. \verb#numpy.zeros(200)#) and an ideal pulse at the center
+        \item fill in some station information (\verb#network#, \verb#station#)
+        \item print trace summary and display the preview plot of the trace
+        \item change the sampling rate to 20Hz
+        \item change the \verb#starttime# to the start time of this sessions
+        \item print trace summary and display the preview plot of the trace again
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{Trace}}
+    \begin{itemize}
+    \item B
+        \vspace*{0.5em}
+        \begin{itemize}
+        \item use \verb#tr.filter(...)# and apply a lowpass with 1s corner frequency
+        \item display the preview plot, there are a few seconds of zeros that we can cut off
+        \item use \verb#tr.trim(...)# to remove some of the zeros at start and end
+        \end{itemize}
+    \end{itemize}
+    \begin{itemize}
+    \item C
+        \vspace*{0.5em}
+        \begin{itemize}
+        \item scale up the amplitudes of the trace by a factor of 500
+        \item make a copy of the original trace
+        \item add standard normal gaussian noise to the copied trace (use \verb#numpy.random.randn(..)#)
+        \item change the station name of the copied trace
+        \item display the preview plot of the new trace
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
     \frametitle{ObsPy Data Types -- \tt{Stream}}
     \begin{itemize}
     \item \verb#Stream# -- collection of \verb#Trace# objects in a \verb#list#-like container
@@ -279,6 +325,48 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
             \end{itemize}
         \item many built-in methods of \verb#Trace# (\verb#trim#, \verb#filter#, \verb#simulate#,... )
         \item see \href{file:///home/messuser/obspy/docs/packages/auto/obspy.core.stream.Stream.html}{ObsPy documentation}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{Stream}}
+    \begin{itemize}
+    \item A
+        \begin{itemize}
+        \item read the example earthquake data into a stream object (\verb#read()# without arguments)
+        \item print the stream summary and display the preview plot
+        \item assign the first trace to a new variable and then remove that trace from the original stream
+        \item print the summary for the single trace and for the stream
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{Stream}}
+    \begin{itemize}
+    \item B
+        \begin{itemize}
+        \item read the example earthquake data again
+        \item make a dictionary with \verb#paz# information, assign \verb#poles# at
+              \verb#[-0.037+0.037j, -0.037-0.037j]#, \verb#zeros# at \verb#[0j, 0j]#,
+              the \verb#sensitivity# of \verb#2.517e9# and unity \verb#gain#
+        \item remove the instrument response using this \verb#paz# dictionary
+        \item print the data maximum and minimum of the first trace (now in m/s)
+        \item save the data to a local file in \verb#MSEED# format
+        \end{itemize}
+    \end{itemize}
+    \begin{itemize}
+    \item C
+        \begin{itemize}
+        \item read the example earthquake data again
+        \item change the station name for all traces in the stream
+        \item read the example earthquake data yet again and add the traces to the first stream
+        \item print the summary for the resulting stream and display the preview plot
+        \item \verb#select# the Z traces and assign this stream to another variable
+        \item filter the Z components with a highpass at 5Hz
+        \item display the preview plot of the Z component stream
+        \item display the preview plot of the original stream
         \end{itemize}
     \end{itemize}
 \end{frame}
