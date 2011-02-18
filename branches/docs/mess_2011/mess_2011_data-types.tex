@@ -447,6 +447,10 @@ os.system("ps v "+str(os.getpid()))
 %\end{frame}
 
 \begin{frame}[fragile]
+    \frametitle{Need a break..?}
+\end{frame}
+
+\begin{frame}[fragile]
     \frametitle{How to Work on the Practicals..}
     \begin{itemize}
     \item Either..
@@ -466,7 +470,7 @@ os.system("ps v "+str(os.getpid()))
     >>> run -i PROGRAM.PY
     \end{verbatim}
             \begin{itemize}
-            \item (caution: best do this in a "fresh" IPython shell)
+            \item (caution: best do this in a 'fresh' IPython shell)
             \end{itemize}
         \item extend program with appropriate lines of code and run it again in a new IPython shell
         \end{itemize}
@@ -479,7 +483,7 @@ os.system("ps v "+str(os.getpid()))
     \begin{itemize}
     \item get help for a function: \verb#>>> command?#
     \item have a look at the implementation: \verb#>>> command??#
-    \item search for variables/functions/modules starting with "ab": \verb#>>> ab<Tab>#
+    \item search for variables/functions/modules starting with 'ab': \verb#>>> ab<Tab>#
     \item what's the value? \verb#>>> variable#
     \item what's the type? \verb#>>> type(variable)#
     \item which variables are assigned anyway?? \verb#>>> whos#
@@ -764,12 +768,37 @@ os.system("ps v "+str(os.getpid()))
         \begin{itemize}
         \item read the example earthquake data again
         \item change the station name for all traces in the stream
-        \item read the example earthquake data yet again and add the traces to the first stream
+        \item read the example earthquake data again and add the traces to the first stream
         \item print the summary for the resulting stream and display the preview plot
         \item \verb#select# the Z traces and assign this stream to another variable
         \item filter the Z components with a highpass at 5Hz
         \item display the preview plot of the Z component stream
         \item display the preview plot of the original stream
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercises -- \tt{Stream}}
+    \begin{itemize}
+    \item D
+        \begin{itemize}
+        \item fetch earthquake data from a local SeisHub database using \verb#obspy.seishub#
+        \item (start the database first, doing \verb#$ seishub-start#)
+        \item use \verb#station# HROE in \verb#network# BW and fetch 10 minutes of data starting at October 10th 2008 08:05am
+        \item print the stream summary and display the preview plot
+        \item fetch event information for the same time span
+        \item print the origin time, magnitude and location information of the event
+        \end{itemize}
+    \end{itemize}
+    \vspace*{0.5em}
+    \begin{itemize}
+    \item<2> E
+        \begin{itemize}
+        \item<2> do it again using..
+        \item<2> \verb#obspy.arclink# (WebDC) for the waveform request\\
+                 (use \verb#location# \'\' and \verb#channel# \'EH*\')
+        \item<2> \verb#obspy.neries# (NERIES/EMSC) for the event request
         \end{itemize}
     \end{itemize}
 \end{frame}
