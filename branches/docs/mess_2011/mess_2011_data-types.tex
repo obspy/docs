@@ -1,4 +1,4 @@
-\documentclass[utf8,10pt,table]{beamer}
+\documentclass[t,10pt,compress=false,usepdftitle=false]{beamer}
 
 \usetheme[compress]{LMU}
 \setbeamercovered{dynamic} % shows items in white grey before active
@@ -6,6 +6,8 @@
 %no navigational bars:
 \setbeamertemplate{navigation symbols}{}
 
+\usepackage[utf8x]{inputenc}
+\usepackage[ngerman]{babel}
 \usepackage{listings}   % syntax highlighting
 \usepackage{courier}
 \usepackage{xcolor}
@@ -13,13 +15,14 @@
 %\usepackage{amsmath}
 %\usepackage{amssymb}
 
+\input{commands}
 
 \hypersetup{pdfpagemode=FullScreen}
 \hypersetup{breaklinks=false}
 \hypersetup{colorlinks=true}
 \hypersetup{urlcolor=blue}
 
-\title[]{\parbox[c][][c]{0.7\paperwidth}{\centering MESS 2011\\ Python/ObsPy Introduction}}
+\title[]{\parbox[c][][c]{0.7\paperwidth}{\centering MESS 2011\\ Python \& ObsPy Introduction}}
 \author[]{Robert Barsch, Tobias Megies}
 \date[MESS 2011-02-20/25]{2011-02-21}
 \institute{Department für Geo- and Umweltwissenschaften (Geophysik)\\ Ludwig-Maximilians-Universit\"at M\"unchen}
@@ -46,6 +49,335 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
 %keywordstyle=\color{red}\bfseries\emph,
 }
 \maketitle
+
+
+%\section{Overview}
+%\subsection{Overview}
+
+\begin{frame}[fragile]
+    \frametitle{Python Introduction}
+    Trinity:
+    \begin{quote}
+        I know why you're here, Neo. I know what you've been doing… why you hardly sleep, why you live alone, and why night after night, you sit by your computer. [...] It's the question that brought you here. You know the question, just as I did.
+    \end{quote}
+    Neo:
+    \begin{quote}
+        What is Python?*
+    \end{quote}
+    Trinity:
+    \begin{quote}
+        The answer is out there, Neo, and it's looking for you, and it will find you if you want it to.
+    \end{quote}
+    \scriptsize *grossly inaccurate quote 
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Introduction}
+    \begin{itemize}
+        \item This course will \textbf{not} teach you basic programming
+        \pause
+        \item Assume you already know:
+	\begin{itemize}
+	    \item variables
+	    \item loops
+	    \item conditionals (if / else)
+	    \item standard data types, int, float, string, lists / arrays
+	    \item reading/writing data from files
+	\end{itemize}
+	\pause
+	\item This lecture will show you how to do these well in Python
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reasons Why Python Rocks for Research}
+    \begin{enumerate}
+        \item Readability
+        \item Batteries included
+        \item Speed
+        \item Language Interoperability
+        \item Others
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Readability}
+    \begin{itemize}
+        \item Readable syntax
+        \pause
+        \begin{enumerate}
+            \item Does an element exist in a list/dict:
+            	\begin{myColorBox}{0.8}{}
+\begin{semiverbatim}
+>>> 3 \textbf{in} [1, 2, 3, 4, 5]
+True
+\end{semiverbatim}
+            	\end{myColorBox}
+            \pause
+            \item Does a substring exist in a string:
+            	\begin{myColorBox}{0.8}{}
+\begin{semiverbatim}
+>>> 'sub' \textbf{in} 'string'
+False
+\end{semiverbatim}
+	    	\end{myColorBox}
+            \pause
+            \item Readable boolean values and logical operators
+            	\begin{myColorBox}{0.8}{}
+\begin{semiverbatim}
+>>> a = True
+>>> \textbf{not} a
+False
+>>> 'sub' \textbf{not in} ['string', 'hello', 'world']
+True
+>>> a \textbf{or} True \textbf{and not} 1==2
+True
+\end{semiverbatim}
+	    	\end{myColorBox}
+        \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Readability}
+    \begin{itemize}
+        \item Indentation
+            \begin{itemize}
+                \item Code blocks are defined by their indentation.
+                \item No explicit begin or end, and no curly braces to mark where a block starts and stops. The only delimiter is a colon (:) and the indentation of the code itself.
+            	\pause
+            	\begin{myColorBox}{0.8}{}
+\begin{semiverbatim}
+>>> for i in [1, 2, 3, 4, 5]:
+...    if i<3:
+...      print i,
+...    else:
+...      print i*2,
+...
+1 2 6 8 10
+\end{semiverbatim}
+	    	\end{myColorBox}
+        \end{itemize}
+	\pause
+        \item Very minimalistic clean syntax \& semantics
+            \begin{itemize}
+                \item Short code = Less errors!
+                \item But also faster development, quicker understanding, faster typing, faster finding errors, easier to modify ...
+            \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Readability}
+    Guido van Rossum (Python's original author)
+        \begin{quote}
+This emphasis on readability is no accident. As an object-oriented language, Python aims to encourage the creation of reusable code. Even if we all wrote perfect documentation all of the time, code can hardly be considered reusable if it's not readable. Many of Python’s features, in addition to its use of indentation, conspire to make Python code highly readable.
+    \end{quote}
+    \pause
+    $\Longrightarrow$ Design focus on productivity and code readability
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Readability}
+\begin{myColorBox}{0.9}{}
+\begin{semiverbatim}
+\small
+>>> import this
+The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+...
+\end{semiverbatim}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: ''Batteries included''}
+    \begin{itemize}
+        \item Extensive standard libraries:
+        \begin{itemize}
+	    \item Data Persistence
+	\item Data Compression and Archiving
+	\item Cryptographic Services
+	\item Internet Protocols
+	\item Internet Data Handling
+	\item Structured Markup Processing Tools
+	\item Multimedia Services
+	\item Internationalization
+	\item Development Tools
+	\item Multithreading \& Multiprocessing
+	\item Regular expressions
+	\item Graphical User Interfaces with Tk
+	    \item ...
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: ''Batteries included''}
+    \begin{itemize}
+    	\item Well-documented
+	\item Platform independent API, but optimized for each platform
+	\item One place to look first for a proven solution
+	\item Reuse instead of reinvent
+	\pause
+	\item Strong scientific 3rd party libraries:
+        \begin{itemize}
+	    \item \textbf{NumPy/SciPy} - array and matrix structures, linear algebra routines, numerical optimization, random number generation, statistics routines, differential equation modeling, Fourier transforms and signal processing, image processing, sparse and masked arrays, spatial computation, and numerous other mathematical routines
+	    \item \textbf{Matplotlib} - 2D plotting library which produces publication quality figures via a set of functions familiar to MATLAB users
+	    \item \textbf{mplot3d} toolkit (Matplotlib), \textbf{Mayavi2}, ...
+        \end{itemize}
+    \end{itemize}
+    \pause
+    $\Longrightarrow$ No need to switch languages in order to write matrix manipulation code or automating an operating system task.
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Speed}
+    ''Python is extremely slow and wastes memory!''
+\begin{myColorBox}{0.9}{}
+\begin{semiverbatim}
+import os
+
+xvec = range(2000000)
+yvec = range(2000000)
+zvec = [0.5*(x+y) for x,y in zip(xvec,yvec)]
+
+os.system("ps v "+str(os.getpid()))
+\end{semiverbatim}
+\end{myColorBox}
+    \begin{itemize}
+    	\item 104 MB memory usage!
+	\item Runs almost 8 seconds!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Speed}
+    Comparison with C
+\begin{myColorBox}{0.9}{}
+\begin{semiverbatim}
+\tiny#include <stdlib.h>
+#include <unistd.h>
+main () \{
+    int *avec, *bvec;
+    float *cvec;
+    int i, n = 2000000;
+    avec = (int*)calloc( n, sizeof(int) );
+    bvec = (int*)calloc( n, sizeof(int) );
+    for (i=0;i<n;i++) \{
+        avec[i] = bvec[i] = i;
+    \}
+    cvec = (float*)calloc( n, sizeof(float) );
+    for (i=0;i<n;i++) \{
+        cvec[i] = (avec[i]+bvec[i])*0.5;
+    \}
+    int slen = 100;
+    char *command = (char*)calloc( slen, sizeof(char) );
+    snprintf(command, slen, "ps v \%i", getpid() );
+    system( command );
+\}
+\end{semiverbatim}
+\end{myColorBox}
+    \begin{itemize}
+    	\item 25 MB memory usage
+	\item Runs about 0.1 s (almost a hundred times faster!)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Speed}
+    Using the ''right tool'' for the job: NumPy
+\begin{myColorBox}{0.9}{}
+\begin{semiverbatim}
+import os
+from numpy import *
+
+xvec = arange(2000000)
+yvec = arange(2000000)
+zvec = (xvec+yvec)*0.5
+
+os.system("ps v "+str(os.getpid()))
+\end{semiverbatim}
+\end{myColorBox}
+    \begin{itemize}
+    	\item 37 MB memory usage
+	\item Runs about 0.3 s
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Speed}
+    Implementation time vs. execution time
+    \pause
+     \begin{itemize}
+    	\item Python is designed for productivity
+    	\pause
+    	\item No (separate) compilation step
+        \begin{itemize}
+	    \item No compiler problems
+	    \item No makefiles
+	    \item No linker problems
+	    \item Faster development cycles
+        \end{itemize}	    
+    	\pause
+    	\item When execution speed matters:
+        \begin{itemize}
+    	    \item Use specialized modules
+    	    \item Implement time critical parts in C/C++/Fortran
+      	    \item Prototyping \& profiling
+      	    \item Use specialized JIT compiler
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Language Interoperability}
+    Python excels at gluing other languages together: 
+     \begin{itemize}
+       \item \textbf{FORTRAN}: F2py - Fortran to Python interface generator (part of NumPy)
+       \pause
+       \item General \textbf{C} or \textbf{C++} libraries: Ctypes, Cython, or SWIG are three ways to interface to it
+       \pause
+       \item \textbf{R}: RPy - simple, robust Python interface to the R Programming Language. It can manage all kinds of R objects and can execute arbitrary R functions (including the graphic functions).
+    \end{itemize}
+    \pause
+    $\Longrightarrow$ Now, if only all these were two way streets ...
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Rocks: Further Reasons}
+     \begin{itemize}
+    	\item Free, open source (Python Software Foundation License)
+    	\item Platform independent
+	\item Availability: standard component for many operating systems
+    	\item Very broadly applicable
+    	\begin{itemize}
+    	     \item can be used as a terminal calculator
+    	     \item can substitute shell scripts
+    	     \item can be used to create large GUI applications
+    	     \item can be used to do numerics in MATLAB style
+	\end{itemize}
+	\item Easy to learn
+	\item Very high level programming language
+	\item Support for multiple programming paradigms (object oriented, imperative, and functional)
+	\item Dynamic data types \& automatic memory management \& garbage collection
+	\item Strong introspection capabilities
+    \end{itemize}
+\end{frame}
+
 
 %\section{Overview}
 %\subsection{Overview}
