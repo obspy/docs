@@ -77,15 +77,15 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
         \item This course will \textbf{not} teach you basic programming
         \pause
         \item Assume you already know:
-	\begin{itemize}
-	    \item variables
-	    \item loops
-	    \item conditionals (if / else)
-	    \item standard data types, int, float, string, lists / arrays
-	    \item reading/writing data from files
-	\end{itemize}
-	\pause
-	\item This lecture will show you how to do these well in Python
+        \begin{itemize}
+            \item variables
+            \item loops
+            \item conditionals (if / else)
+            \item standard data types, int, float, string, lists / arrays
+            \item reading/writing data from files
+        \end{itemize}
+        \pause
+        \item This lecture will show you how to do these well in Python
     \end{itemize}
 \end{frame}
 
@@ -107,23 +107,23 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
         \pause
         \begin{enumerate}
             \item Does an element exist in a list/dict:
-            	\begin{myColorBox}{0.8}{}
+            \begin{myColorBox}{0.8}{}
 \begin{semiverbatim}
 >>> 3 \textbf{in} [1, 2, 3, 4, 5]
 True
 \end{semiverbatim}
-            	\end{myColorBox}
+            \end{myColorBox}
             \pause
             \item Does a substring exist in a string:
-            	\begin{myColorBox}{0.8}{}
+            \begin{myColorBox}{0.8}{}
 \begin{semiverbatim}
 >>> 'sub' \textbf{in} 'string'
 False
 \end{semiverbatim}
-	    	\end{myColorBox}
+                \end{myColorBox}
             \pause
             \item Readable boolean values and logical operators
-            	\begin{myColorBox}{0.8}{}
+            \begin{myColorBox}{0.8}{}
 \begin{semiverbatim}
 >>> a = True
 >>> \textbf{not} a
@@ -133,7 +133,7 @@ True
 >>> a \textbf{or} True \textbf{and not} 1==2
 True
 \end{semiverbatim}
-	    	\end{myColorBox}
+            \end{myColorBox}
         \end{enumerate}
     \end{itemize}
 \end{frame}
@@ -145,8 +145,8 @@ True
             \begin{itemize}
                 \item Code blocks are defined by their indentation.
                 \item No explicit begin or end, and no curly braces to mark where a block starts and stops. The only delimiter is a colon (:) and the indentation of the code itself.
-            	\pause
-            	\begin{myColorBox}{0.8}{}
+                \pause
+                \begin{myColorBox}{0.8}{}
 \begin{semiverbatim}
 >>> for i in [1, 2, 3, 4, 5]:
 ...    if i<3:
@@ -156,9 +156,9 @@ True
 ...
 1 2 6 8 10
 \end{semiverbatim}
-	    	\end{myColorBox}
+                \end{myColorBox}
         \end{itemize}
-	\pause
+        \pause
         \item Very minimalistic clean syntax \& semantics
             \begin{itemize}
                 \item Short code = Less errors!
@@ -207,19 +207,19 @@ In the face of ambiguity, refuse the temptation to guess.
     \begin{itemize}
         \item Extensive standard libraries:
         \begin{itemize}
-	    \item Data Persistence
-	\item Data Compression and Archiving
-	\item Cryptographic Services
-	\item Internet Protocols
-	\item Internet Data Handling
-	\item Structured Markup Processing Tools
-	\item Multimedia Services
-	\item Internationalization
-	\item Development Tools
-	\item Multithreading \& Multiprocessing
-	\item Regular expressions
-	\item Graphical User Interfaces with Tk
-	    \item ...
+            \item Data Persistence
+            \item Data Compression and Archiving
+            \item Cryptographic Services
+            \item Internet Protocols
+            \item Internet Data Handling
+            \item Structured Markup Processing Tools
+            \item Multimedia Services
+            \item Internationalization
+            \item Development Tools
+            \item Multithreading \& Multiprocessing
+            \item Regular expressions
+            \item Graphical User Interfaces with Tk
+            \item ...
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -227,16 +227,16 @@ In the face of ambiguity, refuse the temptation to guess.
 \begin{frame}[fragile]
     \frametitle{Python Rocks: ''Batteries included''}
     \begin{itemize}
-    	\item Well-documented
-	\item Platform independent API, but optimized for each platform
-	\item One place to look first for a proven solution
-	\item Reuse instead of reinvent
-	\pause
-	\item Strong scientific 3rd party libraries:
+        \item Well-documented
+        \item Platform independent API, but optimized for each platform
+        \item One place to look first for a proven solution
+        \item Reuse instead of reinvent
+        \pause
+        \item Strong scientific 3rd party libraries:
         \begin{itemize}
-	    \item \textbf{NumPy/SciPy} - array and matrix structures, linear algebra routines, numerical optimization, random number generation, statistics routines, differential equation modeling, Fourier transforms and signal processing, image processing, sparse and masked arrays, spatial computation, and numerous other mathematical routines
-	    \item \textbf{Matplotlib} - 2D plotting library which produces publication quality figures via a set of functions familiar to MATLAB users
-	    \item \textbf{mplot3d} toolkit (Matplotlib), \textbf{Mayavi2}, ...
+            \item \textbf{NumPy/SciPy} - array and matrix structures, linear algebra routines, numerical optimization, random number generation, statistics routines, differential equation modeling, Fourier transforms and signal processing, image processing, sparse and masked arrays, spatial computation, and numerous other mathematical routines
+            \item \textbf{Matplotlib} - 2D plotting library which produces publication quality figures via a set of functions familiar to MATLAB users
+            \item \textbf{mplot3d} toolkit (Matplotlib), \textbf{Mayavi2}, ...
         \end{itemize}
     \end{itemize}
     \pause
