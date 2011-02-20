@@ -12,6 +12,15 @@
 \usepackage{courier}
 \usepackage{xcolor}
 \usepackage{verbatim}
+
+% http://stackoverflow.com/questions/1662037/how-to-write-programming-code-containing-the-character-in-latex
+\makeatletter
+\let \@sverbatim \@verbatim
+\def \@verbatim {\@sverbatim \verbatimplus}
+{\catcode`'=13 \gdef \verbatimplus{\catcode`'=13 \chardef '=13 }} 
+\makeatother
+
+
 %\usepackage{amsmath}
 %\usepackage{amssymb}
 
@@ -150,9 +159,9 @@ True
 \begin{semiverbatim}
 >>> for i in [1, 2, 3, 4, 5]:
 ...    if i<3:
-...      print i,
+...        print i,
 ...    else:
-...      print i*2,
+...        print i*2,
 ...
 1 2 6 8 10
 \end{semiverbatim}
@@ -378,6 +387,817 @@ os.system("ps v "+str(os.getpid()))
     \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Python Rocks}
+    Bruce Eckel (book author; founding member of ANSI/ISO C++ committee)
+    \begin{quote}Python is about you!\end{quote}
+    \pause
+    \begin{quote}
+    I feel Python was designed for the person who is actually doing the programming, to maximize their productivity. And that just makes me feel warm and fuzzy all over. [...] When you have the experience of really being able to be as productive as possible, then you start to get pissed off at other languages. You think, "Gee, I've been wasting my time with these other languages."  
+     \end{quote}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Let's get physical}
+    \begin{center}
+      \includegraphics[width=0.4\textwidth]{start.jpg}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{IPython}
+    \begin{itemize}
+        \item Enhanced interactive Python shell
+        \item Main features
+        \begin{itemize}
+            \item Dynamic introspection and help
+            \item Searching through modules and namespaces
+            \item Tab completion
+            \item Complete system shell access
+            \item Session logging \& restoring
+            \item Verbose and colored exception traceback printouts
+            \item Highly configurable, programmable (Macros, Aliases)
+            \item Embeddable
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{IPython: Getting Help}
+    \begin{itemize}
+    \item Get help for a function:
+    \begin{myColorBox}{0.9}{} \verb#>>> command?#\end{myColorBox}
+    \item Have a look at the implementation:
+    \begin{myColorBox}{0.9}{} \verb#>>> command??#\end{myColorBox}
+    \item Search for variables/functions/modules starting with 'ab':
+    \begin{myColorBox}{0.9}{} \verb#>>> ab<Tab>#\end{myColorBox}
+    \item Which objects are assigned anyway? 
+    \begin{myColorBox}{0.9}{} \verb#>>> whos#\end{myColorBox}
+    \item What attributes/methods are there? 
+    \begin{myColorBox}{0.9}{}\verb#>>> object.<Tab>#\end{myColorBox}
+    \item Get help for a object/class method/attribute:
+    \begin{myColorBox}{0.9}{} \verb#>>> object.command?#\end{myColorBox}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types - Primitives}
+    \begin{center}
+      \includegraphics[width=0.6\textwidth]{data.jpg}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 17
+>>> type(a)
+<type 'int'>
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a / 10
+1
+>>> a \% 10
+7
+>>> a / 10.0
+1.7
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> _
+1.7
+>>> type(_)
+<type 'float'>
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.91}{}
+\begin{verbatim}
+>>> x = y = z = 0
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.91}{}
+\begin{verbatim}
+>>> a=3.0+4.0j
+>>> float(a)
+Traceback (most recent call last):
+\dots
+TypeError: can't convert complex to float
+>>> a.real
+3.0
+>>> a.imag
+4.0
+>>> abs(a)  # sqrt(a.real**2 + a.imag**2)
+5.0
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 17
+>>> a = a + 1
+>>> a
+18
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a+=2
+>>> a
+20
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a++
+     a++
+        ^
+SyntaxError: invalid syntax
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> 'spam eggs'
+'spam eggs'
+>>> "doesn't"
+"doesn't"
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> 'doesn\'t'
+"doesn't"
+>>> '"Yes," he said.'
+'"Yes," he said.'
+>>> "\"Yes,\" he said."
+'"Yes," he said.'
+>>> '"Isn\'t," she said.'
+'"Isn\'t," she said.'
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> hello = "This is a rather long string\n\
+... containing several lines of text.\n\
+...     Note that whitespace at the beginning of \
+...  the line is significant."
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> print """
+... Usage: thingy [OPTIONS]
+...      -h                Display this message
+...      -H hostname       Hostname to connect to
+... """
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> ’sp’ + ’am’
+’spam’
+>>> ’spam’ * 10
+’spamspamspamspamspamspamspamspamspamspam’
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = "Munich Earth Skience School"
+>>> a[0]
+'M'
+>>> a[0:1]
+'M' # different than in other languages!
+>>> a[1:4]
+'uni'
+>>> a[-6:]
+'School'
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 'spam'
+>>> a[3] = 'n' # strings are immutable
+Traceback (most recent call last):
+...
+TypeError: 'str' object does not support item assignment
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> b = a[:-1] + 'n'
+>>> b
+'span'
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> len(b)
+4
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    Strings are objects with many useful methods:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = "Munich Earth Skience School"
+>>> a.find('Earth')
+7
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a.split()
+['Munich', 'Earth', 'Skience', 'School']
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> ' * '.join(_)
+'Munich * Earth * Skience * School'
+\end{verbatim}
+    \end{myColorBox}
+    There are more useful \verb#string# methods like \verb#startswith#, \verb#endswith#, \verb#lower#, \verb#upper#,
+    \verb#ljust#, \verb#rjust#, \verb#center#, \verb#...#. See Python Library Reference.
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types - Container}
+    \begin{center}
+      \includegraphics[width=0.6\textwidth]{container.jpg}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = ['spam', 'eggs', 100, 1234]
+>>> a
+['spam', 'eggs', 100, 1234]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[0]
+'spam'
+>>> a[3]
+1234
+>>> a[-2]
+100
+>>> a[:2] + ['bacon', 2*2]
+['spam', 'eggs', 'bacon', 4]
+>>> 2*a[:3] + ['Boo!']
+['spam', 'eggs', 100, 'spam', 'eggs', 100, 'Boo!']
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a
+['spam', 'eggs', 100, 1234]
+>>> a[2] = a[2] + 23 # lists are mutable
+>>> a
+['spam', 'eggs', 123, 1234]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[0:2] = [1, 12] # Replace some items
+>>> a
+[1, 12, 123, 1234]
+>>> a[0:2] = [] # Remove some
+>>> a
+[123, 1234]
+>>> a[1:1] = ['bletch', 'xyzzy'] # Insert some
+>>> a
+[123, 'bletch', 'xyzzy', 1234]
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[::-1]
+[1234, 'xyzzy', 'bletch', 123]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> len(a)
+4
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[:] = [] # Clear the list
+>>> a
+[]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    There are more useful \verb#list# methods like \verb#append#, \verb#insert#, \verb#remove#, \verb#sort#,
+    \verb#pop#, \verb#index#, \verb#reverse#, \verb#...#. See Python Library Reference.
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Tuples, Boolean \& None}
+    Tuples
+    \begin{itemize}
+        \item Immutable lists created by \textbf{round} parantheses
+        \item Parantheses can be ommited in many cases.
+    \end{itemize}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> t = (12345, 54321, 'hello!')
+>>> t[0]
+12345
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Boolean
+        \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> type(True)
+<type 'bool'>
+\end{verbatim}
+    \end{myColorBox}
+\pause
+None
+        \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = None
+>>> type(a)
+<type 'NoneType'>
+\end{verbatim}
+    \end{myColorBox}
+\pause
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Dictionaries}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> tel = {'jack': 4098, 'sape': 4139}
+>>> tel['guido'] = 4127
+>>> tel
+{'sape': 4139, 'guido': 4127, 'jack': 4098}
+>>> tel['jack']
+4098
+>>> del tel['sape']
+>>> tel['irv'] = 4127
+>>> tel
+{'guido': 4127, 'irv': 4127, 'jack': 4098}
+>>> tel.keys()
+['guido', 'irv', 'jack']
+>>> 'guido' in tel
+True
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: NumPy Arrays}
+We need to import \verb#numpy# for the following examples:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+from import import *
+\end{verbatim}
+    \end{myColorBox}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = array( [2, 3, 4] )
+>>> a
+array([2, 3, 4])
+>>> type(a) 
+<type 'numpy.ndarray'>
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> b =array( [ (1.5, 2, 3), (4, 5, 6) ] )
+>>> b
+array([[ 1.5,  2. ,  3. ],
+       [ 4. ,  5. ,  6. ]])
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: NumPy Arrays}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> b.ndim     # number of dimensions
+2
+>>> b.shape    # the dimensions
+(2, 3)
+>>> b.dtype    # the type (8 byte floats)
+dtype('float64')
+>>> b.itemsize # the size of the type
+8
+\end{verbatim}
+    \end{myColorBox}
+    \pause    
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> c = array( [ [1, 2], [3, 4] ], dtype=complex )
+>>> c
+array([[ 1.+0.j,  2.+0.j],
+       [ 3.+0.j,  4.+0.j]])
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: NumPy Arrays}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> zeros( (3, 4) )  # parameter specify the shape
+array([[0.,  0.,  0.,  0.],
+       [0.,  0.,  0.,  0.],
+       [0.,  0.,  0.,  0.]])
+>>> ones( (2, 3, 4), dtype=int16 ) # dtype specified
+array([[[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]],
+       [[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]]], dtype=int16)
+\end{verbatim}
+    \end{myColorBox}
+Supported data types: bool, uint8, uint16, uint32, uint64, int8, int16, int32, int64, float32, float64, float96, complex64, complex128, complex192 
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: NumPy Arrays}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> empty( (2,3) )
+array([[  3.73603959e-262,   ...,   ...],
+       [  5.30498948e-313,   ...,   ...]])
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> arange( 10, 30, 5 )
+array([10, 15, 20, 25])
+>>> arange( 0, 2, 0.3 ) # it accepts float arguments
+array([ 0. ,  0.3,  0.6,  0.9,  1.2,  1.5,  1.8])
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> linspace( 0, 2, 9 ) # 9 numbers from 0 to 2
+array([ 0.  ,  0.25,  0.5 ,  0.75, ...,  2.  ])
+>>> x = linspace( 0, 2*pi, 100 )
+>>> f = sin(x)
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: NumPy Arrays}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> A = array( [[1,1], [0,1]] )
+>>> B = array( [[2,0], [3,4]] )
+>>> A*B  # elementwise product
+array([[2, 0], 
+       [0, 4]])
+>>> dot(A,B) # matrix product
+array([[5, 4],
+       [3, 4]])
+>>> mat(A)*mat(B) # matrix product
+matrix([[5, 4],
+       [3, 4]])
+\end{verbatim}
+    \end{myColorBox}
+There are further functions for array creation, conversions, manipulation, querying, ordering, operations, statistics, basic linear algebra. See NumPy documentation.
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control}
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{flowcontrol.jpg}
+    \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: if-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> x = int(raw_input("Please enter an integer: "))
+Please enter an integer: 42
+>>> \textbf{if} x < 0:
+...      print 'Negative'
+... \textbf{elif} x == 0:
+...      print 'Zero'
+... \textbf{elif} x == 1:
+...      print 'Single'
+... \textbf{else}:
+...      print 'More'
+...
+More
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: for-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = ['cat', 'window', 'defenestrate']
+>>> for x in a:
+...     print x, len(x)
+...
+cat 3
+window 6
+defenestrate 12
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 6, 2):
+...     print i
+...
+0
+2
+4
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: while-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> import time
+>>> i = 1
+>>> while True:
+... i = i * 1000 # same as: i *= 1000
+... print repr(i)
+... time.sleep(1) # wait one second
+...
+1000
+1000000
+1000000000
+1000000000000L # <- type conversion occured!
+1000000000000000L
+# ... continues until memory is exhausted!
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: continue \& break}
+The \verb#break# statement breaks out of the smallest enclosing for or while loop.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 100000):
+...     if i>50:
+...         print i
+...         break
+...
+51
+\end{verbatim}
+    \end{myColorBox}
+\pause
+The \verb#continue# statement continues with the next iteration of the loop.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 100000):
+...     if i!=50:
+...         continue
+...     print i
+...
+50
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Input \& Output}
+    \begin{center}
+      \includegraphics[width=0.6\textwidth]{io.jpg}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{File Handling}
+    Use \verb#open(filename, mode)# to open a file. Returns a File Object.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh = open('/path/to/file', 'r')
+\end{verbatim}
+    \end{myColorBox}
+   \begin{itemize}
+   \item Some possible modes:
+   \begin{itemize}
+        \item r: Open text file for read.
+        \item w: Open text file for write.
+        \item a: Open text file for append.
+        \item rb: Open binary file for read.
+        \item wb: Open binary file for write.
+    \end{itemize}
+    \end{itemize}
+    Use \verb#close()# to close a given File Object.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.close()
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading Files}
+Read a quantity of data from a file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+s = fh.read( size ) # size: number of bytes to read
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Read entire file
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+s = fh.read()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Read one line from file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+s = fh.readline()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Get all lines of data from the file into a list:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+list = fh.readlines()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Iterate over each line in the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+for line in fh:
+    print line,
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Writing Files}
+Write a string to the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.write( string )
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Write several strings to the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.writelines( sequence )
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Errors and Exceptions}
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{shcool.jpg}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exceptions}
+    \begin{myColorBox}{0.9}{}
+\small
+\begin{verbatim}
+>>> 10 * (1/0)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+ZeroDivisionError: integer division or modulo by zero
+\end{verbatim}
+    \end{myColorBox}
+    \pause    
+    \begin{myColorBox}{0.9}{}
+\small
+\begin{verbatim}
+>>> 4 + muh*3
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+NameError: name 'muh' is not defined
+\end{verbatim}
+    \end{myColorBox}
+    \pause    
+    \begin{myColorBox}{0.9}{}
+\small
+\begin{verbatim}
+>>> '2' + 2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+TypeError: cannot concatenate 'str' and 'int' objects
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Handling Exceptions}
+    \begin{myColorBox}{0.9}{}
+\small
+\begin{verbatim}
+import sys
+
+try:
+    f = open('myfile.txt')
+    s = f.readline()
+    i = int(s.strip())
+except IOError as (errno, strerror):
+    print "I/O error({0}): {1}".format(errno, strerror)
+except ValueError:
+    print "Could not convert data to an integer."
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    raise
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
 
 %\section{Overview}
 %\subsection{Overview}
@@ -447,7 +1267,47 @@ os.system("ps v "+str(os.getpid()))
 %\end{frame}
 
 \begin{frame}[fragile]
+    \frametitle{ObsPy}
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{arclink.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy}
+    \begin{itemize}
+        \item Python toolbox for seismologists
+        \item Modular architecture
+        \item Waveform data: GSE2, MiniSEED, SAC, WAV, Q/ASCII
+        \item Inventory data: Dataless SEED, XML-SEED, RESP
+        \item Data request clients: ArcLink/WebDC, IRIS DHI/Fissures/WS, SeisHub, NERIES WS
+        \item Various pickers, filters and plot routines
+        \item Waveform indexer
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ObsPy}
+    \begin{itemize}
+        \item Open source (LGPL or GPL)
+        \item 6 core developers
+        \item Test-driven development (TDD), currently more than 470 unit tests (http://tests.obspy.org)
+        \item Reliance of well-known third-party libraries (numpy, scipy, matplotlib)
+        \item Reusing well established code, e.g. libmseed, GSE UTI
+        \item Automatic generated API documentation
+        \item Binary distributions: Python Package Index (PyPI), Windows Installer (\& Debian packages)
+        \item Central source code repository, community webpage, tutorials, installation instructions, ticket system, mailing list:
+    \end{itemize}
+    \begin{center}
+    \textbf{http://www.obspy.org}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
     \frametitle{Need a break..?}
+    \begin{center}
+      \includegraphics[width=0.7\textwidth]{obstroopers.jpg}
+    \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
