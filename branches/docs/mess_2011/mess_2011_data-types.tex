@@ -463,7 +463,7 @@ os.system("ps v "+str(os.getpid()))
 \begin{verbatim}
 >>> a / 10
 1
->>> a \% 10
+>>> a % 10
 7
 >>> a / 10.0
 1.7
@@ -823,7 +823,7 @@ True
 We need to import \verb#numpy# for the following examples:
     \begin{myColorBox}{0.9}{}
 \begin{verbatim}
-from import import *
+from numpy import *
 \end{verbatim}
     \end{myColorBox}
     \begin{myColorBox}{0.9}{}
@@ -955,13 +955,13 @@ There are further functions for array creation, conversions, manipulation, query
 \begin{verbatim}
 >>> x = int(raw_input("Please enter an integer: "))
 Please enter an integer: 42
->>> \textbf{if} x < 0:
+>>> if x < 0:
 ...      print 'Negative'
-... \textbf{elif} x == 0:
+... elif x == 0:
 ...      print 'Zero'
-... \textbf{elif} x == 1:
+... elif x == 1:
 ...      print 'Single'
-... \textbf{else}:
+... else:
 ...      print 'More'
 ...
 More
@@ -1004,9 +1004,9 @@ defenestrate 12
 >>> import time
 >>> i = 1
 >>> while True:
-... i = i * 1000 # same as: i *= 1000
-... print repr(i)
-... time.sleep(1) # wait one second
+...     i = i * 1000 # same as: i *= 1000
+...     print repr(i)
+...     time.sleep(1) # wait one second
 ...
 1000
 1000000
@@ -1042,6 +1042,64 @@ The \verb#continue# statement continues with the next iteration of the loop.
 ...     print i
 ...
 50
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Functions}
+Defining a function which returns a Fibonacci series up to n.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> def fib2(n):
+...     """Return the Fibonacci series up to n."""
+...     result = []
+...     a, b = 0, 1
+...     while a < n:
+...         result.append(a)
+...         a, b = b, a+b
+...     return result
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Now call the function we just defined:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> fib(100)
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Functions}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+def birthday2(name, age = 1):
+    msg = "Happy birthday, %s! You're %d today."
+    print  msg % (name, age)
+\end{verbatim}
+    \end{myColorBox}
+\pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> birthday2("Katherine")
+Happy birthday, Katherine! You're 1 today.
+\end{verbatim}
+    \end{myColorBox}
+\pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> birthday2(age = 12, name = "Katherine")
+Happy birthday, Katherine! You're 12 today.
+\end{verbatim}
+    \end{myColorBox}
+\pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> birthday2("Katherine", 14)
+Happy birthday, Katherine! You're 14 today.
 \end{verbatim}
     \end{myColorBox}
 \end{frame}
@@ -1181,19 +1239,26 @@ TypeError: cannot concatenate 'str' and 'int' objects
     \begin{myColorBox}{0.9}{}
 \small
 \begin{verbatim}
-import sys
-
-try:
-    f = open('myfile.txt')
-    s = f.readline()
-    i = int(s.strip())
-except IOError as (errno, strerror):
-    print "I/O error({0}): {1}".format(errno, strerror)
-except ValueError:
-    print "Could not convert data to an integer."
-except:
-    print "Unexpected error:", sys.exc_info()[0]
-    raise
+def divide(x, y):
+    try:
+        result = x / y
+    except ZeroDivisionError:
+        print "division by zero!"
+    except TypeError:
+        print "unsupported type!"
+    else:
+        print "result is", result
+\end{verbatim}
+    \end{myColorBox}
+    \begin{myColorBox}{0.9}{}
+\small
+\begin{verbatim}
+>>> divide(2, 1)
+result is 2
+>>> divide(2, 0)
+division by zero!
+>>> divide(2, 'bbb')
+unsupported type!
 \end{verbatim}
     \end{myColorBox}
 \end{frame}
