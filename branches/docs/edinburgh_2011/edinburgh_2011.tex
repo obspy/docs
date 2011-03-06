@@ -12,6 +12,7 @@
 \usepackage{courier}
 \usepackage{xcolor}
 \usepackage{verbatim}
+\usepackage{latexsym}
 
 % http://stackoverflow.com/questions/1662037/how-to-write-programming-code-containing-the-character-in-latex
 \makeatletter
@@ -56,8 +57,140 @@ escapeinside={\%*}{*)},    % if you want to add a comment within your code
 
 %%
 \begin{frame}[fragile]
-    \frametitle{}
+    \frametitle{SeisHub}
+    Native, document-centric XML database
+    \begin{itemize}
+        \item RESTful Web service (HTTP, HTTPS), 
+        \item Standard relational database as back-end
+        \item Both worlds: SQL for querying and manipulating data and any standard connected to XML, e.g. XSLT or XSD
+        \item Not restricted to seismology at all
+    \end{itemize}
+    Extended to a ''classical'' seismic database
+    \begin{itemize}
+        \item Index of local, file-based waveform archive (MiniSEED, GSE2, SAC, ...)
+        \begin{itemize}
+            \item Meta Data: Gaps, overlaps, quality and timing information
+            \item Waveform previews (30s)
+        \end{itemize}
+        \item XML resource types for handling inventory data (XML-SEED) and events (QuakeML based) 
+        \item Remote waveforms access (ArcLink)
+    \end{itemize}
 \end{frame}
 
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Technical Details}
+    \begin{itemize}
+        \item Python-based, standalone web service
+        \item Platform independent, open source (GPL)
+        \item Implementation of various web protocols, like HTTP, SSH, SFTP
+        \item Plug-in architecture: Dynamic discovering and loading of modules and support for Python .egg files
+        \item Development remarks:
+        \begin{itemize}
+            \item Test-driven development proven software, so far $\Rightarrow$ ca. 250 test cases
+            \item Well-documented source code
+            \item Subversion
+            \item Trac: ticket system and project wiki
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Database Design}
+    Data storage
+    \begin{itemize}
+        \item Primary data $\Rightarrow$ file system
+        \begin{itemize}
+            \item Continuous waveform archive (MiniSEED, GSE2, SAC ...)
+            \item Other data via (GeoTIFF, GPS time series, etc.) file system
+        \end{itemize}
+        \item Meta Data $\Rightarrow$ Web service on top of a XML/relational database hybrid
+        \begin{itemize}
+            \item Data is packed into a XML document $\Rightarrow$ Data structure is within the document, no need for a predefined database schema
+            \item XML resources are archived into a BLOB field
+            \item Only searchable values are indexed
+            \item Pointers to primary data
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Database Design}
+    Data access
+    \begin{itemize}
+        \item HTTP/HTTPS: REST web service
+        \begin{itemize}
+            \item XML documents have a fixed resource identifier (URL's)
+            \item Data transformation via XML Style Sheets on request (?output=...)
+            \item Data validation via Schema (XML Schema, RelaxNG, Schematron) on resource upload
+            \item Document properties like related meta data or indexes
+        \end{itemize}
+        \item SFTP: XML documents mapped into a virtual file system
+    \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Database Design}
+    \begin{itemize}
+        \item Indexing
+        \begin{itemize}
+            \item Generated using a XPath expression, type and additional options
+            \item Simple creation + reindexing via web interface
+            \item Various build-in types (datetime, bool, numeric, double, float, etc..)
+            \item ProcessorIndex: custom processing
+        \end{itemize}
+        \item Searching
+        \begin{itemize}
+            \item XPath-like query on XML catalog object (restricted to indexes)
+            \item SQL on database object
+        \end{itemize}
+        \item Mapper: predefined queries \& output format bound to an fixed URL
+        \item FileSystemResource: integrates a file system directory (read only)
+    \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Advantages}
+    Technical:
+    \begin{itemize}
+        \item Sharing data over the network, but no firewall problems (HTTP / HTTPS)
+        \item License free, open source, internet standards
+        \item Platform independent
+        \item Most basic client is a standard browser
+        \item XML:
+        \begin{itemize}
+            \item Data validation on upload (XML schemas)
+            \item Data transformation on request (XML stylesheets)
+        \end{itemize}
+        \item Querying: SQL or XPath
+    \end{itemize}
+    Scientist:
+    \begin{itemize}
+        \item May modify there data provided as XML document at any time without corrupting the underlying database
+        \item May dynamically add or delete search indexes, schemas and stylesheets
+    \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}[fragile]
+    \frametitle{SeisHub: Disadvantages}
+    Technical:
+    \begin{itemize}
+        \item Slower than ''common'' solutions
+        \begin{itemize}
+            \item XML parsing during validation and indexing
+            \item Data overhead (XML verbosity)
+        \end{itemize}
+        \item Infrastructure
+    \end{itemize}
+    Scientist:
+    \begin{itemize}
+        \item Seismologist != IT nerds
+    \end{itemize}
+\end{frame}
 
 \end{document}
