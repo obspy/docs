@@ -1,0 +1,80 @@
+\documentclass[t,9pt,compress=false,usepdftitle=false]{beamer}
+
+\usetheme{default}
+%\setbeamercovered{dynamic} % shows items in white grey before active
+
+%no navigational bars:
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{listings}   % syntax highlighting
+\usepackage{courier}
+\usepackage{xcolor}
+\usepackage{verbatim}
+
+% http://stackoverflow.com/questions/1662037/how-to-write-programming-code-containing-the-character-in-latex
+\makeatletter
+\let \@sverbatim \@verbatim
+\def \@verbatim {\@sverbatim \verbatimplus}
+{\catcode`'=13 \gdef \verbatimplus{\catcode`'=13 \chardef '=13 }} 
+\makeatother
+
+
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+
+\input{commands}
+%\includeonly{lecture4}
+
+\hypersetup{pdfpagemode=FullScreen}
+\hypersetup{breaklinks=false}
+\hypersetup{colorlinks=true}
+\hypersetup{urlcolor=blue}
+
+\title[Python Intro]{\parbox[c][][c]{0.7\paperwidth}{\centering ObsPy workshop
+2012\\
+Python Introduction}}
+%\author[blub]{blub}
+\date[Zurich 2012-09-06]{2012-09-06}
+%\institute{quark}
+
+\begin{document}
+\lstset{%
+language=Python,          % choose the language of the code
+basicstyle=\footnotesize, % the size of the fonts that are used for the code
+numbers=none,             % where to put the line-numbers
+numberstyle=\footnotesize,% the size of the fonts that are used for the line-numbers
+stepnumber=1,             % step between line-numbers. For 1 each line will be numbered
+numbersep=5pt,            % how far the line-numbers are from the code
+%backgroundcolor=\color{white}, % choose the background color.
+showspaces=false,         % show spaces adding particular underscores
+showstringspaces=false,   % underline spaces within strings
+showtabs=false,           % show tabs within strings adding particular underscores
+frame=none,               % e.g. single, adds a frame around the code
+tabsize=2,                % sets default tabsize to 2 spaces
+captionpos=b,             % sets the caption-position to bottom
+breaklines=true,          % sets automatic line breaking
+breakatwhitespace=false,  % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},    % if you want to add a comment within your code
+%keywordstyle=\color{red}\bfseries\emph,
+}
+\maketitle
+\include{lecture1}
+\include{lecture2}
+\include{lecture3}
+\include{lecture4}
+
+
+\begin{frame}[fragile]
+\frametitle {Credits}
+    \begin{itemize}
+    \item The Python Tutorial (http://docs.python.org/tutorial/)
+    \item Sebastian Heimann - The Informal Python Boot Camp (http://emolch.org/pythonbootcamp.html)
+    \item Hoyt Koepke - 10 Reasons Python Rocks for Research (http://www.stat.washington.edu/~hoytak/blog/whypython.html)
+    \item Software Carpentry (http://software-carpentry.org/4\_0/python/)
+    \item Kent S Johnson - Python Rocks! and other rants (http://personalpages.tds.net/~kent37/stories/00020.html)
+    \end{itemize}
+\end{frame}
+
+\end{document}

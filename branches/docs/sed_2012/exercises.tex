@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+%
+\begin{document}
+
+\vspace*{1cm}
+\begin{center}
+\textbf{\Large ObsPy Workshop 2012 -- Python Practical}
+\end{center}
+\vspace*{1cm}
+
+\noindent The recommended way to do the exercises is to use a text editor to
+work on the program and run the program in an IPython shell:
+\begin{verbatim}
+        $ ipython -i
+        >>> run -i myfile.py
+\end{verbatim}
+That way you can continue work interactively after the program is executed. (It
+is best to quit and start a new IPython shell often to avoid possible confusion
+with "old" variables from prior program executions.)
+
+\begin{enumerate}
+
+  \item Python data types, flow control and input/output
+  \begin{enumerate}
+    \item Using the modules \verb#random#, \verb#sys# and \verb#math# write a
+    script that reads mean and standard deviation of a normal distribution from 
+    the command line and writes 100
+	normally distributed random numbers to a file.
+	Read those numbers back in and write their mean
+	and standard deviation to stdout.
+	\item Use the text of this exercise and count the number of occurences for
+	every word using \verb#collections.defaultdict#. 
+  \end{enumerate}
+
+  \item Functions, modules, classes and exceptions
+  \begin{enumerate}
+    \item Rewrite your script from exercise 1 (a) into a class that requires
+	the standard deviation as a variable in its constructor
+	and which has a method that adds Gaussian noise to an
+	input trace. Generate a sine wave, add noise to it and plot
+	both traces using the \verb#matplotlib# package.
+	\item Write a function that takes a list of program 
+	names as input and returns a dictionary with 
+	the programs' complete path on the current computer
+	system as values. Programs that are not found should
+	have the value None.
+	For this exercise you will need the \verb#os.environ# dictionary and
+	\verb#os.path# module.
+    \end{enumerate}
+
+    \item Numpy and scipy
+    \begin{enumerate}
+      \item Define a 3 x 3 matrix, e.g. 
+      \verb#A = np.matrix('1 2 3; 4 5 6; 7 8 9')#. Extract the 2 x 2 matrix in
+      the lower right corner of the matrix A as a slice. Add this slice to another 2 x 2 matrix, multiply the result by a 2 x 2 matrix and insert this final result in the upper left corner of the original matrix A.
+      Control the result by hand calculation. 
+      \item Take the original matrix A from the previous exercise and
+       replace all values greater than 1 but smaller than 5 with 0 using the
+       numpy function \verb#where#.
+      \item Redo exercise 1 (a) using only numpy functions.
+      \item If $x_i = x_1, \ldots, x_n$ are uniformly distributed numbers
+      between $a$ and $b$, then $\frac{b-a}{n}\sum_{i=0}^n f(x_i)$ is an
+      approximation to the integral $\int_a^b f(x)dx$ (Monte Carlo integration).
+      Implement this menthod using the \verb#numpy.random# module for $f(x) =
+      sin(x)$ and compare the result with any of the integration methods from
+      \verb#scipy.integrate# and the analytical result.
+    \end{enumerate}
+    
+    \item Basemap and pyproj
+    \begin{enumerate}
+      \item Plot the following two stations as red triangles on a map using the
+      \verb#Basemap# module and calculate their distance, azimuth and
+      back-azimuth for a spherical earth with the \verb#pyproj# module.\\
+	 \begin{verbatim}
+	 SULZ: latitude = 47.52748, longitude = 8.11153
+	 SALO: latitude = 45.6183,  longitude = 10.5243
+	 \end{verbatim}
+	 \item Plot the real component of the spherical harmonics of order 
+	 2 and degree 5 on a sphere using \verb#Basemap# and the function
+	 \verb#sph_harm# from the \verb#scipy.special# module. Note: Spherical
+	 harmonics are computed in colatitude and basemap uses latitude. 
+      \end{enumerate}
+\end{enumerate}
+\end{document}

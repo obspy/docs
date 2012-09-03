@@ -1,0 +1,698 @@
+%\section{Overview}
+%\subsection{Overview}
+\begin{frame}[fragile]
+    \frametitle{Outline}
+    \begin{itemize}
+        \item This course will \textbf{not} teach you basic programming
+        \item Assume you already know:
+        \begin{itemize}
+            \item variables
+            \item loops
+            \item conditionals (if / else)
+            \item standard data types, int, float, string, lists / arrays
+            \item reading/writing data from files
+        \end{itemize}
+        \item We will:
+        	\begin{itemize}
+        	  \item show you how to use these in Python 
+		      \item present the import concepts when using numpy arrays
+		      \item present a few modules in numpy and scipy
+		      \item give a few examples on how to plot graphs and maps
+        	\end{itemize} 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{A few reasons for using Python for Research}
+    \begin{enumerate}
+        \item Readability
+        \item Batteries included
+        \item Speed
+        \item Language Interoperability
+    \end{enumerate}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Readability}
+    Guido van Rossum (Python's original author)
+        \begin{quote}
+This emphasis on readability is no accident. As an object-oriented language, Python aims to encourage the creation of reusable code. Even if we all wrote perfect documentation all of the time, code can hardly be considered reusable if it's not readable. Many of Python’s features, in addition to its use of indentation, conspire to make Python code highly readable.
+    \end{quote}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{''Batteries included''}
+    \begin{itemize}
+        \item Extensive standard libraries:
+        \begin{itemize}
+            \item Data Persistence
+            \item Data Compression and Archiving
+            \item Cryptographic Services
+            \item Internet Protocols
+            \item Internet Data Handling
+            \item Structured Markup Processing Tools
+            \item Multimedia Services
+            \item Internationalization
+            \item Development Tools
+            \item Multithreading \& Multiprocessing
+            \item Regular expressions
+            \item Graphical User Interfaces with Tk
+            \item ...
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{IPython}
+    \begin{itemize}
+        \item Enhanced interactive Python shell
+        \item Main features
+        \begin{itemize}
+            \item Dynamic introspection and help
+            \item Searching through modules and namespaces
+            \item Tab completion
+            \item Complete system shell access
+            \item Session logging \& restoring
+            \item Verbose and colored exception traceback printouts
+            \item Highly configurable, programmable (Macros, Aliases)
+            \item Embeddable
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{IPython: Getting Help}
+    \begin{itemize}
+    \item Get help for a function:
+    \begin{myColorBox}{0.9}{} \verb#>>> command?#\end{myColorBox}
+    \item Have a look at the implementation:
+    \begin{myColorBox}{0.9}{} \verb#>>> command??#\end{myColorBox}
+    \item Search for variables/functions/modules starting with 'ab':
+    \begin{myColorBox}{0.9}{} \verb#>>> ab<Tab>#\end{myColorBox}
+    \item Which objects are assigned anyway? 
+    \begin{myColorBox}{0.9}{} \verb#>>> whos#\end{myColorBox}
+    \item What attributes/methods are there? 
+    \begin{myColorBox}{0.9}{}\verb#>>> object.<Tab>#\end{myColorBox}
+    \item Get help for a object/class method/attribute:
+    \begin{myColorBox}{0.9}{} \verb#>>> object.command?#\end{myColorBox}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 17
+>>> type(a)
+<type 'int'>
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a / 10
+1
+>>> a % 10
+7
+>>> a / 10.0
+1.7
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> _
+1.7
+>>> type(_)
+<type 'float'>
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.91}{}
+\begin{verbatim}
+>>> x = y = z = 0
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.91}{}
+\begin{verbatim}
+>>> a=3.0+4.0j
+>>> float(a)
+Traceback (most recent call last):
+\dots
+TypeError: can't convert complex to float
+>>> a.real
+3.0
+>>> a.imag
+4.0
+>>> abs(a)  # sqrt(a.real**2 + a.imag**2)
+5.0
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Numbers}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 17
+>>> a = a + 1
+>>> a
+18
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a+=2
+>>> a
+20
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a++
+     a++
+        ^
+SyntaxError: invalid syntax
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> 'spam eggs'
+'spam eggs'
+>>> "doesn't"
+"doesn't"
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> 'doesn\'t'
+"doesn't"
+>>> '"Yes," he said.'
+'"Yes," he said.'
+>>> "\"Yes,\" he said."
+'"Yes," he said.'
+>>> '"Isn\'t," she said.'
+'"Isn\'t," she said.'
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> hello = "This is a rather long string\n\
+... containing several lines of text.\n\
+...     Note that whitespace at the beginning of \
+...  the line is significant."
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> print """
+... Usage: thingy [OPTIONS]
+...      -h                Display this message
+...      -H hostname       Hostname to connect to
+... """
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> ’sp’ + ’am’
+’spam’
+>>> ’spam’ * 10
+’spamspamspamspamspamspamspamspamspamspam’
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = "workshop at the SED"
+>>> a[0]
+'w'
+>>> a[0:1]
+'w' # different than in other languages!
+>>> a[0:8]
+'workshop'
+>>> a[-3:]
+'SED'
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = 'spam'
+>>> a[3] = 'n' # strings are immutable
+Traceback (most recent call last):
+...
+TypeError: 'str' object does not support item assignment
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> b = a[:-1] + 'n'
+>>> b
+'span'
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> len(b)
+4
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Strings}
+    Strings are objects with many useful methods:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = "workshop at the SED"
+>>> a.find('at')
+9
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a.split()
+['workshop', 'at', 'the', 'SED']
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> '*'.join(_)
+'workshop*at*the*SED'
+\end{verbatim}
+    \end{myColorBox}
+    There are more useful \verb#string# methods like \verb#startswith#, \verb#endswith#, \verb#lower#, \verb#upper#,
+    \verb#ljust#, \verb#rjust#, \verb#center#, \verb#...#. See Python Library Reference.
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = ['spam', 'eggs', 100, 1234]
+>>> a
+['spam', 'eggs', 100, 1234]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[0]
+'spam'
+>>> a[3]
+1234
+>>> a[-2]
+100
+>>> a[:2] + ['bacon', 2*2]
+['spam', 'eggs', 'bacon', 4]
+>>> 2*a[:3] + ['Boo!']
+['spam', 'eggs', 100, 'spam', 'eggs', 100, 'Boo!']
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a
+['spam', 'eggs', 100, 1234]
+>>> a[2] = a[2] + 23 # lists are mutable
+>>> a
+['spam', 'eggs', 123, 1234]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[0:2] = [1, 12] # Replace some items
+>>> a
+[1, 12, 123, 1234]
+>>> sum(a) # some over all items
+1370
+>>> a[0:2] = [] # Remove some
+>>> a
+[123, 1234]
+>>> a[1:1] = ['bletch', 'xyzzy'] # Insert some
+>>> a
+[123, 'bletch', 'xyzzy', 1234]
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Lists}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[::-1]
+[1234, 'xyzzy', 'bletch', 123]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> len(a)
+4
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a[:] = [] # Clear the list
+>>> a
+[]
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    There are more useful \verb#list# methods like \verb#append#, \verb#insert#, \verb#remove#, \verb#sort#,
+    \verb#pop#, \verb#index#, \verb#reverse#, \verb#...#. See Python Library Reference.
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Tuples, Boolean \& None}
+    Tuples
+    \begin{itemize}
+        \item Immutable lists created by \textbf{round} parantheses
+        \item Parantheses can be ommited in many cases.
+    \end{itemize}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> t = (12345, 54321, 'hello!')
+>>> t[0]
+12345
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Boolean
+        \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> type(True)
+<type 'bool'>
+\end{verbatim}
+    \end{myColorBox}
+\pause
+None
+        \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = None
+>>> type(a)
+<type 'NoneType'>
+\end{verbatim}
+    \end{myColorBox}
+\pause
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Python Data Types: Dictionaries}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> tel = {'jack': 4098, 'sape': 4139}
+>>> tel['guido'] = 4127
+>>> tel
+{'sape': 4139, 'guido': 4127, 'jack': 4098}
+>>> tel['jack']
+4098
+>>> del tel['sape']
+>>> tel['irv'] = 4127
+>>> tel
+{'guido': 4127, 'irv': 4127, 'jack': 4098}
+>>> tel.keys()
+['guido', 'irv', 'jack']
+>>> 'guido' in tel
+True
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: if-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> x = int(raw_input("Please enter an integer: "))
+Please enter an integer: 42
+>>> if x < 0:
+...      print 'Negative'
+... elif x == 0:
+...      print 'Zero'
+... elif x == 1:
+...      print 'Single'
+... else:
+...      print 'More'
+...
+More
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: for-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> a = ['cat', 'window', 'defenestrate']
+>>> for x in a:
+...     print x, len(x)
+...
+cat 3
+window 6
+defenestrate 12
+\end{verbatim}
+    \end{myColorBox}
+    \pause
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 6, 2):
+...     print i
+...
+0
+2
+4
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: while-statement}
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> import time
+>>> i = 1
+>>> while True:
+...     i = i * 1000 # same as: i *= 1000
+...     print repr(i)
+...     time.sleep(1) # wait one second
+...
+1000
+1000000
+1000000000
+1000000000000L # <- type conversion occured!
+1000000000000000L
+# ... continues until memory is exhausted!
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Flow Control: continue \& break}
+The \verb#break# statement breaks out of the smallest enclosing for or while loop.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 100000):
+...     if i>50:
+...         print i
+...         break
+...
+51
+\end{verbatim}
+    \end{myColorBox}
+\pause
+The \verb#continue# statement continues with the next iteration of the loop.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> for i in range(0, 100000):
+...     if i!=50:
+...         continue
+...     print i
+...
+50
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{File Handling}
+    Use \verb#open(filename, mode)# to open a file. Returns a File Object.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh = open('/path/to/file', 'r')
+\end{verbatim}
+    \end{myColorBox}
+   \begin{itemize}
+   \item Some possible modes:
+   \begin{itemize}
+        \item r: Open text file for read.
+        \item w: Open text file for write.
+        \item a: Open text file for append.
+        \item rb: Open binary file for read.
+        \item wb: Open binary file for write.
+    \end{itemize}
+    \end{itemize}
+    Use \verb#close()# to close a given File Object.
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.close()
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Reading Files}
+Read a quantity of data from a file:
+    \begin{myColorBox}{1.0}{}
+\begin{verbatim}
+s = fh.read( size ) # size: number of bytes to read
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Read entire file
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+s = fh.read()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Read one line from file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+s = fh.readline()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Get all lines of data from the file into a list:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+list = fh.readlines()
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Iterate over each line in the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+for line in fh:
+    print line,
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Writing Files}
+Write a string to the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.write( string )
+\end{verbatim}
+    \end{myColorBox}
+\pause
+Write several strings to the file:
+    \begin{myColorBox}{0.9}{}
+\begin{verbatim}
+fh.writelines( sequence )
+\end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The sys module}
+\verb#sys.argv# returns a list of strings with the pathname of the script
+as the first entry and the command line arguments as the following entries.
+    \begin{myColorBox}{0.9}{}
+    \begin{verbatim}
+#!/usr/bin/env python
+import sys
+print sys.argv
+    \end{verbatim}
+    \end{myColorBox}
+    \begin{myColorBox}{0.9}{}
+    \begin{verbatim}
+In [4]: run tests.py command1 command2
+['tests.py', 'command1', 'command2']
+    \end{verbatim}
+    \end{myColorBox}
+    \pause
+Get information on your platform:
+    \begin{myColorBox}{0.9}{}
+    \begin{verbatim}
+>>> sys.platform
+'linux2'
+    \end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The sys module}
+\verb#sys.path# returns the module search path as a list of strings. 
+    \begin{myColorBox}{0.9}{}
+    \begin{verbatim}
+>>> sys.path
+['','/usr/lib/python2.7', 
+'/usr/local/src/obspy_git/trunk/obspy.core',
+ ...]
+    \end{verbatim}
+    \end{myColorBox}
+    \pause
+If you have written a python module \verb#mymodule.py# that is located in
+\verb#/my/path/# and you want to load it into another script you could do the
+following:
+    \begin{myColorBox}{0.9}{}
+    \begin{verbatim}
+>>> sys.path.append('/my/path/')
+>>> import mymodule
+    \end{verbatim}
+    \end{myColorBox}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\Huge{Exercises}
+\end{center}
+\end{frame}
