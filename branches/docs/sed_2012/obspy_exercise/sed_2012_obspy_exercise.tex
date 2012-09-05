@@ -83,9 +83,11 @@ formulation. Please note that for historic reasons the naming of keys differs
 from the usual naming.  Each \verb#PAZ# dictionary needs to
 contain \verb#sensitivity# (overall sensitivity of seismometer/digitizer
 combination), \verb#gain# (A0 / normalization factor), \verb#poles# and
-\verb#zeros#. After the instrument simulation, trim the waveform to a shorter
-time window around the origin time (\verb#2012-04-03T02:45:03#) and calculate
-$M_{lh}$ like before. Use the following values for the \verb#PAZ# dictionaries:
+\verb#zeros#. Check that the value of \verb#water_level# is not too high, to
+avoid overamplified low frequency noise at short-period stations. After the
+instrument simulation, trim the waveform to a shorter time window around the
+origin time (\verb#2012-04-03T02:45:03#) and calculate $M_{lh}$ like before.
+Use the following values for the \verb#PAZ# dictionaries:
 {\footnotesize
 \begin{verbatim}
     LE3D-5S  'gain': 1.009
