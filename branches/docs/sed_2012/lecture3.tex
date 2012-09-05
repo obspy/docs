@@ -363,6 +363,7 @@ Least-squares data fitting:
 >>> xi = 0.1*i
 >>> yi = c1*np.exp(-xi)+c2*xi
 >>> zi = yi + 0.05*np.max(yi)*np.random.randn(len(yi))
+# A*c = zi
 >>> A = np.array([np.exp(-xi),xi]).T
 >>> c,resid,rank,sigma = linalg.lstsq(A,zi)
 >>> c
@@ -453,6 +454,7 @@ Reading NetCDF files:
 \begin{myColorBox}{1.0}{}
 \begin{verbatim}
 >>> # Reading a GMT grid file
+>>> from scipy.io import netcdf
 >>> nc = netcdf.netcdf_file('ww3.07121615_GLOBAL05.grd')
 >>> nc.variables.keys()
 >>> ['y', 'x', 'z']
@@ -474,4 +476,10 @@ ww3.07121615_GLOBAL05.xyz'
   \item http://www.scipy.org/Cookbook
   \item http://scipy-central.org/ (code repository)   
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\Huge{Exercises}
+\end{center}
 \end{frame}

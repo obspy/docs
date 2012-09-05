@@ -214,3 +214,121 @@ m.contourf(X2, Y2, np.real(zval), 30)
 m.colorbar()
 plt.show()
 
+"""
+Exercises for QuakePy.
+
+Fabian Euchner, ObsPy workshop September 2012, ETH Zurich
+
+Task 1: Read EQ catalog from Geonet web service (QuakeML). If there is no
+        internet access, use XML file. Print number of events.
+        Filter with area polygon, magnitude, depth. Print number of
+        events after filtering.
+        Export catalog to file in ZMAP-ASCII format.
+
+Task 2: Read EQ catalog from gnuzipped GSE2.0 bulletin file.
+        Create CompactCatalog object and sort by magnitude in descending order.
+        Export catalog to file in ZMAP-ASCII format.
+
+Task 3: Read EQ catalog from gnuzipped QuakeML file. Fit Gutenberg-Richter
+        law to data and create cumulative frequency-magnitude distribution
+        plot as EPS.
+"""
+
+import numpy
+
+import QPCatalog
+import QPCatalogCompact
+
+import qpfmd
+import qpplot
+
+# task 1
+
+GEONET_CATALOG_URL = 'http://magma.geonet.org.nz/services/quake/quakeml/1.0.1/query'
+TASK_2_START_DATE = '2010-09-01'
+TASK_2_END_DATE = '2010-09-05'
+
+EQ_CATALOG_TASK_1 = 'eq_catalog_task_1.xml'
+
+FILTER_POLYGON_TASK_1 = [[172.0, -41.0], [166.0, -46.0], [170.0, -47.0], [176.0, -42.0]]
+
+FILTER_MAGNITUDE_MIN_TASK_1 = 4.0
+FILTER_DEPTH_MAX_TASK_1 = 30.0
+
+EQ_CATALOG_RESULT_TASK_1 = 'eq_catalog_result_task_1.dat'
+
+# task 2
+
+EQ_CATALOG_TASK_2 = 'eq_catalog_task_2.gse.gz'
+EQ_CATALOG_RESULT_TASK_2 = 'eq_catalog_result_task_2.dat'
+
+# task 3
+
+EQ_CATALOG_TASK_3 = 'eq_catalog_task_3.xml.gz'
+FMD_PLOT_FILE = 'fmd_task_3'
+
+def task_1():
+    print "----- running task 1"
+
+    catalog = QPCatalog.QPCatalog()
+
+    # http://magma.geonet.org.nz/services/quake/quakeml/1.0.1/query?startDate=2010-09-01&endDate=2010-09-05
+    # catalog_url = EQ_CATALOG_TASK_1
+    catalog_url = "%s?startDate=%s&endDate=%s" % (GEONET_CATALOG_URL,
+       TASK_2_START_DATE, TASK_2_END_DATE)
+
+    catalog.readXML(catalog_url)
+    print "number of events before filtering: %s" % catalog.size()
+
+    catalog.cut(polygon=FILTER_POLYGON_TASK_1)
+    print "number of events after polygon filtering: %s" % catalog.size()
+
+    catalog.cut(minmag=FILTER_MAGNITUDE_MIN_TASK_1,
+        maxdepth=FILTER_DEPTH_MAX_TASK_1)
+
+    print "number of events after mag/depth filtering: %s" % catalog.size()
+
+    catalog.exportZMAP(EQ_CATALOG_RESULT_TASK_1)
+
+def task_2():
+    print "----- running task 2"
+
+    catalog = QPCatalog.QPCatalog()
+    catalog.importGSE2_0Bulletin(EQ_CATALOG_TASK_2, compression='gz')
+
+    print "number of events: %s" % catalog.size()
+
+    catalogCompact = QPCatalogCompact.QPCatalogCompact()
+    catalogCompact.update(catalog)
+
+    ## sort catalog by magnitude
+    indices = catalogCompact.catalog[:, catalogCompact.map['mag']].argsort(axis=0)
+    catalogCompact.catalog = catalogCompact.catalog[numpy.flipud(indices)]
+
+    catalogCompact.exportZMAP(EQ_CATALOG_RESULT_TASK_2)
+
+def task_3():
+    print "----- running task 3"
+
+    catalog = QPCatalog.QPCatalog()
+    catalog.readXML(EQ_CATALOG_TASK_3, compression='gz')
+
+    print "number of events: %s" % catalog.size()
+
+    fmd = catalog.getFmd()
+
+    print "b value: %(bValue)s\na value: %(aValue)s" % (fmd.GR)
+
+    # NOTE: the file extension is appended automatically, depending on the 
+    # backend
+    fmd.plot(FMD_PLOT_FILE, fmdtype='cumulative', backend='PS')
+
+def main():
+    """Run all tasks."""
+    task_1()
+    task_2()
+    task_3()
+
+if __name__ == "__main__":
+    main()
+

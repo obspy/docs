@@ -69,7 +69,7 @@ Plot topography from the ETOPO1 global relief model:
 \begin{verbatim}
 >>> from scipy.io import netcdf
 >>> from mpl_toolkits.basemap import Basemap, cm
-m = Basemap(projection='merc', llcrnrlat= 0, 
+>>> m = Basemap(projection='merc', llcrnrlat= 0, 
 urcrnrlat=50, llcrnrlon=-80, urcrnrlon=50, lat_ts= 25, 
 resolution='i')
 >>> nc=netcdf.netcdf_file('ETOPO1_Ice_g_gmt4.grd')
@@ -144,9 +144,9 @@ Convert longitude and latitude of Zurich into UTM coordinates and back:
  \begin{myColorBox}{0.9}{}
 \begin{verbatim}
 >>> p = pyproj.Proj(proj="utm",zone=32)
->>> p1(8.540, 47.372)
+>>> p(8.540, 47.372)
 (465271.7360602605, 5246607.042608537)
->>> p1(*(_),inverse=True)
+>>> p(*(_),inverse=True)
 (8.54, 47.371999999999986)
 \end{verbatim}
 \end{myColorBox}
@@ -167,5 +167,11 @@ Zurich and Basel and do the inverse.
 (7.592999999296916, 47.56000000001562, 105.96850776458967)
 \end{verbatim}
 \end{myColorBox}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\Huge{Exercises}
+\end{center}
 \end{frame}
 

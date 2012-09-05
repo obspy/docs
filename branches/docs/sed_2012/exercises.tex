@@ -2,21 +2,20 @@
 \usepackage[utf8]{inputenc}
 %
 \begin{document}
-
-\vspace*{1cm}
 \begin{center}
 \textbf{\Large ObsPy Workshop 2012 -- Python Practical}
 \end{center}
 \vspace*{1cm}
 
-\noindent The recommended way to do the exercises is to use a text editor to
-work on the program and run the program in an IPython shell:
+\noindent The recommended way to do the exercises is to use a text editor
+(for example gedit, emacs or vim) to work on the program and run the program in
+an IPython shell:
 \begin{verbatim}
         $ ipython -i
         >>> run -i myfile.py
 \end{verbatim}
-That way you can continue work interactively after the program is executed. (It
-is best to quit and start a new IPython shell often to avoid possible confusion
+That way you can continue to work interactively after the program is executed.
+(It is best to quit and start a new IPython shell often to avoid possible confusion
 with "old" variables from prior program executions.)
 
 \begin{enumerate}
@@ -80,6 +79,20 @@ with "old" variables from prior program executions.)
 	 2 and degree 5 on a sphere using \verb#Basemap# and the function
 	 \verb#sph_harm# from the \verb#scipy.special# module. Note: Spherical
 	 harmonics are computed in colatitude and basemap uses latitude. 
+      \end{enumerate}
+      \item Quakepy
+      \begin{enumerate}
+        \item Read the EQ catalog from Geonet web service (QuakeML). If there is no 
+        internet access, use the provided XML file. Print the number of events.
+        Filter with area polygon, magnitude, depth. Print the number of
+        events after filtering. Export the catalog to file in ZMAP-ASCII format.
+        \item Read the EQ catalog from the provided gnuzipped GSE2.0 bulletin
+        file. Create a CompactCatalog object and sort by magnitude in descending
+        order. Export the catalog to a file in ZMAP-ASCII format.
+        \item Read the EQ catalog from the provided gnuzipped QuakeML file. Fit
+        the Gutenberg-Richter law to the data and create a cumulative
+        frequency-magnitude distribution and plot this as an EPS file using
+        matplotlib.
       \end{enumerate}
 \end{enumerate}
 \end{document}

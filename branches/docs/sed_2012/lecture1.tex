@@ -13,6 +13,12 @@ functions,\\
 \\ 
 \textbf{Coffee breaks} at 10:30am and 3pm\\
 \textbf{Lunch break} from 12:00pm to 1pm\\
+\\
+\textbf{Wifi}\\
+\textbf{SSID}: \= public\\
+\textbf{User}: \= obspy\\
+\textbf{Password}: \= sedworkshop\\
+
 \end{tabbing}
 \end{frame}
 
@@ -523,6 +529,22 @@ defenestrate 12
     \end{myColorBox}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Flow Control: for-statement}
+\begin{myColorBox}{0.9}{}
+\begin{verbatim}
+>>> x = []
+>>> for i in range(4):
+...     x.append(i**2)
+... 
+>>> x
+[0, 1, 4, 9]
+>>> x = [i**2 for i in range(4)]
+>>> x
+[0, 1, 4, 9]
+\end{verbatim}
+\end{myColorBox}
+\end{frame}
 
 \begin{frame}[fragile]
     \frametitle{Flow Control: while-statement}
@@ -662,7 +684,6 @@ fh.writelines( sequence )
 as the first entry and the command line arguments as the following entries.
     \begin{myColorBox}{0.9}{}
     \begin{verbatim}
-#!/usr/bin/env python
 import sys
 print sys.argv
     \end{verbatim}

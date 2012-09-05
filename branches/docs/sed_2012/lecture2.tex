@@ -15,7 +15,7 @@
 Defining a function which returns a Fibonacci series up to n.
     \begin{myColorBox}{0.9}{}
 \begin{verbatim}
->>> def fib2(n):
+>>> def fib(n):
 ...     """Return the Fibonacci series up to n."""
 ...     result = []
 ...     a, b = 0, 1
@@ -137,7 +137,7 @@ Import module under a different/shorter name:
 \begin{myColorBox}{0.9}{}
 \begin{verbatim}
 >>> import math as m
->>> m.cos(pi)
+>>> m.cos(m.pi)
 -1.0
 \end{verbatim}
 \end{myColorBox}
@@ -154,7 +154,7 @@ Import only what is needed:
 
 \begin{frame}[fragile]
 \frametitle{Modules}
-Writing your own module:
+Writing your own module called \verb#seismo.py#:
 \begin{verbatim}
 """Some seismological utility functions."""
 
@@ -509,7 +509,7 @@ We need to import \verb#matplotlib# for the following examples:
 \begin{frame}
 \frametitle{Plotting}
 See the Matplotlib homepage for basic plotting commands and especially the
-Matplotlib Gallery for many of plotting examples with source code!\\
+Matplotlib Gallery for many plotting examples with source code!\\
 \href{http://matplotlib.sourceforge.net/index.html}{http://matplotlib.sourceforge.net/index.html}
 \href{http://matplotlib.sourceforge.net/gallery.html}{http://matplotlib.sourceforge.net/gallery.html}
 \end{frame}
