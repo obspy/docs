@@ -1,12 +1,12 @@
 \include{common}
-\title{ObsPy: Event and Station handling}
+\title{ObsPy: Station and Event Data Handling}
 \begin{document}
 
 \frame[plain]{\titlepage}
 
 
 
-\begin{frame}[fragile, plain]{Inventory Data}
+\begin{frame}[fragile, plain]{Inventory Data - obspy.xseed}
     \begin{itemize}
         \item Can currently read/write/convert between SEED and XML-SEED.
         \item RESP file support.
@@ -49,26 +49,212 @@
 
 \end{frame}
 
-\begin{frame}[plain, fragile]{Events - Work in progress}
-    \begin{itemize}
-        \item Aims to get a unique interface independent of the data source.
-        \item Currently has limited QuakeML support.
-        \item In development. If you have any good ideas let us know.
-    \end{itemize}
+
+\begin{frame}[fragile, plain]{obspy.xseed - Example usage}
 \begin{myColorBox}{0.95}{}
-\begin{semiverbatim}
->>> from obspy.core.events import readEvents
->>> url = "http://www.seismicportal.eu/services/\dots"
->>> catalog = readEvents(url)
->>> print catalog
-99 Event(s) in Catalog:
-2012-04-11T10:43:09.400000Z |  \dots | 8.2 Mw | \dots
-2012-04-11T08:38:33.000000Z |  \dots | 8.4 M  | \dots
-\dots
-\end{semiverbatim}
+\begin{python}
+>>> from obspy.xseed import Parser
+>>> p = Parser("dataless_SEED")
+>>> print p
+BW.FURT..EHZ | 2001-01-01T00:00:00.000000Z -
+BW.FURT..EHN | 2001-01-01T00:00:00.000000Z -
+BW.FURT..EHE | 2001-01-01T00:00:00.000000Z -
+>>> p.getCoordinates("BW.FURT..EHZ")
+{"elevation": 565.0, "latitude": 48.162899,
+ "longitude": 11.2752}
+>>> p.getPAZ("BW.FURT..EHZ")
+{"digitizer_gain": 1677850.0,
+ "gain": 1.0,
+ "poles": [(-4.444+4.444j), (-4.444-4.444j), (-1.083+0j)],
+ "seismometer_gain": 400.0,
+ "sensitivity": 671140000.0,
+ "zeros": [0j, 0j, 0j]}
+\end{python}
 \end{myColorBox}
 \end{frame}
 
+
+\begin{frame}[fragile, plain]{obspy.xseed - Example usage}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> p.writeXSEED("dataless.xml")
+# Edit it ...
+>>> p = Parser("dataless.xml")
+>>> p.writeSEED("edit_dataless_SEED")
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+
+\begin{frame}[fragile, plain]{obspy.xseed - Exercise}
+    \begin{itemize}
+        \item Read the \textbf{BW.FURT..EHZ.D.2010.005} waveform example file.
+        \item Cut out some minutes of interest.
+        \item Read the \textbf{dataless.seed.BW\_FURT} SEED file.
+        \item Correct the trimmed waveform file with the poles and zeros from
+            the dataless SEED file using \textit{st.simulate()}. This will,
+            according to the SEED convention, correct to $m/s$.
+        \item (Optional) Read the file again and convert to $m$ by adding an
+            extra zero. Choose a sensible waterlevel.
+        \item (Optional) Convert the SEED file to XSEED, edit some values and
+            convert it back to SEED again. This requires some knowledge of the
+            general SEED file structure.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain, fragile]{Events - Work in progress}
+    \begin{itemize}
+        \item Aims to get a unified interface with read and write support independent of the data source, similar to how the Stream and Trace classes handle waveform data.
+        \item Currently only supports QuakeML and is modelled after it.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> from obspy.core.events import readEvents
+>>> url = "http://www.seismicportal.eu/services/..."
+>>> catalog = readEvents(url)
+>>> print catalog
+99 Event(s) in Catalog:
+2012-04-11T10:43:09.400000Z |  ... | 8.2 Mw | ...
+2012-04-11T08:38:33.000000Z |  ... | 8.4 M  | ...
+...
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[plain, fragile]{Events - Basic Structure}
+    \begin{itemize}
+        \item The \textbf{readEvents()} function always returns a
+            \textbf{Catalog} object, which is a collection of \textbf{Event}
+            objects.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> from obspy.core.events import readEvents
+>>> cat = readEvents()
+>>> type(cat)
+obspy.core.event.Catalog
+>>> type(cat[0])
+obspy.core.event.Event
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[plain, fragile]{Events - Basic Structure}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> event = cat[0]
+>>> print event
+Event:  2012-04-04T14:...| +41.818,  +79.689 | 4.4 mb
+
+           resource_id: ResourceIdentifier(...)
+            event_type: "not reported"
+         creation_info: CreationInfo
+            agency_uri: ResourceIdentifier(...)
+            author_uri: ResourceIdentifier(...)
+         creation_time: UTCDateTime(2012, 4, 4, 16, 40, 50)
+               version: "1.0.1"
+        ---------
+                    origins: 1 Elements
+                 magnitudes: 1 Elements
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[plain, fragile]{Events - Basic Structure}
+    \begin{itemize}
+        \item \textbf{Event} objects are again collections of other resources.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> type(event.origins[0])
+obspy.core.event.Origin
+>>> type(event.magnitudes[0])
+obspy.core.event.Magnitude
+>>> print event.origins[0]
+Origin
+         resource_id: ResourceIdentifier(...)
+                time: UTCDateTime(...)
+            latitude: 41.818
+           longitude: 79.689
+               depth: 1.0
+          depth_type: "from location"
+           method_id: ResourceIdentifier(...)
+  used_station_count: 16
+       azimuthal_gap: 231.0
+       ...
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[plain, fragile]{Events - Resource References}
+    \begin{itemize}
+        \item In QuakeML resources can refer to each other using a unique identifier string.
+        \item These connections are preserved in obspy.core.event.
+        \item This works across file boundaries assuming all necessary resources have been read before.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> magnitude = event.magnitudes[0]
+# Retrieve the associated Origin object.
+>>> print magnitude.origin_id
+quakeml:eu.emsc/origin/rts/261020/782484
+>>> origin = magnitude.origin_id.getReferredObject()
+>>> print origin
+Origin
+  resource_id: ResourceIdentifier(...)
+         time: UTCDateTime(2012, 4, 4, 14, 21, 42, 300000)
+     latitude: 41.818
+    longitude: 79.689
+    ...
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[plain, fragile]{The Catalog object}
+    \begin{itemize}
+        \item The Catalog object contains some convenience methods to make working with events easier.
+        \item Events can be filtered with various keys.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> small_magnitude_events = cat.filter("magnitude <= 4.0")
+\end{python}
+\end{myColorBox}
+
+    \begin{itemize}
+        \item They can be plotted using the basemap module.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+    >>> cat.plot()
+\end{python}
+\end{myColorBox}
+    \begin{itemize}
+        \item And they can be written.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> cat.write("modified_events.xml", format="quakeml")
+\end{python}
+\end{myColorBox}
+\end{frame}
+
+\begin{frame}[fragile, plain]{obspy.core.event - Exercise}
+    \begin{itemize}
+        \item Get the 5 latest events, directly from the seimicportal.eu webservice.
+            \begin{itemize}
+                \item \footnotesize{\textbf{cat = readEvents(\\
+                 "http://www.seismicportal.eu/services/event/latest?num=5")}}
+            \end{itemize}
+        \item Plot the events.
+        \item Print the resulting Catalog object and filter it, so it only contains the three largest events.
+        \item Now assume you did a new magnitude estimation and want to add it
+            to one event. Create a new magnitude object, fill it with some
+            values and append it to magnitude list of the largest event.
+        \item Write the Catalog as a QuakeML object.
+    \end{itemize}
+\end{frame}
 
 
 
