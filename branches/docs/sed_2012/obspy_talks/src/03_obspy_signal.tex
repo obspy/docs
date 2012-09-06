@@ -1,0 +1,44 @@
+\include{common}
+\title{ObsPy: Seismological Signal Processing}
+\begin{document}
+
+
+\frame[plain]{\titlepage}
+
+
+\begin{frame}[plain]{Advanced example - Instrument correction}
+
+\begin{myColorBox}{0.95}{}
+\begin{semiverbatim}
+from obspy.core import read
+
+from obspy.signal import cornFreq2Paz
+
+paz\_sts2 = \{
+
+~ ~ ~ ~ "poles": \dots
+
+~ ~ ~ ~ "zeros": [0j, 0j],
+
+~ ~ ~ ~ "gain": 60077000.0,
+
+~ ~ ~ ~ "sensitivity": 2516778400.0\}
+
+paz\_1hz = cornFreq2Paz(1.0, damp=0.707)
+
+st = read()
+
+st.simulate(paz\_remove=paz\_sts2, paz\_simulate=paz\_1hz)
+
+\end{semiverbatim}
+\end{myColorBox}
+
+\begin{itemize}
+    \item The PAZ can also be retrieved from one the webservices, or from a SEED or RESP file.
+\end{itemize}
+
+
+\end{frame}
+
+
+\end{document}

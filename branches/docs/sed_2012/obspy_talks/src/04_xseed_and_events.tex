@@ -1,0 +1,75 @@
+\include{common}
+\title{ObsPy: Event and Station handling}
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+
+
+\begin{frame}[fragile, plain]{Inventory Data}
+    \begin{itemize}
+        \item Can currently read/write/convert between SEED and XML-SEED.
+        \item RESP file support.
+        \item StationXML support is planned.
+    \end{itemize}
+
+
+\footnotesize
+\begin{myColorBox}{0.95}{}
+\begin{semiverbatim}
+000001V 010009402.3121970,001,00:00:00.0000~2038,001,00:00:00.0000~
+2009,037,04:32:41.0000~BayernNetz~~0110032002RJOB 000003RJOB 000008
+...
+\end{semiverbatim}
+\end{myColorBox}
+
+\large
+\begin{center}
+    $\Updownarrow$
+\end{center}
+
+\footnotesize
+
+
+\begin{myColorBox}{0.95}{}
+\begin{semiverbatim}
+<?xml version='1.0' encoding='utf-8'?>
+<xseed version="1.0">
+  <volume_index_control_header>
+    <volume_identifier blockette="010">
+      <version_of_format>2.4</version_of_format>
+      <logical_record_length>12</logical_record_length>
+      <beginning_time>1970-01-01T00:00:00</beginning_time>
+      <end_time>2038-01-01T00:00:00</end_time>
+...
+\end{semiverbatim}
+\end{myColorBox}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[plain, fragile]{Events - Work in progress}
+    \begin{itemize}
+        \item Aims to get a unique interface independent of the data source.
+        \item Currently has limited QuakeML support.
+        \item In development. If you have any good ideas let us know.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{semiverbatim}
+>>> from obspy.core.events import readEvents
+>>> url = "http://www.seismicportal.eu/services/\dots"
+>>> catalog = readEvents(url)
+>>> print catalog
+99 Event(s) in Catalog:
+2012-04-11T10:43:09.400000Z |  \dots | 8.2 Mw | \dots
+2012-04-11T08:38:33.000000Z |  \dots | 8.4 M  | \dots
+\dots
+\end{semiverbatim}
+\end{myColorBox}
+\end{frame}
+
+
+
+
+\end{document}
