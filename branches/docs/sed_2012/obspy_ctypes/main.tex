@@ -1,0 +1,402 @@
+\documentclass[utf8, compress, hyperref={pdftex=true,pdfpagemode=FullScreen}, graphicx={pdftex}]{beamer}
+% for handout add ,handout to []of documentclass
+% to serve contents use python -m SimpleHTTPServer 8000
+
+\mode<beamer>
+	{
+	\useoutertheme{split}
+    \usepackage{beamerthemesplit}
+	\usecolortheme{lily} % leave this on, sets bg for title
+	\usecolortheme[RGB={187,0,0}]{structure} % DARK RED
+	%\setbeamercolor{alerted text}{use={structure},fg=structure.fg}
+	\useinnertheme{default}
+	\setbeamercovered{dynamic} % shows items in white grey before active
+  \logo{\includegraphics[height=0.7cm]{obspy-logo.png}}
+	%\setbeamertemplate{footline}[frame number]
+}
+
+\mode<handout>
+	{
+	\beamertemplatesolidbackgroundcolor{white}
+	\setbeamercolor{alerted text}{fg=black}
+	\setbeamercolor{frametitle}{fg=black}
+	\setbeamercolor{item}{fg=black}
+}
+
+\usepackage{listings}	% syntax highlighting
+\usepackage{upquote}    % to force Latex not substitute hyphens
+\usepackage{tikz}
+\definecolor{mygray}{RGB}{235,241,241}
+\definecolor{myred}{RGB}{187,0,0}
+\definecolor{mygreen}{RGB}{0,187,0}
+\definecolor{myblue}{RGB}{0,0,187}
+%\usepackage{courier}
+%\usepackage{lmodern} % nice fonts
+
+\hypersetup{pdfpagemode=FullScreen}
+\hypersetup{breaklinks=myblue}
+\hypersetup{colorlinks=myblue}
+\hypersetup{urlcolor=myblue}
+
+\title[Using Python as Glue: Python and C]{\parbox[c][][c]{0.7\paperwidth}{\centering Using Python as Glue: Python and C}}
+\author[Moritz Beyreuther]{Moritz Beyreuther}
+\date[2012]{Z\"urich, Sept 7 2012}
+\institute{ObsPy Workshop at SED/ETH}
+
+\linespread{1.0}
+
+\begin{document}
+\lstset{%
+language=Python,          % choose the language of the code
+keywordstyle=[1]\color{mygreen}\bfseries,
+keywordstyle=[2]\color{myblue}\bfseries,
+keywordstyle=[3]\color{yellow}\bfseries,
+stringstyle=\color{myred},
+commentstyle=\color{myblue}\textit,
+basicstyle=\ttfamily\footnotesize, % the size of the fonts that are used for the code
+numbers=none,             % where to put the line-numbers
+numberstyle=\ttfamily\footnotesize,% the size of the fonts that are used for the line-numbers
+stepnumber=1,             % step between line-numbers. For 1 each line will be numbered
+numbersep=5pt,            % how far the line-numbers are from the code
+backgroundcolor=\color{white}, % choose the background color.
+showspaces=false,         % show spaces adding particular underscores
+showstringspaces=false,   % underline spaces within strings
+showtabs=false,           % show tabs within strings adding particular underscores
+frame=none,               % e.g. single, adds a frame around the code
+tabsize=2,                % sets default tabsize to 2 spaces
+captionpos=b,             % sets the caption-position to bottom
+breaklines=true,          % sets automatic line breaking
+breakatwhitespace=false,  % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},   % if you want to add a comment within your code
+columns=fullflexible      % make PDF pastable
+}
+\section{title}
+\maketitle
+
+\section{motivation}
+\begin{frame}
+    \frametitle{"for" loops are slow in intepreter languages like python?}
+    \begin{description}
+        \item[-] missing type system
+        \item[-] each iteration checks idx vs size etc.
+        \item[solution a:] numpy, use of array programming (for loops are
+            compiled in)
+        \item[solution b:] access C functions directly
+    \end{description}
+\end{frame}
+
+\begin{frame}
+    \frametitle{pythons foreign function interface ctypes}
+    \begin{itemize}
+        \item[+] reuse well established C or fortran libraries
+        \item[+] direct call C functions in shared libraries
+        \item[+] no source code needed
+        \item[+] data can be passed directly as pointers
+        \item[+] no meta language, only C and Python
+        \item[-] python call overhead
+    \end{itemize}
+\end{frame}
+
+\section{hands on ctypes}
+\subsection[basics]{ctypes basic}
+\begin{frame}[fragile]
+    \frametitle{ctypes basic}
+    \begin{lstlisting}
+# direct call to libc
+import ctypes as C
+
+libc = C.CDLL('libc.so.6')
+stamp = libc.time(None)
+
+# print date
+import datetime
+print datetime.datetime.fromtimestamp(stamp)
+
+libc.printf("hello world")
+    \end{lstlisting}
+\end{frame}
+
+\subsection[C]{C prototype}
+\begin{frame}[fragile]
+    \frametitle{C prototype}
+    \begin{lstlisting}
+typedef struct _headS {
+    int N;
+    int Nsta;
+    int Nlta;
+} headS;
+
+int stalta(headS *head, double *data, double *charfct);
+    \end{lstlisting}
+    \vfill
+    \textit{full src code in the appendix}
+\end{frame}
+
+\subsection[wrapper]{python wrapper}
+\label{wrap}
+\begin{frame}[fragile]
+    \frametitle{ctypes-wrapper: header}
+    \begin{lstlisting}
+import numpy as np, ctypes as C
+
+head_t = np.dtype([      # numpy stuctured array
+   ('N', 'u4', 1),
+   ('nsta', 'u4', 1),
+   ('nlta', 'u4', 1),
+], align=True)           # align to C-struct border size
+data_t = np.dtype('f8')
+
+lib = C.CDLL("./stalta.so")
+kwargs = dict(ndim=1, flags='C_CONTIGUOUS')  # one block
+lib.stalta.argtypes = [
+    np.ctypeslib.ndpointer(dtype=head_t, **kwargs),
+    np.ctypeslib.ndpointer(dtype=data_t, **kwargs),
+    np.ctypeslib.ndpointer(dtype=data_t, **kwargs),
+]
+lib.stalta.restype = C.c_int
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{ctypes-wrapper: body}
+    \begin{lstlisting}
+def stalta(data, nsta, nlta):
+    # initialize C struct / numpy structed array
+    head = np.empty(1, dtype=head_t)
+    head[:] = (len(data), nsta, nlta)
+    # ensure correct type and countiguous of data
+    data = np.require(data, dtype=data_t,
+                      requirements=['C_CONTIGUOUS'])
+    # all memory should be allocated by python
+    charfct = np.empty(len(data), dtype=data_t)
+    # run and check the errorcode
+    err = lib.stalta(head, data, charfct)
+    if err != 0:
+        raise Exception('Error stalta %d' % err)
+    return charfct
+    \end{lstlisting}
+\end{frame}
+
+
+\subsection{gdb}
+\begin{frame}[fragile]
+    \frametitle{debugging with gdb}
+    \textbf{from the shell:}
+    \begin{lstlisting}
+export MALLOC_CHECK_=2        # be more strict with memory
+gdb $(which python)
+    \end{lstlisting}
+
+    \textbf{from within gdb}:
+    \begin{lstlisting}
+(gdb) # run once to load shared lib symbol table
+(gdb) run wrap_stalta.py
+(gdb) # set conditional breakpoint and access variables
+(gdb) b stalta.c:31
+(gdb) info b
+(gdb) condition 1 i==4000
+(gdb) run wrap_stalta.py
+(gdb) print charfct[3995]@10
+(gdb) dump binary value head.dump *head
+(gdb) dump binary memory data.dump data data+head->N
+    \end{lstlisting}
+\end{frame}
+
+\subsection{structured arrays}
+\begin{frame}[fragile]
+    \frametitle{numpy io and structured arrays}
+    \begin{lstlisting}
+# numpy is great for binary file IO
+# loading binary data, < little endian
+d = np.fromfile("data.dump", '<f8')
+h = np.fromfile("head.dump", dtype=head_t)
+print h
+
+u = h.view('u4')  # views are unions
+u[1] = 20
+print h
+
+# structured arrays vs dictionaries
+h = np.zeros(100, dtype=head_t)  # save space
+h[:]['N'] = 50                   # supports slicing
+print h
+    \end{lstlisting}
+\end{frame}
+
+\subsection{pdb}
+\begin{frame}[fragile]
+    \frametitle{python debugger}
+    \textbf{set breakpoints in src file via... and run script:}
+    \begin{lstlisting}
+import pdb; pdb.set_trace()  # standard debugger
+# ipython debugger with tab completion
+from IPython.core.debugger import Tracer; Tracer()()
+# open ipython shell, use then %pylab to load --pylab
+from IPython import embed; embed()
+    \end{lstlisting}
+    \textbf{run script with debugger enabled:}
+    \begin{lstlisting}
+python -m pdb wrap_stalta.py
+ipython -c "%run -d -b25 wrap_stalta.py"  # type c to goto main
+    \end{lstlisting}
+
+    \textbf{selected debug commands:}
+    \begin{lstlisting}
+(pdb) !head['N'] = 5000
+(pdb) print head
+(pdb) j 22
+(pdb) c
+    \end{lstlisting}
+\end{frame}
+
+\subsection{profile}
+\begin{frame}[fragile]
+    \frametitle{before optimization: profile!}
+    \textbf{either create a profile script:}
+    \begin{lstlisting}
+from obspy.core import read
+from obspy.signal import classicSTALTA
+from wrap_stalta import stalta
+import cProfile
+import pstats
+
+tr = read("/path/to/loc_RJOB20050831023349.z")[0]
+
+cProfile.run("classicSTALTA(tr.data, 400, 2000)", "Profile.prof")
+#cProfile.run("stalta(tr.data, 400, 2000)", "Profile.prof")
+
+s = pstats.Stats("Profile.prof")
+s.strip_dirs().sort_stats("time").print_stats()
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{before optimization: profile!}
+    \textbf{run profiler on whole script:}
+    \begin{lstlisting}
+python -m cProfile -s cumulative wrap_stalta.py
+ipython -c "%run -p -s cumulative wrap_stalta.py"
+    \end{lstlisting}
+\end{frame}
+
+\section{summary}
+\begin{frame}[fragile]
+    \frametitle{further ctypes examples}
+    obspy uses ctypes as foreign function interface, including callback
+    functions, memory resizing, multi-platform (linux, osx, win) ...
+    \begin{itemize}
+    \item \url{http://obspy.org/browser/obspy/trunk/obspy.gse2/obspy/gse2}
+    \item ... obspy/signal
+    \item ... obspy/mseed
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{alternatives}
+    \begin{description}
+        \item[cython:] python to C compiler
+        \item[f2py:] fortran interface generator
+        \item[pypy:] reimplementation of python for jit compiling
+    \end{description}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{future?: from numba.decorators import jit}
+    \begin{itemize}
+        \item numpy has type info $\rightarrow$ jit is possible.
+        \item goal: lightweight JIT, optimize ONLY slow code.
+        \item will get ctypes aware.
+        \item \url{http://jakevdp.github.com/blog/2012/08/24/numba-vs-cython}
+        \item \url{https://github.com/numba/numba}
+        \item \url{http://www.drdobbs.com/architecture-and-design/240001128}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \begin{center}
+    \Huge{the end}
+    \end{center}
+\end{frame}
+
+\appendix
+\section{appendix}
+
+\begin{frame}[fragile]
+    \begin{center}
+    \Huge{appendix}
+    \end{center}
+\end{frame}
+
+\subsection{stalta.c}
+\begin{frame}[fragile]
+    \frametitle{stalta.c part 1}
+    \textbf{compile commands:}
+    \begin{lstlisting}
+gcc -g -fPIC -O0 -Wall -c stalta.c
+gcc -g -shared -Wall -o stalta.so stalta.o
+    \end{lstlisting}
+    \textbf{stalta.c:}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+#include <math.h>
+
+typedef struct _headS {
+    int N;
+    int Nsta;
+    int Nlta;
+} headS;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{stalta.c part 2}
+    \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+int stalta(headS *head, double *data, double *charfct)
+{
+    int i, j;
+    if (head->N < head->Nlta) {
+        return 1;
+    }
+    for (i = 0; i < head->Nlta; ++i) {
+        charfct[i] = 0.0;
+    }
+    for (i = head->Nlta; i < head->N; ++i) {
+        double sta = 0.0;
+        double lta;
+
+        for (j = 0u; j < head->Nsta; j++) {
+            sta += pow(data[i - j], 2);
+        }
+        lta = sta;
+        for (j = head->Nsta; j < head->Nlta; j++) {
+            lta += pow(data[i - j], 2);
+        }
+        sta /= (double) head->Nsta;
+        lta /= (double) head->Nlta;
+        charfct[i] = sta / lta;
+    }
+    return 0;
+}
+    \end{lstlisting}
+\end{frame}
+
+\subsection{ctypes-wrapper: main}
+\begin{frame}[fragile]
+    \frametitle{\_\_main\_\_ of python wrapper}
+    \textit{file wrap\_stalta.py consist of the two parts
+    given in the wrapper section (link \ref{wrap}) and
+    the following main:}
+    \begin{lstlisting}
+if __name__ == '__main__':
+    from obspy.core import read
+    import matplotlib.pyplot as plt
+
+    tr = read("/path/to/loc_RJOB20050831023349.z")[0]
+    charfct = stalta(tr.data, 400, 2000)
+    
+    plt.plot(tr.data)
+    plt.twinx().plot(charfct, 'r')
+    plt.show()
+    \end{lstlisting}
+\end{frame}
+
+\end{document}
