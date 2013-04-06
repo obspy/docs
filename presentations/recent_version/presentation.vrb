@@ -1,0 +1,22 @@
+\frametitle {Complete Workflow Example}\begin {myColorBox}{0.95}{}
+\begin{python}
+from obpsy import UTCDateTime
+from obspy.arclink import Client()
+client = Client()
+t0 = UTCDateTime("2012-09-08 20:30:00")
+# Download data and instrument response.
+st = client.getWaveform ("NA", "SABA", "", "BHZ", \
+    t0 - 900, t0 + 900)
+paz = client.getPAZ ("NA", "SABA", "", "BHZ", t0 )
+# Add a zero to convert to m (default is m/s)
+paz["zeros"].append(0 + 0j)
+st.simulate(paz_remove=paz)
+# Apply highpass filters
+st.filter("highpass",freq=0.005)
+# Trim the signal to your needs
+st.trim(t0 - 60, t0 + 60)
+# Save and plot the deconvolved data
+st.write("deconvolved_data", format="mseed")
+st.plot()
+\end{python}
+\end{myColorBox}
