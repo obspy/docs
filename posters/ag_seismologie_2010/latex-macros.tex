@@ -1,0 +1,48 @@
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+	{\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
+	{\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+%
+% Puts a algorithm environment
+\newenvironment{algorithm}[1][]{%
+	\begin{table}[h]
+	\centering
+	\begin{minipage}[t]{12cm}
+	\hspace{\stretch{2}} {\caption{\label{#1} #1}}
+	\rule[1.5ex]{12cm}{0.01cm}\\
+	%\hspace{\stretch{2}} {\tiny \textsc{ #1}}}
+	\hspace{\stretch{2}} \\
+	% SPACE BEFORE \\ IS IMPORTANT, ELSE NO STRETCHING
+	\vspace{-4ex}
+	\begin{list}{#1}{\labelwidth=12em \leftmargin=120pt}
+	\vspace{-1ex}
+}{%
+	\end{list}
+	\rule[1ex]{12cm}{0.01cm}\\
+	\end{minipage}
+	\vspace{-2ex}
+	\end{table}
+}
+%
+\newcommand{\atem}[2]{\item[\texttt{#1}] #2\vspace{1ex}}
+%
+% Some math stuff, you need to include \usepackage{amsmath} 
+%
+%
+%\mathop is needed to  get the spacing correct,
+%
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+%
+% greek symbols are displayed fat, too 
+%
+\renewcommand{\vector}[1]{\boldsymbol{#1}}
+%
+% use straight letters for matrixes
+%
+\renewcommand{\matrix}[1]{\mathbf{#1}}
+%
+% Some further definitions
+%
+\newcommand{\set}[1]{\mathbb{#1}}
+\newcommand{\transpose}{\mathsf{T}}
+\newcommand{\unity}{\mathbbm{1}}
