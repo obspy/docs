@@ -1,0 +1,28 @@
+% Copyright 2009 by Moritz Beyreuther <beyreuth@geophysik.uni-muenchen.de>
+%
+% This program can be redistributed and/or modified under the terms
+% of the GNU Public License, version 2.
+
+\typeout{******************************************************************************}
+\typeout{ Using theme LMU for beamer class (version as of ???)}
+\typeout{ }
+\typeout{ This theme attempts to generate PDF slides that adhere to some reasonable}
+\typeout{ extent to the corporate design guidelines of LMU.}
+\typeout{ For bug reports and features please check}
+\typeout{ http://svn.geophysik.uni-muenchen.de/trac/admintools}
+\typeout{ and curse Moritz Beyreuther, Christoph Moder, Marcus Mohr and Jens Oeser}
+\typeout{******************************************************************************}
+
+\mode<presentation>
+
+\DeclareOptionBeamer{compress}{\beamer@compresstrue}
+\ProcessOptionsBeamer
+
+\usecolortheme{lmu}
+\useinnertheme{lmu}
+\useoutertheme{lmu}
+
+\setbeamerfont{block title}{size={}}
+
+\mode
+<all>

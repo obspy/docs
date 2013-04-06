@@ -1,0 +1,95 @@
+% Modification of beamerouterthemeinfolines.sty.
+% No headline
+
+% Copyright 2003 by Till Tantau <tantau@users.sourceforge.net>
+%
+% This program can be redistributed and/or modified under the terms
+% of the GNU Public License, version 2.
+
+\mode<presentation>
+
+\defbeamertemplate*{footline}{lmu theme}
+{
+\leavevmode%
+%\hbox{%
+\begin{beamercolorbox}[wd=.35\paperwidth,ht=2.5ex,dp=1.125ex,rightskip=.3cm plus1fill,leftskip=.3cm]%
+    {author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=.60\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]%
+    {title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=.05\paperwidth,ht=2.5ex,dp=1.125ex,right,rightskip=1ex]
+    {page number in head/foot}%
+    \usebeamerfont{page number in head/foot}
+    \insertframenumber{}/\inserttotalframenumber
+\end{beamercolorbox}%
+\vskip0pt%
+%}
+}
+
+\defbeamertemplate*{headline}{lmu theme}
+{%
+\leavevmode%
+%\hbox{
+%\includegraphics[height=23pt,width=\paperwidth]{bergkette.png}
+\includegraphics[width=\paperwidth]{Boxlayout_LMU_Mono_ohne_Siegel_grouped_2boxleft_background.pdf}
+%\vspace{-9ex}
+\vspace{-7.8ex}
+%\hspace*{.2\paperwidth} \begin{beamercolorbox}[wd=.91\paperwidth,ht=3ex,dp=0ex,right]%
+%    {section in head/foot}%
+%    \usebeamerfont{section in head/foot}
+%    \insertnavigation{.7\paperwidth}{\hskip0pt plus1filll}{}
+%    %\vskip2pt\insertnavigation{.7\paperwidth}\vskip2pt
+%\end{beamercolorbox}%
+%\hspace*{.16\paperwidth} \fbox{\begin{beamercolorbox}[wd=.8\paperwidth,ht=3ex,dp=0ex,right]%
+%    {section in head/foot}%
+%    \usebeamerfont{section in head/foot}
+%    \insertnavigation{.8\paperwidth}%{\hskip0pt plus1filll}{}
+%    %\vskip2pt\insertnavigation{.7\paperwidth}\vskip2pt
+%\end{beamercolorbox}}%
+\hspace*{.16\paperwidth} \begin{beamercolorbox}[wd=.83\paperwidth,ht=3ex,dp=0ex,left]%
+    {section in head/foot}%
+    \usebeamerfont{section in head/foot}
+    \insertnavigation{.7\paperwidth}
+\end{beamercolorbox}%
+\vspace{+6ex}
+}
+
+%\defbeamertemplate*{title}{lmu theme}
+%{
+%\begin{beamercolorbox}[wd=\paperwidth]{frametitle}
+%    \usebeamercolor[bg]{logo}%
+%    \hbox to \beamer@sidebarwidth{\hss\vbox to
+%    \beamer@headheight{\vss\hbox{\color{fg}\insertlogo}\vss}\hss}%
+%\end{beamercolorbox}
+%}
+
+\setbeamersize{text margin left=1em,text margin right=1em}
+
+%\defbeamertemplate*{sidebar right}{lmu theme}
+%{
+%\vskip4pt
+%\llap{\insertlogo\hskip0.3cm}%
+%\vfill%
+%\vskip2pt%
+%\llap{\usebeamertemplate***{navigation symbols}\hskip0.1cm}%
+%\vskip2pt%
+%}
+
+%% Frame title: default
+%
+%\defbeamertemplate*{frametitle}{lmu theme}
+%{
+%  \begin{beamercolorbox}[sep=0.3cm,wd=\paperwidth]{frametitle}
+%    \usebeamerfont{frametitle}%
+%    \vbox{}\vskip-1ex%
+%		\strut\insertframetitle \hfill\includegraphics[width=3ex]{logo.png}
+%    \vskip-1ex%
+%  \end{beamercolorbox}%
+%}
+
+\mode
+<all>
+

@@ -1,0 +1,21 @@
+\frametitle {Events - Resource References}\begin {itemize}
+        \item In QuakeML resources can refer to each other using a unique identifier string.
+        \item These connections are preserved in obspy.core.event.
+        \item This works across file boundaries assuming all necessary resources have been read before.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{python}
+>>> magnitude = event.magnitudes[0]
+# Retrieve the associated Origin object.
+>>> print magnitude.origin_id
+quakeml:eu.emsc/origin/rts/261020/782484
+>>> origin = magnitude.origin_id.getReferredObject()
+>>> print origin
+Origin
+  resource_id: ResourceIdentifier(...)
+         time: UTCDateTime(2012, 4, 4, 14, 21, 42, 300000)
+     latitude: 41.818
+    longitude: 79.689
+    ...
+\end{python}
+\end{myColorBox}
