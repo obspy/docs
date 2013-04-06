@@ -1,0 +1,62 @@
+# Note: when using this with latex-suite, you will need to have the rule
+# 'Tex_DefaultTargetFormat' i.e. pdf,dvi,ps, because latex-suite by default
+# calls the Makefile if existing with the option make
+# 'Tex_DefaultTargetFormat' if the variable 'Tex_UseMakefile' is set to 1 !
+# onlys compares in seconds, not in miliseconds!
+
+all: pdf
+
+clean:
+	rm -f egu2012_poster.aux egu2012_poster.log
+
+pdf: egu2012_poster.tex
+	pdflatex egu2012_poster.tex
+	#bibtex egu2012_poster
+	#pdflatex egu2012_poster.tex
+
+
+#rst: obspy_datacenters.rst
+#	rst2pdf obspy_datacenters.rst
+#
+#with_images:
+#	rst2pdf obspy_datacenters__with_images.rst
+
+#pdf: figures/plots/ae.gnuplot main.pdf
+#pdf: main.pdf
+#
+#force: clean touch pdf
+#
+#main.pdf: main.tex sections/*.tex obspy.bib
+#	pdflatex main.tex
+#	pdflatex main.tex
+#	bibtex main
+#	pdflatex main.tex
+#	pdflatex main.tex
+#	pdflatex main.tex
+#
+#figures/plots/ae.gnuplot: figures/hmm_example.tikz figures/variance_manipulation.tikz
+#	pdflatex --shell-escape main.tex
+#	# this will only change ae1.gnuplot if necessay
+#	# that's why we force it to get newer:
+#	touch figures/plots/ae.gnuplot
+#
+#plot:
+#	pdflatex --shell-escape main.tex
+#
+#main-2x1.pdf: main.pdf
+#	pdfnup main.pdf
+##	scp main-2x1.pdf udgtpm:.
+#
+#touch:
+#	touch main.tex
+#
+#fast:
+#	pdflatex main.tex
+#
+#view:
+#	xpdf main.pdf &
+#
+#clean:
+#	rm -f main.ind main.ilg main.idx main.lof main.lot main.log main.aux \
+#	main.toc main.aux main.bbl main.out main.blg main.snm main.nav main.vrb \
+#	main.ttt main.fff
