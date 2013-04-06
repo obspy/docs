@@ -1,0 +1,17 @@
+\frametitle {Events - Work in progress}\begin {itemize}
+        \item Aims to get a unique interface independent of the data source.
+        \item Currently has limited QuakeML support.
+        \item In development. If you have any good ideas let us know.
+    \end{itemize}
+\begin{myColorBox}{0.95}{}
+\begin{semiverbatim}
+>>> from obspy.core.events import readEvents
+>>> url = "http://www.seismicportal.eu/services/\dots"
+>>> catalog = readEvents(url)
+>>> print catalog
+99 Event(s) in Catalog:
+2012-04-11T10:43:09.400000Z |  \dots | 8.2 Mw | \dots
+2012-04-11T08:38:33.000000Z |  \dots | 8.4 M  | \dots
+\dots
+\end{semiverbatim}
+\end{myColorBox}

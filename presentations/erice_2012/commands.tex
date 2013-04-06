@@ -1,0 +1,129 @@
+% -----------------------------------------------------------------------------
+%
+%\newtheorem{definition}{Definition}
+\newcommand{\foot}[1]{_{\mbox{\footnotesize #1}}}
+\newcommand{\head}[1]{^{\mbox{\footnotesize #1}}}
+%
+%
+\newcommand{\ones}{\mathbb{I}}
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\ganz}{\mathbb{Z}}
+%
+%
+\newcommand{\RRE}{\mbox{RRE}}
+\newcommand{\nnz}[1]{\mbox{nnz}(#1)}
+\newlength{\Hoehe}
+\renewcommand{\vec}[1]{#1}
+\newlength{\GLaenge}
+\setlength{\GLaenge}{3.5cm}
+%
+%
+\definecolor{MyGrey}{gray}{0.45}
+\def\bstheta{\boldsymbol{\theta}}
+\def\bsalpha{\boldsymbol{\alpha}}
+\def\bsk{\boldsymbol{k}}
+\def\bsx{\boldsymbol{x}}
+\def\bsh{\boldsymbol{h}}
+%
+% Centred minipage environment
+%
+\newenvironment{cmpage}[1]{
+\begin{center}
+\begin{minipage}{#1\textwidth}}%
+{\end{minipage}\end{center}}
+%
+%
+\newcommand{\POS}{\color{blue}\item [\boldmath{$+$}]}
+\newcommand{\NEG}{\color{red}\item [{\boldmath$-$}]}
+\newcommand{\NTR}{\color{black}\item [$\circ$]}
+\newcommand{\f}[1]{\mathfrak{#1}}
+\newcommand{\old}{^{\mbox{\small \color{blue} old}}}
+\newcommand{\new}{^{\mbox{\small \color{red} new}}}
+\newcommand{\diag}[1]{\mbox{diag}\left(#1\right)}
+%
+%
+\newcommand{\myBlank}{\textvisiblespace}
+\newcommand{\noSpace}{\makebox[0pt]{\quad}}
+%
+% Old style colour commands
+%
+\newcommand{\CB}{\color{blue}}
+\newcommand{\CR}{\color{red}}
+\newcommand{\CG}{\color{green}}
+\newcommand{\CC}{\color{cyan}}
+%
+\definecolor{myWhite}{rgb}{1.00,1.00,1.00}  % real white
+\definecolor{myGrey}{rgb}{0.78,0.83,0.94}   % 'light grey blue'
+\definecolor{myYellow}{rgb}{1.00,1.00,0.00} % yellow
+\definecolor{myOrange}{rgb}{1.00,0.65,0.00} % orange
+\definecolor{myCyan}{rgb}{0.00,1.00,1.00}   % cyan
+%
+% Some abbrevs for setting brief code parts
+%
+\newcommand{\ttA}{\mbox{\texttt{A}}}
+\newcommand{\ttB}{\mbox{\texttt{B}}}
+\newcommand{\ttC}{\mbox{\texttt{C}}}
+\newcommand{\ttD}{\mbox{\texttt{D}}}
+\newcommand{\code}[1]{\mbox{\texttt{#1}}}
+\newcommand{\ccode}[1]{\cemphd{\texttt{#1}}}
+%
+% Commands for slides taken from 'Insides'
+%
+\newcommand{\rst}{\textcolor{emphcolora}{\ast}}
+\newcommand{\bst}{\textcolor{emphcolorb}{\ast}}
+%
+%
+%
+\definecolor{textcolor} {rgb}{0,0,0}
+\definecolor{decocolor} {rgb}{0,0,0}
+\definecolor{emphcolora}{rgb}{1,0,0}              % pure red
+\definecolor{emphcolorb}{rgb}{0,0,1}              % pure blue
+\definecolor{emphcolorc}{cmyk}{0,1,0,0}           % pure magenta
+%\definecolor{emphcolord}{cmyk}{0.64,0,0.95,0.20} % sort of green
+\definecolor{emphcolord}{rgb}{0,0.4,0.12}         % same as lmu@darkgreen
+\definecolor{emphcolore}{cmyk}{1,0,0,0}           % pure cyan
+\definecolor{linkcolor} {rgb}{0,0,0}
+%
+% Commands emphasising text using color
+%
+\newcommand{\cempha}[1]{{\color{emphcolora}#1}}
+\newcommand{\cemphb}[1]{{\color{emphcolorb}#1}}
+\newcommand{\cemphc}[1]{{\color{emphcolorc}#1}}
+\newcommand{\cemphd}[1]{{\color{emphcolord}#1}}
+\newcommand{\cemphe}[1]{{\color{emphcolore}#1}}
+\newcommand{\cemphf}[1]{{\color{decocolor}#1}}
+% -----------------------------------------------------------------------------
+% myColorBox
+% -----------------------------------------------------------------------------
+\setbeamercolor{myBoxColor}{fg=black,bg=white}
+\setbeamercolor{myBoxColorHead}{fg=red,bg=white}
+% \newenvironment{myColorBox}[2]{%
+% \begin{beamerboxesrounded}[shadow=true,lower=myBoxColor,upper=myBoxColorHead,
+% width=#1\textwidth]{#2}}%
+% {\end{beamerboxesrounded}}
+\newenvironment{myColorBox}[2]{%
+\begin{cmpage}{#1}%
+\begin{beamerboxesrounded}[shadow=true,lower=myBoxColor,upper=myBoxColorHead]%
+{#2}}%
+{\end{beamerboxesrounded}\end{cmpage}}
+%
+% -----------------------------------------------------------------------------
+% Math Operators, alternate greek symbols and the like
+% -----------------------------------------------------------------------------
+\DeclareMathOperator{\grad}{grad}
+\DeclareMathOperator{\mydiv}{div}
+\DeclareMathOperator{\Grad}{grad}
+\DeclareMathOperator{\Div}{div}
+%\newcommand{\grad}{\mbox{grad}}
+%\newcommand{\mydiv}{\mbox{div}}
+\renewcommand{\rho}{\varrho}
+%
+% -----------------------------------------------------------------------------
+% Some color defintions to be compatible with XFIG
+% -----------------------------------------------------------------------------
+%
+\definecolor{XFIGgold}{rgb}{1.00,0.84,0.00}
+\definecolor{XFIGltblue}{rgb}{0.53,0.81,1.00}
+\definecolor{XFIGred}{rgb}{1.00,0.00,0.00}
+% -----------------------------------------------------------------------------
