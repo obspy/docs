@@ -1,0 +1,6 @@
+...
+<station_identifier blockette="050">
+    <station_call_letters>ANMO</station_call_letters>
+    <latitude>+34.946200</latitude>
+    <longitude>-106.456700</longitude>
+...
