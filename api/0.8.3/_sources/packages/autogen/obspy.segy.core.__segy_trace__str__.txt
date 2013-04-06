@@ -1,0 +1,6 @@
+obspy.segy.core.__segy_trace__str__
+===================================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: __segy_trace__str__

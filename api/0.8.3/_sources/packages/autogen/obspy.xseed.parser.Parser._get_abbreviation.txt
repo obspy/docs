@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._get_abbreviation
+===========================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._get_abbreviation

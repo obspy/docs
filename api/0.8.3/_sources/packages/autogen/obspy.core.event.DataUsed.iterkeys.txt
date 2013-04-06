@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.iterkeys
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.iterkeys

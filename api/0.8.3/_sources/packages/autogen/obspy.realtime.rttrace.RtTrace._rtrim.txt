@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace._rtrim
+=====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace._rtrim

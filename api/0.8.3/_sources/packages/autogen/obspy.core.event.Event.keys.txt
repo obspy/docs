@@ -1,0 +1,6 @@
+obspy.core.event.Event.keys
+===========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Event.keys

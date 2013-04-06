@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID._pretty_str
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID._pretty_str

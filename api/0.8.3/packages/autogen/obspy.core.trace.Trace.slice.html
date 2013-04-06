@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.trace.Trace.slice &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.trace.Trace" href="obspy.core.trace.Trace.html" />
+    <link rel="next" title="obspy.core.trace.Trace.spectrogram" href="obspy.core.trace.Trace.spectrogram.html" />
+    <link rel="prev" title="obspy.core.trace.Trace.simulate" href="obspy.core.trace.Trace.simulate.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.spectrogram.html" title="obspy.core.trace.Trace.spectrogram"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.simulate.html" title="obspy.core.trace.Trace.simulate"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" accesskey="U">obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-trace-trace-slice">
+<h1>obspy.core.trace.Trace.slice<a class="headerlink" href="#obspy-core-trace-trace-slice" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.trace.Trace.slice">
+<tt class="descclassname">Trace.</tt><tt class="descname">slice</tt><big>(</big><em>starttime=None</em>, <em>endtime=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/trace.html#Trace.slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.trace.Trace.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new Trace object with data going from start to end time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Specify the start time of slice.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Specify the end time of slice.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">New <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> object. Does not copy
+data but just passes a reference to it.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([2, 3, 4, 5, 6, 7, 8])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.trace.Trace.slice.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.spectrogram.html" title="obspy.core.trace.Trace.spectrogram"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.simulate.html" title="obspy.core.trace.Trace.simulate"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" >obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

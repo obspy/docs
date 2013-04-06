@@ -1,0 +1,6 @@
+obspy.signal.calibration.relcalstack
+====================================
+
+.. currentmodule:: obspy.signal.calibration
+
+.. autofunction:: relcalstack

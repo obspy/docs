@@ -1,0 +1,6 @@
+obspy.signal.tf_misfit.plotTfMisfits
+====================================
+
+.. currentmodule:: obspy.signal.tf_misfit
+
+.. autofunction:: plotTfMisfits

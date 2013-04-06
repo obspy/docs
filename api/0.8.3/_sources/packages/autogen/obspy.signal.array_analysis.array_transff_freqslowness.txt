@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.array_transff_freqslowness
+======================================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: array_transff_freqslowness

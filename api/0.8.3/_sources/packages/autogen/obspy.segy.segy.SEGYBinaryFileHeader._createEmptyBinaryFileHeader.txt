@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYBinaryFileHeader._createEmptyBinaryFileHeader
+=================================================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYBinaryFileHeader._createEmptyBinaryFileHeader

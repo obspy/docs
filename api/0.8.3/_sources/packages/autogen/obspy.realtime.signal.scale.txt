@@ -1,0 +1,6 @@
+obspy.realtime.signal.scale
+===========================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: scale

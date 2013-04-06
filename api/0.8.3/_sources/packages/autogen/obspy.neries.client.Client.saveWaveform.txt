@@ -1,0 +1,6 @@
+obspy.neries.client.Client.saveWaveform
+=======================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.saveWaveform

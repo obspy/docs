@@ -1,0 +1,6 @@
+obspy.iris.client.Client.__init__
+=================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.__init__

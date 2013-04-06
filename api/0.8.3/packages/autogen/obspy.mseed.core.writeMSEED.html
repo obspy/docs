@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.core.writeMSEED &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.core" href="obspy.mseed.core.html" />
+    <link rel="next" title="obspy.mseed.core.MSTG" href="obspy.mseed.core.MSTG.html" />
+    <link rel="prev" title="obspy.mseed.core.readMSEED" href="obspy.mseed.core.readMSEED.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.MSTG.html" title="obspy.mseed.core.MSTG"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.readMSEED.html" title="obspy.mseed.core.readMSEED"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" accesskey="U">obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-core-writemseed">
+<h1>obspy.mseed.core.writeMSEED<a class="headerlink" href="#obspy-mseed-core-writemseed" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.core.writeMSEED">
+<tt class="descname">writeMSEED</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>encoding=None</em>, <em>reclen=None</em>, <em>byteorder=None</em>, <em>flush=1</em>, <em>verbose=0</em>, <em>**_kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/core.html#writeMSEED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.core.writeMSEED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Mini-SEED file from a Stream object.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function should NOT be called directly, it registers via the
+the <a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of an
+ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object, call this instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stream</strong> (<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>) <span class="dash" /> A Stream object.</li>
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Name of the output file</li>
+<li><strong>encoding</strong> (<em>int or str, optional</em>) <span class="dash" /> Should be set to one of the following supported Mini-SEED
+data encoding formats: ASCII (<tt class="docutils literal"><span class="pre">0</span></tt>)*, INT16 (<tt class="docutils literal"><span class="pre">1</span></tt>), INT32 (<tt class="docutils literal"><span class="pre">3</span></tt>),
+FLOAT32 (<tt class="docutils literal"><span class="pre">4</span></tt>)*, FLOAT64 (<tt class="docutils literal"><span class="pre">5</span></tt>)*, STEIM1 (<tt class="docutils literal"><span class="pre">10</span></tt>) and STEIM2
+(<tt class="docutils literal"><span class="pre">11</span></tt>)*. Default data types a marked with an asterisk. Currently
+INT24 (<tt class="docutils literal"><span class="pre">2</span></tt>) is not supported due to lacking NumPy support.</li>
+<li><strong>reclen</strong> (<em>int, optional</em>) <span class="dash" /> Should be set to the desired data record length in bytes
+which must be expressible as 2 raised to the power of X where X is
+between (and including) 8 to 20.
+Defaults to 4096</li>
+<li><strong>byteorder</strong> ([<tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">'&lt;'</span></tt> | <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">'&gt;'</span></tt> | <tt class="docutils literal"><span class="pre">'='</span></tt>], optional) <span class="dash" /> Must be either <tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">'&lt;'</span></tt> for LSBF or
+little-endian, <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">'&gt;'</span></tt> for MBF or big-endian. <tt class="docutils literal"><span class="pre">'='</span></tt> is the
+native byteorder. If <tt class="docutils literal"><span class="pre">-1</span></tt> it will be passed directly to libmseed
+which will also default it to big endian. Defaults to big endian.</li>
+<li><strong>flush</strong> (<em>int, optional</em>) <span class="dash" /> If it is not zero all of the data will be packed into
+records, otherwise records will only be packed while there are
+enough data samples to completely fill a record.</li>
+<li><strong>verbose</strong> (<em>int, optional</em>) <span class="dash" /> Controls verbosity, a value of zero will result in no
+diagnostic output.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The reclen, encoding and byteorder keyword arguments can be set
+in the stats.mseed of each <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> as well as
+as kwargs of this function. If both are given the kwargs will be used.</p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;filename.mseed&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;MSEED&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.core.writeMSEED.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.MSTG.html" title="obspy.mseed.core.MSTG"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.readMSEED.html" title="obspy.mseed.core.readMSEED"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" >obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

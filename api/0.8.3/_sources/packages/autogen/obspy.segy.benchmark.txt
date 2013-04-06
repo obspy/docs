@@ -1,0 +1,28 @@
+obspy.segy.benchmark
+====================
+
+.. currentmodule:: obspy.segy.benchmark
+.. automodule:: obspy.segy.benchmark
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      plotBenchmark
+   
+   
+
+   
+   
+   
+
+   
+   
+   

@@ -1,0 +1,195 @@
+obspy.core.event.Origin
+=======================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Origin
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Origin.__abstractmethods__
+     ~Origin.__dict__
+     ~Origin.__doc__
+     ~Origin.__hash__
+     ~Origin.__module__
+     ~Origin.__weakref__
+     ~Origin.defaults
+     ~Origin.item
+     ~Origin.key
+     ~Origin.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Origin.clear
+     ~Origin.copy
+     ~Origin.get
+     ~Origin.items
+     ~Origin.iteritems
+     ~Origin.iterkeys
+     ~Origin.itervalues
+     ~Origin.keys
+     ~Origin.pop
+     ~Origin.popitem
+     ~Origin.setdefault
+     ~Origin.update
+     ~Origin.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Origin._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Origin.__contains__
+     ~Origin.__deepcopy__
+     ~Origin.__delattr__
+     ~Origin.__delitem__
+     ~Origin.__eq__
+     ~Origin.__getattr__
+     ~Origin.__getitem__
+     ~Origin.__getstate__
+     ~Origin.__init__
+     ~Origin.__iter__
+     ~Origin.__len__
+     ~Origin.__ne__
+     ~Origin.__nonzero__
+     ~Origin.__repr__
+     ~Origin.__setattr__
+     ~Origin.__setitem__
+     ~Origin.__setstate__
+     ~Origin.__str__
+     ~Origin.__subclasshook__
+  
+
+  
+  

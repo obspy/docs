@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.popitem
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.popitem

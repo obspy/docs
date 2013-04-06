@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.deleteResource
+========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.deleteResource

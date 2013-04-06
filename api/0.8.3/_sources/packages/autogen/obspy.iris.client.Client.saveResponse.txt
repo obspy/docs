@@ -1,0 +1,6 @@
+obspy.iris.client.Client.saveResponse
+=====================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.saveResponse

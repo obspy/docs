@@ -1,0 +1,665 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.sac.sacio.SacIO &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.sac.sacio" href="obspy.sac.sacio.html" />
+    <link rel="next" title="obspy.sac.sacio.SacIO.GetHvalue" href="obspy.sac.sacio.SacIO.GetHvalue.html" />
+    <link rel="prev" title="obspy.sac.sacio.attach_resp" href="obspy.sac.sacio.attach_resp.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.sac.sacio.SacIO.GetHvalue.html" title="obspy.sac.sacio.SacIO.GetHvalue"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.sac.sacio.attach_resp.html" title="obspy.sac.sacio.attach_resp"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.sac.html" >obspy.sac - SAC read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.sac.sacio.html" accesskey="U">obspy.sac.sacio</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-sac-sacio-sacio">
+<h1>obspy.sac.sacio.SacIO<a class="headerlink" href="#obspy-sac-sacio-sacio" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.sac.sacio.SacIO">
+<em class="property">class </em><tt class="descname">SacIO</tt><big>(</big><em>filen=False</em>, <em>headonly=False</em>, <em>alpha=False</em>, <em>debug_headers=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/sac/sacio.html#SacIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.sac.sacio.SacIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class for SAC file IO.</p>
+<p>Functions are given below, attributes/header
+fields (described below) can be directly accessed (via the
+<a class="reference internal" href="obspy.sac.sacio.SacIO.__getattr__.html#obspy.sac.sacio.SacIO.__getattr__" title="obspy.sac.sacio.SacIO.__getattr__"><tt class="xref py py-meth docutils literal"><span class="pre">__getattr__()</span></tt></a> method, see the link for
+an example).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="5%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>npts</td>
+<td>N</td>
+<td>Number of points per data component. [required]</td>
+</tr>
+<tr class="row-odd"><td>nvhdr</td>
+<td>N</td>
+<td>Header version number. Current value is the integer 6.
+Older version data (NVHDR &lt; 6) are automatically updated
+when read into sac. [required]</td>
+</tr>
+<tr class="row-even"><td>b</td>
+<td>F</td>
+<td>Beginning value of the independent variable. [required]</td>
+</tr>
+<tr class="row-odd"><td>e</td>
+<td>F</td>
+<td>Ending value of the independent variable. [required]</td>
+</tr>
+<tr class="row-even"><td>iftype</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Type of file [required]:</dt>
+<dd><ul class="first last simple">
+<li>ITIME {Time series file}</li>
+<li>IRLIM {Spectral file&#8212;real and imaginary}</li>
+<li>IAMPH {Spectral file&#8212;amplitude and phase}</li>
+<li>IXY {General x versus y data}</li>
+<li>IXYZ {General XYZ (3-D) file}</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>leven</td>
+<td>L</td>
+<td>TRUE if data is evenly spaced. [required]</td>
+</tr>
+<tr class="row-even"><td>delta</td>
+<td>F</td>
+<td>Increment between evenly spaced samples (nominal value).
+[required]</td>
+</tr>
+<tr class="row-odd"><td>odelta</td>
+<td>F</td>
+<td>Observed increment if different from nominal value.</td>
+</tr>
+<tr class="row-even"><td>idep</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Type of dependent variable:</dt>
+<dd><ul class="first last simple">
+<li>IUNKN (Unknown)</li>
+<li>IDISP (Displacement in nm)</li>
+<li>IVEL (Velocity in nm/sec)</li>
+<li>IVOLTS (Velocity in volts)</li>
+<li>IACC (Acceleration in nm/sec/sec)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>scale</td>
+<td>F</td>
+<td>Multiplying scale factor for dependent variable
+[not currently used]</td>
+</tr>
+<tr class="row-even"><td>depmin</td>
+<td>F</td>
+<td>Minimum value of dependent variable.</td>
+</tr>
+<tr class="row-odd"><td>depmax</td>
+<td>F</td>
+<td>Maximum value of dependent variable.</td>
+</tr>
+<tr class="row-even"><td>depmen</td>
+<td>F</td>
+<td>Mean value of dependent variable.</td>
+</tr>
+<tr class="row-odd"><td>nzyear</td>
+<td>N</td>
+<td>GMT year corresponding to reference (zero) time in file.</td>
+</tr>
+<tr class="row-even"><td>nyjday</td>
+<td>N</td>
+<td>GMT julian day.</td>
+</tr>
+<tr class="row-odd"><td>nyhour</td>
+<td>N</td>
+<td>GMT hour.</td>
+</tr>
+<tr class="row-even"><td>nzmin</td>
+<td>N</td>
+<td>GMT minute.</td>
+</tr>
+<tr class="row-odd"><td>nzsec</td>
+<td>N</td>
+<td>GMT second.</td>
+</tr>
+<tr class="row-even"><td>nzmsec</td>
+<td>N</td>
+<td>GMT millisecond.</td>
+</tr>
+<tr class="row-odd"><td>iztype</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Reference time equivalence:</dt>
+<dd><ul class="first last simple">
+<li>IUNKN (5): Unknown</li>
+<li>IB (9): Begin time</li>
+<li>IDAY (10): Midnight of refernece GMT day</li>
+<li>IO (11): Event origin time</li>
+<li>IA (12): First arrival time</li>
+<li>ITn (13-22): User defined time pick n, n=0,9</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td>o</td>
+<td>F</td>
+<td>Event origin time (seconds relative to reference time.)</td>
+</tr>
+<tr class="row-odd"><td>a</td>
+<td>F</td>
+<td>First arrival time (seconds relative to reference time.)</td>
+</tr>
+<tr class="row-even"><td>ka</td>
+<td>K</td>
+<td>First arrival time identification.</td>
+</tr>
+<tr class="row-odd"><td>f</td>
+<td>F</td>
+<td>Fini or end of event time (seconds relative to reference
+time.)</td>
+</tr>
+<tr class="row-even"><td>tn</td>
+<td>F</td>
+<td>User defined time {ai n}=0,9 (seconds picks or markers
+relative to reference time).</td>
+</tr>
+<tr class="row-odd"><td>kt{ai n}</td>
+<td>K</td>
+<td>A User defined time {ai n}=0,9.  pick identifications</td>
+</tr>
+<tr class="row-even"><td>kinst</td>
+<td>K</td>
+<td>Generic name of recording instrument</td>
+</tr>
+<tr class="row-odd"><td>iinst</td>
+<td>I</td>
+<td>Type of recording instrument. [currently not used]</td>
+</tr>
+<tr class="row-even"><td>knetwk</td>
+<td>K</td>
+<td>Name of seismic network.</td>
+</tr>
+<tr class="row-odd"><td>kstnm</td>
+<td>K</td>
+<td>Station name.</td>
+</tr>
+<tr class="row-even"><td>istreg</td>
+<td>I</td>
+<td>Station geographic region. [not currently used]</td>
+</tr>
+<tr class="row-odd"><td>stla</td>
+<td>F</td>
+<td>Station latitude (degrees, north positive)</td>
+</tr>
+<tr class="row-even"><td>stlo</td>
+<td>F</td>
+<td>Station longitude (degrees, east positive).</td>
+</tr>
+<tr class="row-odd"><td>stel</td>
+<td>F</td>
+<td>Station elevation (meters). [not currently used]</td>
+</tr>
+<tr class="row-even"><td>stdp</td>
+<td>F</td>
+<td>Station depth below surface (meters). [not currently
+used]</td>
+</tr>
+<tr class="row-odd"><td>cmpaz</td>
+<td>F</td>
+<td>Component azimuth (degrees, clockwise from north).</td>
+</tr>
+<tr class="row-even"><td>cmpinc</td>
+<td>F</td>
+<td>Component incident angle (degrees, from vertical).</td>
+</tr>
+<tr class="row-odd"><td>kcmpnm</td>
+<td>K</td>
+<td>Component name.</td>
+</tr>
+<tr class="row-even"><td>lpspol</td>
+<td>L</td>
+<td>TRUE if station components have a positive polarity
+(left-hand rule).</td>
+</tr>
+<tr class="row-odd"><td>kevnm</td>
+<td>K</td>
+<td>Event name.</td>
+</tr>
+<tr class="row-even"><td>ievreg</td>
+<td>I</td>
+<td>Event geographic region. [not currently used]</td>
+</tr>
+<tr class="row-odd"><td>evla</td>
+<td>F</td>
+<td>Event latitude (degrees north positive).</td>
+</tr>
+<tr class="row-even"><td>evlo</td>
+<td>F</td>
+<td>Event longitude (degrees east positive).</td>
+</tr>
+<tr class="row-odd"><td>evel</td>
+<td>F</td>
+<td>Event elevation (meters). [not currently used]</td>
+</tr>
+<tr class="row-even"><td>evdp</td>
+<td>F</td>
+<td>Event depth below surface (meters). [not currently used]</td>
+</tr>
+<tr class="row-odd"><td>mag</td>
+<td>F</td>
+<td>Event magnitude.</td>
+</tr>
+<tr class="row-even"><td>imagtyp</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Magnitude type:</dt>
+<dd><ul class="first last simple">
+<li>IMB (Bodywave Magnitude)</li>
+<li>IMS (Surfacewave Magnitude)</li>
+<li>IML (Local Magnitude)</li>
+<li>IMW (Moment Magnitude)</li>
+<li>IMD (Duration Magnitude)</li>
+<li>IMX (User Defined Magnitude)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>imagsrc</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Source of magnitude information:</dt>
+<dd><ul class="first last simple">
+<li>INEIC (National Earthquake Information Center)</li>
+<li>IPDE (Preliminary Determination of Epicenter)</li>
+<li>IISC (Internation Seismological Centre)</li>
+<li>IREB (Reviewed Event Bulletin)</li>
+<li>IUSGS (US Geological Survey)</li>
+<li>IBRK (UC Berkeley)</li>
+<li>ICALTECH (California Institute of Technology)</li>
+<li>ILLNL (Lawrence Livermore National Laboratory)</li>
+<li>IEVLOC (Event Location (computer program) )</li>
+<li>IJSOP (Joint Seismic Observation Program)</li>
+<li>IUSER (The individual using SAC2000)</li>
+<li>IUNKNOWN (unknown)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td>ievtyp</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Type of event:</dt>
+<dd><ul class="first last simple">
+<li>IUNKN (Unknown)</li>
+<li>INUCL (Nuclear event)</li>
+<li>IPREN (Nuclear pre-shot event)</li>
+<li>IPOSTN (Nuclear post-shot event)</li>
+<li>IQUAKE (Earthquake)</li>
+<li>IPREQ (Foreshock)</li>
+<li>IPOSTQ (Aftershock)</li>
+<li>ICHEM (Chemical explosion)</li>
+<li>IQB (Quarry or mine blast confirmed by quarry)</li>
+<li>IQB1 (Quarry/mine blast with designed shot
+info-ripple fired)</li>
+<li>IQB2 (Quarry/mine blast with observed shot
+info-ripple fired)</li>
+<li>IQMT (Quarry/mining-induced events:
+tremors and rockbursts)</li>
+<li>IEQ (Earthquake)</li>
+<li>IEQ1 (Earthquakes in a swarm or aftershock
+sequence)</li>
+<li>IEQ2 (Felt earthquake)</li>
+<li>IME (Marine explosion)</li>
+<li>IEX (Other explosion)</li>
+<li>INU (Nuclear explosion)</li>
+<li>INC (Nuclear cavity collapse)</li>
+<li>IO_ (Other source of known origin)</li>
+<li>IR (Regional event of unknown origin)</li>
+<li>IT (Teleseismic event of unknown origin)</li>
+<li>IU (Undetermined or conflicting information)</li>
+<li>IOTHER (Other)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>nevid</td>
+<td>N</td>
+<td>Event ID (CSS 3.0)</td>
+</tr>
+<tr class="row-even"><td>norid</td>
+<td>N</td>
+<td>Origin ID (CSS 3.0)</td>
+</tr>
+<tr class="row-odd"><td>nwfid</td>
+<td>N</td>
+<td>Waveform ID (CSS 3.0)</td>
+</tr>
+<tr class="row-even"><td>khole</td>
+<td>k</td>
+<td>Hole identification if nuclear event.</td>
+</tr>
+<tr class="row-odd"><td>dist</td>
+<td>F</td>
+<td>Station to event distance (km).</td>
+</tr>
+<tr class="row-even"><td>az</td>
+<td>F</td>
+<td>Event to station azimuth (degrees).</td>
+</tr>
+<tr class="row-odd"><td>baz</td>
+<td>F</td>
+<td>Station to event azimuth (degrees).</td>
+</tr>
+<tr class="row-even"><td>gcarc</td>
+<td>F</td>
+<td>Station to event great circle arc length (degrees).</td>
+</tr>
+<tr class="row-odd"><td>lcalda</td>
+<td>L</td>
+<td>TRUE if DIST AZ BAZ and GCARC are to be calculated from
+st event coordinates.</td>
+</tr>
+<tr class="row-even"><td>iqual</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Quality of data [not currently used]:</dt>
+<dd><ul class="first last simple">
+<li>IGOOD (Good data)</li>
+<li>IGLCH (Glitches)</li>
+<li>IDROP (Dropouts)</li>
+<li>ILOWSN (Low signal to noise ratio)</li>
+<li>IOTHER (Other)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-odd"><td>isynth</td>
+<td>I</td>
+<td><dl class="first last docutils">
+<dt>Synthetic data flag [not currently used]:</dt>
+<dd><ul class="first last simple">
+<li>IRLDTA (Real data)</li>
+<li>????? (Flags for various synthetic seismogram
+codes)</li>
+</ul>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td>user{ai n}</td>
+<td>F</td>
+<td>User defined variable storage area {ai n}=0,9.</td>
+</tr>
+<tr class="row-odd"><td>kuser{ai n}</td>
+<td>K</td>
+<td>User defined variable storage area {ai n}=0,2.</td>
+</tr>
+<tr class="row-even"><td>lovrok</td>
+<td>L</td>
+<td>TRUE if it is okay to overwrite this file on disk.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.GetHvalue.html#obspy.sac.sacio.SacIO.GetHvalue" title="obspy.sac.sacio.SacIO.GetHvalue"><tt class="xref py py-obj docutils literal"><span class="pre">GetHvalue</span></tt></a></td>
+<td>Read SAC-header variable.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.GetHvalueFromFile.html#obspy.sac.sacio.SacIO.GetHvalueFromFile" title="obspy.sac.sacio.SacIO.GetHvalueFromFile"><tt class="xref py py-obj docutils literal"><span class="pre">GetHvalueFromFile</span></tt></a></td>
+<td>Quick access to a specific header item in specified file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.InitArrays.html#obspy.sac.sacio.SacIO.InitArrays" title="obspy.sac.sacio.SacIO.InitArrays"><tt class="xref py py-obj docutils literal"><span class="pre">InitArrays</span></tt></a></td>
+<td>Function to initialize the floating, character and integer header arrays (self.hf, self.hs, self.hi) with dummy values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.IsSACfile.html#obspy.sac.sacio.SacIO.IsSACfile" title="obspy.sac.sacio.SacIO.IsSACfile"><tt class="xref py py-obj docutils literal"><span class="pre">IsSACfile</span></tt></a></td>
+<td>Test for a valid SAC file using arrays.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.IsValidSacFile.html#obspy.sac.sacio.SacIO.IsValidSacFile" title="obspy.sac.sacio.SacIO.IsValidSacFile"><tt class="xref py py-obj docutils literal"><span class="pre">IsValidSacFile</span></tt></a></td>
+<td>Quick test for a valid SAC binary file (wraps &#8216;IsSACfile&#8217;).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.IsValidXYSacFile.html#obspy.sac.sacio.SacIO.IsValidXYSacFile" title="obspy.sac.sacio.SacIO.IsValidXYSacFile"><tt class="xref py py-obj docutils literal"><span class="pre">IsValidXYSacFile</span></tt></a></td>
+<td>Quick test for a valid SAC ascii file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.ListStdValues.html#obspy.sac.sacio.SacIO.ListStdValues" title="obspy.sac.sacio.SacIO.ListStdValues"><tt class="xref py py-obj docutils literal"><span class="pre">ListStdValues</span></tt></a></td>
+<td>Convenience function for printing common header values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.PrintFValue.html#obspy.sac.sacio.SacIO.PrintFValue" title="obspy.sac.sacio.SacIO.PrintFValue"><tt class="xref py py-obj docutils literal"><span class="pre">PrintFValue</span></tt></a></td>
+<td>Convenience function for printing undefined float header values.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.PrintIValue.html#obspy.sac.sacio.SacIO.PrintIValue" title="obspy.sac.sacio.SacIO.PrintIValue"><tt class="xref py py-obj docutils literal"><span class="pre">PrintIValue</span></tt></a></td>
+<td>Convenience function for printing undefined integer header values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.PrintSValue.html#obspy.sac.sacio.SacIO.PrintSValue" title="obspy.sac.sacio.SacIO.PrintSValue"><tt class="xref py py-obj docutils literal"><span class="pre">PrintSValue</span></tt></a></td>
+<td>Convenience function for printing undefined string header values.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.ReadSacFile.html#obspy.sac.sacio.SacIO.ReadSacFile" title="obspy.sac.sacio.SacIO.ReadSacFile"><tt class="xref py py-obj docutils literal"><span class="pre">ReadSacFile</span></tt></a></td>
+<td>Read read in the header and data in a SAC file</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.ReadSacHeader.html#obspy.sac.sacio.SacIO.ReadSacHeader" title="obspy.sac.sacio.SacIO.ReadSacHeader"><tt class="xref py py-obj docutils literal"><span class="pre">ReadSacHeader</span></tt></a></td>
+<td>Reads only the header portion of a binary SAC-file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.ReadSacXY.html#obspy.sac.sacio.SacIO.ReadSacXY" title="obspy.sac.sacio.SacIO.ReadSacXY"><tt class="xref py py-obj docutils literal"><span class="pre">ReadSacXY</span></tt></a></td>
+<td>Read SAC XY files (ascii)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.ReadSacXYHeader.html#obspy.sac.sacio.SacIO.ReadSacXYHeader" title="obspy.sac.sacio.SacIO.ReadSacXYHeader"><tt class="xref py py-obj docutils literal"><span class="pre">ReadSacXYHeader</span></tt></a></td>
+<td>Read SAC XY files (ascii)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.SetHvalue.html#obspy.sac.sacio.SacIO.SetHvalue" title="obspy.sac.sacio.SacIO.SetHvalue"><tt class="xref py py-obj docutils literal"><span class="pre">SetHvalue</span></tt></a></td>
+<td>Assign new value to SAC-header variable.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.SetHvalueInFile.html#obspy.sac.sacio.SacIO.SetHvalueInFile" title="obspy.sac.sacio.SacIO.SetHvalueInFile"><tt class="xref py py-obj docutils literal"><span class="pre">SetHvalueInFile</span></tt></a></td>
+<td>Quick access to change a specific header item in a specified file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.WriteSacBinary.html#obspy.sac.sacio.SacIO.WriteSacBinary" title="obspy.sac.sacio.SacIO.WriteSacBinary"><tt class="xref py py-obj docutils literal"><span class="pre">WriteSacBinary</span></tt></a></td>
+<td>Write a SAC binary file using the head arrays and array seis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.WriteSacHeader.html#obspy.sac.sacio.SacIO.WriteSacHeader" title="obspy.sac.sacio.SacIO.WriteSacHeader"><tt class="xref py py-obj docutils literal"><span class="pre">WriteSacHeader</span></tt></a></td>
+<td>Writes an updated header to an</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.WriteSacXY.html#obspy.sac.sacio.SacIO.WriteSacXY" title="obspy.sac.sacio.SacIO.WriteSacXY"><tt class="xref py py-obj docutils literal"><span class="pre">WriteSacXY</span></tt></a></td>
+<td>Write SAC XY file (ascii)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.fromarray.html#obspy.sac.sacio.SacIO.fromarray" title="obspy.sac.sacio.SacIO.fromarray"><tt class="xref py py-obj docutils literal"><span class="pre">fromarray</span></tt></a></td>
+<td>Create a SAC file from an numpy.ndarray instance</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.get_obspy_header.html#obspy.sac.sacio.SacIO.get_obspy_header" title="obspy.sac.sacio.SacIO.get_obspy_header"><tt class="xref py py-obj docutils literal"><span class="pre">get_obspy_header</span></tt></a></td>
+<td>Return a dictionary that can be used as a header in creating a new</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.readTrace.html#obspy.sac.sacio.SacIO.readTrace" title="obspy.sac.sacio.SacIO.readTrace"><tt class="xref py py-obj docutils literal"><span class="pre">readTrace</span></tt></a></td>
+<td>Fill in SacIO object with data from obspy trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.swap_byte_order.html#obspy.sac.sacio.SacIO.swap_byte_order" title="obspy.sac.sacio.SacIO.swap_byte_order"><tt class="xref py py-obj docutils literal"><span class="pre">swap_byte_order</span></tt></a></td>
+<td>Swap byte order of SAC-file in memory.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO._chck_header.html#obspy.sac.sacio.SacIO._chck_header" title="obspy.sac.sacio.SacIO._chck_header"><tt class="xref py py-obj docutils literal"><span class="pre">_chck_header</span></tt></a></td>
+<td>If trace changed since read, adapt header values</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO._get_date.html#obspy.sac.sacio.SacIO._get_date" title="obspy.sac.sacio.SacIO._get_date"><tt class="xref py py-obj docutils literal"><span class="pre">_get_date</span></tt></a></td>
+<td>If date header values are set calculate date in julian seconds</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO._get_dist.html#obspy.sac.sacio.SacIO._get_dist" title="obspy.sac.sacio.SacIO._get_dist"><tt class="xref py py-obj docutils literal"><span class="pre">_get_dist</span></tt></a></td>
+<td>calculate distance from station and event coordinates</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.__getattr__.html#obspy.sac.sacio.SacIO.__getattr__" title="obspy.sac.sacio.SacIO.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td>convenience function to access header values</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.sac.sacio.SacIO.__init__.html#obspy.sac.sacio.SacIO.__init__" title="obspy.sac.sacio.SacIO.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.sac.sacio.SacIO.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.sac.sacio.SacIO.GetHvalue.html" title="obspy.sac.sacio.SacIO.GetHvalue"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.sac.sacio.attach_resp.html" title="obspy.sac.sacio.attach_resp"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.sac.html" >obspy.sac - SAC read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.sac.sacio.html" >obspy.sac.sacio</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

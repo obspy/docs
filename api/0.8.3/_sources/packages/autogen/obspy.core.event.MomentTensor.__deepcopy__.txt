@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__deepcopy__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__deepcopy__

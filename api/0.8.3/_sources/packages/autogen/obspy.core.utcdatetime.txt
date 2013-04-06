@@ -1,0 +1,28 @@
+obspy.core.utcdatetime
+======================
+
+.. currentmodule:: obspy.core.utcdatetime
+.. automodule:: obspy.core.utcdatetime
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      UTCDateTime
+   
+   
+
+   
+   
+   

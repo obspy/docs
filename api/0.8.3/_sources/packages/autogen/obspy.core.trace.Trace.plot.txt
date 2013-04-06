@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.plot
+===========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.plot

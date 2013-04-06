@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.copy
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.copy

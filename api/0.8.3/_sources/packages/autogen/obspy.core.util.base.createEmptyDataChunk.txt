@@ -1,0 +1,6 @@
+obspy.core.util.base.createEmptyDataChunk
+=========================================
+
+.. currentmodule:: obspy.core.util.base
+
+.. autofunction:: createEmptyDataChunk

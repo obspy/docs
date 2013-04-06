@@ -1,0 +1,6 @@
+obspy.realtime.rtmemory.RtMemory.initialize
+===========================================
+
+.. currentmodule:: obspy.realtime.rtmemory
+
+.. automethod:: RtMemory.initialize

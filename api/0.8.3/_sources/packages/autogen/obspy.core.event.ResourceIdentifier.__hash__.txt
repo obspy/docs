@@ -1,0 +1,6 @@
+obspy.core.event.ResourceIdentifier.__hash__
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ResourceIdentifier.__hash__

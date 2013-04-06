@@ -1,0 +1,6 @@
+obspy.wav.core.isWAV
+====================
+
+.. currentmodule:: obspy.wav.core
+
+.. autofunction:: isWAV

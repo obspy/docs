@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace._addProcessingInfo
+=================================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace._addProcessingInfo

@@ -1,0 +1,6 @@
+obspy.core.event.Origin.__getitem__
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.__getitem__

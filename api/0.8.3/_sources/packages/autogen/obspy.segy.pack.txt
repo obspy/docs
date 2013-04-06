@@ -1,0 +1,42 @@
+obspy.segy.pack
+===============
+
+.. currentmodule:: obspy.segy.pack
+.. automodule:: obspy.segy.pack
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      pack_1byte_Integer
+      pack_2byte_Integer
+      pack_4byte_Fixed_point
+      pack_4byte_IBM
+      pack_4byte_IEEE
+      pack_4byte_Integer
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      WrongDtypeException
+   
+   

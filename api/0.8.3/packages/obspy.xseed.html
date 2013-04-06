@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.xseed.parser.Parser" href="autogen/obspy.xseed.parser.Parser.html" />
+    <link rel="prev" title="obspy.taup.taup.travelTimePlot" href="autogen/obspy.taup.taup.travelTimePlot.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.xseed.parser.Parser.html" title="obspy.xseed.parser.Parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.taup.taup.travelTimePlot.html" title="obspy.taup.taup.travelTimePlot"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.xseed"></span><div class="section" id="obspy-xseed-dataless-seed-resp-and-xml-seed-read-and-write-support-for-obspy">
+<h1>obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy<a class="headerlink" href="#obspy-xseed-dataless-seed-resp-and-xml-seed-read-and-write-support-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p><cite>XML-SEED</cite> was introduced by Tsuboi, Tromp and Komatitsch (2004), it is a XML
+representation of <cite>Dataless SEED</cite>. This module contains converters from
+<cite>Dataless SEED</cite> to <cite>XML-SEED</cite> and vice versa as well as a converter from
+<cite>Dataless SEED</cite> to <cite>RESP</cite> files. The <a class="reference internal" href="#module-obspy.xseed" title="obspy.xseed"><tt class="xref py py-mod docutils literal"><span class="pre">xseed</span></tt></a> module is tested
+against the complete ORFEUS Dataless SEED archive, the IRIS (US) Dataless SEED
+archive and against ArcLink response requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="allocate-a-parser-object-and-read-write">
+<h2>Allocate a Parser object and read/write<a class="headerlink" href="#allocate-a-parser-object-and-read-write" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.xseed</span> <span class="kn">import</span> <span class="n">Parser</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="s">&quot;/path/to/dataless.seed.BW_FURT&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">writeXSEED</span><span class="p">(</span><span class="s">&quot;dataless.seed.BW_RJOB.xml&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>The lines above will convert <cite>Dataless SEED</cite>, e.g.:</p>
+<div class="highlight-python"><pre>000001V 010009402.3121970,001,00:00:00.0000~2038,001,00:00:00.0000~
+2009,037,04:32:41.0000~BayernNetz~~0110032002RJOB 000003RJOB 000008
+...</pre>
+</div>
+<p>to the <cite>XML-SEED</cite> representation, e.g.:</p>
+<div class="highlight-python"><pre>&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;xseed version="1.0"&gt;
+  &lt;volume_index_control_header&gt;
+    &lt;volume_identifier blockette="010"&gt;
+      &lt;version_of_format&gt;2.4&lt;/version_of_format&gt;
+      &lt;logical_record_length&gt;12&lt;/logical_record_length&gt;
+      &lt;beginning_time&gt;1970-01-01T00:00:00&lt;/beginning_time&gt;
+      &lt;end_time&gt;2038-01-01T00:00:00&lt;/end_time&gt;
+      &lt;volume_time&gt;2009-02-06T04:32:41&lt;/volume_time&gt;
+      &lt;originating_organization&gt;BayernNetz&lt;/originating_organization&gt;
+...</pre>
+</div>
+<p>A response file can be written in a similar manner, just replace
+<a class="reference internal" href="autogen/obspy.xseed.parser.Parser.writeXSEED.html#obspy.xseed.parser.Parser.writeXSEED" title="obspy.xseed.parser.Parser.writeXSEED"><tt class="xref py py-meth docutils literal"><span class="pre">writeXSEED()</span></tt></a> by
+<a class="reference internal" href="autogen/obspy.xseed.parser.Parser.writeRESP.html#obspy.xseed.parser.Parser.writeRESP" title="obspy.xseed.parser.Parser.writeRESP"><tt class="xref py py-meth docutils literal"><span class="pre">writeRESP()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">writeRESP</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="s">&quot;BW_FURT&quot;</span><span class="p">,</span> <span class="n">zipped</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-parser-object">
+<h2>The Parser Object<a class="headerlink" href="#the-parser-object" title="Permalink to this headline">¶</a></h2>
+<p><cite>SEED</cite> files as well as its derived format <cite>XML-SEED</cite> will be
+parsed in a <a class="reference internal" href="autogen/obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser" title="obspy.xseed.parser.Parser"><tt class="xref py py-class docutils literal"><span class="pre">Parser</span></tt></a> structure.</p>
+<p><cite>SEED</cite> volumes have four different volume types:</p>
+<ul class="simple">
+<li>Volume Index Control Headers</li>
+<li>Abbreviation Dictionary Control Headers</li>
+<li>Station Control Headers</li>
+<li>Time Span Control Headers (currently not supported by ObsPy. Some dummy
+headers will be written in case they are needed by SEED/XSEED conventions.)</li>
+</ul>
+<p>After parsing a <cite>SEED</cite> or <cite>XML-SEED</cite> file the Blockette objects for each
+volume will be stored in the attributes``Parser.volume``,
+<tt class="docutils literal"><span class="pre">Parser.abbreviations</span></tt> and <tt class="docutils literal"><span class="pre">Parser.stations</span></tt>. Each item is a list of all
+related Blockettes and <tt class="docutils literal"><span class="pre">Parser.stations</span></tt> is a list of stations which contains
+all related Blockettes.</p>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser" title="obspy.xseed.parser.Parser"><tt class="xref py py-obj docutils literal"><span class="pre">parser.Parser</span></tt></a></td>
+<td>The XML-SEED parser class parses dataless or full SEED volumes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.xseed.fields.html#module-obspy.xseed.fields" title="obspy.xseed.fields"><tt class="xref py py-obj docutils literal"><span class="pre">fields</span></tt></a></td>
+<td>Helper module containing xseed fields.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.xseed.parser.html#module-obspy.xseed.parser" title="obspy.xseed.parser"><tt class="xref py py-obj docutils literal"><span class="pre">parser</span></tt></a></td>
+<td>Main module containing XML-SEED parser.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.xseed.utils.html#module-obspy.xseed.utils" title="obspy.xseed.utils"><tt class="xref py py-obj docutils literal"><span class="pre">utils</span></tt></a></td>
+<td>Various additional utilities for ObsPy xseed.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scripts">
+<h2>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.xseed.scripts.dataless2resp.html#module-obspy.xseed.scripts.dataless2resp" title="obspy.xseed.scripts.dataless2resp"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.dataless2resp</span></tt></a></td>
+<td>A command-line program that converts Dataless SEED into RESP files.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.xseed.scripts.dataless2xseed.html#module-obspy.xseed.scripts.dataless2xseed" title="obspy.xseed.scripts.dataless2xseed"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.dataless2xseed</span></tt></a></td>
+<td>A command-line program that converts Dataless SEED into XML-SEED files.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.xseed.scripts.xseed2dataless.html#module-obspy.xseed.scripts.xseed2dataless" title="obspy.xseed.scripts.xseed2dataless"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.xseed2dataless</span></tt></a></td>
+<td>A command-line program that converts XML-SEED into Dataless SEED files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy</a><ul>
+<li><a class="reference internal" href="#allocate-a-parser-object-and-read-write">Allocate a Parser object and read/write</a></li>
+<li><a class="reference internal" href="#the-parser-object">The Parser Object</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts">Scripts</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.xseed.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.xseed.parser.Parser.html" title="obspy.xseed.parser.Parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.taup.taup.travelTimePlot.html" title="obspy.taup.taup.travelTimePlot"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

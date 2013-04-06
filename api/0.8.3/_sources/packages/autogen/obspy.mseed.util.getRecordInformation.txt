@@ -1,0 +1,6 @@
+obspy.mseed.util.getRecordInformation
+=====================================
+
+.. currentmodule:: obspy.mseed.util
+
+.. autofunction:: getRecordInformation

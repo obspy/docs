@@ -1,0 +1,6 @@
+obspy.gse2.libgse2.writeHeader
+==============================
+
+.. currentmodule:: obspy.gse2.libgse2
+
+.. autofunction:: writeHeader

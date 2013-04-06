@@ -1,0 +1,168 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.tf_misfit.teg &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.tf_misfit" href="obspy.signal.tf_misfit.html" />
+    <link rel="next" title="obspy.signal.tf_misfit.tem" href="obspy.signal.tf_misfit.tem.html" />
+    <link rel="prev" title="obspy.signal.tf_misfit.pm" href="obspy.signal.tf_misfit.pm.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.tem.html" title="obspy.signal.tf_misfit.tem"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.pm.html" title="obspy.signal.tf_misfit.pm"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" accesskey="U">obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-tf-misfit-teg">
+<h1>obspy.signal.tf_misfit.teg<a class="headerlink" href="#obspy-signal-tf-misfit-teg" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.tf_misfit.teg">
+<tt class="descname">teg</tt><big>(</big><em>st1</em>, <em>st2</em>, <em>dt=0.01</em>, <em>fmin=1.0</em>, <em>fmax=10.0</em>, <em>nf=100</em>, <em>w0=6</em>, <em>norm='global'</em>, <em>st2_isref=True</em>, <em>A=10.0</em>, <em>k=1.0</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/tf_misfit.html#teg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.tf_misfit.teg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time Dependent Envelope Goodness-Of-Fit</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../citations.html#kristekova2009">[Kristekova2009]</a>, Eq.(15)</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>st1</strong> <span class="dash" /> signal 1 of two signals to compare, type numpy.ndarray with
+shape (number of components, number of time samples) or (number of
+timesamples, ) for single component data</li>
+<li><strong>st2</strong> <span class="dash" /> signal 2 of two signals to compare, type and shape as st1</li>
+<li><strong>dt</strong> <span class="dash" /> time step between two samples in st1 and st2</li>
+<li><strong>fmin</strong> <span class="dash" /> minimal frequency to be analyzed</li>
+<li><strong>fmax</strong> <span class="dash" /> maximal frequency to be analyzed</li>
+<li><strong>nf</strong> <span class="dash" /> number of frequencies (will be chosen with logarithmic spacing)</li>
+<li><strong>w0</strong> <span class="dash" /> parameter for the wavelet, tradeoff between time and frequency
+resolution</li>
+<li><strong>norm</strong> <span class="dash" /> &#8216;global&#8217; or &#8216;local&#8217; normalization of the misfit</li>
+<li><strong>st2_isref</strong> <span class="dash" /> Boolean, True if st2 is a reference signal, False if none
+is a reference</li>
+<li><strong>A</strong> <span class="dash" /> Maximum value of Goodness-Of-Fit for perfect agreement</li>
+<li><strong>k</strong> <span class="dash" /> sensitivity of Goodness-Of-Fit to the misfit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time dependent Envelope Goodness-Of-Fit, type numpy.ndarray with
+shape (len(st1),) for single component data and (number of components,
+len(st1)) for multicomponent data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.tf_misfit.teg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.tem.html" title="obspy.signal.tf_misfit.tem"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.pm.html" title="obspy.signal.tf_misfit.pm"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" >obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

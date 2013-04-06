@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.__deepcopy__
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.__deepcopy__

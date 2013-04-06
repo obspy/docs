@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.core.readMSEED &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.core" href="obspy.mseed.core.html" />
+    <link rel="next" title="obspy.mseed.core.writeMSEED" href="obspy.mseed.core.writeMSEED.html" />
+    <link rel="prev" title="obspy.mseed.core.isMSEED" href="obspy.mseed.core.isMSEED.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.writeMSEED.html" title="obspy.mseed.core.writeMSEED"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.isMSEED.html" title="obspy.mseed.core.isMSEED"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" accesskey="U">obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-core-readmseed">
+<h1>obspy.mseed.core.readMSEED<a class="headerlink" href="#obspy-mseed-core-readmseed" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.core.readMSEED">
+<tt class="descname">readMSEED</tt><big>(</big><em>mseed_object</em>, <em>starttime=None</em>, <em>endtime=None</em>, <em>headonly=False</em>, <em>sourcename=None</em>, <em>reclen=None</em>, <em>recinfo=True</em>, <em>details=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/core.html#readMSEED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.core.readMSEED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a Mini-SEED file and returns a Stream object.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function should NOT be called directly, it registers via the
+ObsPy <a class="reference internal" href="obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function, call this instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mseed_object</strong> <span class="dash" /> Filename or open file like object that contains the
+binary Mini-SEED data. Any object that provides a read() method will be
+considered to be a file like object.</li>
+<li><strong>starttime</strong> (<em>UTCDateTime</em>) <span class="dash" /> Only read data samples after or at the starttime.</li>
+<li><strong>endtime</strong> (<em>UTCDateTime</em>) <span class="dash" /> Only read data samples before or at the starttime.</li>
+<li><strong>headonly</strong> <span class="dash" /> Determines whether or not to unpack the data or just
+read the headers.</li>
+<li><strong>sourcename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Sourcename has to have the structure
+&#8216;network.station.location.channel&#8217; and can contain globbing characters.
+Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>reclen</strong> <span class="dash" /> If it is None, it will be automatically determined for every
+record. If it is known, just set it to the record length in bytes which
+will increase the reading speed slightly.</li>
+<li><strong>recinfo</strong> (<em>bool, optional</em>) <span class="dash" /> If <tt class="docutils literal"><span class="pre">True</span></tt> the byteorder, record length and the
+encoding of the file will be read and stored in every Trace&#8217;s
+stats.mseed AttribDict. These stored attributes will also be used while
+writing a Mini-SEED file. Only the very first record of the file will
+be read and all following records are assumed to be the same. Defaults
+to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>details</strong> (<em>bool, optional</em>) <span class="dash" /> If <tt class="docutils literal"><span class="pre">True</span></tt> read additional information: timing quality
+and availability of calibration information.
+Note, that the traces are then also split on these additional
+information. Thus the number of traces in a stream will change.
+Details are stored in the mseed stats AttribDict of each trace.
+-1 specifies for both cases, that these information is not available.
+<tt class="docutils literal"><span class="pre">timing_quality</span></tt> specifies the timing quality from 0 to 100 [%].
+<tt class="docutils literal"><span class="pre">calibration_type</span></tt> specifies the type of available calibration
+information: 1 == Step Calibration, 2 == Sine Calibration, 3 ==
+Pseudo-random Calibration, 4 == Generic Calibration and -2 ==
+Calibration Abort.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/two_channels.mseed&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">2 Trace(s) in Stream:</span>
+<span class="go">BW.UH3..EHE | 2010-06-20T00:00:00.279999Z - ... | 200.0 Hz, 386 samples</span>
+<span class="go">BW.UH3..EHZ | 2010-06-20T00:00:00.279999Z - ... | 200.0 Hz, 386 samples</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/test.mseed&quot;</span><span class="p">,</span>
+<span class="gp">... </span>          <span class="n">starttime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2003-05-29T02:16:00&quot;</span><span class="p">),</span>
+<span class="gp">... </span>          <span class="n">selection</span><span class="o">=</span><span class="s">&quot;NL.*.*.?HZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">NL.HGN.00.BHZ | 2003-05-29T02:15:59.993400Z - ... | 40.0 Hz, 5629 samples</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.core.readMSEED.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.writeMSEED.html" title="obspy.mseed.core.writeMSEED"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.isMSEED.html" title="obspy.mseed.core.isMSEED"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" >obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

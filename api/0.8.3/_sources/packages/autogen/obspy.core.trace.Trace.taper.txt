@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.taper
+============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.taper

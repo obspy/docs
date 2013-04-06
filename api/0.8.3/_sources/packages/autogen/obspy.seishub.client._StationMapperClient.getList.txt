@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.getList
+=================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.getList

@@ -1,0 +1,6 @@
+obspy.imaging.beachball.AuxPlane
+================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: AuxPlane

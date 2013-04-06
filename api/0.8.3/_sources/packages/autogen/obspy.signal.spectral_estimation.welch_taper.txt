@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.welch_taper
+============================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. autofunction:: welch_taper

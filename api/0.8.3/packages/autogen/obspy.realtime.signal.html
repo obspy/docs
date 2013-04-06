@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.signal &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.realtime - Real time support for ObsPy" href="../obspy.realtime.html" />
+    <link rel="next" title="obspy.realtime.signal.boxcar" href="obspy.realtime.signal.boxcar.html" />
+    <link rel="prev" title="obspy.realtime.rtmemory.RtMemory.__init__" href="obspy.realtime.rtmemory.RtMemory.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.signal.boxcar.html" title="obspy.realtime.signal.boxcar"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rtmemory.RtMemory.__init__.html" title="obspy.realtime.rtmemory.RtMemory.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" accesskey="U">obspy.realtime - Real time support for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.realtime.signal">
+<span id="obspy-realtime-signal"></span><h1>obspy.realtime.signal<a class="headerlink" href="#module-obspy.realtime.signal" title="Permalink to this headline">¶</a></h1>
+<p>Signal processing functions for RtMemory objects.</p>
+<p>For sequential packet processing that requires memory (which includes recursive
+filtering), each processing function (e.g., <a class="reference internal" href="#module-obspy.realtime.signal" title="obspy.realtime.signal"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.realtime.signal</span></tt></a>)
+needs to manage the initialization and update of
+<a class="reference internal" href="obspy.realtime.rtmemory.RtMemory.html#obspy.realtime.rtmemory.RtMemory" title="obspy.realtime.rtmemory.RtMemory"><tt class="xref py py-class docutils literal"><span class="pre">RtMemory</span></tt></a> object(s), and needs to know when
+and how to get values from this memory.</p>
+<p>For example: Boxcar smoothing: For each new data point available past the end
+of the boxcar, the original, un-smoothed data point value at the beginning of
+the boxcar has to be subtracted from the running boxcar sum, this value may be
+in a previous packet, so has to be retrieved from memory see
+<a class="reference internal" href="obspy.realtime.signal.boxcar.html#obspy.realtime.signal.boxcar" title="obspy.realtime.signal.boxcar"><tt class="xref py py-func docutils literal"><span class="pre">obspy.realtime.signal.boxcar()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>) &amp; Anthony Lomax</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.signal.boxcar.html#obspy.realtime.signal.boxcar" title="obspy.realtime.signal.boxcar"><tt class="xref py py-obj docutils literal"><span class="pre">boxcar</span></tt></a></td>
+<td>Apply boxcar smoothing to data in array sample.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.signal.calculateMwpMag.html#obspy.realtime.signal.calculateMwpMag" title="obspy.realtime.signal.calculateMwpMag"><tt class="xref py py-obj docutils literal"><span class="pre">calculateMwpMag</span></tt></a></td>
+<td>Calculate Mwp magnitude.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.signal.differentiate.html#obspy.realtime.signal.differentiate" title="obspy.realtime.signal.differentiate"><tt class="xref py py-obj docutils literal"><span class="pre">differentiate</span></tt></a></td>
+<td>Apply simple differentiation to array data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.signal.integrate.html#obspy.realtime.signal.integrate" title="obspy.realtime.signal.integrate"><tt class="xref py py-obj docutils literal"><span class="pre">integrate</span></tt></a></td>
+<td>Apply simple rectangular integration to array data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.signal.mwpIntegral.html#obspy.realtime.signal.mwpIntegral" title="obspy.realtime.signal.mwpIntegral"><tt class="xref py py-obj docutils literal"><span class="pre">mwpIntegral</span></tt></a></td>
+<td>Calculate Mwp integral on a displacement trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.signal.scale.html#obspy.realtime.signal.scale" title="obspy.realtime.signal.scale"><tt class="xref py py-obj docutils literal"><span class="pre">scale</span></tt></a></td>
+<td>Scale array data samples by specified factor.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.signal.tauc.html#obspy.realtime.signal.tauc" title="obspy.realtime.signal.tauc"><tt class="xref py py-obj docutils literal"><span class="pre">tauc</span></tt></a></td>
+<td>Calculate instantaneous period in a fixed window (Tau_c).</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.realtime.signal.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.signal.boxcar.html" title="obspy.realtime.signal.boxcar"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rtmemory.RtMemory.__init__.html" title="obspy.realtime.rtmemory.RtMemory.__init__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

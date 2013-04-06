@@ -1,0 +1,81 @@
+obspy.segy.segy.SEGYTrace
+=========================
+
+.. currentmodule:: obspy.segy.segy
+.. autoclass:: SEGYTrace
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SEGYTrace.__dict__
+     ~SEGYTrace.__doc__
+     ~SEGYTrace.__module__
+     ~SEGYTrace.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTrace.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTrace._createEmptyTrace
+     ~SEGYTrace._readTrace
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTrace.__getattr__
+     ~SEGYTrace.__init__
+     ~SEGYTrace.__str__
+  
+
+  
+  

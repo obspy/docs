@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.copy
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.copy

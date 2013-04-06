@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.cfrequency
+======================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: cfrequency

@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.__eq__
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.__eq__

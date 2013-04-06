@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.__init__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.__init__

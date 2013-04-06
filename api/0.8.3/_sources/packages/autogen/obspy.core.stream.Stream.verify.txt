@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.verify
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.verify

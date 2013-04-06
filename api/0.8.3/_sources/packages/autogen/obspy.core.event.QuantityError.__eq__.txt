@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.__eq__
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.__eq__

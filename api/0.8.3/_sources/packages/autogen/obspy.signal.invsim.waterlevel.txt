@@ -1,0 +1,6 @@
+obspy.signal.invsim.waterlevel
+==============================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: waterlevel

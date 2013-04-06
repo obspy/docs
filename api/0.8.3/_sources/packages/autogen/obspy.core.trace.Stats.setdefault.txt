@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.setdefault
+=================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.setdefault

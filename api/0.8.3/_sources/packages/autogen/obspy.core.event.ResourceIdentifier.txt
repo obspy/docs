@@ -1,0 +1,114 @@
+obspy.core.event.ResourceIdentifier
+===================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: ResourceIdentifier
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~ResourceIdentifier.__dict__
+     ~ResourceIdentifier.__doc__
+     ~ResourceIdentifier.__module__
+     ~ResourceIdentifier.__weakref__
+     ~ResourceIdentifier.resource_id
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ResourceIdentifier.convertIDToQuakeMLURI
+     ~ResourceIdentifier.copy
+     ~ResourceIdentifier.getQuakeMLURI
+     ~ResourceIdentifier.getReferredObject
+     ~ResourceIdentifier.setReferredObject
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ResourceIdentifier._ResourceIdentifier__delResourceID
+     ~ResourceIdentifier._ResourceIdentifier__getResourceID
+     ~ResourceIdentifier._ResourceIdentifier__setResourceID
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ResourceIdentifier.__eq__
+     ~ResourceIdentifier.__hash__
+     ~ResourceIdentifier.__init__
+     ~ResourceIdentifier.__ne__
+     ~ResourceIdentifier.__repr__
+     ~ResourceIdentifier.__str__
+  
+
+  
+  

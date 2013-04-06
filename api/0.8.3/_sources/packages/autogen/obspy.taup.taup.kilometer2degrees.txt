@@ -1,0 +1,6 @@
+obspy.taup.taup.kilometer2degrees
+=================================
+
+.. currentmodule:: obspy.taup.taup
+
+.. autofunction:: kilometer2degrees

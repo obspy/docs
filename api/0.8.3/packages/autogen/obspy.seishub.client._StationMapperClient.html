@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.seishub.client._StationMapperClient &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.seishub - SeisHub database client for ObsPy" href="../obspy.seishub.html" />
+    <link rel="next" title="obspy.seishub.client._StationMapperClient.deleteResource" href="obspy.seishub.client._StationMapperClient.deleteResource.html" />
+    <link rel="prev" title="obspy.seishub.client._EventMapperClient.__init__" href="obspy.seishub.client._EventMapperClient.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client._StationMapperClient.deleteResource.html" title="obspy.seishub.client._StationMapperClient.deleteResource"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client._EventMapperClient.__init__.html" title="obspy.seishub.client._EventMapperClient.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seishub.html" accesskey="U">obspy.seishub - SeisHub database client for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-seishub-client-stationmapperclient">
+<h1>obspy.seishub.client._StationMapperClient<a class="headerlink" href="#obspy-seishub-client-stationmapperclient" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.seishub.client._StationMapperClient">
+<em class="property">class </em><tt class="descname">_StationMapperClient</tt><big>(</big><em>client</em><big>)</big><a class="reference internal" href="../../_modules/obspy/seishub/client.html#_StationMapperClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.seishub.client._StationMapperClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.seishub.client._BaseRESTClient</span></tt></p>
+<p>Interface to access the SeisHub Station Web service.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function should NOT be initialized directly, instead access the
+object via the <tt class="xref py py-attr docutils literal"><span class="pre">obspy.seishub.Client.station</span></tt> attribute.</p>
+</div>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://github.com/barsch/seishub.plugins.seismology/blob/master/seishub/plugins/seismology/waveform.py">https://github.com/barsch/seishub.plugins.seismology/blob/master/seishub/plugins/seismology/waveform.py</a></p>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">package</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">resourcetype</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.deleteResource.html#obspy.seishub.client._StationMapperClient.deleteResource" title="obspy.seishub.client._StationMapperClient.deleteResource"><tt class="xref py py-obj docutils literal"><span class="pre">deleteResource</span></tt></a></td>
+<td>DELETEs a XML resource.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.getCoordinates.html#obspy.seishub.client._StationMapperClient.getCoordinates" title="obspy.seishub.client._StationMapperClient.getCoordinates"><tt class="xref py py-obj docutils literal"><span class="pre">getCoordinates</span></tt></a></td>
+<td>Get coordinate information.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.getList.html#obspy.seishub.client._StationMapperClient.getList" title="obspy.seishub.client._StationMapperClient.getList"><tt class="xref py py-obj docutils literal"><span class="pre">getList</span></tt></a></td>
+<td>Gets a list of station information.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.getPAZ.html#obspy.seishub.client._StationMapperClient.getPAZ" title="obspy.seishub.client._StationMapperClient.getPAZ"><tt class="xref py py-obj docutils literal"><span class="pre">getPAZ</span></tt></a></td>
+<td>Get PAZ for a station at given time span. Gain is the A0 normalization</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.getResource.html#obspy.seishub.client._StationMapperClient.getResource" title="obspy.seishub.client._StationMapperClient.getResource"><tt class="xref py py-obj docutils literal"><span class="pre">getResource</span></tt></a></td>
+<td>Gets a resource.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.getXMLResource.html#obspy.seishub.client._StationMapperClient.getXMLResource" title="obspy.seishub.client._StationMapperClient.getXMLResource"><tt class="xref py py-obj docutils literal"><span class="pre">getXMLResource</span></tt></a></td>
+<td>Gets a XML resource.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.putResource.html#obspy.seishub.client._StationMapperClient.putResource" title="obspy.seishub.client._StationMapperClient.putResource"><tt class="xref py py-obj docutils literal"><span class="pre">putResource</span></tt></a></td>
+<td>PUTs a XML resource.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.__init__.html#obspy.seishub.client._StationMapperClient.__init__" title="obspy.seishub.client._StationMapperClient.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.seishub.client._StationMapperClient.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client._StationMapperClient.deleteResource.html" title="obspy.seishub.client._StationMapperClient.deleteResource"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client._EventMapperClient.__init__.html" title="obspy.seishub.client._EventMapperClient.__init__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seishub.html" >obspy.seishub - SeisHub database client for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

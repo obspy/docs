@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.util.getRecordInformation &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.util" href="obspy.mseed.util.html" />
+    <link rel="next" title="obspy.mseed.util.getStartAndEndTime" href="obspy.mseed.util.getStartAndEndTime.html" />
+    <link rel="prev" title="obspy.mseed.util.shiftTimeOfFile" href="obspy.mseed.util.shiftTimeOfFile.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getStartAndEndTime.html" title="obspy.mseed.util.getStartAndEndTime"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.shiftTimeOfFile.html" title="obspy.mseed.util.shiftTimeOfFile"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" accesskey="U">obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-util-getrecordinformation">
+<h1>obspy.mseed.util.getRecordInformation<a class="headerlink" href="#obspy-mseed-util-getrecordinformation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.util.getRecordInformation">
+<tt class="descname">getRecordInformation</tt><big>(</big><em>file_or_file_object</em>, <em>offset=0</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/util.html#getRecordInformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.util.getRecordInformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns record information about given files and file-like object.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getExampleFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="s">&quot;test.mseed&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getRecordInformation</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  
+<span class="go">{&#39;record_length&#39;: 4096, &#39;data_quality_flags&#39;: 0, &#39;activity_flags&#39;: 0,</span>
+<span class="go"> &#39;byteorder&#39;: &#39;&gt;&#39;, &#39;encoding&#39;: 11, &#39;samp_rate&#39;: 40.0, &#39;excess_bytes&#39;: 0L,</span>
+<span class="go"> &#39;filesize&#39;: 8192L,</span>
+<span class="go"> &#39;starttime&#39;: UTCDateTime(2003, 5, 29, 2, 13, 22, 43400), &#39;npts&#39;: 5980,</span>
+<span class="go"> &#39;endtime&#39;: UTCDateTime(2003, 5, 29, 2, 15, 51, 518400),</span>
+<span class="go"> &#39;number_of_records&#39;: 2L, &#39;io_and_clock_flags&#39;: 0}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.util.getRecordInformation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getStartAndEndTime.html" title="obspy.mseed.util.getStartAndEndTime"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.shiftTimeOfFile.html" title="obspy.mseed.util.shiftTimeOfFile"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" >obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

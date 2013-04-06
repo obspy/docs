@@ -1,0 +1,6 @@
+obspy.xseed.fields.Loop._formatString
+=====================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Loop._formatString

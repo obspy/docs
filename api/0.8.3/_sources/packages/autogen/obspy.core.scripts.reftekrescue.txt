@@ -1,0 +1,11 @@
+obspy.core.scripts.reftekrescue
+===============================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-reftekrescue``. For more info on the command line options,
+    please run ``$ obspy-reftekrescue --help``.
+    Alternatively you can also execute ``$ python -m obspy.core.scripts.reftekrescue``.
+
+.. currentmodule:: obspy.core.scripts.reftekrescue
+.. automodule:: obspy.core.scripts.reftekrescue

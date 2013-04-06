@@ -1,0 +1,195 @@
+obspy.core.event.Comment
+========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Comment
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Comment.__abstractmethods__
+     ~Comment.__dict__
+     ~Comment.__doc__
+     ~Comment.__hash__
+     ~Comment.__module__
+     ~Comment.__weakref__
+     ~Comment.defaults
+     ~Comment.item
+     ~Comment.key
+     ~Comment.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Comment.clear
+     ~Comment.copy
+     ~Comment.get
+     ~Comment.items
+     ~Comment.iteritems
+     ~Comment.iterkeys
+     ~Comment.itervalues
+     ~Comment.keys
+     ~Comment.pop
+     ~Comment.popitem
+     ~Comment.setdefault
+     ~Comment.update
+     ~Comment.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Comment._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Comment.__contains__
+     ~Comment.__deepcopy__
+     ~Comment.__delattr__
+     ~Comment.__delitem__
+     ~Comment.__eq__
+     ~Comment.__getattr__
+     ~Comment.__getitem__
+     ~Comment.__getstate__
+     ~Comment.__init__
+     ~Comment.__iter__
+     ~Comment.__len__
+     ~Comment.__ne__
+     ~Comment.__nonzero__
+     ~Comment.__repr__
+     ~Comment.__setattr__
+     ~Comment.__setitem__
+     ~Comment.__setstate__
+     ~Comment.__str__
+     ~Comment.__subclasshook__
+  
+
+  
+  

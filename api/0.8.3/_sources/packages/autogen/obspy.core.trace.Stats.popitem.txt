@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.popitem
+==============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.popitem

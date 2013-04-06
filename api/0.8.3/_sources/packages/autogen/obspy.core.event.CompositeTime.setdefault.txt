@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.setdefault
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.setdefault

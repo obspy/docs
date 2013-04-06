@@ -1,0 +1,6 @@
+obspy.core.util.geodetics.calcVincentyInverse
+=============================================
+
+.. currentmodule:: obspy.core.util.geodetics
+
+.. autofunction:: calcVincentyInverse

@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.__delitem__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.__delitem__

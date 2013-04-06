@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.mopad_wrapper &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.imaging.mopad_wrapper</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-----------------------------------------------</span>
+<span class="c"># Filename: mopad_wrapper.py</span>
+<span class="c">#  Purpose: Wrapper for mopad</span>
+<span class="c">#   Author: Tobias Megies, Moritz Beyreuther</span>
+<span class="c">#    Email: megies@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 ObsPy Development Team</span>
+<span class="c">#-----------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ObsPy wrapper to the *Moment tensor Plotting and Decomposition tool* (MoPaD)</span>
+<span class="sd">written by Lars Krieger and Sebastian Heimann.</span>
+
+<span class="sd">.. seealso:: [Krieger2012]_</span>
+
+<span class="sd">.. warning:: The MoPaD wrapper does not yet provide the full functionality of</span>
+<span class="sd">    MoPaD. Please consider using the command line script ``obspy-mopad`` for</span>
+<span class="sd">    now if you need the full power of MoPaD.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU General Public License (GPL)</span>
+<span class="sd">    (http://www.gnu.org/licenses/gpl.txt)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span><span class="p">,</span> <span class="n">collections</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.scripts.mopad</span> <span class="kn">import</span> <span class="n">BeachBall</span> <span class="k">as</span> <span class="n">mopad_BeachBall</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.scripts.mopad</span> <span class="kn">import</span> <span class="n">MomentTensor</span> <span class="k">as</span> <span class="n">mopad_MomentTensor</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.scripts.mopad</span> <span class="kn">import</span> <span class="n">epsilon</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.beachball</span> <span class="kn">import</span> <span class="n">xy2patch</span>
+
+
+<span class="c"># seems the base system we (gmt) are using is called &quot;USE&quot; in mopad</span>
+<span class="n">KWARG_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_size&#39;</span><span class="p">,</span> <span class="s">&#39;plot_aux_plot_size&#39;</span><span class="p">],</span>
+    <span class="s">&#39;linewidth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_nodalline_width&#39;</span><span class="p">,</span> <span class="s">&#39;plot_outerline_width&#39;</span><span class="p">],</span>
+    <span class="s">&#39;facecolor&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_tension_colour&#39;</span><span class="p">],</span>
+    <span class="s">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_outerline_colour&#39;</span><span class="p">],</span>
+    <span class="s">&#39;bgcolor&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s">&#39;alpha&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_total_alpha&#39;</span><span class="p">],</span>
+    <span class="s">&#39;width&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s">&#39;outfile&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_outfile&#39;</span><span class="p">],</span>
+    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_outfile_format&#39;</span><span class="p">],</span>
+    <span class="s">&#39;nofill&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;plot_only_lines&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Beach"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.mopad_wrapper.Beach.html#obspy.imaging.mopad_wrapper.Beach">[docs]</a><span class="k">def</span> <span class="nf">Beach</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span>
+          <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nofill</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mopad_basis</span><span class="o">=</span><span class="s">&#39;USE&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a beach ball as a collection which can be connected to an</span>
+<span class="sd">    current matplotlib axes instance (ax.add_collection). Based on MoPaD.</span>
+
+<span class="sd">    S1, D1, and R1, the strike, dip and rake of one of the focal planes, can</span>
+<span class="sd">    be vectors of multiple focal mechanisms.</span>
+
+<span class="sd">    :param fm: Focal mechanism that is either number of mechanisms (NM) by 3</span>
+<span class="sd">        (strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the</span>
+<span class="sd">        six independent components of the moment tensor, where the coordinate</span>
+<span class="sd">        system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike</span>
+<span class="sd">        is of the first plane, clockwise relative to north.</span>
+<span class="sd">        The dip is of the first plane, defined clockwise and perpendicular to</span>
+<span class="sd">        strike, relative to horizontal such that 0 is horizontal and 90 is</span>
+<span class="sd">        vertical. The rake is of the first focal plane solution. 90 moves the</span>
+<span class="sd">        hanging wall up-dip (thrust), 0 moves it in the strike direction</span>
+<span class="sd">        (left-lateral), -90 moves it down-dip (normal), and 180 moves it</span>
+<span class="sd">        opposite to strike (right-lateral).</span>
+<span class="sd">    :param facecolor: Color to use for quadrants of tension; can be a string,</span>
+<span class="sd">        e.g. ``&#39;r&#39;``, ``&#39;b&#39;`` or three component color vector, [R G B].</span>
+<span class="sd">        Defaults to ``&#39;b&#39;`` (blue).</span>
+<span class="sd">    :param bgcolor: The background color. Defaults to ``&#39;w&#39;`` (white).</span>
+<span class="sd">    :param edgecolor: Color of the edges. Defaults to ``&#39;k&#39;`` (black).</span>
+<span class="sd">    :param alpha: The alpha level of the beach ball. Defaults to ``1.0``</span>
+<span class="sd">        (opaque).</span>
+<span class="sd">    :param xy: Origin position of the beach ball as tuple. Defaults to</span>
+<span class="sd">        ``(0, 0)``.</span>
+<span class="sd">    :type width: int</span>
+<span class="sd">    :param width: Symbol size of beach ball. Defaults to ``200``.</span>
+<span class="sd">    :param size: Controls the number of interpolation points for the</span>
+<span class="sd">        curves. Minimum is automatically set to ``100``.</span>
+<span class="sd">    :param nofill: Do not fill the beach ball, but only plot the planes.</span>
+<span class="sd">    :param zorder: Set zorder. Artists with lower zorder values are drawn</span>
+<span class="sd">        first.</span>
+<span class="sd">    :param mopad_basis: The basis system. Defaults to ``&#39;USE&#39;``. See the</span>
+<span class="sd">        `Supported Basis Systems`_ section below for a full list of supported</span>
+<span class="sd">        systems.</span>
+
+<span class="sd">    .. rubric:: _`Supported Basis Systems`</span>
+
+<span class="sd">    ========= =================== =============================================</span>
+<span class="sd">    Short     Basis vectors       Usage</span>
+<span class="sd">    ========= =================== =============================================</span>
+<span class="sd">    ``&#39;NED&#39;`` North, East, Down   Jost and Herrmann 1989</span>
+<span class="sd">    ``&#39;USE&#39;`` Up, South, East     Global CMT Catalog, Larson et al. 2010</span>
+<span class="sd">    ``&#39;XYZ&#39;`` East, North, Up     General formulation, Jost and Herrmann 1989</span>
+<span class="sd">    ``&#39;RT&#39;``  Radial, Transverse, psmeca (GMT), Wessel and Smith 1999</span>
+<span class="sd">              Tangential</span>
+<span class="sd">    ``&#39;NWU&#39;`` North, West, Up     Stein and Wysession 2003</span>
+<span class="sd">    ========= =================== =============================================</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># initialize beachball</span>
+    <span class="n">mt</span> <span class="o">=</span> <span class="n">mopad_MomentTensor</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">mopad_basis</span><span class="p">)</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">mopad_BeachBall</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">bb</span><span class="o">.</span><span class="n">_setup_BB</span><span class="p">(</span><span class="n">unit_circle</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># extract the coordinates and colors of the lines</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">neg_nodalline</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">_nodalline_negative_final_US</span>
+    <span class="n">pos_nodalline</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">_nodalline_positive_final_US</span>
+    <span class="n">tension_colour</span> <span class="o">=</span> <span class="n">facecolor</span>
+    <span class="n">pressure_colour</span> <span class="o">=</span> <span class="n">bgcolor</span>
+
+    <span class="k">if</span> <span class="n">nofill</span><span class="p">:</span>
+        <span class="n">tension_colour</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span>
+        <span class="n">pressure_colour</span> <span class="o">=</span> <span class="s">&#39;none&#39;</span>
+
+    <span class="c"># based on mopads _setup_plot_US() function</span>
+    <span class="c"># collect patches for the selection</span>
+    <span class="n">coll</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="n">coll</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+    <span class="n">coll</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xy2patch</span><span class="p">(</span><span class="n">neg_nodalline</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">neg_nodalline</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">radius</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span>
+    <span class="n">coll</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xy2patch</span><span class="p">(</span><span class="n">pos_nodalline</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">pos_nodalline</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">radius</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span>
+
+    <span class="c"># set the color of the three parts</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_clr_order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+        <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_curve_in_curve</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+            <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_curve_in_curve</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coll</span> <span class="o">=</span> <span class="p">[</span><span class="n">coll</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+        <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+        <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_curve_in_curve</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+            <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_curve_in_curve</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coll</span> <span class="o">=</span> <span class="p">[</span><span class="n">coll</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tension_colour</span>
+                <span class="n">fc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure_colour</span>
+
+    <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_pure_isotropic</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">bb</span><span class="o">.</span><span class="n">_M</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">epsilon</span><span class="p">:</span>
+            <span class="c"># use the circle as the most upper layer</span>
+            <span class="n">coll</span> <span class="o">=</span> <span class="p">[</span><span class="n">coll</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">bb</span><span class="o">.</span><span class="n">_plot_clr_order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fc</span> <span class="o">=</span> <span class="p">[</span><span class="n">tension_colour</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fc</span> <span class="o">=</span> <span class="p">[</span><span class="n">pressure_colour</span><span class="p">]</span>
+
+    <span class="c"># transform the patches to a path collection and set</span>
+    <span class="c"># the appropriate attributes</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">PatchCollection</span><span class="p">(</span><span class="n">coll</span><span class="p">,</span> <span class="n">match_original</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">set_facecolors</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">set_edgecolors</span><span class="p">(</span><span class="n">edgecolor</span><span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="n">linewidth</span><span class="p">)</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="n">zorder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">collection</span>
+
+</div>
+<div class="viewcode-block" id="Beachball"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.mopad_wrapper.Beachball.html#obspy.imaging.mopad_wrapper.Beachball">[docs]</a><span class="k">def</span> <span class="nf">Beachball</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span>
+              <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nofill</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mopad_basis</span><span class="o">=</span><span class="s">&#39;USE&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+              <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a beach ball diagram of an earthquake focal mechanism. Based on</span>
+<span class="sd">    MoPaD.</span>
+
+<span class="sd">    S1, D1, and R1, the strike, dip and rake of one of the focal planes, can</span>
+<span class="sd">    be vectors of multiple focal mechanisms.</span>
+
+<span class="sd">    :param fm: Focal mechanism that is either number of mechanisms (NM) by 3</span>
+<span class="sd">        (strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the</span>
+<span class="sd">        six independent components of the moment tensor, where the coordinate</span>
+<span class="sd">        system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike</span>
+<span class="sd">        is of the first plane, clockwise relative to north.</span>
+<span class="sd">        The dip is of the first plane, defined clockwise and perpendicular to</span>
+<span class="sd">        strike, relative to horizontal such that 0 is horizontal and 90 is</span>
+<span class="sd">        vertical. The rake is of the first focal plane solution. 90 moves the</span>
+<span class="sd">        hanging wall up-dip (thrust), 0 moves it in the strike direction</span>
+<span class="sd">        (left-lateral), -90 moves it down-dip (normal), and 180 moves it</span>
+<span class="sd">        opposite to strike (right-lateral).</span>
+<span class="sd">    :param facecolor: Color to use for quadrants of tension; can be a string,</span>
+<span class="sd">        e.g. ``&#39;r&#39;``, ``&#39;b&#39;`` or three component color vector, [R G B].</span>
+<span class="sd">        Defaults to ``&#39;b&#39;`` (blue).</span>
+<span class="sd">    :param bgcolor: The background color. Defaults to ``&#39;w&#39;`` (white).</span>
+<span class="sd">    :param edgecolor: Color of the edges. Defaults to ``&#39;k&#39;`` (black).</span>
+<span class="sd">    :param alpha: The alpha level of the beach ball. Defaults to ``1.0``</span>
+<span class="sd">        (opaque).</span>
+<span class="sd">    :param xy: Origin position of the beach ball as tuple. Defaults to</span>
+<span class="sd">        ``(0, 0)``.</span>
+<span class="sd">    :type width: int</span>
+<span class="sd">    :param width: Symbol size of beach ball. Defaults to ``200``.</span>
+<span class="sd">    :param size: Controls the number of interpolation points for the</span>
+<span class="sd">        curves. Minimum is automatically set to ``100``.</span>
+<span class="sd">    :param nofill: Do not fill the beach ball, but only plot the planes.</span>
+<span class="sd">    :param zorder: Set zorder. Artists with lower zorder values are drawn</span>
+<span class="sd">        first.</span>
+<span class="sd">    :param mopad_basis: The basis system. Defaults to ``&#39;USE&#39;``. See the</span>
+<span class="sd">        `Supported Basis Systems`_ section below for a full list of supported</span>
+<span class="sd">        systems.</span>
+<span class="sd">    :param outfile: Output file string. Also used to automatically</span>
+<span class="sd">        determine the output format. Supported file formats depend on your</span>
+<span class="sd">        matplotlib backend. Most backends support png, pdf, ps, eps and</span>
+<span class="sd">        svg. Defaults to ``None``.</span>
+<span class="sd">    :param format: Format of the graph picture. If no format is given the</span>
+<span class="sd">        outfile parameter will be used to try to automatically determine</span>
+<span class="sd">        the output format. If no format is found it defaults to png output.</span>
+<span class="sd">        If no outfile is specified but a format is, than a binary</span>
+<span class="sd">        imagestring will be returned.</span>
+<span class="sd">        Defaults to ``None``.</span>
+<span class="sd">    :param fig: Give an existing figure instance to plot into. New Figure if</span>
+<span class="sd">        set to ``None``.</span>
+
+<span class="sd">    .. rubric:: _`Supported Basis Systems`</span>
+
+<span class="sd">    ========= =================== =============================================</span>
+<span class="sd">    Short     Basis vectors       Usage</span>
+<span class="sd">    ========= =================== =============================================</span>
+<span class="sd">    ``&#39;NED&#39;`` North, East, Down   Jost and Herrmann 1989</span>
+<span class="sd">    ``&#39;USE&#39;`` Up, South, East     Global CMT Catalog, Larson et al. 2010</span>
+<span class="sd">    ``&#39;XYZ&#39;`` East, North, Up     General formulation, Jost and Herrmann 1989</span>
+<span class="sd">    ``&#39;RT&#39;``  Radial, Transverse, psmeca (GMT), Wessel and Smith 1999</span>
+<span class="sd">              Tangential</span>
+<span class="sd">    ``&#39;NWU&#39;`` North, West, Up     Stein and Wysession 2003</span>
+<span class="sd">    ========= =================== =============================================</span>
+
+<span class="sd">    .. rubric:: Examples</span>
+
+<span class="sd">    (1) Using basis system ``&#39;NED&#39;``.</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.imaging.mopad_wrapper import Beachball</span>
+<span class="sd">        &gt;&gt;&gt; mt = [1, 2, 3, -4, -5, -10]</span>
+<span class="sd">        &gt;&gt;&gt; Beachball(mt, mopad_basis=&#39;NED&#39;) #doctest: +SKIP</span>
+
+<span class="sd">        .. plot::</span>
+
+<span class="sd">            from obspy.imaging.mopad_wrapper import Beachball</span>
+<span class="sd">            mt = [1, 2, 3, -4, -5, -10]</span>
+<span class="sd">            Beachball(mt, mopad_basis=&#39;NED&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mopad_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">loc</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+    <span class="c"># map to kwargs used in mopad</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">KWARG_MAP</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">mopad_key</span> <span class="ow">in</span> <span class="n">KWARG_MAP</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="n">mopad_kwargs</span><span class="p">[</span><span class="n">mopad_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="c"># convert from points to size in cm</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;plot_aux_plot_size&#39;</span><span class="p">,</span> <span class="s">&#39;plot_size&#39;</span><span class="p">]:</span>
+        <span class="c"># 100.0 is matplotlibs default dpi for savefig</span>
+        <span class="n">mopad_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mopad_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="mf">2.54</span>
+    <span class="c"># use nofill kwarg</span>
+
+    <span class="n">mt</span> <span class="o">=</span> <span class="n">mopad_MomentTensor</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">mopad_basis</span><span class="p">)</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">mopad_BeachBall</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+    <span class="c"># show plot in a window</span>
+    <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">bb</span><span class="o">.</span><span class="n">ploBB</span><span class="p">(</span><span class="n">mopad_kwargs</span><span class="p">)</span>
+    <span class="c"># save plot to file</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># no format specified, parse it from outfile name</span>
+        <span class="k">if</span> <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile_format&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile_format&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># append file format if not already at end of outfile</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>\
+               <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile_format&#39;</span><span class="p">]):</span>
+                <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> \
+                    <span class="n">mopad_kwargs</span><span class="p">[</span><span class="s">&#39;plot_outfile_format&#39;</span><span class="p">]</span>
+        <span class="n">bb</span><span class="o">.</span><span class="n">save_BB</span><span class="p">(</span><span class="n">mopad_kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>26. Time Frequency Misfit &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="27. Visualize Data Availability of Local Waveform Archive" href="visualize_data_availability_of_local_waveform_archive.html" />
+    <link rel="prev" title="25. Continuous Wavelet Transform" href="continuous_wavelet_transform.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="visualize_data_availability_of_local_waveform_archive.html" title="27. Visualize Data Availability of Local Waveform Archive"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="continuous_wavelet_transform.html" title="25. Continuous Wavelet Transform"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="time-frequency-misfit">
+<h1>26. Time Frequency Misfit<a class="headerlink" href="#time-frequency-misfit" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="../../packages/autogen/obspy.signal.tf_misfit.html#module-obspy.signal.tf_misfit" title="obspy.signal.tf_misfit"><tt class="xref py py-mod docutils literal"><span class="pre">tf_misfit</span></tt></a> module offers various Time Frequency Misfit
+Functions based on <a class="reference internal" href="../../citations.html#kristekova2006">[Kristekova2006]</a> and <a class="reference internal" href="../../citations.html#kristekova2009">[Kristekova2009]</a>.</p>
+<p>Here are some examples how to use the included plotting tools:</p>
+<div class="section" id="plot-the-time-frequency-representation">
+<h2>26.1. Plot the Time Frequency Representation<a class="headerlink" href="#plot-the-time-frequency-representation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.tf_misfit</span> <span class="kn">import</span> <span class="n">plotTfr</span>
+
+<span class="c"># general constants</span>
+<span class="n">tmax</span> <span class="o">=</span> <span class="mf">6.</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmax</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+
+<span class="n">fmin</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+<span class="n">fmax</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c"># constants for the signal</span>
+<span class="n">A1</span> <span class="o">=</span> <span class="mf">4.</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="n">phi1</span> <span class="o">=</span> <span class="mf">0.</span>
+
+<span class="c"># generate the signal</span>
+<span class="n">H1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">st1</span> <span class="o">=</span> <span class="n">A1</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">))</span> <span class="o">*</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f1</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">H1</span>
+
+<span class="n">plotTfr</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex1.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex1.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex1.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex1.png" src="../../_images/time_frequency_misfit_ex1.png" />
+</div>
+</div>
+<div class="section" id="plot-the-time-frequency-misfits">
+<h2>26.2. Plot the Time Frequency Misfits<a class="headerlink" href="#plot-the-time-frequency-misfits" title="Permalink to this headline">¶</a></h2>
+<p>Time Frequency Misfits are appropriate for smaller differences of the signals.
+Continuing the example from above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">hilbert</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.tf_misfit</span> <span class="kn">import</span> <span class="n">plotTfMisfits</span>
+
+<span class="c"># amplitude and phase error</span>
+<span class="n">phase_shift</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">amp_fac</span> <span class="o">=</span> <span class="mf">1.1</span>
+
+<span class="c"># reference signal</span>
+<span class="n">st2</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># generate analytical signal (hilbert transform) and add phase shift</span>
+<span class="n">st1p</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span>
+<span class="n">st1p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">st1p</span><span class="p">)</span> <span class="o">*</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">st1p</span><span class="p">)</span> <span class="o">+</span> <span class="n">phase_shift</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span><span class="p">))</span>
+
+<span class="c"># signal with amplitude error</span>
+<span class="n">st1a</span> <span class="o">=</span> <span class="n">st1</span> <span class="o">*</span> <span class="n">amp_fac</span>
+
+<span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1a</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1p</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex2_00.png" src="../../_images/time_frequency_misfit_ex2_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex2_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex2_01.png" src="../../_images/time_frequency_misfit_ex2_01.png" />
+</div>
+</div>
+<div class="section" id="plot-the-time-frequency-goodness-of-fit">
+<h2>26.3. Plot the Time Frequency Goodness-Of-Fit<a class="headerlink" href="#plot-the-time-frequency-goodness-of-fit" title="Permalink to this headline">¶</a></h2>
+<p>Time Frequency GOFs are appropriate for large differences of the signals.
+Continuing the example from above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.signal.tf_misfit</span> <span class="kn">import</span> <span class="n">plotTfGofs</span>
+
+<span class="c"># amplitude and phase error</span>
+<span class="n">phase_shift</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">amp_fac</span> <span class="o">=</span> <span class="mf">3.</span>
+
+<span class="c"># generate analytical signal (hilbert transform) and add phase shift</span>
+<span class="n">st1p</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span>
+<span class="n">st1p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">st1p</span><span class="p">)</span> <span class="o">*</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">st1p</span><span class="p">)</span> <span class="o">+</span> <span class="n">phase_shift</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span><span class="p">))</span>
+
+<span class="c"># signal with amplitude error</span>
+<span class="n">st1a</span> <span class="o">=</span> <span class="n">st1</span> <span class="o">*</span> <span class="n">amp_fac</span>
+
+<span class="n">plotTfGofs</span><span class="p">(</span><span class="n">st1a</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">plotTfGofs</span><span class="p">(</span><span class="n">st1p</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex3_00.png" src="../../_images/time_frequency_misfit_ex3_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex3_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex3_01.png" src="../../_images/time_frequency_misfit_ex3_01.png" />
+</div>
+</div>
+<div class="section" id="multi-component-data">
+<h2>26.4. Multi Component Data<a class="headerlink" href="#multi-component-data" title="Permalink to this headline">¶</a></h2>
+<p>For multi component data and global normalization of the misfits, the axes are
+scaled accordingly.  Continuing the example from above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># amplitude error</span>
+<span class="n">amp_fac</span> <span class="o">=</span> <span class="mf">1.1</span>
+
+<span class="c"># reference signals</span>
+<span class="n">st2_1</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">st2_2</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">*</span> <span class="mf">5.</span>
+<span class="n">st2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">st2_1</span><span class="p">,</span> <span class="n">st2_2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c"># signals with amplitude error</span>
+<span class="n">st1a</span> <span class="o">=</span> <span class="n">st2</span> <span class="o">*</span> <span class="n">amp_fac</span>
+
+<span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1a</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex4_00.png" src="../../_images/time_frequency_misfit_ex4_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex4_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex4_01.png" src="../../_images/time_frequency_misfit_ex4_01.png" />
+</div>
+</div>
+<div class="section" id="local-normalization">
+<h2>26.5. Local normalization<a class="headerlink" href="#local-normalization" title="Permalink to this headline">¶</a></h2>
+<p>Local normalization allows to resolve frequency and time ranges away from the
+largest ampiltude waves, but tend to produce artifacts in regions where there
+is no energy at all. In this analytical example e.g. for the high frequencies
+before the onset of the signal. Manual setting of the limits is thus necessary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># amplitude and phase error</span>
+<span class="n">amp_fac</span> <span class="o">=</span> <span class="mf">1.1</span>
+
+<span class="n">ste</span> <span class="o">=</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">t1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> \
+
+<span class="c"># reference signal</span>
+<span class="n">st2</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># signal with amplitude error + small additional pulse aftert 4 seconds</span>
+<span class="n">st1a</span> <span class="o">=</span> <span class="n">st1</span> <span class="o">*</span> <span class="n">amp_fac</span> <span class="o">+</span> <span class="n">ste</span>
+
+<span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1a</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1a</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s">&#39;local&#39;</span><span class="p">,</span>
+              <span class="n">clim</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex5_00.png" src="../../_images/time_frequency_misfit_ex5_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/time_frequency_misfit_ex5_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/time_frequency_misfit_ex5_01.png" src="../../_images/time_frequency_misfit_ex5_01.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">26. Time Frequency Misfit</a><ul>
+<li><a class="reference internal" href="#plot-the-time-frequency-representation">26.1. Plot the Time Frequency Representation</a></li>
+<li><a class="reference internal" href="#plot-the-time-frequency-misfits">26.2. Plot the Time Frequency Misfits</a></li>
+<li><a class="reference internal" href="#plot-the-time-frequency-goodness-of-fit">26.3. Plot the Time Frequency Goodness-Of-Fit</a></li>
+<li><a class="reference internal" href="#multi-component-data">26.4. Multi Component Data</a></li>
+<li><a class="reference internal" href="#local-normalization">26.5. Local normalization</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/time_frequency_misfit.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="visualize_data_availability_of_local_waveform_archive.html" title="27. Visualize Data Availability of Local Waveform Archive"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="continuous_wavelet_transform.html" title="25. Continuous Wavelet Transform"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

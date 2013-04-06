@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.count
+====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.count

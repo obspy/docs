@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._xpath
+===================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._xpath

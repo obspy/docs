@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.__setstate__
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.__setstate__

@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.itervalues
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.itervalues

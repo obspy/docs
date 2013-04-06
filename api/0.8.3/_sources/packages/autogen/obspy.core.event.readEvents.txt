@@ -1,0 +1,6 @@
+obspy.core.event.readEvents
+===========================
+
+.. currentmodule:: obspy.core.event
+
+.. autofunction:: readEvents

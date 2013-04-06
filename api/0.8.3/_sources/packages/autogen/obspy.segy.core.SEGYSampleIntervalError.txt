@@ -1,0 +1,6 @@
+obspy.segy.core.SEGYSampleIntervalError
+=======================================
+
+.. currentmodule:: obspy.segy.core
+
+.. autoexception:: SEGYSampleIntervalError

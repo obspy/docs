@@ -1,0 +1,6 @@
+obspy.core.event.Axis.itervalues
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.itervalues

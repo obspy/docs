@@ -1,0 +1,6 @@
+obspy.xseed.fields.FixedString.__init__
+=======================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: FixedString.__init__

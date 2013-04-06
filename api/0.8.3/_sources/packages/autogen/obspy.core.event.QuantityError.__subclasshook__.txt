@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.__subclasshook__
+===============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.__subclasshook__

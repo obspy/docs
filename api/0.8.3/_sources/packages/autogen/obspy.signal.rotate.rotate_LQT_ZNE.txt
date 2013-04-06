@@ -1,0 +1,6 @@
+obspy.signal.rotate.rotate_LQT_ZNE
+==================================
+
+.. currentmodule:: obspy.signal.rotate
+
+.. autofunction:: rotate_LQT_ZNE

@@ -1,0 +1,6 @@
+obspy.segy.segy.SUFile._write
+=============================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SUFile._write

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.taper
+====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.taper

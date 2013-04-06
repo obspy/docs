@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.__delattr__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.__delattr__

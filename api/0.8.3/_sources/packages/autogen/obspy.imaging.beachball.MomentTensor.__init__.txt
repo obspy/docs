@@ -1,0 +1,6 @@
+obspy.imaging.beachball.MomentTensor.__init__
+=============================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. automethod:: MomentTensor.__init__

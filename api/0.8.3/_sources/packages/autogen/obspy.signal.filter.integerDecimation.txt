@@ -1,0 +1,6 @@
+obspy.signal.filter.integerDecimation
+=====================================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: integerDecimation

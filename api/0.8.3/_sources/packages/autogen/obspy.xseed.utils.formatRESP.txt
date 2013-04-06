@@ -1,0 +1,6 @@
+obspy.xseed.utils.formatRESP
+============================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: formatRESP

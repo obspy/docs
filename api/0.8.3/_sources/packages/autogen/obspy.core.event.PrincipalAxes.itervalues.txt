@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.itervalues
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.itervalues

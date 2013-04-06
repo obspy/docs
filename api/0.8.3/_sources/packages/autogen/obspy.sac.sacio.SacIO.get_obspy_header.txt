@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.get_obspy_header
+======================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.get_obspy_header

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.spectrogram
+==========================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.spectrogram

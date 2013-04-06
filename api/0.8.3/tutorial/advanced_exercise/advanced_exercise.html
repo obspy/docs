@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Exercise &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="Advanced Exercise Solution 1" href="advanced_exercise_solution_1.html" />
+    <link rel="prev" title="2. Handling Waveform Data" href="../introduction/waveform_data.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_1.html" title="Advanced Exercise Solution 1"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../introduction/waveform_data.html" title="2. Handling Waveform Data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-exercise">
+<span id="id1"></span><h1>Advanced Exercise<a class="headerlink" href="#advanced-exercise" title="Permalink to this headline">¶</a></h1>
+<p>This practical intends to demonstrate how ObsPy can be used to develop
+workflows for data processing and analysis that have a short, easy to read and
+extensible source code. The overall task is to automatically estimate local
+magnitudes of earthquakes using data of the SED network. We will start with
+simple programs with manually specified, hard-coded values and build on them
+step by step to make the program more flexible and dynamic.  Some details in
+the magnitude estimation should be done a little bit different technically but
+we rather want to focus on the general workflow here.</p>
+<a class="reference internal image-reference" href="../../_images/event.jpg"><img alt="event map" class="align-center" src="../../_images/event.jpg" /></a>
+<a class="reference external image-reference" href="http://www.seismo.ethz.ch/monitor/net_maps/index_EN"><img alt="network map" class="align-center" src="../../_images/network_map.jpg" style="width: 50%;" /></a>
+<div class="section" id="request-earthquake-information-from-emsc-neries-nera">
+<h2>1. Request Earthquake Information from EMSC/NERIES/NERA<a class="headerlink" href="#request-earthquake-information-from-emsc-neries-nera" title="Permalink to this headline">¶</a></h2>
+<p>Fetch a list of events from EMSC for the region of Valais/SW-Switzerland on 3rd
+April of 2012. Use the Client provided in <a class="reference internal" href="../../packages/obspy.neries.html#module-obspy.neries" title="obspy.neries"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.neries</span></tt></a>. Note down the
+catalog origin times, epicenters and magnitudes.</p>
+</div>
+<div class="section" id="estimate-local-magnitude">
+<h2>2. Estimate Local Magnitude<a class="headerlink" href="#estimate-local-magnitude" title="Permalink to this headline">¶</a></h2>
+<ol class="loweralpha simple">
+<li>Use the file <a class="reference external" href="https://github.com/obspy/examples/blob/master/LKBD_WA_CUT.MSEED?raw=true">LKBD_WA_CUT.MSEED</a>
+to read MiniSEED waveform data of the larger earthquake. These data have
+already been simulated to (demeaned) displacement on a Wood-Anderson
+seismometer (in meter) and trimmed to the right time span. Compute the
+absolute maximum for both North and East component and use the larger value
+as the zero-to-peak amplitude estimate.  Estimate the local magnitude
+<span class="math">\(M_{lh}\)</span> used at the <a class="reference external" href="http://www.seismo.ethz.ch/index_EN">Swiss Seismological Service (SED)</a> using a epicentral distance of
+<span class="math">\(d_{epi}=20\)</span> (km), <span class="math">\(a=0.018\)</span> and <span class="math">\(b=2.17\)</span> with the
+following formula (mathematical functions are available in Python&#8217;s
+<a class="reference external" href="http://docs.python.org/2.7/library/math.html#math" title="(in Python v2.7)"><tt class="docutils literal"><span class="pre">math</span></tt></a> module):</li>
+</ol>
+<div class="math">
+\[M_{lh} = \log_{10}\left(amp \cdot 1000\mathrm{\frac{mm}{m}}\right) +
+a \cdot d_{epi} + b\]</div>
+<ol class="loweralpha simple" start="2">
+<li>Calculate the epicentral distance from the station coordinates (46.387°N,
+7.627°E) and catalog epicenter fetched above (46.218°N, 7.706°E). Some useful
+routines for such tasks are included in <a class="reference internal" href="../../packages/autogen/obspy.core.util.geodetics.html#module-obspy.core.util.geodetics" title="obspy.core.util.geodetics"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core.util.geodetics</span></tt></a>.</li>
+</ol>
+</div>
+<div class="section" id="seismometer-correction-simulation">
+<h2>3. Seismometer Correction/Simulation<a class="headerlink" href="#seismometer-correction-simulation" title="Permalink to this headline">¶</a></h2>
+<ol class="loweralpha">
+<li><p class="first">Modify the existing code and use the file <a class="reference external" href="https://github.com/obspy/examples/blob/master/LKBD.MSEED?raw=true">LKBD.MSEED</a> to
+read the original MiniSEED waveform data in counts. Set up two dictionaries
+containing the response information of both the original instrument (a
+LE3D-5s) and the Wood-Anderson seismometer in poles-and-zeros formulation.
+Please note that for historic reasons the naming of keys differs from the
+usual naming.  Each PAZ dictionary needs to contain <em>sensitivity</em> (overall
+sensitivity of seismometer/digitizer combination), <em>gain</em> (A0 /
+normalization factor), <em>poles</em> and <em>zeros</em>. Check that the value of
+<em>water_level</em> is not too high, to avoid overamplified low frequency noise at
+short-period stations. After the instrument simulation, trim the waveform to
+a shorter time window around the origin time (<em>2012-04-03T02:45:03</em>) and
+calculate <span class="math">\(M_{lh}\)</span> like before.  Use the following values for the PAZ
+dictionaries:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="35%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><p class="first last"><span class="dash" /></p>
+</th>
+<th class="head"><p class="first last">LE3D-5s</p>
+</th>
+<th class="head"><p class="first last">Wood-Anderson</p>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><p class="first last">poles</p>
+</td>
+<td><p class="first last">-0.885+0.887j
+-0.885-0.887j
+-0.427+0j</p>
+</td>
+<td><p class="first last">-6.2832-4.7124j
+-6.2832+4.7124j</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">zeros</p>
+</td>
+<td><p class="first last">0j, 0j, 0j</p>
+</td>
+<td><p class="first last">0j</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last">gain</p>
+</td>
+<td><p class="first last">1.009</p>
+</td>
+<td><p class="first last">1</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">sensitivity</p>
+</td>
+<td><p class="first last">167364000.0</p>
+</td>
+<td><p class="first last">2800</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</li>
+<li><p class="first">Instead of the hard-coded values, read the response information from a locally
+stored <em>dataless SEED</em> <a class="reference external" href="https://github.com/obspy/examples/blob/master/LKBD.dataless?raw=true">LKBD.dataless</a>.
+Use the Parser of module <a class="reference internal" href="../../packages/obspy.xseed.html#module-obspy.xseed" title="obspy.xseed"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.xseed</span></tt></a> to extract the poles-and-zeros
+information of the used channel.</p>
+</li>
+<li><p class="first">We can also request the response information from <a class="reference external" href="http://www.webdc.eu">WebDC</a> using the ArcLink protocol. Use the Client provided in
+<a class="reference internal" href="../../packages/obspy.arclink.html#module-obspy.arclink" title="obspy.arclink"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.arclink</span></tt></a> module (specify e.g. <em>user=&#8221;sed-workshop&#64;obspy.org&#8221;</em>).</p>
+</li>
+</ol>
+</div>
+<div class="section" id="fetch-waveform-data-from-webdc">
+<h2>4. Fetch Waveform Data from WebDC<a class="headerlink" href="#fetch-waveform-data-from-webdc" title="Permalink to this headline">¶</a></h2>
+<ol class="loweralpha simple">
+<li>Modify the existing code and fetch waveform data around the origin time given
+above for station <em>LKBD</em> (network <em>CH</em>) via ArcLink from WebDC using
+<em>obspy.arclink</em>. Use a wildcarded <em>channel=&#8221;EH*&#8221;</em> to fetch all three
+components. Use keyword argument <em>metadata=True</em> to fetch response information
+and station coordinates along with the waveform. The PAZ and coordinate
+information will get attached to the <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a> object of
+all traces in the returned Stream object during the waveform request
+automatically. During instrument simulation use keyword argument
+<em>paz_remove=&#8217;self&#8217;</em> to use every trace&#8217;s attached PAZ information fetched from
+<a class="reference external" href="http://www.webdc.eu">WebDC</a>. Calculate <span class="math">\(M_{lh}\)</span> like before.</li>
+<li>Use a list of station names (e.g. <em>LKBD</em>, <em>SIMPL</em>, <em>DIX</em>) and perform the
+magnitude estimation in a loop for each station. Use a wildcarded
+<em>channel=&#8221;[EH]H*&#8221;</em> to fetch the respective streams for both short-period and
+broadband stations. Compile a list of all station magnitudes and compute the
+network magnitude as its median (available in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/index.html#numpy" title="(in NumPy v1.6)"><tt class="docutils literal"><span class="pre">numpy</span></tt></a> module).</li>
+<li>Extend the network magnitude estimate by using all available stations in
+network <em>CH</em>. Get a list of stations using the ArcLink client and loop over
+this list. Use a wildcarded <em>channel=&#8221;[EH]H[ZNE]&#8221;</em>, check if there are three
+traces in the returned stream and skip to next station otherwise (some stations
+have inconsistent component codes). Put a <em>try/except</em> around the waveform
+request and skip to the next station and avoid interruption of the routine in
+case no data can be retrieved and an Exception gets raised. Also add an
+<em>if/else</em> and use <span class="math">\(a=0.0038\)</span> and <span class="math">\(b=3.02\)</span> in station magnitude
+calculation for epicentral distances of more than 60 kilometers.</li>
+</ol>
+</div>
+<div class="section" id="construct-fully-automatic-event-detection-magnitude-estimation">
+<h2>5. Construct Fully Automatic Event Detection, Magnitude Estimation<a class="headerlink" href="#construct-fully-automatic-event-detection-magnitude-estimation" title="Permalink to this headline">¶</a></h2>
+<p>In this additional advanced exercise we can enhance the
+routine to be independent of a-priori known origin times by using a coincidence
+network trigger for event detection.</p>
+<blockquote>
+<div><ul class="simple">
+<li>fetch a few hours of Z component data for 6 stations in Valais /
+SW-Switzerland</li>
+<li>run a coincidence trigger like shown in the <a class="reference internal" href="../code_snippets/trigger_tutorial.html#trigger-tutorial-coincidence"><em>Trigger
+Tutorial</em></a></li>
+<li>loop over detected network triggers, store the coordinates of the closest
+station as the epicenter</li>
+<li>loop over triggers, use the trigger time to select the time window and use
+the network magnitude estimation code like before</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="solutions">
+<h2>Solutions<a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_1.html">Advanced Exercise Solution 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_2a.html">Advanced Exercise Solution 2a</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_2b.html">Advanced Exercise Solution 2b</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_3a.html">Advanced Exercise Solution 3a</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_3b.html">Advanced Exercise Solution 3b</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_3c.html">Advanced Exercise Solution 3c</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_4a.html">Advanced Exercise Solution 4a</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_4b.html">Advanced Exercise Solution 4b</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_4c.html">Advanced Exercise Solution 4c</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_exercise_solution_5.html">Advanced Exercise Solution 5</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced Exercise</a><ul>
+<li><a class="reference internal" href="#request-earthquake-information-from-emsc-neries-nera">1. Request Earthquake Information from EMSC/NERIES/NERA</a></li>
+<li><a class="reference internal" href="#estimate-local-magnitude">2. Estimate Local Magnitude</a></li>
+<li><a class="reference internal" href="#seismometer-correction-simulation">3. Seismometer Correction/Simulation</a></li>
+<li><a class="reference internal" href="#fetch-waveform-data-from-webdc">4. Fetch Waveform Data from WebDC</a></li>
+<li><a class="reference internal" href="#construct-fully-automatic-event-detection-magnitude-estimation">5. Construct Fully Automatic Event Detection, Magnitude Estimation</a></li>
+<li><a class="reference internal" href="#solutions">Solutions</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/advanced_exercise/advanced_exercise.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_1.html" title="Advanced Exercise Solution 1"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../introduction/waveform_data.html" title="2. Handling Waveform Data"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

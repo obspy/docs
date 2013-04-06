@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.setdefault
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.setdefault

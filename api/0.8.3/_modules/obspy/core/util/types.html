@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.util.types &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.util.types</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Various types used in ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c"># try native OrderDict implementations first (Python &gt;= 2.7.x)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c"># Copyright (c) 2009 Raymond Hettinger</span>
+    <span class="c">#</span>
+    <span class="c"># Permission is hereby granted, free of charge, to any person</span>
+    <span class="c"># obtaining a copy of this software and associated documentation files</span>
+    <span class="c"># (the &quot;Software&quot;), to deal in the Software without restriction,</span>
+    <span class="c"># including without limitation the rights to use, copy, modify, merge,</span>
+    <span class="c"># publish, distribute, sublicense, and/or sell copies of the Software,</span>
+    <span class="c"># and to permit persons to whom the Software is furnished to do so,</span>
+    <span class="c"># subject to the following conditions:</span>
+    <span class="c">#</span>
+    <span class="c">#     The above copyright notice and this permission notice shall be</span>
+    <span class="c">#     included in all copies or substantial portions of the Software.</span>
+    <span class="c">#</span>
+    <span class="c">#     THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,</span>
+    <span class="c">#     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES</span>
+    <span class="c">#     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND</span>
+    <span class="c">#     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT</span>
+    <span class="c">#     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,</span>
+    <span class="c">#     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING</span>
+    <span class="c">#     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR</span>
+    <span class="c">#     OTHER DEALINGS IN THE SOFTWARE.</span>
+    <span class="kn">from</span> <span class="nn">UserDict</span> <span class="kn">import</span> <span class="n">DictMixin</span>
+
+<div class="viewcode-block" id="OrderedDict"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.html#obspy.core.util.types.OrderedDict">[docs]</a>    <span class="k">class</span> <span class="nc">OrderedDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">DictMixin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dictionary that remembers insertion order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="OrderedDict.__init__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__init__.html#obspy.core.util.types.OrderedDict.__init__">[docs]</a>        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;expected at most 1 arguments, got </span><span class="si">%d</span><span class="s">&#39;</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.clear"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.clear.html#obspy.core.util.types.OrderedDict.clear">[docs]</a>        <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__end</span> <span class="o">=</span> <span class="n">end</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">end</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">end</span><span class="p">]</span>      <span class="c"># sentinel node for doubly linked list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__map</span> <span class="o">=</span> <span class="p">{}</span>              <span class="c"># key --&gt; [key, prev, next]</span>
+            <span class="nb">dict</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__setitem__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__setitem__.html#obspy.core.util.types.OrderedDict.__setitem__">[docs]</a>        <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">curr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">curr</span><span class="p">,</span> <span class="n">end</span><span class="p">]</span>
+            <span class="nb">dict</span><span class="o">.</span><span class="n">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__delitem__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__delitem__.html#obspy.core.util.types.OrderedDict.__delitem__">[docs]</a>        <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="nb">dict</span><span class="o">.</span><span class="n">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">prev</span><span class="p">,</span> <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">prev</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span>
+            <span class="nb">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__iter__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__iter__.html#obspy.core.util.types.OrderedDict.__iter__">[docs]</a>        <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">curr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">curr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__reversed__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__reversed__.html#obspy.core.util.types.OrderedDict.__reversed__">[docs]</a>        <span class="k">def</span> <span class="nf">__reversed__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">curr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">curr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.popitem"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.popitem.html#obspy.core.util.types.OrderedDict.popitem">[docs]</a>        <span class="k">def</span> <span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;dictionary is empty&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__reduce__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__reduce__.html#obspy.core.util.types.OrderedDict.__reduce__">[docs]</a>        <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span>
+            <span class="n">inst_dict</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="k">if</span> <span class="n">inst_dict</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="p">(</span><span class="n">items</span><span class="p">,),</span> <span class="n">inst_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="p">(</span><span class="n">items</span><span class="p">,)</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.keys"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.keys.html#obspy.core.util.types.OrderedDict.keys">[docs]</a>        <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+        <span class="n">setdefault</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">setdefault</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">update</span>
+        <span class="n">pop</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">pop</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">items</span>
+        <span class="n">iterkeys</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">iterkeys</span>
+        <span class="n">itervalues</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">itervalues</span>
+        <span class="n">iteritems</span> <span class="o">=</span> <span class="n">DictMixin</span><span class="o">.</span><span class="n">iteritems</span>
+
+<div class="viewcode-block" id="OrderedDict.__repr__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__repr__.html#obspy.core.util.types.OrderedDict.__repr__">[docs]</a>        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">()&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,)</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">(</span><span class="si">%r</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.copy"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.copy.html#obspy.core.util.types.OrderedDict.copy">[docs]</a>        <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+        <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="OrderedDict.fromkeys"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.fromkeys.html#obspy.core.util.types.OrderedDict.fromkeys">[docs]</a>        <span class="k">def</span> <span class="nf">fromkeys</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span> <span class="n">d</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__eq__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__eq__.html#obspy.core.util.types.OrderedDict.__eq__">[docs]</a>        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+                <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span>  <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">q</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">False</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OrderedDict.__ne__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.OrderedDict.__ne__.html#obspy.core.util.types.OrderedDict.__ne__">[docs]</a>        <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
+
+</div></div>
+<div class="viewcode-block" id="Enum"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.html#obspy.core.util.types.Enum">[docs]</a><span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumerated type (enum) implementation for Python.</span>
+
+<span class="sd">    :type enums: list of str</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy.core.util import Enum</span>
+<span class="sd">    &gt;&gt;&gt; units = Enum([&quot;m&quot;, &quot;s&quot;, &quot;m/s&quot;, &quot;m/(s*s)&quot;, &quot;m*s&quot;, &quot;other&quot;])</span>
+
+<span class="sd">    There are different ways to access the correct enum values:</span>
+
+<span class="sd">        &gt;&gt;&gt; units.get(&#39;m/s&#39;)</span>
+<span class="sd">        &#39;m/s&#39;</span>
+<span class="sd">        &gt;&gt;&gt; units[&#39;S&#39;]</span>
+<span class="sd">        &#39;s&#39;</span>
+<span class="sd">        &gt;&gt;&gt; units.OTHER</span>
+<span class="sd">        &#39;other&#39;</span>
+<span class="sd">        &gt;&gt;&gt; units[3]</span>
+<span class="sd">        &#39;m/(s*s)&#39;</span>
+<span class="sd">        &gt;&gt;&gt; units.xxx  # doctest: +ELLIPSIS</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        KeyError: &#39;xxx&#39;</span>
+
+<span class="sd">    Changing enum values will not work:</span>
+
+<span class="sd">        &gt;&gt;&gt; units.m = 5  # doctest: +ELLIPSIS</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">        &gt;&gt;&gt; units[&#39;m&#39;] = &#39;xxx&#39;  # doctest: +ELLIPSIS</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        NotImplementedError</span>
+
+<span class="sd">    Calling with a value will either return the mapped enum value or ``None``:</span>
+
+<span class="sd">        &gt;&gt;&gt; units(&quot;M*s&quot;)</span>
+<span class="sd">        &#39;m*s&#39;</span>
+<span class="sd">        &gt;&gt;&gt; units(&#39;xxx&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; units(5)</span>
+<span class="sd">        &#39;other&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># marker needed for for usage within ABC classes</span>
+    <span class="n">__isabstractmethod__</span> <span class="o">=</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="Enum.__init__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.__init__.html#obspy.core.util.types.Enum.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enums</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">enums</span><span class="p">],</span> <span class="n">enums</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Enum.__call__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.__call__.html#obspy.core.util.types.Enum.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enum</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">enum</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="Enum.get"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.get.html#obspy.core.util.types.Enum.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+</div>
+    <span class="n">__getattr__</span> <span class="o">=</span> <span class="n">get</span>
+    <span class="n">__getitem__</span> <span class="o">=</span> <span class="n">get</span>
+
+<div class="viewcode-block" id="Enum.set"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.set.html#obspy.core.util.types.Enum.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;_Enum__enums&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+    <span class="n">__setattr__</span> <span class="o">=</span> <span class="nb">set</span>
+    <span class="n">__setitem__</span> <span class="o">=</span> <span class="nb">set</span>
+
+<div class="viewcode-block" id="Enum.__contains__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.__contains__.html#obspy.core.util.types.Enum.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span>
+</div>
+<div class="viewcode-block" id="Enum.values"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.values.html#obspy.core.util.types.Enum.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Enum.keys"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.keys.html#obspy.core.util.types.Enum.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Enum.items"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.items.html#obspy.core.util.types.Enum.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Enum.iteritems"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.iteritems.html#obspy.core.util.types.Enum.iteritems">[docs]</a>    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Enum.__str__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.types.Enum.__str__.html#obspy.core.util.types.Enum.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; enum = Enum([&quot;c&quot;, &quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; print enum</span>
+<span class="sd">        Enum([&quot;c&quot;, &quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__enums</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s">&quot;Enum([</span><span class="si">%s</span><span class="s">])&quot;</span> <span class="o">%</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">_i</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">])</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

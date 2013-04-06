@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.decimate
+===============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.decimate

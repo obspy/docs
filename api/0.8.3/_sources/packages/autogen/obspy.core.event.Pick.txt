@@ -1,0 +1,195 @@
+obspy.core.event.Pick
+=====================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Pick
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Pick.__abstractmethods__
+     ~Pick.__dict__
+     ~Pick.__doc__
+     ~Pick.__hash__
+     ~Pick.__module__
+     ~Pick.__weakref__
+     ~Pick.defaults
+     ~Pick.item
+     ~Pick.key
+     ~Pick.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Pick.clear
+     ~Pick.copy
+     ~Pick.get
+     ~Pick.items
+     ~Pick.iteritems
+     ~Pick.iterkeys
+     ~Pick.itervalues
+     ~Pick.keys
+     ~Pick.pop
+     ~Pick.popitem
+     ~Pick.setdefault
+     ~Pick.update
+     ~Pick.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Pick._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Pick.__contains__
+     ~Pick.__deepcopy__
+     ~Pick.__delattr__
+     ~Pick.__delitem__
+     ~Pick.__eq__
+     ~Pick.__getattr__
+     ~Pick.__getitem__
+     ~Pick.__getstate__
+     ~Pick.__init__
+     ~Pick.__iter__
+     ~Pick.__len__
+     ~Pick.__ne__
+     ~Pick.__nonzero__
+     ~Pick.__repr__
+     ~Pick.__setattr__
+     ~Pick.__setitem__
+     ~Pick.__setstate__
+     ~Pick.__str__
+     ~Pick.__subclasshook__
+  
+
+  
+  

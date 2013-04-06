@@ -1,0 +1,6 @@
+obspy.core.event.Pick.__delitem__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.__delitem__

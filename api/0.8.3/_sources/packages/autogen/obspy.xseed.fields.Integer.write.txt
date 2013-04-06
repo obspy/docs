@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.write
+================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.write

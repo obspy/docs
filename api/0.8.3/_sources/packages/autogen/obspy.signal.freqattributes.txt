@@ -1,0 +1,35 @@
+obspy.signal.freqattributes
+===========================
+
+.. currentmodule:: obspy.signal.freqattributes
+.. automodule:: obspy.signal.freqattributes
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      bwith
+      cfrequency
+      domperiod
+      logbankm
+      logcep
+      mper
+      pgm
+      welch
+   
+   
+
+   
+   
+   
+
+   
+   
+   

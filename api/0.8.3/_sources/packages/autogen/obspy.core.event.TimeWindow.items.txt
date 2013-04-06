@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.items
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.items

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.filter
+=====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.filter

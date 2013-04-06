@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.__getattr__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.__getattr__

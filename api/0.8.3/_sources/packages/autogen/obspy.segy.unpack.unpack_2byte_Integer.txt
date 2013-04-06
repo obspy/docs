@@ -1,0 +1,6 @@
+obspy.segy.unpack.unpack_2byte_Integer
+======================================
+
+.. currentmodule:: obspy.segy.unpack
+
+.. autofunction:: unpack_2byte_Integer

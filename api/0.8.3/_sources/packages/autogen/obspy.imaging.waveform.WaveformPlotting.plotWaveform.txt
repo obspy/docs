@@ -1,0 +1,6 @@
+obspy.imaging.waveform.WaveformPlotting.plotWaveform
+====================================================
+
+.. currentmodule:: obspy.imaging.waveform
+
+.. automethod:: WaveformPlotting.plotWaveform

@@ -1,0 +1,6 @@
+obspy.signal.hoctavbands.sonogram
+=================================
+
+.. currentmodule:: obspy.signal.hoctavbands
+
+.. autofunction:: sonogram

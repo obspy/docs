@@ -1,0 +1,47 @@
+obspy.signal.tf_misfit
+======================
+
+.. currentmodule:: obspy.signal.tf_misfit
+.. automodule:: obspy.signal.tf_misfit
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      cwt
+      eg
+      em
+      feg
+      fem
+      fpg
+      fpm
+      pg
+      plotTfGofs
+      plotTfMisfits
+      plotTfr
+      pm
+      teg
+      tem
+      tfeg
+      tfem
+      tfpg
+      tfpm
+      tpg
+      tpm
+   
+   
+
+   
+   
+   
+
+   
+   
+   

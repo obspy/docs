@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.__getitem__
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.__getitem__

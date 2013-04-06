@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile._readHeaders
+=====================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile._readHeaders

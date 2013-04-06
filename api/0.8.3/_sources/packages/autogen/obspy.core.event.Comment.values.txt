@@ -1,0 +1,6 @@
+obspy.core.event.Comment.values
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.values

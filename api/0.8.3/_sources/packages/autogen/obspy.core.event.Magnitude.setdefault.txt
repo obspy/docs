@@ -1,0 +1,6 @@
+obspy.core.event.Magnitude.setdefault
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Magnitude.setdefault

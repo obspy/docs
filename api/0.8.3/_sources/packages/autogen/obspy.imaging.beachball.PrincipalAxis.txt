@@ -1,0 +1,47 @@
+obspy.imaging.beachball.PrincipalAxis
+=====================================
+
+.. currentmodule:: obspy.imaging.beachball
+.. autoclass:: PrincipalAxis
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~PrincipalAxis.__dict__
+     ~PrincipalAxis.__doc__
+     ~PrincipalAxis.__module__
+     ~PrincipalAxis.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PrincipalAxis.__init__
+  
+
+  
+  

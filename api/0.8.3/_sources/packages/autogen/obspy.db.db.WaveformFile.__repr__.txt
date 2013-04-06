@@ -1,0 +1,6 @@
+obspy.db.db.WaveformFile.__repr__
+=================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformFile.__repr__

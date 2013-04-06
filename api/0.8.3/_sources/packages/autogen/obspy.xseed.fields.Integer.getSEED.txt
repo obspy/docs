@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.getSEED
+==================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.getSEED

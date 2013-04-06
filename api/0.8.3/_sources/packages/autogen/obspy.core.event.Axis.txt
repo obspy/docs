@@ -1,0 +1,195 @@
+obspy.core.event.Axis
+=====================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Axis
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Axis.__abstractmethods__
+     ~Axis.__dict__
+     ~Axis.__doc__
+     ~Axis.__hash__
+     ~Axis.__module__
+     ~Axis.__weakref__
+     ~Axis.defaults
+     ~Axis.item
+     ~Axis.key
+     ~Axis.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Axis.clear
+     ~Axis.copy
+     ~Axis.get
+     ~Axis.items
+     ~Axis.iteritems
+     ~Axis.iterkeys
+     ~Axis.itervalues
+     ~Axis.keys
+     ~Axis.pop
+     ~Axis.popitem
+     ~Axis.setdefault
+     ~Axis.update
+     ~Axis.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Axis._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Axis.__contains__
+     ~Axis.__deepcopy__
+     ~Axis.__delattr__
+     ~Axis.__delitem__
+     ~Axis.__eq__
+     ~Axis.__getattr__
+     ~Axis.__getitem__
+     ~Axis.__getstate__
+     ~Axis.__init__
+     ~Axis.__iter__
+     ~Axis.__len__
+     ~Axis.__ne__
+     ~Axis.__nonzero__
+     ~Axis.__repr__
+     ~Axis.__setattr__
+     ~Axis.__setitem__
+     ~Axis.__setstate__
+     ~Axis.__str__
+     ~Axis.__subclasshook__
+  
+
+  
+  

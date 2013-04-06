@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy - SEG Y and SU read and write support for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.segy.core" href="autogen/obspy.segy.core.html" />
+    <link rel="prev" title="obspy.seg2.seg2.SEG2InvalidFileError" href="autogen/obspy.seg2.seg2.SEG2InvalidFileError.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.segy.core.html" title="obspy.segy.core"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seg2.seg2.SEG2InvalidFileError.html" title="obspy.seg2.seg2.SEG2InvalidFileError"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.segy"></span><div class="section" id="obspy-segy-seg-y-and-su-read-and-write-support-for-obspy">
+<h1>obspy.segy - SEG Y and SU read and write support for ObsPy<a class="headerlink" href="#obspy-segy-seg-y-and-su-read-and-write-support-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>The obspy.segy package contains methods in order to read and write files in the
+<a class="reference external" href="http://www.seg.org/documents/10161/77915/seg_y_rev1.pdf">SEG Y (rev. 1)</a>
+and SU (Seismic Unix) format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The module can currently read files that are in accordance to the SEG Y
+rev. 1 specification but has been designed to be able to handle custom
+headers as well. This functionality is not yet exposed because the
+developers have no files to test it with. If you have access to some files
+with custom headers please consider sending them to <tt class="docutils literal"><span class="pre">devs&#64;obspy.org</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="reading">
+<h1>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h1>
+<p>The SEG Y and Seismic Unix (SU) file formats are quite different from the
+file formats usually used in observatories (GSE2, MiniSEED, ...). The
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>/<a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> structures
+of ObsPy are therefore not fully suited to handle them. Nonetheless they work
+well enough if some potential problems are kept in mind.</p>
+<p>SEG Y files can be read in three different ways that have different
+advantages/disadvantages. Most of the following also applies to SU files with
+some changes (keep in mind that SU files have no file wide headers).</p>
+<ol class="arabic simple">
+<li>Using the standard <a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function.</li>
+<li>Using the <a class="reference internal" href="#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.segy</span></tt></a> specific <a class="reference internal" href="autogen/obspy.segy.core.readSEGY.html#obspy.segy.core.readSEGY" title="obspy.segy.core.readSEGY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.core.readSEGY()</span></tt></a>
+function.</li>
+<li>Using the internal <a class="reference internal" href="autogen/obspy.segy.segy.readSEGY.html#obspy.segy.segy.readSEGY" title="obspy.segy.segy.readSEGY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.segy.readSEGY()</span></tt></a> function.</li>
+</ol>
+<div class="section" id="reading-using-methods-1-and-2">
+<h2>Reading using methods 1 and 2<a class="headerlink" href="#reading-using-methods-1-and-2" title="Permalink to this headline">¶</a></h2>
+<p>The first two methods will return a <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object
+and they are identical except that the file wide SEGY headers are only
+accessible if method 2 is used. These headers are stored in Stream.stats.</p>
+<p>The obvious advantage of these methods is that the returned
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object interfaces very well with other
+functionality provided by ObsPy (file format conversion, filtering, ...).</p>
+<p>Due to the fact that a single SEG Y file can contain several tens of thousands
+of traces and each trace will be a <a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> instance
+which in turn will contain other objects these methods are quite slow and
+memory intensive.</p>
+<p>To somewhat rectify this issue all SEG Y specific trace header attributes are
+only unpacked on demand by default.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.segy.core</span> <span class="kn">import</span> <span class="n">readSEGY</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getExampleFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># or &#39;from obspy import read&#39; if file wide headers are of no interest</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="s">&quot;00001034.sgy_first_trace&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> 
+<span class="go">&lt;obspy.core.stream.Stream object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span> 
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">Seq. No. in line:    1 | 2009-06-22T14:47:37.000000Z - 2009-06-22T14:47:41...</span>
+</pre></div>
+</div>
+<p>SEG Y files contain a large amount of additional trace header fields which are
+not unpacked by default. However these values can be accessed by calling the
+header key directly or by using the <tt class="docutils literal"><span class="pre">unpack_trace_headers</span></tt> keyword with the
+<a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a>/ <a class="reference internal" href="autogen/obspy.segy.core.readSEGY.html#obspy.segy.core.readSEGY" title="obspy.segy.core.readSEGY"><tt class="xref py py-func docutils literal"><span class="pre">readSEGY()</span></tt></a> functions to
+unpack all header fields.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st1</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="p">)</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="o">.</span><span class="n">data_use</span> <span class="c"># Unpacking a value on the fly.</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="p">)</span> <span class="c"># This value will remain unpacked.</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">unpack_trace_headers</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">st2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="p">)</span>
+<span class="go">92</span>
+</pre></div>
+</div>
+<p>Reading SEG Y files with <tt class="docutils literal"><span class="pre">unpack_trace_headers=True</span></tt> will be very slow and
+memory intensive for a large number of traces due to the huge number of objects
+created.</p>
+</div>
+<div class="section" id="reading-using-method-3">
+<h2>Reading using method 3<a class="headerlink" href="#reading-using-method-3" title="Permalink to this headline">¶</a></h2>
+<p>The internal reading method is much faster and less of a memory hog but does
+not return a <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object. Instead it returns a
+<a class="reference internal" href="autogen/obspy.segy.segy.SEGYFile.html#obspy.segy.segy.SEGYFile" title="obspy.segy.segy.SEGYFile"><tt class="xref py py-class docutils literal"><span class="pre">SEGYFile</span></tt></a> object which is somewhat similar to the
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object used in ObsPy but specific to
+<a class="reference internal" href="#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">segy</span></tt></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.segy.segy</span> <span class="kn">import</span> <span class="n">readSEGY</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">segy</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">segy</span> 
+<span class="go">&lt;obspy.segy.segy.SEGYFile object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">segy</span><span class="p">)</span>
+<span class="go">1 traces in the SEG Y structure.</span>
+</pre></div>
+</div>
+<p>The traces are a list of <a class="reference internal" href="autogen/obspy.segy.segy.SEGYTrace.html#obspy.segy.segy.SEGYTrace" title="obspy.segy.segy.SEGYTrace"><tt class="xref py py-class docutils literal"><span class="pre">SEGYTrace</span></tt></a> objects stored in
+<tt class="docutils literal"><span class="pre">segy.traces</span></tt>. The trace header values are stored in <tt class="docutils literal"><span class="pre">trace.header</span></tt> as a
+<a class="reference internal" href="autogen/obspy.segy.segy.SEGYTraceHeader.html#obspy.segy.segy.SEGYTraceHeader" title="obspy.segy.segy.SEGYTraceHeader"><tt class="xref py py-class docutils literal"><span class="pre">SEGYTraceHeader</span></tt></a> object.</p>
+<p>By default these header values will not be unpacked and thus will not show up
+in ipython&#8217;s tab completion. See <tt class="xref py py-const docutils literal"><span class="pre">obspy.segy.header.TRACE_HEADER_FORMAT</span></tt>
+<a class="reference external" href="http://obspy.org/browser/obspy/trunk/obspy.segy/obspy/segy/header.py#L47">(source)</a>
+for a list of all available trace header attributes. They will be unpacked on
+the fly if they are accessed as class attributes.</p>
+<p>By default trace data are read into memory, but this may be impractical for
+very large datasets. To skip loading data into memory, read SEG Y files with
+<tt class="docutils literal"><span class="pre">headonly=True</span></tt>.  The <tt class="docutils literal"><span class="pre">data</span></tt> class attribute will not show up in ipython&#8217;s
+tab completion, but data are read directly from the disk when it is accessed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.segy.segy</span> <span class="kn">import</span> <span class="n">readSEGY</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">segy</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">segy</span><span class="o">.</span><span class="n">traces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="go">2001</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="writing">
+<h1>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="writing-obspy-stream-objects">
+<h2>Writing ObsPy <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> objects<a class="headerlink" href="#writing-obspy-stream-objects" title="Permalink to this headline">¶</a></h2>
+<p>Writing <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> objects is done in the usual way.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;file.segy&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;SEGY&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;file.su&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;SU&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>It is possible to control the data encoding, the byte order and the textual
+header encoding of the final file either via the file wide stats object (see
+sample code below) or directly via the write method. Possible values and their
+meaning are documented here: <a class="reference internal" href="autogen/obspy.segy.core.writeSEGY.html#obspy.segy.core.writeSEGY" title="obspy.segy.core.writeSEGY"><tt class="xref py py-func docutils literal"><span class="pre">writeSEGY()</span></tt></a></p>
+</div>
+<div class="section" id="writing-segyfile-objects">
+<h2>Writing <a class="reference internal" href="autogen/obspy.segy.segy.SEGYFile.html#obspy.segy.segy.SEGYFile" title="obspy.segy.segy.SEGYFile"><tt class="xref py py-class docutils literal"><span class="pre">SEGYFile</span></tt></a> objects<a class="headerlink" href="#writing-segyfile-objects" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="autogen/obspy.segy.segy.SEGYFile.html#obspy.segy.segy.SEGYFile" title="obspy.segy.segy.SEGYFile"><tt class="xref py py-class docutils literal"><span class="pre">SEGYFile</span></tt></a> objects are written using its
+<a class="reference internal" href="autogen/obspy.segy.segy.SEGYFile.write.html#obspy.segy.segy.SEGYFile.write" title="obspy.segy.segy.SEGYFile.write"><tt class="xref py py-func docutils literal"><span class="pre">write()</span></tt></a> method. Optional kwargs are able to
+enforce the data encoding and the byte order.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">segy</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;file.segy&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="converting-other-file-formats-to-seg-y">
+<h2>Converting other file formats to SEG Y<a class="headerlink" href="#converting-other-file-formats-to-seg-y" title="Permalink to this headline">¶</a></h2>
+<p>SEGY files are sensitive to their headers and wrong headers might break them.</p>
+<p>If some or all headers are missing, obspy.segy will attempt to autogenerate
+them and fill them with somehow meaningful values. It is a wise idea to
+manually check the headers because some other programs might use them and
+misinterpret the data. Most header values will be 0 nonetheless.</p>
+<p>One possibility to get valid headers for files to be converted is to read one
+correct SEG Y file and use its headers.</p>
+<p>The other possibility is to autogenerate the headers with the help of ObsPy and
+a potential manual review of them which is demonstrated in the following
+script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">AttribDict</span>
+<span class="kn">from</span> <span class="nn">obspy.segy.segy</span> <span class="kn">import</span> <span class="n">SEGYTraceHeader</span><span class="p">,</span> <span class="n">SEGYBinaryFileHeader</span>
+<span class="kn">from</span> <span class="nn">obspy.segy.core</span> <span class="kn">import</span> <span class="n">readSEGY</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c"># Create some random data.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">ranf</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c"># Attributes in trace.stats will overwrite everything in</span>
+    <span class="c"># trace.stats.segy.trace_header</span>
+    <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="c"># SEGY does not support microsecond precision! Any microseconds will</span>
+    <span class="c"># be discarded.</span>
+    <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span>
+
+    <span class="c"># If you want to set some additional attributes in the trace header,</span>
+    <span class="c"># add one and only set the attributes you want to be set. Otherwise the</span>
+    <span class="c"># header will be created for you with default values.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;segy.trace_header&#39;</span><span class="p">):</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span> <span class="o">=</span> <span class="n">SEGYTraceHeader</span><span class="p">()</span>
+    <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="o">.</span><span class="n">trace_sequence_number_within_line</span> <span class="o">=</span> <span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="o">.</span><span class="n">receiver_group_elevation</span> <span class="o">=</span> <span class="mi">444</span>
+
+    <span class="c"># Add trace to stream</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+<span class="c"># A SEGY file has file wide headers. This can be attached to the stream</span>
+<span class="c"># object.  If these are not set, they will be autocreated with default</span>
+<span class="c"># values.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">textual_file_header</span> <span class="o">=</span> <span class="s">&#39;Textual Header!&#39;</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binary_file_header</span> <span class="o">=</span> <span class="n">SEGYBinaryFileHeader</span><span class="p">()</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binary_file_header</span><span class="o">.</span><span class="n">trace_sorting_code</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">print</span> <span class="s">&quot;Stream object before writing...&quot;</span>
+<span class="k">print</span> <span class="n">stream</span>
+
+<span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;TEST.sgy&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;SEGY&quot;</span><span class="p">,</span> <span class="n">data_encoding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">byteorder</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Stream object after writing. Will have some segy attributes...&quot;</span>
+<span class="k">print</span> <span class="n">stream</span>
+
+<span class="k">print</span> <span class="s">&quot;Reading using obspy.segy...&quot;</span>
+<span class="n">st1</span> <span class="o">=</span> <span class="n">readSEGY</span><span class="p">(</span><span class="s">&quot;TEST.sgy&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">st1</span>
+
+<span class="k">print</span> <span class="s">&quot;Reading using obspy.core...&quot;</span>
+<span class="n">st2</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;TEST.sgy&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">st2</span>
+
+<span class="k">print</span> <span class="s">&quot;Just to show that the values are written...&quot;</span>
+<span class="k">print</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="o">.</span><span class="n">receiver_group_elevation</span>
+       <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">]</span>
+<span class="k">print</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">segy</span><span class="o">.</span><span class="n">trace_header</span><span class="o">.</span><span class="n">receiver_group_elevation</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st2</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binary_file_header</span><span class="o">.</span><span class="n">trace_sorting_code</span>
+<span class="k">print</span> <span class="n">st1</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binary_file_header</span><span class="o">.</span><span class="n">trace_sorting_code</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.segy.core.html#module-obspy.segy.core" title="obspy.segy.core"><tt class="xref py py-obj docutils literal"><span class="pre">core</span></tt></a></td>
+<td>SEG Y bindings to ObsPy core module.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.segy.segy.html#module-obspy.segy.segy" title="obspy.segy.segy"><tt class="xref py py-obj docutils literal"><span class="pre">segy</span></tt></a></td>
+<td>Routines to read and write SEG Y rev 1 encoded seismic data files.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.segy.util.html#module-obspy.segy.util" title="obspy.segy.util"><tt class="xref py py-obj docutils literal"><span class="pre">util</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.segy.header.html#module-obspy.segy.header" title="obspy.segy.header"><tt class="xref py py-obj docutils literal"><span class="pre">header</span></tt></a></td>
+<td>Defines the header structures and some other dictionaries needed for SEG Y read</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.segy.pack.html#module-obspy.segy.pack" title="obspy.segy.pack"><tt class="xref py py-obj docutils literal"><span class="pre">pack</span></tt></a></td>
+<td>Functions that will all take a file pointer and the sample count and return a</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.segy.unpack.html#module-obspy.segy.unpack" title="obspy.segy.unpack"><tt class="xref py py-obj docutils literal"><span class="pre">unpack</span></tt></a></td>
+<td>Functions that will all take a file pointer and the sample count and return a</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.segy.benchmark.html#module-obspy.segy.benchmark" title="obspy.segy.benchmark"><tt class="xref py py-obj docutils literal"><span class="pre">benchmark</span></tt></a></td>
+<td>Functions to generate benchmark plots from given SU files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.segy - SEG Y and SU read and write support for ObsPy</a></li>
+<li><a class="reference internal" href="#reading">Reading</a><ul>
+<li><a class="reference internal" href="#reading-using-methods-1-and-2">Reading using methods 1 and 2</a></li>
+<li><a class="reference internal" href="#reading-using-method-3">Reading using method 3</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#writing">Writing</a><ul>
+<li><a class="reference internal" href="#writing-obspy-stream-objects">Writing ObsPy <tt class="docutils literal"><span class="pre">Stream</span></tt> objects</a></li>
+<li><a class="reference internal" href="#writing-segyfile-objects">Writing <tt class="docutils literal"><span class="pre">SEGYFile</span></tt> objects</a></li>
+<li><a class="reference internal" href="#converting-other-file-formats-to-seg-y">Converting other file formats to SEG Y</a></li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.segy.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.segy.core.html" title="obspy.segy.core"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seg2.seg2.SEG2InvalidFileError.html" title="obspy.seg2.seg2.SEG2InvalidFileError"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

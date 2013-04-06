@@ -1,0 +1,6 @@
+obspy.imaging.mopad_wrapper.Beach
+=================================
+
+.. currentmodule:: obspy.imaging.mopad_wrapper
+
+.. autofunction:: Beach

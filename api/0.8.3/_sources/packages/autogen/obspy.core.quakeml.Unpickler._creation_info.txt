@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._creation_info
+===========================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._creation_info

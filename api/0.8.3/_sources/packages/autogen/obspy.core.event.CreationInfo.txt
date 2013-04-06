@@ -1,0 +1,195 @@
+obspy.core.event.CreationInfo
+=============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: CreationInfo
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~CreationInfo.__abstractmethods__
+     ~CreationInfo.__dict__
+     ~CreationInfo.__doc__
+     ~CreationInfo.__hash__
+     ~CreationInfo.__module__
+     ~CreationInfo.__weakref__
+     ~CreationInfo.defaults
+     ~CreationInfo.item
+     ~CreationInfo.key
+     ~CreationInfo.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CreationInfo.clear
+     ~CreationInfo.copy
+     ~CreationInfo.get
+     ~CreationInfo.items
+     ~CreationInfo.iteritems
+     ~CreationInfo.iterkeys
+     ~CreationInfo.itervalues
+     ~CreationInfo.keys
+     ~CreationInfo.pop
+     ~CreationInfo.popitem
+     ~CreationInfo.setdefault
+     ~CreationInfo.update
+     ~CreationInfo.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CreationInfo._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CreationInfo.__contains__
+     ~CreationInfo.__deepcopy__
+     ~CreationInfo.__delattr__
+     ~CreationInfo.__delitem__
+     ~CreationInfo.__eq__
+     ~CreationInfo.__getattr__
+     ~CreationInfo.__getitem__
+     ~CreationInfo.__getstate__
+     ~CreationInfo.__init__
+     ~CreationInfo.__iter__
+     ~CreationInfo.__len__
+     ~CreationInfo.__ne__
+     ~CreationInfo.__nonzero__
+     ~CreationInfo.__repr__
+     ~CreationInfo.__setattr__
+     ~CreationInfo.__setitem__
+     ~CreationInfo.__setstate__
+     ~CreationInfo.__str__
+     ~CreationInfo.__subclasshook__
+  
+
+  
+  

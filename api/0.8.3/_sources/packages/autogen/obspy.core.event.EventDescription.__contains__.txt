@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.__contains__
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.__contains__

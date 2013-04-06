@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__setitem__
+====================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__setitem__

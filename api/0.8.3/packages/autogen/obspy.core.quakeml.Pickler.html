@@ -1,0 +1,237 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.quakeml.Pickler &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.quakeml" href="obspy.core.quakeml.html" />
+    <link rel="next" title="obspy.core.quakeml.Pickler.dump" href="obspy.core.quakeml.Pickler.dump.html" />
+    <link rel="prev" title="obspy.core.quakeml.writeQuakeML" href="obspy.core.quakeml.writeQuakeML.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.Pickler.dump.html" title="obspy.core.quakeml.Pickler.dump"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.writeQuakeML.html" title="obspy.core.quakeml.writeQuakeML"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.quakeml.html" accesskey="U">obspy.core.quakeml</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-quakeml-pickler">
+<h1>obspy.core.quakeml.Pickler<a class="headerlink" href="#obspy-core-quakeml-pickler" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.quakeml.Pickler">
+<em class="property">class </em><tt class="descname">Pickler</tt><a class="reference internal" href="../../_modules/obspy/core/quakeml.html#Pickler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.quakeml.Pickler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Serializes an ObsPy Catalog object into QuakeML format.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler.dump.html#obspy.core.quakeml.Pickler.dump" title="obspy.core.quakeml.Pickler.dump"><tt class="xref py py-obj docutils literal"><span class="pre">dump</span></tt></a></td>
+<td>Writes ObsPy Catalog into given file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler.dumps.html#obspy.core.quakeml.Pickler.dumps" title="obspy.core.quakeml.Pickler.dumps"><tt class="xref py py-obj docutils literal"><span class="pre">dumps</span></tt></a></td>
+<td>Returns QuakeML string of given ObsPy Catalog object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._arrival.html#obspy.core.quakeml.Pickler._arrival" title="obspy.core.quakeml.Pickler._arrival"><tt class="xref py py-obj docutils literal"><span class="pre">_arrival</span></tt></a></td>
+<td>Converts an Arrival into etree.Element object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._bool.html#obspy.core.quakeml.Pickler._bool" title="obspy.core.quakeml.Pickler._bool"><tt class="xref py py-obj docutils literal"><span class="pre">_bool</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._comments.html#obspy.core.quakeml.Pickler._comments" title="obspy.core.quakeml.Pickler._comments"><tt class="xref py py-obj docutils literal"><span class="pre">_comments</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._creation_info.html#obspy.core.quakeml.Pickler._creation_info" title="obspy.core.quakeml.Pickler._creation_info"><tt class="xref py py-obj docutils literal"><span class="pre">_creation_info</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._focal_mechanism.html#obspy.core.quakeml.Pickler._focal_mechanism" title="obspy.core.quakeml.Pickler._focal_mechanism"><tt class="xref py py-obj docutils literal"><span class="pre">_focal_mechanism</span></tt></a></td>
+<td>Converts a FocalMechanism into etree.Element object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._id.html#obspy.core.quakeml.Pickler._id" title="obspy.core.quakeml.Pickler._id"><tt class="xref py py-obj docutils literal"><span class="pre">_id</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._magnitude.html#obspy.core.quakeml.Pickler._magnitude" title="obspy.core.quakeml.Pickler._magnitude"><tt class="xref py py-obj docutils literal"><span class="pre">_magnitude</span></tt></a></td>
+<td>Converts an Magnitude into etree.Element object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._moment_tensor.html#obspy.core.quakeml.Pickler._moment_tensor" title="obspy.core.quakeml.Pickler._moment_tensor"><tt class="xref py py-obj docutils literal"><span class="pre">_moment_tensor</span></tt></a></td>
+<td>Converts a MomentTensor into etree.Element object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._nodal_planes.html#obspy.core.quakeml.Pickler._nodal_planes" title="obspy.core.quakeml.Pickler._nodal_planes"><tt class="xref py py-obj docutils literal"><span class="pre">_nodal_planes</span></tt></a></td>
+<td>Converts a NodalPlanes into etree.Element object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._origin.html#obspy.core.quakeml.Pickler._origin" title="obspy.core.quakeml.Pickler._origin"><tt class="xref py py-obj docutils literal"><span class="pre">_origin</span></tt></a></td>
+<td>Converts an Origin into etree.Element object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._pick.html#obspy.core.quakeml.Pickler._pick" title="obspy.core.quakeml.Pickler._pick"><tt class="xref py py-obj docutils literal"><span class="pre">_pick</span></tt></a></td>
+<td>Converts a Pick into etree.Element object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._principal_axes.html#obspy.core.quakeml.Pickler._principal_axes" title="obspy.core.quakeml.Pickler._principal_axes"><tt class="xref py py-obj docutils literal"><span class="pre">_principal_axes</span></tt></a></td>
+<td>Converts a PrincipalAxes into etree.Element object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._serialize.html#obspy.core.quakeml.Pickler._serialize" title="obspy.core.quakeml.Pickler._serialize"><tt class="xref py py-obj docutils literal"><span class="pre">_serialize</span></tt></a></td>
+<td>Converts a Catalog object into XML string.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._station_magnitude.html#obspy.core.quakeml.Pickler._station_magnitude" title="obspy.core.quakeml.Pickler._station_magnitude"><tt class="xref py py-obj docutils literal"><span class="pre">_station_magnitude</span></tt></a></td>
+<td>Converts an StationMagnitude into etree.Element object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._station_magnitude_contributions.html#obspy.core.quakeml.Pickler._station_magnitude_contributions" title="obspy.core.quakeml.Pickler._station_magnitude_contributions"><tt class="xref py py-obj docutils literal"><span class="pre">_station_magnitude_contributions</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._str.html#obspy.core.quakeml.Pickler._str" title="obspy.core.quakeml.Pickler._str"><tt class="xref py py-obj docutils literal"><span class="pre">_str</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._time.html#obspy.core.quakeml.Pickler._time" title="obspy.core.quakeml.Pickler._time"><tt class="xref py py-obj docutils literal"><span class="pre">_time</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._value.html#obspy.core.quakeml.Pickler._value" title="obspy.core.quakeml.Pickler._value"><tt class="xref py py-obj docutils literal"><span class="pre">_value</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler._waveform_id.html#obspy.core.quakeml.Pickler._waveform_id" title="obspy.core.quakeml.Pickler._waveform_id"><tt class="xref py py-obj docutils literal"><span class="pre">_waveform_id</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.quakeml.Pickler.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.Pickler.dump.html" title="obspy.core.quakeml.Pickler.dump"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.writeQuakeML.html" title="obspy.core.quakeml.writeQuakeML"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.quakeml.html" >obspy.core.quakeml</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

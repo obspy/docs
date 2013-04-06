@@ -1,0 +1,107 @@
+obspy.core.util.types.Enum
+==========================
+
+.. currentmodule:: obspy.core.util.types
+.. autoclass:: Enum
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Enum.__dict__
+     ~Enum.__doc__
+     ~Enum.__isabstractmethod__
+     ~Enum.__module__
+     ~Enum.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Enum.get
+     ~Enum.items
+     ~Enum.iteritems
+     ~Enum.keys
+     ~Enum.set
+     ~Enum.values
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Enum.__call__
+     ~Enum.__contains__
+     ~Enum.__getattr__
+     ~Enum.__getitem__
+     ~Enum.__init__
+     ~Enum.__setattr__
+     ~Enum.__setitem__
+     ~Enum.__str__
+  
+
+  
+  

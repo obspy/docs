@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.resample
+===============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.resample

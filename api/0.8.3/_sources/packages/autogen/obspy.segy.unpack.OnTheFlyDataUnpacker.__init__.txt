@@ -1,0 +1,6 @@
+obspy.segy.unpack.OnTheFlyDataUnpacker.__init__
+===============================================
+
+.. currentmodule:: obspy.segy.unpack
+
+.. automethod:: OnTheFlyDataUnpacker.__init__

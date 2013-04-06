@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.invsim.cosTaper &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.invsim" href="obspy.signal.invsim.html" />
+    <link rel="next" title="obspy.signal.invsim.estimateMagnitude" href="obspy.signal.invsim.estimateMagnitude.html" />
+    <link rel="prev" title="obspy.signal.invsim.cornFreq2Paz" href="obspy.signal.invsim.cornFreq2Paz.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.estimateMagnitude.html" title="obspy.signal.invsim.estimateMagnitude"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.cornFreq2Paz.html" title="obspy.signal.invsim.cornFreq2Paz"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" accesskey="U">obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-invsim-costaper">
+<h1>obspy.signal.invsim.cosTaper<a class="headerlink" href="#obspy-signal-invsim-costaper" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.invsim.cosTaper">
+<tt class="descname">cosTaper</tt><big>(</big><em>npts</em>, <em>p=0.1</em>, <em>freqs=None</em>, <em>flimit=None</em>, <em>halfcosine=True</em>, <em>sactaper=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/invsim.html#cosTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.invsim.cosTaper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cosine Taper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>npts</strong> (<em>Int</em>) <span class="dash" /> Number of points of cosine taper.</li>
+<li><strong>p</strong> (<em>Float</em>) <span class="dash" /> Decimal percentage of cosine taper (ranging from 0 to 1). Default
+is 0.1 (10%) which tapers 5% from the beginning and 5% form the end.</li>
+<li><strong>freqs</strong> (<em>NumPy ndarray</em>) <span class="dash" /> Frequencies as, for example, returned by fftfreq</li>
+<li><strong>flimit</strong> (<em>List or tuple of floats</em>) <span class="dash" /> The list or tuple defines the four corner frequencies
+(f1, f2, f3, f4) of the cosine taper which is one between f2 and f3 and
+tapers to zero for f1 &lt; f &lt; f2 and f3 &lt; f &lt; f4.</li>
+<li><strong>halfcosine</strong> (<em>Boolean</em>) <span class="dash" /> If True the taper is a half cosine function. If False it
+is a quarter cosine function.</li>
+<li><strong>sactaper</strong> (<em>Boolean</em>) <span class="dash" /> If set to True the cosine taper already tapers at the
+corner frequency (SAC behaviour). By default, the taper has a value
+of 1.0 at the corner frequencies.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float NumPy ndarray</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Cosine taper array/vector of length npts.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tap</span> <span class="o">=</span> <span class="n">cosTaper</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tap2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">tap</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">50</span><span class="p">],</span> <span class="n">tap2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">npts</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tap3</span> <span class="o">=</span> <span class="n">cosTaper</span><span class="p">(</span><span class="n">npts</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span> <span class="n">tap3</span><span class="p">[</span><span class="n">npts</span><span class="o">*</span><span class="n">p</span><span class="o">/</span><span class="mf">2.</span><span class="p">:</span><span class="n">npts</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="o">/</span><span class="mf">2.</span><span class="p">)]</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">npts</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">))</span> <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.invsim.cosTaper.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.estimateMagnitude.html" title="obspy.signal.invsim.estimateMagnitude"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.cornFreq2Paz.html" title="obspy.signal.invsim.cornFreq2Paz"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" >obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

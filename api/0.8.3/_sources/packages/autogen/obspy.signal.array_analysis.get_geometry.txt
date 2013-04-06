@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.get_geometry
+========================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: get_geometry

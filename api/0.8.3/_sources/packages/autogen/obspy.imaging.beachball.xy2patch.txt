@@ -1,0 +1,6 @@
+obspy.imaging.beachball.xy2patch
+================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: xy2patch

@@ -1,0 +1,6 @@
+obspy.db.db.WaveformGaps.__repr__
+=================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformGaps.__repr__

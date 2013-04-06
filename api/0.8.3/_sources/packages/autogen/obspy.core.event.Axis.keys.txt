@@ -1,0 +1,6 @@
+obspy.core.event.Axis.keys
+==========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.keys

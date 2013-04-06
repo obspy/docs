@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription._pretty_str
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription._pretty_str

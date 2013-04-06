@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.OriginUncertainty &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.OriginUncertainty.clear" href="obspy.core.event.OriginUncertainty.clear.html" />
+    <link rel="prev" title="obspy.core.event.OriginQuality.__subclasshook__" href="obspy.core.event.OriginQuality.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.OriginUncertainty.clear.html" title="obspy.core.event.OriginUncertainty.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.OriginQuality.__subclasshook__.html" title="obspy.core.event.OriginQuality.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-originuncertainty">
+<h1>obspy.core.event.OriginUncertainty<a class="headerlink" href="#obspy-core-event-originuncertainty" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.OriginUncertainty">
+<em class="property">class </em><tt class="descname">OriginUncertainty</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#OriginUncertainty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.OriginUncertainty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.__OriginUncertainty</span></tt></p>
+<p>This class describes the location uncertainties of an origin.</p>
+<p>The uncertainty can be described either as a simple circular horizontal
+uncertainty, an uncertainty ellipse according to IMS1.0, or a confidence
+ellipsoid. The preferred variant can be given in the attribute
+<tt class="docutils literal"><span class="pre">preferred_description</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>horizontal_uncertainty</strong> (<em>float, optional</em>) <span class="dash" /> Circular confidence region, given by single
+value of horizontal uncertainty. Unit: m</li>
+<li><strong>min_horizontal_uncertainty</strong> (<em>float, optional</em>) <span class="dash" /> Semi-major axis of confidence ellipse.
+Unit: m</li>
+<li><strong>max_horizontal_uncertainty</strong> (<em>float, optional</em>) <span class="dash" /> Semi-minor axis of confidence ellipse.
+Unit: m</li>
+<li><strong>azimuth_max_horizontal_uncertainty</strong> (<em>float, optional</em>) <span class="dash" /> Azimuth of major axis of
+confidence ellipse. Unit: deg</li>
+<li><strong>confidence_ellipsoid</strong> (<a class="reference internal" href="obspy.core.event.ConfidenceEllipsoid.html#obspy.core.event.ConfidenceEllipsoid" title="obspy.core.event.ConfidenceEllipsoid"><tt class="xref py py-class docutils literal"><span class="pre">ConfidenceEllipsoid</span></tt></a>,
+optional) <span class="dash" /> Confidence ellipsoid</li>
+<li><strong>preferred_description</strong> (<em>str, optional</em>) <span class="dash" /> <p>Preferred uncertainty description. Allowed
+values are the following:</p>
+<blockquote>
+<div><ul>
+<li>horizontal uncertainty</li>
+<li>uncertainty ellipse</li>
+<li>confidence ellipsoid</li>
+<li>probability density function</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">key</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.clear.html#obspy.core.event.OriginUncertainty.clear" title="obspy.core.event.OriginUncertainty.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.copy.html#obspy.core.event.OriginUncertainty.copy" title="obspy.core.event.OriginUncertainty.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.get.html#obspy.core.event.OriginUncertainty.get" title="obspy.core.event.OriginUncertainty.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.items.html#obspy.core.event.OriginUncertainty.items" title="obspy.core.event.OriginUncertainty.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.iteritems.html#obspy.core.event.OriginUncertainty.iteritems" title="obspy.core.event.OriginUncertainty.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.iterkeys.html#obspy.core.event.OriginUncertainty.iterkeys" title="obspy.core.event.OriginUncertainty.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.itervalues.html#obspy.core.event.OriginUncertainty.itervalues" title="obspy.core.event.OriginUncertainty.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.keys.html#obspy.core.event.OriginUncertainty.keys" title="obspy.core.event.OriginUncertainty.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.pop.html#obspy.core.event.OriginUncertainty.pop" title="obspy.core.event.OriginUncertainty.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.popitem.html#obspy.core.event.OriginUncertainty.popitem" title="obspy.core.event.OriginUncertainty.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.setdefault.html#obspy.core.event.OriginUncertainty.setdefault" title="obspy.core.event.OriginUncertainty.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.update.html#obspy.core.event.OriginUncertainty.update" title="obspy.core.event.OriginUncertainty.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.values.html#obspy.core.event.OriginUncertainty.values" title="obspy.core.event.OriginUncertainty.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty._pretty_str.html#obspy.core.event.OriginUncertainty._pretty_str" title="obspy.core.event.OriginUncertainty._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__contains__.html#obspy.core.event.OriginUncertainty.__contains__" title="obspy.core.event.OriginUncertainty.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__deepcopy__.html#obspy.core.event.OriginUncertainty.__deepcopy__" title="obspy.core.event.OriginUncertainty.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__delattr__.html#obspy.core.event.OriginUncertainty.__delattr__" title="obspy.core.event.OriginUncertainty.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__delitem__.html#obspy.core.event.OriginUncertainty.__delitem__" title="obspy.core.event.OriginUncertainty.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__eq__.html#obspy.core.event.OriginUncertainty.__eq__" title="obspy.core.event.OriginUncertainty.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Two instances are considered equal if all attributes and all lists</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__getattr__.html#obspy.core.event.OriginUncertainty.__getattr__" title="obspy.core.event.OriginUncertainty.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__getitem__.html#obspy.core.event.OriginUncertainty.__getitem__" title="obspy.core.event.OriginUncertainty.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__getstate__.html#obspy.core.event.OriginUncertainty.__getstate__" title="obspy.core.event.OriginUncertainty.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__init__.html#obspy.core.event.OriginUncertainty.__init__" title="obspy.core.event.OriginUncertainty.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__iter__.html#obspy.core.event.OriginUncertainty.__iter__" title="obspy.core.event.OriginUncertainty.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__len__.html#obspy.core.event.OriginUncertainty.__len__" title="obspy.core.event.OriginUncertainty.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__ne__.html#obspy.core.event.OriginUncertainty.__ne__" title="obspy.core.event.OriginUncertainty.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__nonzero__.html#obspy.core.event.OriginUncertainty.__nonzero__" title="obspy.core.event.OriginUncertainty.__nonzero__"><tt class="xref py py-obj docutils literal"><span class="pre">__nonzero__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__repr__.html#obspy.core.event.OriginUncertainty.__repr__" title="obspy.core.event.OriginUncertainty.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__setattr__.html#obspy.core.event.OriginUncertainty.__setattr__" title="obspy.core.event.OriginUncertainty.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>Custom property implementation that works if the class is</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__setitem__.html#obspy.core.event.OriginUncertainty.__setitem__" title="obspy.core.event.OriginUncertainty.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__setstate__.html#obspy.core.event.OriginUncertainty.__setstate__" title="obspy.core.event.OriginUncertainty.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__str__.html#obspy.core.event.OriginUncertainty.__str__" title="obspy.core.event.OriginUncertainty.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Fairly extensive in an attempt to cover several use cases.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.__subclasshook__.html#obspy.core.event.OriginUncertainty.__subclasshook__" title="obspy.core.event.OriginUncertainty.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.OriginUncertainty.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.OriginUncertainty.clear.html" title="obspy.core.event.OriginUncertainty.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.OriginQuality.__subclasshook__.html" title="obspy.core.event.OriginQuality.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

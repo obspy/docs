@@ -1,0 +1,47 @@
+obspy.db.feature.BandpassPreviewFeature
+=======================================
+
+.. currentmodule:: obspy.db.feature
+.. autoclass:: BandpassPreviewFeature
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~BandpassPreviewFeature.__dict__
+     ~BandpassPreviewFeature.__doc__
+     ~BandpassPreviewFeature.__module__
+     ~BandpassPreviewFeature.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~BandpassPreviewFeature.process
+  
+
+  
+
+  
+
+  
+  

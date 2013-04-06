@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11. Trigger/Picker Tutorial &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="11.2.1. obspy.signal.trigger.recSTALTA" href="../../packages/autogen/obspy.signal.trigger.recSTALTA.html" />
+    <link rel="prev" title="10. Plotting Spectrograms" href="plotting_spectrograms.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../packages/autogen/obspy.signal.trigger.recSTALTA.html" title="11.2.1. obspy.signal.trigger.recSTALTA"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="plotting_spectrograms.html" title="10. Plotting Spectrograms"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="trigger-picker-tutorial">
+<h1>11. Trigger/Picker Tutorial<a class="headerlink" href="#trigger-picker-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This is a small tutorial that started as a practical for the UNESCO short
+course on triggering. Test data used in this tutorial can be downloaded here:
+<a class="reference external" href="http://examples.obspy.org/trigger_data.zip">trigger_data.zip</a>.</p>
+<p>The triggers are implemented as described in <a class="reference internal" href="../../citations.html#withers1998">[Withers1998]</a>. Information on
+finding the right trigger parameters for STA/LTA type triggers can be found in
+<a class="reference internal" href="../../citations.html#trnkoczy2012">[Trnkoczy2012]</a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Please note the convenience method of ObsPy&#8217;s
+<a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.trigger.html#obspy.core.stream.Stream.trigger" title="obspy.core.stream.Stream.trigger"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.trigger</span></tt></a> and
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.trigger.html#obspy.core.trace.Trace.trigger" title="obspy.core.trace.Trace.trigger"><tt class="xref py py-meth docutils literal"><span class="pre">Trace.trigger</span></tt></a>
+objects for triggering.</p>
+</div>
+<div class="section" id="reading-waveform-data">
+<h2>11.1. Reading Waveform Data<a class="headerlink" href="#reading-waveform-data" title="Permalink to this headline">¶</a></h2>
+<p>The data files are read into an ObsPy <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> object
+using the <a class="reference internal" href="../../packages/autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/ev0_6.a01.gse2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;Z&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The data format is automatically detected. Important in this tutorial are the
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> attributes:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">tr.data</span></tt></dt>
+<dd>contains the data as <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dd>
+<dt><tt class="docutils literal"><span class="pre">tr.stats</span></tt></dt>
+<dd>contains a dict-like class of header entries</dd>
+<dt><tt class="docutils literal"><span class="pre">tr.stats.sampling_rate</span></tt></dt>
+<dd>the sampling rate</dd>
+<dt><tt class="docutils literal"><span class="pre">tr.stats.npts</span></tt></dt>
+<dd>sample count of data</dd>
+</dl>
+</div></blockquote>
+<p>As an example, the header of the data file is printed and the data are plotted
+like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span>
+<span class="go">         network:</span>
+<span class="go">         station: EV0_6</span>
+<span class="go">        location:</span>
+<span class="go">         channel: EHZ</span>
+<span class="go">       starttime: 1970-01-01T01:00:00.000000Z</span>
+<span class="go">         endtime: 1970-01-01T01:00:59.995000Z</span>
+<span class="go">   sampling_rate: 200.0</span>
+<span class="go">           delta: 0.005</span>
+<span class="go">            npts: 12000</span>
+<span class="go">           calib: 1.0</span>
+<span class="go">         _format: GSE2</span>
+<span class="go">            gse2: AttribDict({&#39;instype&#39;: &#39;      &#39;, &#39;datatype&#39;: &#39;CM6&#39;, &#39;hang&#39;: 0.0, &#39;auxid&#39;: &#39;    &#39;, &#39;vang&#39;: -1.0, &#39;calper&#39;: 1.0})</span>
+</pre></div>
+</div>
+<p>Using the <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.plot.html#obspy.core.trace.Trace.plot" title="obspy.core.trace.Trace.plot"><tt class="xref py py-meth docutils literal"><span class="pre">plot()</span></tt></a> method of the
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects will show the plot.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&quot;relative&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial.png" src="../../_images/trigger_tutorial.png" />
+</div>
+</div>
+<div class="section" id="available-methods">
+<h2>11.2. Available Methods<a class="headerlink" href="#available-methods" title="Permalink to this headline">¶</a></h2>
+<p>After loading the data, we are able to pass the waveform data to the following
+trigger routines defined in <a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.html#module-obspy.signal.trigger" title="obspy.signal.trigger"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.signal.trigger</span></tt></a>:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.recSTALTA.html#obspy.signal.trigger.recSTALTA" title="obspy.signal.trigger.recSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">recSTALTA</span></tt></a>(a,&nbsp;nsta,&nbsp;nlta)</td>
+<td>Recursive STA/LTA.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.carlSTATrig.html#obspy.signal.trigger.carlSTATrig" title="obspy.signal.trigger.carlSTATrig"><tt class="xref py py-obj docutils literal"><span class="pre">carlSTATrig</span></tt></a>(a,&nbsp;nsta,&nbsp;nlta,&nbsp;ratio,&nbsp;quiet)</td>
+<td>Computes the carlSTATrig characteristic function.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.classicSTALTA.html#obspy.signal.trigger.classicSTALTA" title="obspy.signal.trigger.classicSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">classicSTALTA</span></tt></a>(a,&nbsp;nsta,&nbsp;nlta)</td>
+<td>Computes the standard STA/LTA from a given input array a. The length of</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.delayedSTALTA.html#obspy.signal.trigger.delayedSTALTA" title="obspy.signal.trigger.delayedSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">delayedSTALTA</span></tt></a>(a,&nbsp;nsta,&nbsp;nlta)</td>
+<td>Delayed STA/LTA.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.zDetect.html#obspy.signal.trigger.zDetect" title="obspy.signal.trigger.zDetect"><tt class="xref py py-obj docutils literal"><span class="pre">zDetect</span></tt></a>(a,&nbsp;nsta)</td>
+<td>Z-detector.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.pkBaer.html#obspy.signal.trigger.pkBaer" title="obspy.signal.trigger.pkBaer"><tt class="xref py py-obj docutils literal"><span class="pre">pkBaer</span></tt></a>(reltrc,&nbsp;samp_int,&nbsp;tdownmax,&nbsp;tupevent,&nbsp;...)</td>
+<td>Wrapper for P-picker routine by M. Baer, Schweizer Erdbebendienst.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.arPick.html#obspy.signal.trigger.arPick" title="obspy.signal.trigger.arPick"><tt class="xref py py-obj docutils literal"><span class="pre">arPick</span></tt></a>(a,&nbsp;b,&nbsp;c,&nbsp;samp_rate,&nbsp;f1,&nbsp;f2,&nbsp;lta_p,&nbsp;...)</td>
+<td>Return corresponding picks of the AR picker</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Help for each function is available  HTML formatted or in the usual Python manner:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">classicSTALTA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">classicSTALTA</span><span class="p">)</span>  
+<span class="go">Help on function classicSTALTA in module obspy.signal.trigger...</span>
+</pre></div>
+</div>
+<p>The triggering itself mainly consists of the following two steps:</p>
+<ul class="simple">
+<li>Calculating the characteristic function</li>
+<li>Setting picks based on values of the characteristic function</li>
+</ul>
+</div>
+<div class="section" id="trigger-examples">
+<h2>11.3. Trigger Examples<a class="headerlink" href="#trigger-examples" title="Permalink to this headline">¶</a></h2>
+<p>For all the examples, the commands to read in the data and to load the modules
+are the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">plotTrigger</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trace</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/ev0_6.a01.gse2&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+</pre></div>
+</div>
+<div class="section" id="classic-sta-lta">
+<h3>11.3.1. Classic Sta Lta<a class="headerlink" href="#classic-sta-lta" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">classicSTALTA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">classicSTALTA</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">df</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_classic_sta_lta.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_classic_sta_lta.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_classic_sta_lta.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_classic_sta_lta.png" src="../../_images/trigger_tutorial_classic_sta_lta.png" />
+</div>
+</div>
+<div class="section" id="z-detect">
+<h3>11.3.2. Z-Detect<a class="headerlink" href="#z-detect" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">zDetect</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">zDetect</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">df</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_z_detect.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_z_detect.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_z_detect.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_z_detect.png" src="../../_images/trigger_tutorial_z_detect.png" />
+</div>
+</div>
+<div class="section" id="recursive-sta-lta">
+<h3>11.3.3. Recursive Sta Lta<a class="headerlink" href="#recursive-sta-lta" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">recSTALTA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">recSTALTA</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">df</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_recursive_sta_lta.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_recursive_sta_lta.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_recursive_sta_lta.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_recursive_sta_lta.png" src="../../_images/trigger_tutorial_recursive_sta_lta.png" />
+</div>
+</div>
+<div class="section" id="carl-sta-trig">
+<h3>11.3.4. Carl-Sta-Trig<a class="headerlink" href="#carl-sta-trig" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">carlSTATrig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">carlSTATrig</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_carl_sta_trig.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_carl_sta_trig.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_carl_sta_trig.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_carl_sta_trig.png" src="../../_images/trigger_tutorial_carl_sta_trig.png" />
+</div>
+</div>
+<div class="section" id="delayed-sta-lta">
+<h3>11.3.5. Delayed Sta Lta<a class="headerlink" href="#delayed-sta-lta" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">delayedSTALTA</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">delayedSTALTA</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">df</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_delayed_sta_lta.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_delayed_sta_lta.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_delayed_sta_lta.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_delayed_sta_lta.png" src="../../_images/trigger_tutorial_delayed_sta_lta.png" />
+</div>
+</div>
+</div>
+<div class="section" id="network-coincidence-trigger-example">
+<span id="trigger-tutorial-coincidence"></span><h2>11.4. Network Coincidence Trigger Example<a class="headerlink" href="#network-coincidence-trigger-example" title="Permalink to this headline">¶</a></h2>
+<p>In this example we perform a coincidence trigger on a local scale network of 4
+stations.  For the single station triggers a recursive STA/LTA is used. The
+waveform data span about four minutes and include four local events. Two are
+easily recognizable (Ml 1-2), the other two can only be detected with well
+adjusted trigger settings (Ml &lt;= 0).</p>
+<p>First we assemble a Stream object with all waveform data, the data used in the
+example is available from our web server:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;BW.UH1..SHZ.D.2010.147.cut.slist.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="s">&quot;BW.UH2..SHZ.D.2010.147.cut.slist.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="s">&quot;BW.UH3..SHZ.D.2010.147.cut.slist.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="s">&quot;BW.UH4..SHZ.D.2010.147.cut.slist.gz&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">st</span> <span class="o">+=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/&quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After applying a bandpass filter we run the coincidence triggering on all data.
+In the example a recursive STA/LTA is used. The trigger parameters are set to
+0.5 and 10 second time windows, respectively. The on-threshold is set to 3.5,
+the off-threshold to 1. In this example every station gets a weight of 1 and
+the coincidence sum threshold is set to 3. For more complex network setups the
+weighting for every station/channel can be customized. We want to keep
+our original data so we work with a copy of the original stream:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;bandpass&#39;</span><span class="p">,</span> <span class="n">freqmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">freqmax</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c"># optional prefiltering</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">coincidenceTrigger</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trig</span> <span class="o">=</span> <span class="n">coincidenceTrigger</span><span class="p">(</span><span class="s">&quot;recstalta&quot;</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lta</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using pretty print the results display like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">trig</span><span class="p">)</span>
+<span class="go">[{&#39;coincidence_sum&#39;: 4.0,</span>
+<span class="go">  &#39;duration&#39;: 4.5299999713897705,</span>
+<span class="go">  &#39;stations&#39;: [&#39;UH3&#39;, &#39;UH2&#39;, &#39;UH1&#39;, &#39;UH4&#39;],</span>
+<span class="go">  &#39;time&#39;: UTCDateTime(2010, 5, 27, 16, 24, 33, 190000),</span>
+<span class="go">  &#39;trace_ids&#39;: [&#39;BW.UH3..SHZ&#39;, &#39;BW.UH2..SHZ&#39;, &#39;BW.UH1..SHZ&#39;,</span>
+<span class="go">                &#39;BW.UH4..SHZ&#39;]},</span>
+<span class="go"> {&#39;coincidence_sum&#39;: 3.0,</span>
+<span class="go">  &#39;duration&#39;: 3.440000057220459,</span>
+<span class="go">  &#39;stations&#39;: [&#39;UH2&#39;, &#39;UH3&#39;, &#39;UH1&#39;],</span>
+<span class="go">  &#39;time&#39;: UTCDateTime(2010, 5, 27, 16, 27, 1, 260000),</span>
+<span class="go">  &#39;trace_ids&#39;: [&#39;BW.UH2..SHZ&#39;, &#39;BW.UH3..SHZ&#39;, &#39;BW.UH1..SHZ&#39;]},</span>
+<span class="go"> {&#39;coincidence_sum&#39;: 4.0,</span>
+<span class="go">  &#39;duration&#39;: 4.7899999618530273,</span>
+<span class="go">  &#39;stations&#39;: [&#39;UH3&#39;, &#39;UH2&#39;, &#39;UH1&#39;, &#39;UH4&#39;],</span>
+<span class="go">  &#39;time&#39;: UTCDateTime(2010, 5, 27, 16, 27, 30, 490000),</span>
+<span class="go">  &#39;trace_ids&#39;: [&#39;BW.UH3..SHZ&#39;, &#39;BW.UH2..SHZ&#39;, &#39;BW.UH1..SHZ&#39;,</span>
+<span class="go">                &#39;BW.UH4..SHZ&#39;]}]</span>
+</pre></div>
+</div>
+<p>With these settings the coincidence trigger reports three events. For each
+(possible) event the start time and duration is provided. Furthermore, a list
+of station names and trace IDs is provided, ordered by the time the stations
+have triggered, which can give a first rough idea of the possible event
+location. We can request additional information by specifying <tt class="docutils literal"><span class="pre">details=True</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trig</span> <span class="o">=</span> <span class="n">coincidenceTrigger</span><span class="p">(</span><span class="s">&quot;recstalta&quot;</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lta</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">details</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For clarity, we only display information on the first item in the results here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">trig</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">{&#39;cft_peak_wmean&#39;: 19.561900329259956,</span>
+<span class="go"> &#39;cft_peaks&#39;: [19.535644192544272,</span>
+<span class="go">               19.872432918501264,</span>
+<span class="go">               19.622171410201297,</span>
+<span class="go">               19.217352795792998],</span>
+<span class="go"> &#39;cft_std_wmean&#39;: 5.4565629691954713,</span>
+<span class="go"> &#39;cft_stds&#39;: [5.292458320417178,</span>
+<span class="go">              5.6565387957966404,</span>
+<span class="go">              5.7582248973698507,</span>
+<span class="go">              5.1190298631982163],</span>
+<span class="go"> &#39;coincidence_sum&#39;: 4.0,</span>
+<span class="go"> &#39;duration&#39;: 4.5299999713897705,</span>
+<span class="go"> &#39;stations&#39;: [&#39;UH3&#39;, &#39;UH2&#39;, &#39;UH1&#39;, &#39;UH4&#39;],</span>
+<span class="go"> &#39;time&#39;: UTCDateTime(2010, 5, 27, 16, 24, 33, 190000),</span>
+<span class="go"> &#39;trace_ids&#39;: [&#39;BW.UH3..SHZ&#39;, &#39;BW.UH2..SHZ&#39;, &#39;BW.UH1..SHZ&#39;, &#39;BW.UH4..SHZ&#39;]}</span>
+</pre></div>
+</div>
+<p>Here, some additional information on the peak values and standard deviations of
+the characteristic functions of the single station triggers is provided. Also,
+for both a weighted mean is calculated. These values can help to distinguish
+certain from questionable network triggers.</p>
+<p>For more information on all possible options see the documentation page for
+<a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.coincidenceTrigger.html#obspy.signal.trigger.coincidenceTrigger" title="obspy.signal.trigger.coincidenceTrigger"><tt class="xref py py-func docutils literal"><span class="pre">coincidenceTrigger()</span></tt></a>.</p>
+</div>
+<div class="section" id="picker-examples">
+<h2>11.5. Picker Examples<a class="headerlink" href="#picker-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="baer-picker">
+<h3>11.5.1. Baer Picker<a class="headerlink" href="#baer-picker" title="Permalink to this headline">¶</a></h3>
+<p>For <a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.pkBaer.html#obspy.signal.trigger.pkBaer" title="obspy.signal.trigger.pkBaer"><tt class="xref py py-func docutils literal"><span class="pre">pkBaer()</span></tt></a>, input is in seconds, output is in
+samples.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">pkBaer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trace</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/ev0_6.a01.gse2&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p_pick</span><span class="p">,</span> <span class="n">phase_info</span> <span class="o">=</span> <span class="n">pkBaer</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="mi">20</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p_pick</span><span class="p">)</span>
+<span class="go">6894</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">phase_info</span><span class="p">)</span>
+<span class="go">EPU3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p_pick</span> <span class="o">/</span> <span class="n">df</span><span class="p">)</span>
+<span class="go">34.47</span>
+</pre></div>
+</div>
+<p>This yields the output 34.47 EPU3, which means that a P pick was
+set at 34.47s with Phase information EPU3.</p>
+</div>
+<div class="section" id="ar-picker">
+<h3>11.5.2. AR Picker<a class="headerlink" href="#ar-picker" title="Permalink to this headline">¶</a></h3>
+<p>For <a class="reference internal" href="../../packages/autogen/obspy.signal.trigger.arPick.html#obspy.signal.trigger.arPick" title="obspy.signal.trigger.arPick"><tt class="xref py py-func docutils literal"><span class="pre">arPick()</span></tt></a>, input and output are in seconds.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">arPick</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr1</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;http://examples.obspy.org/loc_RJOB20050801145719850.z.gse2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;http://examples.obspy.org/loc_RJOB20050801145719850.n.gse2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr3</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;http://examples.obspy.org/loc_RJOB20050801145719850.e.gse2&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">tr1</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p_pick</span><span class="p">,</span> <span class="n">s_pick</span> <span class="o">=</span> <span class="n">arPick</span><span class="p">(</span><span class="n">tr1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">tr2</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">tr3</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="mf">1.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">p_pick</span><span class="p">)</span>
+<span class="go">30.6350002289</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">s_pick</span><span class="p">)</span>
+<span class="go">31.2800006866</span>
+</pre></div>
+</div>
+<p>This gives the output 30.6350002289 and 31.2800006866, meaning that a P pick at
+30.64s and an S pick at 31.28s were identified.</p>
+</div>
+</div>
+<div class="section" id="advanced-example">
+<h2>11.6. Advanced Example<a class="headerlink" href="#advanced-example" title="Permalink to this headline">¶</a></h2>
+<p>A more complicated example, where the data are retrieved via ArcLink and
+results are plotted step by step, is shown here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.arclink</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">recSTALTA</span><span class="p">,</span> <span class="n">triggerOnset</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># Retrieve waveforms via ArcLink</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&quot;erde.geophysik.uni-muenchen.de&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">18001</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-08-24 00:19:45&quot;</span><span class="p">)</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;RTSH&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="c"># For convenience</span>
+<span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># only one trace in mseed volume</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+
+<span class="c"># Characteristic function and trigger onsets</span>
+<span class="n">cft</span> <span class="o">=</span> <span class="n">recSTALTA</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">df</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mf">10.</span> <span class="o">*</span> <span class="n">df</span><span class="p">))</span>
+<span class="n">on_of</span> <span class="o">=</span> <span class="n">triggerOnset</span><span class="p">(</span><span class="n">cft</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c"># Plotting the results</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">on_of</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">on_of</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cft</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">([</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cft</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_advanced.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_advanced.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/trigger_tutorial_advanced.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/trigger_tutorial_advanced.png" src="../../_images/trigger_tutorial_advanced.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">11. Trigger/Picker Tutorial</a><ul>
+<li><a class="reference internal" href="#reading-waveform-data">11.1. Reading Waveform Data</a></li>
+<li><a class="reference internal" href="#available-methods">11.2. Available Methods</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#trigger-examples">11.3. Trigger Examples</a><ul>
+<li><a class="reference internal" href="#classic-sta-lta">11.3.1. Classic Sta Lta</a></li>
+<li><a class="reference internal" href="#z-detect">11.3.2. Z-Detect</a></li>
+<li><a class="reference internal" href="#recursive-sta-lta">11.3.3. Recursive Sta Lta</a></li>
+<li><a class="reference internal" href="#carl-sta-trig">11.3.4. Carl-Sta-Trig</a></li>
+<li><a class="reference internal" href="#delayed-sta-lta">11.3.5. Delayed Sta Lta</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#network-coincidence-trigger-example">11.4. Network Coincidence Trigger Example</a></li>
+<li><a class="reference internal" href="#picker-examples">11.5. Picker Examples</a><ul>
+<li><a class="reference internal" href="#baer-picker">11.5.1. Baer Picker</a></li>
+<li><a class="reference internal" href="#ar-picker">11.5.2. AR Picker</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-example">11.6. Advanced Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/trigger_tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../packages/autogen/obspy.signal.trigger.recSTALTA.html" title="11.2.1. obspy.signal.trigger.recSTALTA"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="plotting_spectrograms.html" title="10. Plotting Spectrograms"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

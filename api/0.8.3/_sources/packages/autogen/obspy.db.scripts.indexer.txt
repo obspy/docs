@@ -1,0 +1,11 @@
+obspy.db.scripts.indexer
+========================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-indexer``. For more info on the command line options,
+    please run ``$ obspy-indexer --help``.
+    Alternatively you can also execute ``$ python -m obspy.db.scripts.indexer``.
+
+.. currentmodule:: obspy.db.scripts.indexer
+.. automodule:: obspy.db.scripts.indexer

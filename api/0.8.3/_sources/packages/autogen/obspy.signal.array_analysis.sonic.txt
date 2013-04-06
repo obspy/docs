@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.sonic
+=================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: sonic

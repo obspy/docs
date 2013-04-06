@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.stream.Stream.plot &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.stream.Stream" href="obspy.core.stream.Stream.html" />
+    <link rel="next" title="obspy.core.stream.Stream.pop" href="obspy.core.stream.Stream.pop.html" />
+    <link rel="prev" title="obspy.core.stream.Stream.normalize" href="obspy.core.stream.Stream.normalize.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.pop.html" title="obspy.core.stream.Stream.pop"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.normalize.html" title="obspy.core.stream.Stream.normalize"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" accesskey="U">obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-stream-stream-plot">
+<h1>obspy.core.stream.Stream.plot<a class="headerlink" href="#obspy-core-stream-stream-plot" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.stream.Stream.plot">
+<tt class="descclassname">Stream.</tt><tt class="descname">plot</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/stream.html#Stream.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.stream.Stream.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a waveform plot of the current ObsPy Stream object.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param outfile:</th><td class="field-body">Output file string. Also used to automatically
+determine the output format. Supported file formats depend on your
+matplotlib backend. Most backends support png, pdf, ps, eps and
+svg. Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param format:</th><td class="field-body">Format of the graph picture. If no format is given the
+outfile parameter will be used to try to automatically determine
+the output format. If no format is found it defaults to png output.
+If no outfile is specified but a format is, than a binary
+imagestring will be returned.
+Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param starttime:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Starttime of the graph as a
+<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> object. If not set
+the graph will be plotted from the beginning.
+Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param endtime:</th><td class="field-body">Endtime of the graph as a
+<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> object. If not set
+the graph will be plotted until the end.
+Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param fig:</th><td class="field-body">Use an existing matplotlib figure instance.
+Default to <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">param automerge:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">If automerge is True, Traces with the same id will be
+merged.
+Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param size:</th><td class="field-body">Size tuple in pixel for the output file. This corresponds
+to the resolution of the graph for vector formats.
+Defaults to <tt class="docutils literal"><span class="pre">(800,</span> <span class="pre">250)</span></tt> pixel per channel.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param dpi:</th><td class="field-body">Dots per inch of the output file. This also affects the
+size of most elements in the graph (text, linewidth, ...).
+Defaults to <tt class="docutils literal"><span class="pre">100</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param color:</th><td class="field-body">Color of the graph as a matplotlib color string as
+described below. If <tt class="docutils literal"><span class="pre">type='dayplot'</span></tt> a list/tuple of color
+strings is expected that will be periodically repeated for each
+line plotted.
+Defaults to <tt class="docutils literal"><span class="pre">'black'</span></tt> or to <tt class="docutils literal"><span class="pre">('#B2000F',</span> <span class="pre">'#004C12',</span> <span class="pre">'#847200',</span>
+<span class="pre">'#0E01FF')</span></tt> for <tt class="docutils literal"><span class="pre">type='dayplot'</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param bgcolor:</th><td class="field-body">Background color of the graph.
+Defaults to <tt class="docutils literal"><span class="pre">'white'</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param face_color:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Facecolor of the matplotlib canvas.
+Defaults to <tt class="docutils literal"><span class="pre">'white'</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">param transparent:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">Make all backgrounds transparent (True/False). This
+will overwrite the bgcolor and face_color arguments.
+Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param number_of_ticks:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">The number of ticks on the x-axis.
+Defaults to <tt class="docutils literal"><span class="pre">4</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">param tick_format:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">The way the time axis is formated.
+Defaults to <tt class="docutils literal"><span class="pre">'%H:%M:%S'</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param tick_rotation:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Tick rotation in degrees.
+Default to <tt class="docutils literal"><span class="pre">0</span></tt>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param handle:</th><td class="field-body">Whether or not to return the matplotlib figure instance
+after the plot has been created.
+Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param method:</th><td class="field-body">By default, all traces with more than 400.000 samples
+will be plotted with a fast method that cannot be zoomed.
+Setting this argument to <tt class="docutils literal"><span class="pre">'full'</span></tt> will straight up plot the data.
+This results in a potentially worse performance but the interactive
+matplotlib view can be used properly.
+Defaults to &#8216;fast&#8217;.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param type:</th><td class="field-body">Type may be set to either <tt class="docutils literal"><span class="pre">'dayplot'</span></tt> in order to create
+a one-day plot for a single Trace or <tt class="docutils literal"><span class="pre">'relative'</span></tt> to convert all
+date/time information to a relative scale, effectively starting
+the seismogram at 0 seconds. <tt class="docutils literal"><span class="pre">'normal'</span></tt> will produce a standard
+plot.
+Defaults to <tt class="docutils literal"><span class="pre">'normal'</span></tt>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param equal_scale:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Is enabled all plots are equally scaled. Defaults
+to <tt class="docutils literal"><span class="pre">True</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dayplot parameters</strong></p>
+<p>The following parameters are only available if <tt class="docutils literal"><span class="pre">type='dayplot'</span></tt> is
+set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param vertical_scaling_range:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Determines how each line is scaled in
+its given space. Every line will be centered around its mean value
+and then clamped to fit its given space. This argument is the range
+in data units that will be used to clamp the data. If the range is
+smaller than the actual range, the lines&#8217; data may overshoot to
+other lines which is usually a desired effect. Larger ranges will
+result in a vertical padding.
+If <tt class="docutils literal"><span class="pre">0</span></tt>, the actual range of the data will be used and no
+overshooting or additional padding will occur.
+If <tt class="docutils literal"><span class="pre">None</span></tt> the range will be chosen to be the 99.5-percentile of
+the actual range - so some values will overshoot.
+Defaults to None.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param interval:</th><td class="field-body"><p class="first">This defines the interval length in minutes for one
+line.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param time_offset:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Only used if <tt class="docutils literal"><span class="pre">type='dayplot'</span></tt>. The difference
+between the timezone of the data (specified with the kwarg
+&#8216;timezone&#8217;) and UTC time in hours. Will be displayed in a string.
+Defaults to the current offset of the system time to UTC time.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param timezone:</th><td class="field-body"><p class="first">Defines the name of the user defined time scale. Will
+be displayed in a string together with the actual offset defined in
+the kwarg &#8216;time_offset&#8217;.
+Defaults to <tt class="docutils literal"><span class="pre">'local</span> <span class="pre">time'</span></tt>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param localization_dict:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Enables limited localization of the dayplot
+through the usage of a dictionary. To change the labels to, e.g.
+german, use the following:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>localization_dict={&#8216;time in&#8217;: &#8216;Zeit in&#8217;, &#8216;seconds&#8217;: &#8216;Sekunden&#8217;,</dt>
+<dd><p class="first last">&#8216;minutes&#8217;: &#8216;Minuten&#8217;, &#8216;hours&#8217;: &#8216;Stunden&#8217;}</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">param data_unit:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">If given, the scale of the data will be drawn on the
+right hand side in the form &#8220;%f {data_unit}&#8221;. The unit is supposed
+to be a string containing the actual unit of the data. Can be a
+LaTeX expression if matplotlib has been built with LaTeX support,
+e.g. &#8220;$frac{m}{s}$&#8221;. Be careful to escape the backslashes, or
+use r-prepended strings, e.g. r&#8221;$</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="docutils">
+<dt>rac{m}{s}$&#8221;.</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param events:</th><td class="field-body"><p class="first">An optional list of events can be drawn on the plot if
+given.  They will be displayed as yellow stars with optional
+annotations.  They are given as a list of dictionaries. Each
+dictionary at least needs to have a &#8220;time&#8221; key, containing a
+UTCDateTime object with the origin time of the event. Furthermore
+every event can have an optional &#8220;text&#8221; key which will then be
+displayed as an annotation.
+Example:</p>
+<blockquote>
+<div><p>events=[{&#8220;time&#8221;: UTCDateTime(...), &#8220;text&#8221;: &#8220;Event A&#8221;}, {...}]</p>
+</div></blockquote>
+<p>It can also be a <a class="reference internal" href="obspy.core.event.Catalog.html#obspy.core.event.Catalog" title="obspy.core.event.Catalog"><tt class="xref py py-class docutils literal"><span class="pre">Catalog</span></tt></a> object. In this
+case each event will be annotated with its corresponding
+Flinn-Engdahl region and the magnitude.
+Events can also be automatically downloaded with the help of
+obspy.neries. Just pass a dictionary with a &#8220;min_magnitude&#8221; key,
+e.g.</p>
+<blockquote class="last">
+<div><p>events={&#8220;min_magnitude&#8221;: 5.5}</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Color Options</p>
+<p>Colors can be specified as defined in the <a class="reference external" href="http://matplotlib.sourceforge.net/api/colors_api.html#matplotlib.colors" title="(in Matplotlib v1.2.0)"><tt class="xref py py-mod docutils literal"><span class="pre">matplotlib.colors</span></tt></a>
+documentation.</p>
+<p>Short Version: For all color values, you can either use:</p>
+<ul class="simple">
+<li>legit <a class="reference external" href="http://www.w3.org/TR/css3-color/#html4">HTML color names</a>,
+e.g. <tt class="docutils literal"><span class="pre">'blue'</span></tt>,</li>
+<li>HTML hex strings, e.g. <tt class="docutils literal"><span class="pre">'#EE00FF'</span></tt>,</li>
+<li>pass an string of a R, G, B tuple, where each of the component is a
+float value in the range of 0 to 1, e.g. <tt class="docutils literal"><span class="pre">'(1,</span> <span class="pre">0.25,</span> <span class="pre">0.5)'</span></tt>, or</li>
+<li>use a single letters for the basic built-in colors, such as <tt class="docutils literal"><span class="pre">'b'</span></tt>
+(blue), <tt class="docutils literal"><span class="pre">'g'</span></tt> (green), <tt class="docutils literal"><span class="pre">'r'</span></tt> (red), <tt class="docutils literal"><span class="pre">'c'</span></tt> (cyan), <tt class="docutils literal"><span class="pre">'m'</span></tt>
+(magenta), <tt class="docutils literal"><span class="pre">'y'</span></tt> (yellow), <tt class="docutils literal"><span class="pre">'k'</span></tt> (black), <tt class="docutils literal"><span class="pre">'w'</span></tt> (white).</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/ecbd2f6c57.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/ecbd2f6c57.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/ecbd2f6c57.png" src="../../_images/ecbd2f6c57.png" />
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.stream.Stream.plot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.pop.html" title="obspy.core.stream.Stream.pop"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.normalize.html" title="obspy.core.stream.Stream.normalize"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" >obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

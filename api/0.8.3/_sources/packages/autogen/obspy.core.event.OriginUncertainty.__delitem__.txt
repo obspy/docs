@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.__delitem__
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.__delitem__

@@ -1,0 +1,6 @@
+obspy.db.client.Client.getWaveformPath
+======================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getWaveformPath

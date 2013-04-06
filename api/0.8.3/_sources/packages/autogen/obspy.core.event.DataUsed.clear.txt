@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.clear
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.clear

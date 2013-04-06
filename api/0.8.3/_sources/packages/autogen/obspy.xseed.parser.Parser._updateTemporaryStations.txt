@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._updateTemporaryStations
+==================================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._updateTemporaryStations

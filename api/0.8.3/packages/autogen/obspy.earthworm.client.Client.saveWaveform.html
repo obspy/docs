@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.earthworm.client.Client.saveWaveform &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.earthworm.client.Client" href="obspy.earthworm.client.Client.html" />
+    <link rel="next" title="obspy.earthworm.client.Client.__init__" href="obspy.earthworm.client.Client.__init__.html" />
+    <link rel="prev" title="obspy.earthworm.client.Client.getWaveform" href="obspy.earthworm.client.Client.getWaveform.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.earthworm.client.Client.__init__.html" title="obspy.earthworm.client.Client.__init__"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.earthworm.client.Client.getWaveform.html" title="obspy.earthworm.client.Client.getWaveform"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.earthworm.html" >obspy.earthworm - Earthworm Wave Server client for ObsPy.</a> &raquo;</li>
+          <li><a href="obspy.earthworm.client.html" >obspy.earthworm.client</a> &raquo;</li>
+          <li><a href="obspy.earthworm.client.Client.html" accesskey="U">obspy.earthworm.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-earthworm-client-client-savewaveform">
+<h1>obspy.earthworm.client.Client.saveWaveform<a class="headerlink" href="#obspy-earthworm-client-client-savewaveform" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.earthworm.client.Client.saveWaveform">
+<tt class="descclassname">Client.</tt><tt class="descname">saveWaveform</tt><big>(</big><em>filename</em>, <em>network</em>, <em>station</em>, <em>location</em>, <em>channel</em>, <em>starttime</em>, <em>endtime</em>, <em>format='MSEED'</em>, <em>cleanup=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/earthworm/client.html#Client.saveWaveform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.earthworm.client.Client.saveWaveform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a retrieved waveform directly into a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Name of the output file.</li>
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'UW'</span></tt>.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'TUCA'</span></tt>.</li>
+<li><strong>location</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">''</span></tt>.</li>
+<li><strong>channel</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'BHZ'</span></tt>. Last character (i.e.
+component) can be a wildcard (&#8216;?&#8217; or &#8216;*&#8217;) to fetch <cite>Z</cite>, <cite>N</cite> and
+<cite>E</cite> component.</li>
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Start date and time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> End date and time.</li>
+<li><strong>format</strong> (<em>str, optional</em>) <span class="dash" /> Output format. One of <tt class="docutils literal"><span class="pre">&quot;MSEED&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;GSE2&quot;</span></tt>,
+<tt class="docutils literal"><span class="pre">&quot;SAC&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SACXY&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;Q&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SH_ASC&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SEGY&quot;</span></tt>,
+<tt class="docutils literal"><span class="pre">&quot;SU&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;WAV&quot;</span></tt>. See the Supported Formats section in method
+<a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> for a full list of
+supported formats. Defaults to <tt class="docutils literal"><span class="pre">'MSEED'</span></tt>.</li>
+<li><strong>cleanup</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) <span class="dash" /> Specifies whether perfectly aligned traces should be
+merged or not. See <a class="reference internal" href="obspy.core.stream.Stream.merge.html#obspy.core.stream.Stream.merge" title="obspy.core.stream.Stream.merge"><tt class="xref py py-meth docutils literal"><span class="pre">merge()</span></tt></a>,
+<cite>method</cite> -1 or <a class="reference internal" href="obspy.core.stream.Stream._cleanup.html#obspy.core.stream.Stream._cleanup" title="obspy.core.stream.Stream._cleanup"><tt class="xref py py-meth docutils literal"><span class="pre">_cleanup()</span></tt></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.earthworm</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;pele.ess.washington.edu&quot;</span><span class="p">,</span> <span class="mi">16017</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2000</span>  <span class="c"># now - 2000 seconds</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveWaveform</span><span class="p">(</span><span class="s">&#39;UW.TUCA..BHZ.mseed&#39;</span><span class="p">,</span> <span class="s">&#39;UW&#39;</span><span class="p">,</span> <span class="s">&#39;TUCA&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;BHZ&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;MSEED&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.earthworm.client.Client.saveWaveform.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.earthworm.client.Client.__init__.html" title="obspy.earthworm.client.Client.__init__"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.earthworm.client.Client.getWaveform.html" title="obspy.earthworm.client.Client.getWaveform"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.earthworm.html" >obspy.earthworm - Earthworm Wave Server client for ObsPy.</a> &raquo;</li>
+          <li><a href="obspy.earthworm.client.html" >obspy.earthworm.client</a> &raquo;</li>
+          <li><a href="obspy.earthworm.client.Client.html" >obspy.earthworm.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

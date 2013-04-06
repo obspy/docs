@@ -1,0 +1,6 @@
+obspy.xseed.fields.Loop.parseSEED
+=================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Loop.parseSEED

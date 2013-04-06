@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.__setattr__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.__setattr__

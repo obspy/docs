@@ -1,0 +1,6 @@
+obspy.segy.segy.SUFile.__str__
+==============================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SUFile.__str__

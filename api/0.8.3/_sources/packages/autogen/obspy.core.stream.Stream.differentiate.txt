@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.differentiate
+======================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.differentiate

@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.iteritems
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.iteritems

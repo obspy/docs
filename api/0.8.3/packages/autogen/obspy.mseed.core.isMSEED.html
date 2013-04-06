@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.core.isMSEED &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.core" href="obspy.mseed.core.html" />
+    <link rel="next" title="obspy.mseed.core.readMSEED" href="obspy.mseed.core.readMSEED.html" />
+    <link rel="prev" title="obspy.mseed.core.MSTG.__init__" href="obspy.mseed.core.MSTG.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.readMSEED.html" title="obspy.mseed.core.readMSEED"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.MSTG.__init__.html" title="obspy.mseed.core.MSTG.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" accesskey="U">obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-core-ismseed">
+<h1>obspy.mseed.core.isMSEED<a class="headerlink" href="#obspy-mseed-core-ismseed" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.core.isMSEED">
+<tt class="descname">isMSEED</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/core.html#isMSEED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.core.isMSEED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether a file is Mini-SEED/full SEED or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) <span class="dash" /> Mini-SEED/full SEED file to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">True</span></tt> if a Mini-SEED file.</td>
+</tr>
+</tbody>
+</table>
+<p>This method only reads the first seven bytes of the file and checks
+whether its a Mini-SEED or full SEED file.</p>
+<p>It also is true for fullSEED files because libmseed can read the data
+part of fullSEED files. If the method finds a fullSEED file it also
+checks if it has a data part and returns False otherwise.</p>
+<p>Thus it cannot be used to validate a Mini-SEED or SEED file.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.core.isMSEED.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.readMSEED.html" title="obspy.mseed.core.readMSEED"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.core.MSTG.__init__.html" title="obspy.mseed.core.MSTG.__init__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.core.html" >obspy.mseed.core</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

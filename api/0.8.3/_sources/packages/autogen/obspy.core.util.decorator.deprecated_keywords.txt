@@ -1,0 +1,6 @@
+obspy.core.util.decorator.deprecated_keywords
+=============================================
+
+.. currentmodule:: obspy.core.util.decorator
+
+.. autofunction:: deprecated_keywords

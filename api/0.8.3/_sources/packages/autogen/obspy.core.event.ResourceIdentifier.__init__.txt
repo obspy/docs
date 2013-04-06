@@ -1,0 +1,6 @@
+obspy.core.event.ResourceIdentifier.__init__
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ResourceIdentifier.__init__

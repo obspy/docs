@@ -1,0 +1,6 @@
+obspy.wav.core.writeWAV
+=======================
+
+.. currentmodule:: obspy.wav.core
+
+.. autofunction:: writeWAV

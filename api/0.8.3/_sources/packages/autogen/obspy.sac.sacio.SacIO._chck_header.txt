@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO._chck_header
+==================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO._chck_header

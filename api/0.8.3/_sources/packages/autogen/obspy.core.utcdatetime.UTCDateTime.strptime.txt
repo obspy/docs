@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.strptime
+===========================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.strptime

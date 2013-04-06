@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.util.misc.scoreatpercentile &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-util-misc-scoreatpercentile">
+<h1>obspy.core.util.misc.scoreatpercentile<a class="headerlink" href="#obspy-core-util-misc-scoreatpercentile" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.core.util.misc.scoreatpercentile">
+<tt class="descname">scoreatpercentile</tt><big>(</big><em>a</em>, <em>per</em>, <em>limit=()</em>, <em>issorted=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/util/misc.html#scoreatpercentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.util.misc.scoreatpercentile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the score at the given per percentile of the sequence a.</p>
+<p>For example, the score at <tt class="docutils literal"><span class="pre">per=50</span></tt> is the median.</p>
+<p>If the desired quantile lies between two data points, we interpolate
+between them.</p>
+<p>If the parameter <tt class="docutils literal"><span class="pre">limit</span></tt> is provided, it should be a tuple (lower,
+upper) of two values.  Values of <tt class="docutils literal"><span class="pre">a</span></tt> outside this (closed) interval
+will be ignored.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="go">1.75</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="go">2.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
+<span class="go">3.25</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">36</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="go">25.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="go">40</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
+<span class="go">42.5</span>
+</pre></div>
+</div>
+<p>This function is taken from <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a>.</p>
+<p>Copyright (c) Gary Strangman</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.util.misc.scoreatpercentile.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

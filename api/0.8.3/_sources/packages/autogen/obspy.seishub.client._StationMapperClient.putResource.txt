@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.putResource
+=====================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.putResource

@@ -1,0 +1,6 @@
+obspy.segy.segy.SUFile._createEmptySUFileObject
+===============================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SUFile._createEmptySUFileObject

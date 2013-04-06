@@ -1,0 +1,6 @@
+obspy.core.event.Pick.__ne__
+============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.__ne__

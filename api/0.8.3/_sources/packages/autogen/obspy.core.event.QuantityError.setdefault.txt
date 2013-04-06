@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.setdefault
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.setdefault

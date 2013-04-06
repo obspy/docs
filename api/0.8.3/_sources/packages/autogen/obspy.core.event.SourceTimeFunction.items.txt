@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.items
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.items

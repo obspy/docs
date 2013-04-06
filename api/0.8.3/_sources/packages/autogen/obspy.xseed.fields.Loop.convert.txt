@@ -1,0 +1,6 @@
+obspy.xseed.fields.Loop.convert
+===============================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Loop.convert

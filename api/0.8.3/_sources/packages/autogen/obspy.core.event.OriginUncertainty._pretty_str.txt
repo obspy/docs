@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty._pretty_str
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty._pretty_str

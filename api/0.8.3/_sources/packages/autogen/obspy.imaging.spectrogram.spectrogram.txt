@@ -1,0 +1,6 @@
+obspy.imaging.spectrogram.spectrogram
+=====================================
+
+.. currentmodule:: obspy.imaging.spectrogram
+
+.. autofunction:: spectrogram

@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.plot
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.plot

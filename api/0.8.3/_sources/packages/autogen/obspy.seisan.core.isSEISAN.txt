@@ -1,0 +1,6 @@
+obspy.seisan.core.isSEISAN
+==========================
+
+.. currentmodule:: obspy.seisan.core
+
+.. autofunction:: isSEISAN

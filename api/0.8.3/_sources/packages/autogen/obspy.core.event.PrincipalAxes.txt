@@ -1,0 +1,195 @@
+obspy.core.event.PrincipalAxes
+==============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: PrincipalAxes
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~PrincipalAxes.__abstractmethods__
+     ~PrincipalAxes.__dict__
+     ~PrincipalAxes.__doc__
+     ~PrincipalAxes.__hash__
+     ~PrincipalAxes.__module__
+     ~PrincipalAxes.__weakref__
+     ~PrincipalAxes.defaults
+     ~PrincipalAxes.item
+     ~PrincipalAxes.key
+     ~PrincipalAxes.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PrincipalAxes.clear
+     ~PrincipalAxes.copy
+     ~PrincipalAxes.get
+     ~PrincipalAxes.items
+     ~PrincipalAxes.iteritems
+     ~PrincipalAxes.iterkeys
+     ~PrincipalAxes.itervalues
+     ~PrincipalAxes.keys
+     ~PrincipalAxes.pop
+     ~PrincipalAxes.popitem
+     ~PrincipalAxes.setdefault
+     ~PrincipalAxes.update
+     ~PrincipalAxes.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PrincipalAxes._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PrincipalAxes.__contains__
+     ~PrincipalAxes.__deepcopy__
+     ~PrincipalAxes.__delattr__
+     ~PrincipalAxes.__delitem__
+     ~PrincipalAxes.__eq__
+     ~PrincipalAxes.__getattr__
+     ~PrincipalAxes.__getitem__
+     ~PrincipalAxes.__getstate__
+     ~PrincipalAxes.__init__
+     ~PrincipalAxes.__iter__
+     ~PrincipalAxes.__len__
+     ~PrincipalAxes.__ne__
+     ~PrincipalAxes.__nonzero__
+     ~PrincipalAxes.__repr__
+     ~PrincipalAxes.__setattr__
+     ~PrincipalAxes.__setitem__
+     ~PrincipalAxes.__setstate__
+     ~PrincipalAxes.__str__
+     ~PrincipalAxes.__subclasshook__
+  
+
+  
+  

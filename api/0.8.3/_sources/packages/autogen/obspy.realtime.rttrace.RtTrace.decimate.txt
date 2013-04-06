@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.decimate
+=======================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.decimate

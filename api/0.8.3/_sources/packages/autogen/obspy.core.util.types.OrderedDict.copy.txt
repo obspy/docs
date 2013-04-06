@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict.copy
+======================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict.copy

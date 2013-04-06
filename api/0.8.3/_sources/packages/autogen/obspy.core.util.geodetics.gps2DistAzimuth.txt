@@ -1,0 +1,6 @@
+obspy.core.util.geodetics.gps2DistAzimuth
+=========================================
+
+.. currentmodule:: obspy.core.util.geodetics
+
+.. autofunction:: gps2DistAzimuth

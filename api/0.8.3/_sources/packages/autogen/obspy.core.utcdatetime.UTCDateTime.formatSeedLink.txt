@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.formatSeedLink
+=================================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.formatSeedLink

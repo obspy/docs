@@ -1,0 +1,36 @@
+obspy.signal.filter
+===================
+
+.. currentmodule:: obspy.signal.filter
+.. automodule:: obspy.signal.filter
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      bandpass
+      bandstop
+      envelope
+      highpass
+      integerDecimation
+      lowpass
+      lowpassCheby2
+      lowpassFIR
+      remezFIR
+   
+   
+
+   
+   
+   
+
+   
+   
+   

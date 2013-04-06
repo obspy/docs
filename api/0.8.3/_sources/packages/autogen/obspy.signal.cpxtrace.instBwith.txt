@@ -1,0 +1,6 @@
+obspy.signal.cpxtrace.instBwith
+===============================
+
+.. currentmodule:: obspy.signal.cpxtrace
+
+.. autofunction:: instBwith

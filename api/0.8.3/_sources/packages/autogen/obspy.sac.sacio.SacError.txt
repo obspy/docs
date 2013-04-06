@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacError
+========================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. autoexception:: SacError

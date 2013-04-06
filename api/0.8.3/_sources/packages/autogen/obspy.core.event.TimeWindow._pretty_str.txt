@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow._pretty_str
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow._pretty_str

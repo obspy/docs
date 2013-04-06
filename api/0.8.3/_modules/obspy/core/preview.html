@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.preview &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.preview</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tools for creating and merging previews.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span> <span class="nn">obspy.core.stream</span> <span class="kn">import</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.core.trace</span> <span class="kn">import</span> <span class="n">Trace</span>
+<span class="kn">from</span> <span class="nn">obspy.core.utcdatetime</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="createPreview"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.preview.createPreview.html#obspy.core.preview.createPreview">[docs]</a><span class="k">def</span> <span class="nf">createPreview</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a preview trace.</span>
+
+<span class="sd">    A preview trace consists of maximum minus minimum of all samples within</span>
+<span class="sd">    ``delta`` seconds. The parameter ``delta`` must be a multiple of the</span>
+<span class="sd">    sampling rate of the ``trace`` object.</span>
+
+<span class="sd">    :type delta: integer, optional</span>
+<span class="sd">    :param delta: Difference between two preview points. Defaults to ``60``.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.Trace`</span>
+<span class="sd">    :return: New Trace object.</span>
+
+<span class="sd">    This method will modify the original Trace object. Create a copy of the</span>
+<span class="sd">    Trace object if you want to continue using the original data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The delta values need to be an Integer and at least 1.&#39;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">timestamp</span>
+    <span class="c"># number of samples for a single slice of delta seconds</span>
+    <span class="n">samples_per_slice</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">samples_per_slice</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;samples_per_slice is less than 0 - skipping&#39;</span><span class="p">)</span>
+    <span class="c"># minimum and maximum of samples before a static time marker</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">%</span> <span class="n">delta</span><span class="p">)</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">%</span> <span class="n">delta</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">delta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">first_diff</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">start</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># skip starting samples</span>
+        <span class="n">first_diff</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">start_time</span> <span class="o">+=</span> <span class="n">delta</span>
+    <span class="c"># number of complete slices of data</span>
+    <span class="n">number_of_slices</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">samples_per_slice</span><span class="p">)</span>
+    <span class="c"># minimum and maximum of remaining samples</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">samples_per_slice</span> <span class="o">*</span> <span class="n">number_of_slices</span> <span class="o">+</span> <span class="n">start</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">delta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">last_diff</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># skip tailing samples</span>
+        <span class="n">last_diff</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># Fill NaN value with -1.</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">last_diff</span><span class="p">):</span>
+        <span class="n">last_diff</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c"># reshape matrix</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="n">number_of_slices</span><span class="p">,</span> <span class="n">samples_per_slice</span><span class="p">])</span>
+    <span class="c"># get minimum and maximum for each row</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c"># fill masked values with -1 -&gt; means missing data</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">):</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">first_diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">last_diff</span><span class="p">])</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;float32&quot;</span><span class="p">)</span>
+    <span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
+    <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="n">tr</span>
+
+</div>
+<div class="viewcode-block" id="mergePreviews"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.preview.mergePreviews.html#obspy.core.preview.mergePreviews">[docs]</a><span class="k">def</span> <span class="nf">mergePreviews</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merges all preview traces in one Stream object. Does not change the</span>
+<span class="sd">    original stream because the data needs to be copied anyway.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.Stream`</span>
+<span class="sd">    :param stream: Stream object to be merged</span>
+<span class="sd">    :rtype: :class:`~obspy.core.Stream`</span>
+<span class="sd">    :return: Merged Stream object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">copied_traces</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="c"># Group traces by id.</span>
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="c"># Throw away empty traces.</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;preview&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Trace</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s"> is no preview file.&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">traces</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">traces</span><span class="p">[</span><span class="n">trace</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+        <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="c"># Initialize new Stream object.</span>
+    <span class="n">new_stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">traces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">new_stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">continue</span>
+        <span class="c"># All traces need to have the same delta value and also be on the same</span>
+        <span class="c"># grid spacing. It is enough to only check the sampling rate because</span>
+        <span class="c"># the algorithm that creates the preview assures that the grid spacing</span>
+        <span class="c"># is correct.</span>
+        <span class="n">sampling_rates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sampling_rates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;More than one sampling rate for traces with id </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> \
+                  <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span>
+        <span class="c"># Check dtype.</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Different dtypes for traces with id </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="c"># Get the minimum start and maximum endtime for all traces.</span>
+        <span class="n">min_starttime</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="n">max_endtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_endtime</span> <span class="o">-</span> <span class="n">min_starttime</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c"># Fill with negative one values which corresponds to a gap.</span>
+        <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c"># Create trace and give starttime.</span>
+        <span class="n">new_trace</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
+        <span class="c"># Loop over all traces in value and add to data.</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">-</span> <span class="n">min_starttime</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta</span><span class="p">)</span>
+            <span class="n">end_index</span> <span class="o">=</span> <span class="n">start_index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="c"># Element-by-element comparison.</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">],</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="c"># set npts again, because data is changed in place</span>
+        <span class="n">new_trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">new_stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_trace</span><span class="p">)</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="n">copied_traces</span>
+    <span class="k">return</span> <span class="n">new_stream</span>
+
+</div>
+<div class="viewcode-block" id="resamplePreview"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.preview.resamplePreview.html#obspy.core.preview.resamplePreview">[docs]</a><span class="k">def</span> <span class="nf">resamplePreview</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;accurate&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resamples a preview Trace to the chosen number of samples.</span>
+
+<span class="sd">    :type trace: :class:`~obspy.core.Trace`</span>
+<span class="sd">    :param trace: Trace object to be resampled.</span>
+<span class="sd">    :type samples: int</span>
+<span class="sd">    :param samples: Desired number of samples.</span>
+<span class="sd">    :type method: str, optional</span>
+<span class="sd">    :param method: Resample method. Available are ``&#39;fast&#39;`` and</span>
+<span class="sd">        ``&#39;accurate&#39;``. Defaults to ``&#39;accurate&#39;``.</span>
+
+<span class="sd">    .. rubric:: Notes</span>
+
+<span class="sd">    This method will destroy the data in the original Trace object.</span>
+<span class="sd">    Deepcopy the Trace if you want to continue using the original data.</span>
+
+<span class="sd">    The fast method works by reshaping the data array to a</span>
+<span class="sd">    sample x int(npts/samples) matrix (npts are the number of samples in</span>
+<span class="sd">    the original trace) and taking the maximum of each row. Therefore</span>
+<span class="sd">    the last npts - int(npts/samples)*samples will be omitted. The worst</span>
+<span class="sd">    case scenario is resampling a 1999 samples array to 1000 samples. 999</span>
+<span class="sd">    samples, almost half the data will be omitted.</span>
+
+<span class="sd">    The accurate method has no such problems because it will move a window</span>
+<span class="sd">    over the whole array and take the maximum for each window. It loops</span>
+<span class="sd">    over each window and is up to 10 times slower than the fast method.</span>
+<span class="sd">    This of course is highly depended on the number of wished samples and</span>
+<span class="sd">    the original trace and usually the accurate method is still fast</span>
+<span class="sd">    enough.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Only works for preview traces.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;preview&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Trace</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s"> is no preview file.&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># Save same attributes for later use.</span>
+    <span class="n">endtime</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="n">npts</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+    <span class="c"># XXX: Interpolate?</span>
+    <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">&lt;</span> <span class="n">samples</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Can only downsample so far. Interpolation not yet implemented.&#39;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># Return if no change is necessary. There obviously are no omitted samples.</span>
+    <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">==</span> <span class="n">samples</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c"># Fast method.</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;fast&#39;</span><span class="p">:</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="n">npts</span> <span class="o">/</span> <span class="n">samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">samples</span><span class="p">]</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="n">samples</span><span class="p">)</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Set new sampling rate.</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="nb">float</span><span class="p">(</span><span class="n">samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Return number of omitted samples.</span>
+        <span class="k">return</span> <span class="n">npts</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">npts</span> <span class="o">/</span> <span class="n">samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">samples</span>
+    <span class="c"># Slow but accurate method.</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;accurate&#39;</span><span class="p">:</span>
+        <span class="n">new_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+            <span class="n">new_data</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_i</span> <span class="o">*</span> <span class="n">step</span><span class="p">):</span>
+                                      <span class="nb">int</span><span class="p">((</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span><span class="p">)]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">new_data</span>
+        <span class="c"># Set new sampling rate.</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="nb">float</span><span class="p">(</span><span class="n">samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Return number of omitted samples. Should be 0 for this method.</span>
+        <span class="k">return</span> <span class="n">npts</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">samples</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Unknown method&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

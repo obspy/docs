@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.getSEEDString
+===============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.getSEEDString

@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.simulate
+===============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.simulate

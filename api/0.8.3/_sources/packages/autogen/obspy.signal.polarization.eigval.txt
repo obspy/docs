@@ -1,0 +1,6 @@
+obspy.signal.polarization.eigval
+================================
+
+.. currentmodule:: obspy.signal.polarization
+
+.. autofunction:: eigval

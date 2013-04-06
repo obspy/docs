@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._updateInternalSEEDStructure
+======================================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._updateInternalSEEDStructure

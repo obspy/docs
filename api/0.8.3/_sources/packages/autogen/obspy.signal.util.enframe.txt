@@ -1,0 +1,6 @@
+obspy.signal.util.enframe
+=========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: enframe

@@ -1,0 +1,6 @@
+obspy.xseed.utils.Blockette34Lookup
+===================================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: Blockette34Lookup

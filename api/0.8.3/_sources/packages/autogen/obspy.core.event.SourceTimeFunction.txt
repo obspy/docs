@@ -1,0 +1,195 @@
+obspy.core.event.SourceTimeFunction
+===================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: SourceTimeFunction
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SourceTimeFunction.__abstractmethods__
+     ~SourceTimeFunction.__dict__
+     ~SourceTimeFunction.__doc__
+     ~SourceTimeFunction.__hash__
+     ~SourceTimeFunction.__module__
+     ~SourceTimeFunction.__weakref__
+     ~SourceTimeFunction.defaults
+     ~SourceTimeFunction.item
+     ~SourceTimeFunction.key
+     ~SourceTimeFunction.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SourceTimeFunction.clear
+     ~SourceTimeFunction.copy
+     ~SourceTimeFunction.get
+     ~SourceTimeFunction.items
+     ~SourceTimeFunction.iteritems
+     ~SourceTimeFunction.iterkeys
+     ~SourceTimeFunction.itervalues
+     ~SourceTimeFunction.keys
+     ~SourceTimeFunction.pop
+     ~SourceTimeFunction.popitem
+     ~SourceTimeFunction.setdefault
+     ~SourceTimeFunction.update
+     ~SourceTimeFunction.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SourceTimeFunction._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SourceTimeFunction.__contains__
+     ~SourceTimeFunction.__deepcopy__
+     ~SourceTimeFunction.__delattr__
+     ~SourceTimeFunction.__delitem__
+     ~SourceTimeFunction.__eq__
+     ~SourceTimeFunction.__getattr__
+     ~SourceTimeFunction.__getitem__
+     ~SourceTimeFunction.__getstate__
+     ~SourceTimeFunction.__init__
+     ~SourceTimeFunction.__iter__
+     ~SourceTimeFunction.__len__
+     ~SourceTimeFunction.__ne__
+     ~SourceTimeFunction.__nonzero__
+     ~SourceTimeFunction.__repr__
+     ~SourceTimeFunction.__setattr__
+     ~SourceTimeFunction.__setitem__
+     ~SourceTimeFunction.__setstate__
+     ~SourceTimeFunction.__str__
+     ~SourceTimeFunction.__subclasshook__
+  
+
+  
+  

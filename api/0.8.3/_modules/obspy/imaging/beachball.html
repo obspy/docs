@@ -1,0 +1,1067 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.beachball &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.imaging.beachball</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: beachball.py</span>
+<span class="c">#  Purpose: Draws a beach ball diagram of an earthquake focal mechanism.</span>
+<span class="c">#   Author: Robert Barsch</span>
+<span class="c">#    Email: barsch@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Robert Barsch</span>
+<span class="c">#---------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Draws a beachball diagram of an earthquake focal mechanism</span>
+
+<span class="sd">Most source code provided here are adopted from</span>
+
+<span class="sd">1. MatLab script `bb.m`_ written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">2. ps_meca program from the `Generic Mapping Tools (GMT)`_.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU General Public License (GPL)</span>
+<span class="sd">    (http://www.gnu.org/licenses/gpl.txt)</span>
+
+<span class="sd">.. _`Generic Mapping Tools (GMT)`: http://gmt.soest.hawaii.edu</span>
+<span class="sd">.. _`bb.m`: http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span><span class="p">,</span> <span class="n">collections</span><span class="p">,</span> <span class="n">path</span> <span class="k">as</span> <span class="n">mplpath</span>
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="n">D2R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">R2D</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">0.00001</span>
+
+
+<div class="viewcode-block" id="Beach"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.Beach.html#obspy.imaging.beachball.Beach">[docs]</a><span class="k">def</span> <span class="nf">Beach</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span>
+          <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nofill</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+          <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a beach ball as a collection which can be connected to an</span>
+<span class="sd">    current matplotlib axes instance (ax.add_collection).</span>
+
+<span class="sd">    S1, D1, and R1, the strike, dip and rake of one of the focal planes, can</span>
+<span class="sd">    be vectors of multiple focal mechanisms.</span>
+
+<span class="sd">    :param fm: Focal mechanism that is either number of mechanisms (NM) by 3</span>
+<span class="sd">        (strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the</span>
+<span class="sd">        six independent components of the moment tensor, where the coordinate</span>
+<span class="sd">        system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike</span>
+<span class="sd">        is of the first plane, clockwise relative to north.</span>
+<span class="sd">        The dip is of the first plane, defined clockwise and perpendicular to</span>
+<span class="sd">        strike, relative to horizontal such that 0 is horizontal and 90 is</span>
+<span class="sd">        vertical. The rake is of the first focal plane solution. 90 moves the</span>
+<span class="sd">        hanging wall up-dip (thrust), 0 moves it in the strike direction</span>
+<span class="sd">        (left-lateral), -90 moves it down-dip (normal), and 180 moves it</span>
+<span class="sd">        opposite to strike (right-lateral).</span>
+<span class="sd">    :param facecolor: Color to use for quadrants of tension; can be a string,</span>
+<span class="sd">        e.g. ``&#39;r&#39;``, ``&#39;b&#39;`` or three component color vector, [R G B].</span>
+<span class="sd">        Defaults to ``&#39;b&#39;`` (blue).</span>
+<span class="sd">    :param bgcolor: The background color. Defaults to ``&#39;w&#39;`` (white).</span>
+<span class="sd">    :param edgecolor: Color of the edges. Defaults to ``&#39;k&#39;`` (black).</span>
+<span class="sd">    :param alpha: The alpha level of the beach ball. Defaults to ``1.0``</span>
+<span class="sd">        (opaque).</span>
+<span class="sd">    :param xy: Origin position of the beach ball as tuple. Defaults to</span>
+<span class="sd">        ``(0, 0)``.</span>
+<span class="sd">    :type width: int</span>
+<span class="sd">    :param width: Symbol size of beach ball. Defaults to ``200``.</span>
+<span class="sd">    :param size: Controls the number of interpolation points for the</span>
+<span class="sd">        curves. Minimum is automatically set to ``100``.</span>
+<span class="sd">    :param nofill: Do not fill the beach ball, but only plot the planes.</span>
+<span class="sd">    :param zorder: Set zorder. Artists with lower zorder values are drawn</span>
+<span class="sd">        first.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># check if one or two widths are specified (Circle or Ellipse)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">mt</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">np1</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">MomentTensor</span><span class="p">):</span>
+        <span class="n">mt</span> <span class="o">=</span> <span class="n">fm</span>
+        <span class="n">np1</span> <span class="o">=</span> <span class="n">MT2Plane</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">NodalPlane</span><span class="p">):</span>
+        <span class="n">np1</span> <span class="o">=</span> <span class="n">fm</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="n">mt</span> <span class="o">=</span> <span class="n">MomentTensor</span><span class="p">(</span><span class="n">fm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">np1</span> <span class="o">=</span> <span class="n">MT2Plane</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">np1</span> <span class="o">=</span> <span class="n">NodalPlane</span><span class="p">(</span><span class="n">fm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fm</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Wrong input value for &#39;fm&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="c"># Only at least size 100, i.e. 100 points in the matrix are allowed</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="c"># Return as collection</span>
+    <span class="k">if</span> <span class="n">mt</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span> <span class="o">=</span> <span class="n">MT2Axes</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">P</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+            <span class="n">colors</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">plotDC</span><span class="p">(</span><span class="n">np1</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">colors</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">plotMT</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
+                               <span class="n">plot_zerotrace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">colors</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">plotDC</span><span class="p">(</span><span class="n">np1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nofill</span><span class="p">:</span>
+        <span class="c"># XXX: not tested with plotMT</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">PatchCollection</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">match_original</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">col</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">PatchCollection</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">match_original</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># Replace color dummies &#39;b&#39; and &#39;w&#39; by face and bgcolor</span>
+        <span class="n">fc</span> <span class="o">=</span> <span class="p">[</span><span class="n">facecolor</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s">&#39;b&#39;</span> <span class="k">else</span> <span class="n">bgcolor</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
+        <span class="n">col</span><span class="o">.</span><span class="n">set_facecolors</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+
+    <span class="n">col</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="n">edgecolor</span><span class="p">)</span>
+    <span class="n">col</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">col</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="n">linewidth</span><span class="p">)</span>
+    <span class="n">col</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="n">zorder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">col</span>
+
+</div>
+<div class="viewcode-block" id="Beachball"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.Beachball.html#obspy.imaging.beachball.Beachball">[docs]</a><span class="k">def</span> <span class="nf">Beachball</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span>
+              <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">nofill</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws a beach ball diagram of an earthquake focal mechanism.</span>
+
+<span class="sd">    S1, D1, and R1, the strike, dip and rake of one of the focal planes, can</span>
+<span class="sd">    be vectors of multiple focal mechanisms.</span>
+
+<span class="sd">    :param fm: Focal mechanism that is either number of mechanisms (NM) by 3</span>
+<span class="sd">        (strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the</span>
+<span class="sd">        six independent components of the moment tensor, where the coordinate</span>
+<span class="sd">        system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike</span>
+<span class="sd">        is of the first plane, clockwise relative to north.</span>
+<span class="sd">        The dip is of the first plane, defined clockwise and perpendicular to</span>
+<span class="sd">        strike, relative to horizontal such that 0 is horizontal and 90 is</span>
+<span class="sd">        vertical. The rake is of the first focal plane solution. 90 moves the</span>
+<span class="sd">        hanging wall up-dip (thrust), 0 moves it in the strike direction</span>
+<span class="sd">        (left-lateral), -90 moves it down-dip (normal), and 180 moves it</span>
+<span class="sd">        opposite to strike (right-lateral).</span>
+<span class="sd">    :param facecolor: Color to use for quadrants of tension; can be a string,</span>
+<span class="sd">        e.g. ``&#39;r&#39;``, ``&#39;b&#39;`` or three component color vector, [R G B].</span>
+<span class="sd">        Defaults to ``&#39;b&#39;`` (blue).</span>
+<span class="sd">    :param bgcolor: The background color. Defaults to ``&#39;w&#39;`` (white).</span>
+<span class="sd">    :param edgecolor: Color of the edges. Defaults to ``&#39;k&#39;`` (black).</span>
+<span class="sd">    :param alpha: The alpha level of the beach ball. Defaults to ``1.0``</span>
+<span class="sd">        (opaque).</span>
+<span class="sd">    :param xy: Origin position of the beach ball as tuple. Defaults to</span>
+<span class="sd">        ``(0, 0)``.</span>
+<span class="sd">    :type width: int</span>
+<span class="sd">    :param width: Symbol size of beach ball. Defaults to ``200``.</span>
+<span class="sd">    :param size: Controls the number of interpolation points for the</span>
+<span class="sd">        curves. Minimum is automatically set to ``100``.</span>
+<span class="sd">    :param nofill: Do not fill the beach ball, but only plot the planes.</span>
+<span class="sd">    :param zorder: Set zorder. Artists with lower zorder values are drawn</span>
+<span class="sd">        first.</span>
+<span class="sd">    :param outfile: Output file string. Also used to automatically</span>
+<span class="sd">        determine the output format. Supported file formats depend on your</span>
+<span class="sd">        matplotlib backend. Most backends support png, pdf, ps, eps and</span>
+<span class="sd">        svg. Defaults to ``None``.</span>
+<span class="sd">    :param format: Format of the graph picture. If no format is given the</span>
+<span class="sd">        outfile parameter will be used to try to automatically determine</span>
+<span class="sd">        the output format. If no format is found it defaults to png output.</span>
+<span class="sd">        If no outfile is specified but a format is, than a binary</span>
+<span class="sd">        imagestring will be returned.</span>
+<span class="sd">        Defaults to ``None``.</span>
+<span class="sd">    :param fig: Give an existing figure instance to plot into. New Figure if</span>
+<span class="sd">        set to ``None``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plot_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="mf">0.95</span>
+
+    <span class="c"># plot the figure</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="n">width</span> <span class="o">//</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="n">width</span> <span class="o">//</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s">&#39;equal&#39;</span><span class="p">)</span>
+
+    <span class="c"># hide axes + ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axison</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># plot the collection</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">Beach</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">linewidth</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">facecolor</span><span class="p">,</span>
+                       <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="n">bgcolor</span><span class="p">,</span>
+                       <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">nofill</span><span class="o">=</span><span class="n">nofill</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span>
+                       <span class="n">width</span><span class="o">=</span><span class="n">plot_width</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">(</span><span class="n">tight</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">scalex</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">scaley</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c"># export</span>
+    <span class="k">if</span> <span class="n">outfile</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">format</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">format</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">outfile</span><span class="p">:</span>
+        <span class="n">imgdata</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">imgdata</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">imgdata</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">imgdata</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span>
+
+</div>
+<div class="viewcode-block" id="plotMT"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.plotMT.html#obspy.imaging.beachball.plotMT">[docs]</a><span class="k">def</span> <span class="nf">plotMT</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">plot_zerotrace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+           <span class="n">x0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses a principal axis T, N and P to draw a beach ball plot.</span>
+
+<span class="sd">    :param ax: axis object of a matplotlib figure</span>
+<span class="sd">    :param T: :class:`~PrincipalAxis`</span>
+<span class="sd">    :param N: :class:`~PrincipalAxis`</span>
+<span class="sd">    :param P: :class:`~PrincipalAxis`</span>
+
+<span class="sd">    Adapted from ps_tensor / utilmeca.c / `Generic Mapping Tools (GMT)`_.</span>
+
+<span class="sd">    .. _`Generic Mapping Tools (GMT)`: http://gmt.soest.hawaii.edu</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># check if one or two widths are specified (Circle or Ellipse)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">collect</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">width</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">big_iso</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">j2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">j3</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">azi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">x3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">y3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">xp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">800</span><span class="p">)</span>
+    <span class="n">yp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">800</span><span class="p">)</span>
+    <span class="n">xp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">yp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">strike</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">strike</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">strike</span>
+    <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">dip</span>
+    <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">dip</span>
+    <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">dip</span>
+    <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">val</span>
+    <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">val</span>
+    <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">val</span>
+
+    <span class="n">vi</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mf">3.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">vi</span>
+
+    <span class="n">radius_size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+        <span class="c"># pure implosion-explosion</span>
+        <span class="k">if</span> <span class="n">vi</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">cir</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cir</span><span class="p">)</span>
+            <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vi</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">cir</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cir</span><span class="p">)</span>
+            <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">plot_zerotrace</span><span class="p">):</span>
+        <span class="n">vi</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
+    <span class="n">iso</span> <span class="o">=</span> <span class="n">vi</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
+
+    <span class="c"># Cliff Frohlich, Seismological Research letters,</span>
+    <span class="c"># Vol 7, Number 1, January-February, 1996</span>
+    <span class="c"># Unless the isotropic parameter lies in the range</span>
+    <span class="c"># between -1 and 1 - f there will be no nodes whatsoever</span>
+
+    <span class="k">if</span> <span class="n">iso</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">cir</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cir</span><span class="p">)</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+    <span class="k">elif</span> <span class="n">iso</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cir</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cir</span><span class="p">)</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+
+    <span class="n">spd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cpd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">spb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cpb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">spm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cpm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">sad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">sab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">sam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+    <span class="n">cam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">):</span>
+        <span class="n">fir</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">D2R</span>
+        <span class="n">s2alphan</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">+</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">iso</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="nb">float</span><span class="p">(</span><span class="mf">3.</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">f</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">fir</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">s2alphan</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="n">big_iso</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alphan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s2alphan</span><span class="p">))</span>
+            <span class="n">sfi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">fir</span><span class="p">)</span>
+            <span class="n">cfi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">fir</span><span class="p">)</span>
+            <span class="n">san</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alphan</span><span class="p">)</span>
+            <span class="n">can</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alphan</span><span class="p">)</span>
+
+            <span class="n">xz</span> <span class="o">=</span> <span class="n">can</span> <span class="o">*</span> <span class="n">spd</span> <span class="o">+</span> <span class="n">san</span> <span class="o">*</span> <span class="n">sfi</span> <span class="o">*</span> <span class="n">spb</span> <span class="o">+</span> <span class="n">san</span> <span class="o">*</span> <span class="n">cfi</span> <span class="o">*</span> <span class="n">spm</span>
+            <span class="n">xn</span> <span class="o">=</span> <span class="n">can</span> <span class="o">*</span> <span class="n">cpd</span> <span class="o">*</span> <span class="n">cad</span> <span class="o">+</span> <span class="n">san</span> <span class="o">*</span> <span class="n">sfi</span> <span class="o">*</span> <span class="n">cpb</span> <span class="o">*</span> <span class="n">cab</span> <span class="o">+</span> \
+                 <span class="n">san</span> <span class="o">*</span> <span class="n">cfi</span> <span class="o">*</span> <span class="n">cpm</span> <span class="o">*</span> <span class="n">cam</span>
+            <span class="n">xe</span> <span class="o">=</span> <span class="n">can</span> <span class="o">*</span> <span class="n">cpd</span> <span class="o">*</span> <span class="n">sad</span> <span class="o">+</span> <span class="n">san</span> <span class="o">*</span> <span class="n">sfi</span> <span class="o">*</span> <span class="n">cpb</span> <span class="o">*</span> <span class="n">sab</span> <span class="o">+</span> \
+                 <span class="n">san</span> <span class="o">*</span> <span class="n">cfi</span> <span class="o">*</span> <span class="n">cpm</span> <span class="o">*</span> <span class="n">sam</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">xn</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">xe</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+                <span class="n">takeoff</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="n">az</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">xe</span><span class="p">,</span> <span class="n">xn</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">az</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+                    <span class="n">az</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+                <span class="n">takeoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">xz</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xz</span> <span class="o">*</span> <span class="n">xz</span> <span class="o">+</span> <span class="n">xn</span> <span class="o">*</span> <span class="n">xn</span> <span class="o">+</span> \
+                                                       <span class="n">xe</span> <span class="o">*</span> <span class="n">xe</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">takeoff</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">:</span>
+                <span class="n">takeoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">takeoff</span>
+                <span class="n">az</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="k">if</span> <span class="n">az</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span><span class="p">:</span>
+                    <span class="n">az</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">takeoff</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+            <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+            <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">azi</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">az</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">azp</span> <span class="o">=</span> <span class="n">az</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">azp</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">D2R</span> <span class="o">*</span> <span class="mf">10.</span><span class="p">:</span>
+                        <span class="n">azi</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">azp</span>
+                        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">azi</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">az</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">azp</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">D2R</span> <span class="o">*</span> <span class="mf">2.</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">azp</span> <span class="o">&lt;</span> <span class="n">az</span><span class="p">:</span>
+                            <span class="n">azi</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">azi</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">si</span>
+                    <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">co</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">x2</span><span class="p">[</span><span class="n">j2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">si</span>
+                    <span class="n">y2</span><span class="p">[</span><span class="n">j2</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">co</span>
+                    <span class="n">j2</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">x3</span><span class="p">[</span><span class="n">j3</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">si</span>
+                    <span class="n">y3</span><span class="p">[</span><span class="n">j3</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">co</span>
+                    <span class="n">j3</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">azp</span> <span class="o">=</span> <span class="n">az</span>
+    <span class="n">azi</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">az</span>
+
+    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">rgb1</span> <span class="o">=</span> <span class="s">&#39;b&#39;</span>
+        <span class="n">rgb2</span> <span class="o">=</span> <span class="s">&#39;w&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rgb1</span> <span class="o">=</span> <span class="s">&#39;w&#39;</span>
+        <span class="n">rgb2</span> <span class="o">=</span> <span class="s">&#39;b&#39;</span>
+
+    <span class="n">cir</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cir</span><span class="p">)</span>
+    <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">360</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">360</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+            <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">elif</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&gt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">az</span> <span class="o">-=</span> <span class="n">D2R</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">az</span> <span class="o">+=</span> <span class="n">D2R</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">xp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">yp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j2</span><span class="p">):</span>
+            <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">elif</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&gt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">-=</span> <span class="n">D2R</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">+=</span> <span class="n">D2R</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">xp2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">yp2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j3</span><span class="p">):</span>
+            <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+            <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">big_iso</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">j2</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x2</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y2</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+                <span class="n">ii</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">xp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">yp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+            <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">elif</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&gt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">-=</span> <span class="n">D2R</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">+=</span> <span class="n">D2R</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">xp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">yp1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j2</span><span class="p">):</span>
+            <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">elif</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">2.</span>
+        <span class="k">if</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&gt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">-=</span> <span class="n">D2R</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">az</span> <span class="o">=</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">D2R</span>
+            <span class="k">while</span> <span class="n">az</span> <span class="o">&lt;</span> <span class="n">azi</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+                <span class="n">xp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">si</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">yp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">radius_size</span> <span class="o">*</span> <span class="n">co</span>
+                <span class="n">az</span> <span class="o">+=</span> <span class="n">D2R</span>
+        <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">xp2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">yp2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">],</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rgb1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span><span class="p">,</span> <span class="n">collect</span>
+
+</div>
+<div class="viewcode-block" id="plotDC"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.plotDC.html#obspy.imaging.beachball.plotDC">[docs]</a><span class="k">def</span> <span class="nf">plotDC</span><span class="p">(</span><span class="n">np1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses one nodal plane of a double couple to draw a beach ball plot.</span>
+
+<span class="sd">    :param ax: axis object of a matplotlib figure</span>
+<span class="sd">    :param np1: :class:`~NodalPlane`</span>
+
+<span class="sd">    Adapted from MATLAB script</span>
+<span class="sd">    `bb.m &lt;http://www.ceri.memphis.edu/people/olboyd/Software/Software.html&gt;`_</span>
+<span class="sd">    written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># check if one or two widths are specified (Circle or Ellipse)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">S1</span> <span class="o">=</span> <span class="n">np1</span><span class="o">.</span><span class="n">strike</span>
+    <span class="n">D1</span> <span class="o">=</span> <span class="n">np1</span><span class="o">.</span><span class="n">dip</span>
+    <span class="n">R1</span> <span class="o">=</span> <span class="n">np1</span><span class="o">.</span><span class="n">rake</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">R1</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="n">R1</span> <span class="o">-=</span> <span class="mi">180</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">R1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">R1</span> <span class="o">+=</span> <span class="mi">180</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c"># Get azimuth and dip of second plane</span>
+    <span class="p">(</span><span class="n">S2</span><span class="p">,</span> <span class="n">D2</span><span class="p">,</span> <span class="n">_R2</span><span class="p">)</span> <span class="o">=</span> <span class="n">AuxPlane</span><span class="p">(</span><span class="n">S1</span><span class="p">,</span> <span class="n">D1</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
+
+    <span class="n">D</span> <span class="o">=</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="n">D1</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="n">D1</span> <span class="o">=</span> <span class="mf">89.9999</span>
+    <span class="k">if</span> <span class="n">D2</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="n">D2</span> <span class="o">=</span> <span class="mf">89.9999</span>
+
+    <span class="c"># arange checked for numerical stablility, np.pi is not multiple of 0.1</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="o">.</span><span class="mo">01</span><span class="p">)</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">D1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">D1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">D2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">D2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+
+    <span class="n">inc</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">Y1</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">S1</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">M</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">lo</span> <span class="o">=</span> <span class="n">S1</span> <span class="o">-</span> <span class="mi">180</span>
+        <span class="n">hi</span> <span class="o">=</span> <span class="n">S2</span>
+        <span class="k">if</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="n">hi</span><span class="p">:</span>
+            <span class="n">inc</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">th1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">S1</span> <span class="o">-</span> <span class="mi">180</span><span class="p">,</span> <span class="n">S2</span><span class="p">,</span> <span class="n">inc</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">Xs1</span><span class="p">,</span> <span class="n">Ys1</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">th1</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">th1</span><span class="p">))))</span>
+        <span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">Y2</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">S2</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span>
+        <span class="n">th2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">S2</span> <span class="o">+</span> <span class="mi">180</span><span class="p">,</span> <span class="n">S1</span><span class="p">,</span> <span class="o">-</span><span class="n">inc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hi</span> <span class="o">=</span> <span class="n">S1</span> <span class="o">-</span> <span class="mi">180</span>
+        <span class="n">lo</span> <span class="o">=</span> <span class="n">S2</span> <span class="o">-</span> <span class="mi">180</span>
+        <span class="k">if</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="n">hi</span><span class="p">:</span>
+            <span class="n">inc</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">th1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="o">-</span><span class="n">inc</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">Xs1</span><span class="p">,</span> <span class="n">Ys1</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">th1</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">th1</span><span class="p">))))</span>
+        <span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">Y2</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">phi</span> <span class="o">+</span> <span class="n">S2</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">X2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Y2</span> <span class="o">=</span> <span class="n">Y2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">th2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">S2</span><span class="p">,</span> <span class="n">S1</span><span class="p">,</span> <span class="n">inc</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">Xs2</span><span class="p">,</span> <span class="n">Ys2</span><span class="p">)</span> <span class="o">=</span> <span class="n">Pol2Cart</span><span class="p">(</span><span class="n">th2</span> <span class="o">*</span> <span class="n">D2R</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">th2</span><span class="p">))))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">X1</span><span class="p">,</span> <span class="n">Xs1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">,</span> <span class="n">Xs2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">Y1</span><span class="p">,</span> <span class="n">Ys1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Y2</span><span class="p">,</span> <span class="n">Ys2</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">D</span> <span class="o">/</span> <span class="mi">90</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">*</span> <span class="n">D</span> <span class="o">/</span> <span class="mi">90</span>
+
+    <span class="c"># calculate resolution</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">width</span><span class="p">]</span>
+
+    <span class="c"># construct the patches</span>
+    <span class="n">collect</span> <span class="o">=</span> <span class="p">[</span><span class="n">patches</span><span class="o">.</span><span class="n">Ellipse</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="n">width</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="n">collect</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy2patch</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">],</span> <span class="n">collect</span>
+
+</div>
+<div class="viewcode-block" id="xy2patch"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.xy2patch.html#obspy.imaging.beachball.xy2patch">[docs]</a><span class="k">def</span> <span class="nf">xy2patch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">xy</span><span class="p">):</span>
+    <span class="c"># check if one or two resolutions are specified (Circle or Ellipse)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+    <span class="c"># transform into the Path coordinate system</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">verts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    <span class="n">codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">mplpath</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">MOVETO</span><span class="p">]</span>
+    <span class="n">codes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">mplpath</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mplpath</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">CLOSEPOLY</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">mplpath</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">codes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">patches</span><span class="o">.</span><span class="n">PathPatch</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Pol2Cart"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.Pol2Cart.html#obspy.imaging.beachball.Pol2Cart">[docs]</a><span class="k">def</span> <span class="nf">Pol2Cart</span><span class="p">(</span><span class="n">th</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="StrikeDip"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.StrikeDip.html#obspy.imaging.beachball.StrikeDip">[docs]</a><span class="k">def</span> <span class="nf">StrikeDip</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds strike and dip of plane given normal vector having components n, e,</span>
+<span class="sd">    and u.</span>
+
+<span class="sd">    Adapted from MATLAB script</span>
+<span class="sd">    `bb.m &lt;http://www.ceri.memphis.edu/people/olboyd/Software/Software.html&gt;`_</span>
+<span class="sd">    written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r2d</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="n">u</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="o">-</span><span class="n">e</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="o">-</span><span class="n">u</span>
+
+    <span class="n">strike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">r2d</span>
+    <span class="n">strike</span> <span class="o">=</span> <span class="n">strike</span> <span class="o">-</span> <span class="mi">90</span>
+    <span class="k">while</span> <span class="n">strike</span> <span class="o">&gt;=</span> <span class="mi">360</span><span class="p">:</span>
+            <span class="n">strike</span> <span class="o">=</span> <span class="n">strike</span> <span class="o">-</span> <span class="mi">360</span>
+    <span class="k">while</span> <span class="n">strike</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">strike</span> <span class="o">=</span> <span class="n">strike</span> <span class="o">+</span> <span class="mi">360</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">r2d</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="AuxPlane"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.AuxPlane.html#obspy.imaging.beachball.AuxPlane">[docs]</a><span class="k">def</span> <span class="nf">AuxPlane</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get Strike and dip of second plane.</span>
+
+<span class="sd">    Adapted from MATLAB script</span>
+<span class="sd">    `bb.m &lt;http://www.ceri.memphis.edu/people/olboyd/Software/Software.html&gt;`_</span>
+<span class="sd">    written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r2d</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">s1</span> <span class="o">+</span> <span class="mi">90</span><span class="p">)</span> <span class="o">/</span> <span class="n">r2d</span>
+    <span class="n">z2</span> <span class="o">=</span> <span class="n">d1</span> <span class="o">/</span> <span class="n">r2d</span>
+    <span class="n">z3</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">/</span> <span class="n">r2d</span>
+    <span class="c"># slick vector in plane 1</span>
+    <span class="n">sl1</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">sl2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">sl3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">)</span> <span class="o">=</span> <span class="n">StrikeDip</span><span class="p">(</span><span class="n">sl2</span><span class="p">,</span> <span class="n">sl1</span><span class="p">,</span> <span class="n">sl3</span><span class="p">)</span>
+
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>  <span class="c"># normal vector to plane 1</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="o">-</span><span class="n">sl2</span>  <span class="c"># strike vector of plane 2</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">sl1</span>
+    <span class="c"># note h3=0 always so we leave it out</span>
+    <span class="c"># n3 = np.cos(z2)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">h1</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">n2</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">h1</span> <span class="o">*</span> <span class="n">h1</span> <span class="o">+</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">h2</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">rake</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">sl3</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rake</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="n">r2d</span>
+    <span class="k">if</span> <span class="n">sl3</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rake</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span> <span class="o">*</span> <span class="n">r2d</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">,</span> <span class="n">rake</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="MT2Plane"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.MT2Plane.html#obspy.imaging.beachball.MT2Plane">[docs]</a><span class="k">def</span> <span class="nf">MT2Plane</span><span class="p">(</span><span class="n">mt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates a nodal plane of a given moment tensor.</span>
+
+<span class="sd">    :param mt: :class:`~MomentTensor`</span>
+<span class="sd">    :return: :class:`~NodalPlane`</span>
+
+<span class="sd">    Adapted from MATLAB script</span>
+<span class="sd">    `bb.m &lt;http://www.ceri.memphis.edu/people/olboyd/Software/Software.html&gt;`_</span>
+<span class="sd">    written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">mt</span><span class="o">.</span><span class="n">mt</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+               <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+               <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]])</span>
+    <span class="n">IMAX</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+    <span class="n">IMIN</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+    <span class="n">AE</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">IMAX</span><span class="p">]</span> <span class="o">+</span> <span class="n">V</span><span class="p">[:,</span> <span class="n">IMIN</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">AN</span> <span class="o">=</span> <span class="p">(</span><span class="n">V</span><span class="p">[:,</span> <span class="n">IMAX</span><span class="p">]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[:,</span> <span class="n">IMIN</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">AER</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AE</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">ANR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AN</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AN</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">AN</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">AE</span> <span class="o">=</span> <span class="n">AE</span> <span class="o">/</span> <span class="n">AER</span>
+    <span class="n">AN</span> <span class="o">=</span> <span class="n">AN</span> <span class="o">/</span> <span class="n">ANR</span>
+    <span class="k">if</span> <span class="n">AN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">AN1</span> <span class="o">=</span> <span class="n">AN</span>
+        <span class="n">AE1</span> <span class="o">=</span> <span class="n">AE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">AN1</span> <span class="o">=</span> <span class="o">-</span><span class="n">AN</span>
+        <span class="n">AE1</span> <span class="o">=</span> <span class="o">-</span><span class="n">AE</span>
+    <span class="p">(</span><span class="n">ft</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">fl</span><span class="p">)</span> <span class="o">=</span> <span class="n">TDL</span><span class="p">(</span><span class="n">AN1</span><span class="p">,</span> <span class="n">AE1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">NodalPlane</span><span class="p">(</span><span class="mi">360</span> <span class="o">-</span> <span class="n">ft</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="mi">180</span> <span class="o">-</span> <span class="n">fl</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="TDL"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.TDL.html#obspy.imaging.beachball.TDL">[docs]</a><span class="k">def</span> <span class="nf">TDL</span><span class="p">(</span><span class="n">AN</span><span class="p">,</span> <span class="n">BN</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function for MT2Plane.</span>
+
+<span class="sd">    Adapted from MATLAB script</span>
+<span class="sd">    `bb.m &lt;http://www.ceri.memphis.edu/people/olboyd/Software/Software.html&gt;`_</span>
+<span class="sd">    written by Andy Michael and Oliver Boyd.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">XN</span> <span class="o">=</span> <span class="n">AN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">YN</span> <span class="o">=</span> <span class="n">AN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ZN</span> <span class="o">=</span> <span class="n">AN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">XE</span> <span class="o">=</span> <span class="n">BN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">YE</span> <span class="o">=</span> <span class="n">BN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ZE</span> <span class="o">=</span> <span class="n">BN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">AAA</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+    <span class="n">CON</span> <span class="o">=</span> <span class="mf">57.2957795</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">ZN</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">AAA</span><span class="p">:</span>
+        <span class="n">FD</span> <span class="o">=</span> <span class="mf">90.</span>
+        <span class="n">AXN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">XN</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">AXN</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">AXN</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">FT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">AXN</span><span class="p">)</span> <span class="o">*</span> <span class="n">CON</span>
+        <span class="n">ST</span> <span class="o">=</span> <span class="o">-</span><span class="n">XN</span>
+        <span class="n">CT</span> <span class="o">=</span> <span class="n">YN</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&gt;=</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">FT</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">+</span> <span class="n">FT</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">-</span> <span class="n">FT</span>
+        <span class="n">FL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">ZE</span><span class="p">))</span> <span class="o">*</span> <span class="n">CON</span>
+        <span class="n">SL</span> <span class="o">=</span> <span class="o">-</span><span class="n">ZE</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">XN</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">AAA</span><span class="p">:</span>
+            <span class="n">CL</span> <span class="o">=</span> <span class="n">XE</span> <span class="o">/</span> <span class="n">YN</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">CL</span> <span class="o">=</span> <span class="o">-</span><span class="n">YE</span> <span class="o">/</span> <span class="n">XN</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&gt;=</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">FL</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="n">FL</span> <span class="o">-</span> <span class="mf">180.</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="o">-</span><span class="n">FL</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="o">-</span> <span class="n">ZN</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">ZN</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="n">FDH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="o">-</span><span class="n">ZN</span><span class="p">)</span>
+        <span class="n">FD</span> <span class="o">=</span> <span class="n">FDH</span> <span class="o">*</span> <span class="n">CON</span>
+        <span class="n">SD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">FDH</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">SD</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">ST</span> <span class="o">=</span> <span class="o">-</span><span class="n">XN</span> <span class="o">/</span> <span class="n">SD</span>
+        <span class="n">CT</span> <span class="o">=</span> <span class="n">YN</span> <span class="o">/</span> <span class="n">SD</span>
+        <span class="n">SX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">ST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">SX</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">SX</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">FT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">SX</span><span class="p">)</span> <span class="o">*</span> <span class="n">CON</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&gt;=</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">FT</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">+</span> <span class="n">FT</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CT</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FT</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">-</span> <span class="n">FT</span>
+        <span class="n">SL</span> <span class="o">=</span> <span class="o">-</span><span class="n">ZE</span> <span class="o">/</span> <span class="n">SD</span>
+        <span class="n">SX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">SL</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">SX</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">SX</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">FL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">SX</span><span class="p">)</span> <span class="o">*</span> <span class="n">CON</span>
+        <span class="k">if</span> <span class="n">ST</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">CL</span> <span class="o">=</span> <span class="n">XE</span> <span class="o">/</span> <span class="n">CT</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">XXX</span> <span class="o">=</span> <span class="n">YN</span> <span class="o">*</span> <span class="n">ZN</span> <span class="o">*</span> <span class="n">ZE</span> <span class="o">/</span> <span class="n">SD</span> <span class="o">/</span> <span class="n">SD</span> <span class="o">+</span> <span class="n">YE</span>
+            <span class="n">CL</span> <span class="o">=</span> <span class="o">-</span><span class="n">SD</span> <span class="o">*</span> <span class="n">XXX</span> <span class="o">/</span> <span class="n">XN</span>
+            <span class="k">if</span> <span class="n">CT</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">CL</span> <span class="o">=</span> <span class="n">YE</span> <span class="o">/</span> <span class="n">ST</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&gt;=</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="mf">180.</span> <span class="o">-</span> <span class="n">FL</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="n">FL</span> <span class="o">-</span> <span class="mf">180.</span>
+        <span class="k">if</span> <span class="n">SL</span> <span class="o">&lt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CL</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">FL</span> <span class="o">=</span> <span class="o">-</span><span class="n">FL</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">FT</span><span class="p">,</span> <span class="n">FD</span><span class="p">,</span> <span class="n">FL</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="MT2Axes"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.MT2Axes.html#obspy.imaging.beachball.MT2Axes">[docs]</a><span class="k">def</span> <span class="nf">MT2Axes</span><span class="p">(</span><span class="n">mt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the principal axes of a given moment tensor.</span>
+
+<span class="sd">    :param mt: :class:`~MomentTensor`</span>
+<span class="sd">    :return: tuple of :class:`~PrincipalAxis` T, N and P</span>
+
+<span class="sd">    Adapted from ps_tensor / utilmeca.c /</span>
+<span class="sd">    `Generic Mapping Tools (GMT) &lt;http://gmt.soest.hawaii.edu&gt;`_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">mt</span><span class="o">.</span><span class="n">mt</span><span class="p">)</span>
+    <span class="n">pl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="o">-</span><span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">az</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">V</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">pl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">az</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="k">if</span> <span class="n">az</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">az</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="k">if</span> <span class="n">az</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">az</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">pl</span> <span class="o">*=</span> <span class="n">R2D</span>
+    <span class="n">az</span> <span class="o">*=</span> <span class="n">R2D</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">PrincipalAxis</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">az</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pl</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">PrincipalAxis</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">az</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pl</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">PrincipalAxis</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">az</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pl</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PrincipalAxis"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.PrincipalAxis.html#obspy.imaging.beachball.PrincipalAxis">[docs]</a><span class="k">class</span> <span class="nc">PrincipalAxis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A principal axis.</span>
+
+<span class="sd">    Strike and dip values are in degrees.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = PrincipalAxis(1.3, 20, 50)</span>
+<span class="sd">    &gt;&gt;&gt; a.dip</span>
+<span class="sd">    50</span>
+<span class="sd">    &gt;&gt;&gt; a.strike</span>
+<span class="sd">    20</span>
+<span class="sd">    &gt;&gt;&gt; a.val</span>
+<span class="sd">    1.3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="PrincipalAxis.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.PrincipalAxis.__init__.html#obspy.imaging.beachball.PrincipalAxis.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">strike</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dip</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strike</span> <span class="o">=</span> <span class="n">strike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dip</span> <span class="o">=</span> <span class="n">dip</span>
+
+</div></div>
+<div class="viewcode-block" id="NodalPlane"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.NodalPlane.html#obspy.imaging.beachball.NodalPlane">[docs]</a><span class="k">class</span> <span class="nc">NodalPlane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A nodal plane.</span>
+
+<span class="sd">    All values are in degrees.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = NodalPlane(13, 20, 50)</span>
+<span class="sd">    &gt;&gt;&gt; a.strike</span>
+<span class="sd">    13</span>
+<span class="sd">    &gt;&gt;&gt; a.dip</span>
+<span class="sd">    20</span>
+<span class="sd">    &gt;&gt;&gt; a.rake</span>
+<span class="sd">    50</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NodalPlane.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.NodalPlane.__init__.html#obspy.imaging.beachball.NodalPlane.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strike</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dip</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rake</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strike</span> <span class="o">=</span> <span class="n">strike</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dip</span> <span class="o">=</span> <span class="n">dip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rake</span> <span class="o">=</span> <span class="n">rake</span>
+
+</div></div>
+<div class="viewcode-block" id="MomentTensor"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.MomentTensor.html#obspy.imaging.beachball.MomentTensor">[docs]</a><span class="k">class</span> <span class="nc">MomentTensor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A moment tensor.</span>
+
+<span class="sd">    &gt;&gt;&gt; a = MomentTensor(1, 1, 0, 0, 0, -1, 26)</span>
+<span class="sd">    &gt;&gt;&gt; b = MomentTensor(np.array([1, 1, 0, 0, 0, -1]), 26)</span>
+<span class="sd">    &gt;&gt;&gt; c = MomentTensor(np.array([[1, 0, 0], [0, 1, -1], [0, -1, 0]]), 26)</span>
+<span class="sd">    &gt;&gt;&gt; a.mt</span>
+<span class="sd">    array([[ 1,  0,  0],</span>
+<span class="sd">           [ 0,  1, -1],</span>
+<span class="sd">           [ 0, -1,  0]])</span>
+<span class="sd">    &gt;&gt;&gt; b.yz</span>
+<span class="sd">    -1</span>
+<span class="sd">    &gt;&gt;&gt; a.expo</span>
+<span class="sd">    26</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MomentTensor.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.beachball.MomentTensor.__init__.html#obspy.imaging.beachball.MomentTensor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expo</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="c"># six independent components</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                    <span class="p">[</span><span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">5</span><span class="p">]],</span>
+                                    <span class="p">[</span><span class="n">A</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">]]])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="c"># full matrix</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mt</span> <span class="o">=</span> <span class="n">A</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Wrong size of input parameter.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="c"># six independent components</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">5</span><span class="p">]],</span>
+                                <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expo</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Wrong size of input parameter.&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">yz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">yy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">zz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mt</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

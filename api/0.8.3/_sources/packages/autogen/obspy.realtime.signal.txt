@@ -1,0 +1,34 @@
+obspy.realtime.signal
+=====================
+
+.. currentmodule:: obspy.realtime.signal
+.. automodule:: obspy.realtime.signal
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      boxcar
+      calculateMwpMag
+      differentiate
+      integrate
+      mwpIntegral
+      scale
+      tauc
+   
+   
+
+   
+   
+   
+
+   
+   
+   

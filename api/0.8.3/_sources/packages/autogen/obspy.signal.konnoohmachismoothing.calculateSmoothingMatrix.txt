@@ -1,0 +1,6 @@
+obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix
+===========================================================
+
+.. currentmodule:: obspy.signal.konnoohmachismoothing
+
+.. autofunction:: calculateSmoothingMatrix

@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._origin_uncertainty
+================================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._origin_uncertainty

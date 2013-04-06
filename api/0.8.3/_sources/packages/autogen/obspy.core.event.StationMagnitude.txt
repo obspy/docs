@@ -1,0 +1,195 @@
+obspy.core.event.StationMagnitude
+=================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: StationMagnitude
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~StationMagnitude.__abstractmethods__
+     ~StationMagnitude.__dict__
+     ~StationMagnitude.__doc__
+     ~StationMagnitude.__hash__
+     ~StationMagnitude.__module__
+     ~StationMagnitude.__weakref__
+     ~StationMagnitude.defaults
+     ~StationMagnitude.item
+     ~StationMagnitude.key
+     ~StationMagnitude.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~StationMagnitude.clear
+     ~StationMagnitude.copy
+     ~StationMagnitude.get
+     ~StationMagnitude.items
+     ~StationMagnitude.iteritems
+     ~StationMagnitude.iterkeys
+     ~StationMagnitude.itervalues
+     ~StationMagnitude.keys
+     ~StationMagnitude.pop
+     ~StationMagnitude.popitem
+     ~StationMagnitude.setdefault
+     ~StationMagnitude.update
+     ~StationMagnitude.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~StationMagnitude._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~StationMagnitude.__contains__
+     ~StationMagnitude.__deepcopy__
+     ~StationMagnitude.__delattr__
+     ~StationMagnitude.__delitem__
+     ~StationMagnitude.__eq__
+     ~StationMagnitude.__getattr__
+     ~StationMagnitude.__getitem__
+     ~StationMagnitude.__getstate__
+     ~StationMagnitude.__init__
+     ~StationMagnitude.__iter__
+     ~StationMagnitude.__len__
+     ~StationMagnitude.__ne__
+     ~StationMagnitude.__nonzero__
+     ~StationMagnitude.__repr__
+     ~StationMagnitude.__setattr__
+     ~StationMagnitude.__setitem__
+     ~StationMagnitude.__setstate__
+     ~StationMagnitude.__str__
+     ~StationMagnitude.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.__init__
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.__init__

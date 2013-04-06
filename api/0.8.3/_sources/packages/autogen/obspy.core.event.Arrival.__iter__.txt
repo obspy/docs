@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.__iter__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.__iter__

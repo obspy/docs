@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__le__
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__le__

@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.trigger.coincidenceTrigger &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.trigger" href="obspy.signal.trigger.html" />
+    <link rel="next" title="11.2.4. obspy.signal.trigger.delayedSTALTA" href="obspy.signal.trigger.delayedSTALTA.html" />
+    <link rel="prev" title="obspy.signal.trigger.classicSTALTAPy" href="obspy.signal.trigger.classicSTALTAPy.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.delayedSTALTA.html" title="11.2.4. obspy.signal.trigger.delayedSTALTA"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.classicSTALTAPy.html" title="obspy.signal.trigger.classicSTALTAPy"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.trigger.html" accesskey="U">obspy.signal.trigger</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-trigger-coincidencetrigger">
+<h1>obspy.signal.trigger.coincidenceTrigger<a class="headerlink" href="#obspy-signal-trigger-coincidencetrigger" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.trigger.coincidenceTrigger">
+<tt class="descname">coincidenceTrigger</tt><big>(</big><em>trigger_type</em>, <em>thr_on</em>, <em>thr_off</em>, <em>stream</em>, <em>thr_coincidence_sum</em>, <em>trace_ids=None</em>, <em>max_trigger_length=1000000.0</em>, <em>delete_long_trigger=False</em>, <em>trigger_off_extension=0</em>, <em>details=False</em>, <em>**options</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/trigger.html#coincidenceTrigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.trigger.coincidenceTrigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a network coincidence trigger.</p>
+<dl class="docutils">
+<dt>The routine works in the following steps:</dt>
+<dd><ul class="first last simple">
+<li>take every single trace in the stream</li>
+<li>apply specified triggering routine</li>
+<li>evaluate triggering results</li>
+<li>compile chronological overall list of all single station triggers</li>
+<li>find overlapping single station triggers</li>
+<li>calculate coincidence sum every individual overlapping trigger</li>
+<li>add to coincidence trigger list if it exceeds the given threshold</li>
+<li>return list of network coincidence triggers</li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An example can be found in the
+<a class="reference external" href="http://docs.obspy.org/tutorial/trigger_tutorial.html">Tutorial</a></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Setting <cite>trigger_type=None</cite> precomputed characteristic functions can
+be provided.</p>
+</div>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../citations.html#withers1998">[Withers1998]</a> (p. 98) and <a class="reference internal" href="../../citations.html#trnkoczy2012">[Trnkoczy2012]</a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trigger_type</strong> (<em>str or None</em>) <span class="dash" /> String that specifies which trigger is applied (e.g.
+<tt class="docutils literal"><span class="pre">'recstalta'</span></tt>). See e.g. <a class="reference internal" href="obspy.core.trace.Trace.trigger.html#obspy.core.trace.Trace.trigger" title="obspy.core.trace.Trace.trigger"><tt class="xref py py-meth docutils literal"><span class="pre">obspy.core.trace.Trace.trigger()</span></tt></a> for
+further details. If set to None no triggering routine is applied, i.e.
+data in traces is supposed to be a precomputed chracteristic function
+on which the trigger thresholds are evaluated.</li>
+<li><strong>thr_on</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> threshold for switching single station trigger on</li>
+<li><strong>thr_off</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> threshold for switching single station trigger off</li>
+<li><strong>stream</strong> (<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>) <span class="dash" /> Stream containing waveform data for all stations. These
+data are changed inplace, make a copy to keep the raw waveform data.</li>
+<li><strong>thr_coincidence_sum</strong> (<em>int or float</em>) <span class="dash" /> Threshold for coincidence sum. The network
+coincidence sum has to be at least equal to this value for a trigger to
+be included in the returned trigger list.</li>
+<li><strong>trace_ids</strong> (<em>list or dict (optional)</em>) <span class="dash" /> Trace IDs to be used in the network coincidence sum. A
+dictionary with trace IDs as keys and weights as values can
+be provided. If a list of trace IDs is provided, all
+weights are set to 1. The default of <tt class="docutils literal"><span class="pre">None</span></tt> uses all traces present
+in the provided stream. Waveform data with trace IDs not
+present in this list/dict are disregarded in the analysis.</li>
+<li><strong>max_trigger_length</strong> (<em>int or float</em>) <span class="dash" /> Maximum single station trigger length (in
+seconds). <tt class="docutils literal"><span class="pre">delete_long_trigger</span></tt> controls what happens to single
+station triggers longer than this value.</li>
+<li><strong>delete_long_trigger</strong> (<em>bool (optional)</em>) <span class="dash" /> If <tt class="docutils literal"><span class="pre">False</span></tt> (default), single station
+triggers are manually released at <tt class="docutils literal"><span class="pre">max_trigger_length</span></tt>, although the
+characteristic function has not dropped below <tt class="docutils literal"><span class="pre">thr_off</span></tt>. If set to
+<tt class="docutils literal"><span class="pre">True</span></tt>, all single station triggers longer than
+<tt class="docutils literal"><span class="pre">max_trigger_length</span></tt> will be removed and are excluded from
+coincidence sum computation.</li>
+<li><strong>trigger_off_extension</strong> (<em>int or float (optional)</em>) <span class="dash" /> Extends search window for next trigger
+on-time after last trigger off-time in coincidence sum computation.</li>
+<li><strong>details</strong> (<em>bool (optional)</em>) <span class="dash" /> If set to <tt class="docutils literal"><span class="pre">True</span></tt> the output coincidence triggers contain
+more detailed information: A list with the trace IDs (in addition to
+only the station names), as well as lists with single station
+characteristic function peak values and standard deviations in the
+triggering interval and mean values of both, relatively weighted like
+in the coincidence sum. These values can help to judge the reliability
+of the trigger.</li>
+<li><strong>options</strong> <span class="dash" /> Necessary keyword arguments for the respective trigger
+that will be passed on. For example <tt class="docutils literal"><span class="pre">sta</span></tt> and <tt class="docutils literal"><span class="pre">lta</span></tt> for any STA/LTA
+variant (e.g. <tt class="docutils literal"><span class="pre">sta=3</span></tt>, <tt class="docutils literal"><span class="pre">lta=10</span></tt>).
+Arguments <tt class="docutils literal"><span class="pre">sta</span></tt> and <tt class="docutils literal"><span class="pre">lta</span></tt> (seconds) will be mapped to <tt class="docutils literal"><span class="pre">nsta</span></tt>
+and <tt class="docutils literal"><span class="pre">nlta</span></tt> (samples) by multiplying with sampling rate of trace.
+(e.g. <tt class="docutils literal"><span class="pre">sta=3</span></tt>, <tt class="docutils literal"><span class="pre">lta=10</span></tt> would call the trigger with 3 and 10
+seconds average, respectively)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of event triggers sorted chronologically.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.trigger.coincidenceTrigger.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.delayedSTALTA.html" title="11.2.4. obspy.signal.trigger.delayedSTALTA"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.classicSTALTAPy.html" title="obspy.signal.trigger.classicSTALTAPy"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.trigger.html" >obspy.signal.trigger</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

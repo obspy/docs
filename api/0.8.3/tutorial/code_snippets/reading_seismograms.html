@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Reading Seismograms &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="3. Waveform Plotting Tutorial" href="waveform_plotting_tutorial.html" />
+    <link rel="prev" title="1. Python Introduction for Seismologists" href="python_introduction.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="waveform_plotting_tutorial.html" title="3. Waveform Plotting Tutorial"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="python_introduction.html" title="1. Python Introduction for Seismologists"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="reading-seismograms">
+<span id="reading-seismogramms"></span><h1>2. Reading Seismograms<a class="headerlink" href="#reading-seismograms" title="Permalink to this headline">¶</a></h1>
+<p>Seismograms of various formats (e.g. SAC, MiniSEED, GSE2, SEISAN, Q, etc.) can
+be imported into a <a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object using the
+<a class="reference internal" href="../../packages/autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function.</p>
+<p><a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Streams</span></tt></a> are list-like objects which
+contain multiple <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, i.e.
+gap-less continuous time series and related header/meta information.</p>
+<p>Each <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> object has a attribute called <tt class="docutils literal"><span class="pre">data</span></tt>
+pointing to a <a class="reference external" href="http://numpy.scipy.org/">NumPy</a> <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a> of
+the actual time series and the attribute <tt class="docutils literal"><span class="pre">stats</span></tt> which contains all meta
+information in a dictionary-like <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a> object. Both
+attributes <tt class="docutils literal"><span class="pre">starttime</span></tt> and <tt class="docutils literal"><span class="pre">endtime</span></tt> of the
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a> object are
+<a class="reference internal" href="../../packages/autogen/obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> objects.</p>
+<p>The following example demonstrates how a single <a class="reference external" href="http://obspy.org/export/2593/obspy/trunk/obspy.gse2/docs/provisional_GSE2.1.pdf">GSE2</a>-formatted seismogram file
+is read into a ObsPy <a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object. There exists
+only one <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> in the given seismogram:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;http://examples.obspy.org/RJOB_061005_072159.ehz.new&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">st</span>
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-10-06T07:21:59.849998Z - 2005-10-06T07:24:59.844998Z | 200.0 Hz, 36000 samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># assign first and only trace to new variable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">tr</span>
+<span class="go">.RJOB..Z | 2005-10-06T07:21:59.849998Z - 2005-10-06T07:24:59.844998Z | 200.0 Hz, 36000 samples</span>
+</pre></div>
+</div>
+<div class="section" id="accessing-meta-data">
+<h2>2.1. Accessing Meta Data<a class="headerlink" href="#accessing-meta-data" title="Permalink to this headline">¶</a></h2>
+<p>Seismogram meta data, data describing the actual waveform data, are accessed
+via the <tt class="docutils literal"><span class="pre">stats</span></tt> keyword on each <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span>  
+<span class="go">         network:</span>
+<span class="go">         station: RJOB</span>
+<span class="go">        location:</span>
+<span class="go">         channel: Z</span>
+<span class="go">       starttime: 2005-10-06T07:21:59.849998Z</span>
+<span class="go">         endtime: 2005-10-06T07:24:59.844998Z</span>
+<span class="go">   sampling_rate: 200.0</span>
+<span class="go">           delta: 0.005</span>
+<span class="go">            npts: 36000</span>
+<span class="go">           calib: 0.0948999971151</span>
+<span class="go">         _format: GSE2</span>
+<span class="go">            gse2: AttribDict({&#39;instype&#39;: &#39;      &#39;, &#39;datatype&#39;: &#39;CM6&#39;, &#39;hang&#39;: -1.0, &#39;auxid&#39;: &#39;RJOB&#39;, &#39;vang&#39;: -1.0, &#39;calper&#39;: 1.0})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+<span class="go">&#39;RJOB&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gse2</span><span class="o">.</span><span class="n">datatype</span>
+<span class="go">&#39;CM6&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="accessing-waveform-data">
+<h2>2.2. Accessing Waveform Data<a class="headerlink" href="#accessing-waveform-data" title="Permalink to this headline">¶</a></h2>
+<p>The actual waveform data may be retrieved via the <tt class="docutils literal"><span class="pre">data</span></tt> keyword on each
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([-38,  12,  -4, ..., -14,  -3,  -9])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">array([-38,  12,  -4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+<span class="go">36000</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-preview">
+<h2>2.3. Data Preview<a class="headerlink" href="#data-preview" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> objects offer a
+<a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.plot.html#obspy.core.stream.Stream.plot" title="obspy.core.stream.Stream.plot"><tt class="xref py py-meth docutils literal"><span class="pre">plot()</span></tt></a> method for fast
+preview of the waveform (requires the <a class="reference internal" href="../../packages/obspy.imaging.html#module-obspy.imaging" title="obspy.imaging"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.imaging</span></tt></a> module):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/reading_seismograms.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/reading_seismograms.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/reading_seismograms.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/reading_seismograms.png" src="../../_images/reading_seismograms.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Reading Seismograms</a><ul>
+<li><a class="reference internal" href="#accessing-meta-data">2.1. Accessing Meta Data</a></li>
+<li><a class="reference internal" href="#accessing-waveform-data">2.2. Accessing Waveform Data</a></li>
+<li><a class="reference internal" href="#data-preview">2.3. Data Preview</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/reading_seismograms.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="waveform_plotting_tutorial.html" title="3. Waveform Plotting Tutorial"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="python_introduction.html" title="1. Python Introduction for Seismologists"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.seisan.core.readSEISAN
+============================
+
+.. currentmodule:: obspy.seisan.core
+
+.. autofunction:: readSEISAN

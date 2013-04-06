@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.copy
+===================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.copy

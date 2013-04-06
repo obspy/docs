@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.db.client &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.db.client</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Client for a database created by obspy.db.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy.core.preview</span> <span class="kn">import</span> <span class="n">mergePreviews</span>
+<span class="kn">from</span> <span class="nn">obspy.core.stream</span> <span class="kn">import</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.core.utcdatetime</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.db.db</span> <span class="kn">import</span> <span class="n">WaveformPath</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="p">,</span> <span class="n">WaveformFile</span><span class="p">,</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">or_</span><span class="p">,</span> <span class="n">and_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.html#obspy.db.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Client for a database created by obspy.db.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Client.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.__init__.html#obspy.db.client.Client.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the client.</span>
+
+<span class="sd">        :type url: string, optional</span>
+<span class="sd">        :param url: A string that indicates database dialect and connection</span>
+<span class="sd">            arguments. See</span>
+<span class="sd">            http://docs.sqlalchemy.org/en/latest/core/engines.html for more</span>
+<span class="sd">            information about database dialects and urls.</span>
+<span class="sd">        :type session: class:`sqlalchemy.orm.session.Session`, optional</span>
+<span class="sd">        :param session: An existing database session object.</span>
+<span class="sd">        :type debug: boolean, optional</span>
+<span class="sd">        :param debug: Enables verbose output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span>
+                                        <span class="n">convert_unicode</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span>  <span class="c"># @UndefinedVariable</span>
+                                     <span class="n">checkfirst</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># enable verbosity after table creations</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="n">debug</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+</div>
+<div class="viewcode-block" id="Client.getNetworkIDs"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getNetworkIDs.html#obspy.db.client.Client.getNetworkIDs">[docs]</a>    <span class="k">def</span> <span class="nf">getNetworkIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches all possible network id&#39;s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Client.getStationIds"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getStationIds.html#obspy.db.client.Client.getStationIds">[docs]</a>    <span class="k">def</span> <span class="nf">getStationIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches all possible station id&#39;s.</span>
+
+<span class="sd">        :type network: string, optional</span>
+<span class="sd">        :param network: Filter result by given network id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">network</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Client.getLocationIds"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getLocationIds.html#obspy.db.client.Client.getLocationIds">[docs]</a>    <span class="k">def</span> <span class="nf">getLocationIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches all possible location id&#39;s.</span>
+
+<span class="sd">        :type network: string, optional</span>
+<span class="sd">        :param network: Filter result by given network id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        :type station: string, optional</span>
+<span class="sd">        :param station: Filter result by given station id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">network</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">station</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">station</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Client.getChannelIds"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getChannelIds.html#obspy.db.client.Client.getChannelIds">[docs]</a>    <span class="k">def</span> <span class="nf">getChannelIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches all possible channel id&#39;s.</span>
+
+<span class="sd">        :type network: string, optional</span>
+<span class="sd">        :param network: Filter result by given network id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        :type station: string, optional</span>
+<span class="sd">        :param station: Filter result by given station id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        :type location: string, optional</span>
+<span class="sd">        :param location: Filter result by given location id if given. Defaults</span>
+<span class="sd">            to ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">network</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">station</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">station</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">location</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">location</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Client.getEndtimes"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getEndtimes.html#obspy.db.client.Client.getEndtimes">[docs]</a>    <span class="k">def</span> <span class="nf">getEndtimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">channel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a list of last endtimes for each channel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># build up query</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+            <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+            <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">endtime</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s">&#39;latency&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span>
+            <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+            <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span>
+        <span class="p">)</span>
+        <span class="c"># process arguments</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;network&#39;</span><span class="p">:</span> <span class="n">network</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
+                  <span class="s">&#39;location&#39;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span> <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="n">channel</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;?&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;%&#39;</span><span class="p">)</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">adict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">adict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">adict</span>
+</div>
+<div class="viewcode-block" id="Client.getWaveformPath"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getWaveformPath.html#obspy.db.client.Client.getWaveformPath">[docs]</a>    <span class="k">def</span> <span class="nf">getWaveformPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">channel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a list of available waveform files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># build up query</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                              <span class="n">WaveformFile</span><span class="o">.</span><span class="n">file</span><span class="p">,</span>
+                              <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span><span class="p">,</span>
+                              <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+                              <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                              <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">WaveformFile</span><span class="o">.</span><span class="n">path_id</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformFile</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">file_id</span><span class="p">)</span>
+        <span class="c"># process arguments</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;network&#39;</span><span class="p">:</span> <span class="n">network</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
+                  <span class="s">&#39;location&#39;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span> <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="n">channel</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;?&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;%&#39;</span><span class="p">)</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c"># start and end time</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span> <span class="o">-</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">20</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">endtime</span> <span class="o">&gt;</span> <span class="n">starttime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># 10 minutes</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">starttime</span> <span class="o">&lt;</span> <span class="n">endtime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># execute query</span>
+        <span class="n">file_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">file_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_dict</span>
+</div>
+<div class="viewcode-block" id="Client.getPreview"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.client.Client.getPreview.html#obspy.db.client.Client.getPreview">[docs]</a>    <span class="k">def</span> <span class="nf">getPreview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace_ids</span><span class="o">=</span><span class="p">[],</span> <span class="n">starttime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">network</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">pad</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the preview trace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># build up query</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="p">)</span>
+        <span class="c"># start and end time</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span> <span class="o">-</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">20</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">endtime</span> <span class="o">&gt;</span> <span class="n">starttime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># 10 minutes</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">starttime</span> <span class="o">&lt;</span> <span class="n">endtime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+        <span class="c"># process arguments</span>
+        <span class="k">if</span> <span class="n">trace_ids</span><span class="p">:</span>
+            <span class="c"># filter over trace id list</span>
+            <span class="n">trace_filter</span> <span class="o">=</span> <span class="n">or_</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">trace_id</span> <span class="ow">in</span> <span class="n">trace_ids</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">trace_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">trace_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">temp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span> <span class="o">==</span> <span class="n">temp</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">trace_filter</span><span class="o">.</span><span class="n">clauses</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">trace_filter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># filter over network/station/location/channel id</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;network&#39;</span><span class="p">:</span> <span class="n">network</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
+                      <span class="s">&#39;location&#39;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span> <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="n">channel</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;?&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;%&#39;</span><span class="p">)</span>
+                    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c"># execute query</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># create Stream</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">preview</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">getPreview</span><span class="p">()</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preview</span><span class="p">)</span>
+        <span class="c"># merge and trim</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">mergePreviews</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">st</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

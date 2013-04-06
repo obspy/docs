@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.__contains__
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.__contains__

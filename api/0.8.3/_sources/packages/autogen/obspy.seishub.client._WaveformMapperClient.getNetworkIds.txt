@@ -1,0 +1,6 @@
+obspy.seishub.client._WaveformMapperClient.getNetworkIds
+========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _WaveformMapperClient.getNetworkIds

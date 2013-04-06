@@ -1,0 +1,47 @@
+obspy.imaging.beachball.NodalPlane
+==================================
+
+.. currentmodule:: obspy.imaging.beachball
+.. autoclass:: NodalPlane
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~NodalPlane.__dict__
+     ~NodalPlane.__doc__
+     ~NodalPlane.__module__
+     ~NodalPlane.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~NodalPlane.__init__
+  
+
+  
+  

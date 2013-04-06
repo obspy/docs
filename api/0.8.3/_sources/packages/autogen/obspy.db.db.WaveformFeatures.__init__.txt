@@ -1,0 +1,6 @@
+obspy.db.db.WaveformFeatures.__init__
+=====================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformFeatures.__init__

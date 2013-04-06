@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__len__
+================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__len__

@@ -1,0 +1,192 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.getWaveform &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client.resp" href="obspy.iris.client.Client.resp.html" />
+    <link rel="prev" title="obspy.iris.client.Client.getEvents" href="obspy.iris.client.Client.getEvents.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.resp.html" title="obspy.iris.client.Client.resp"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.getEvents.html" title="obspy.iris.client.Client.getEvents"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-getwaveform">
+<h1>obspy.iris.client.Client.getWaveform<a class="headerlink" href="#obspy-iris-client-client-getwaveform" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.getWaveform">
+<tt class="descclassname">Client.</tt><tt class="descname">getWaveform</tt><big>(</big><em>network</em>, <em>station</em>, <em>location</em>, <em>channel</em>, <em>starttime</em>, <em>endtime</em>, <em>quality='B'</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.getWaveform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.getWaveform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves waveform data from IRIS and returns an ObsPy Stream object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'IU'</span></tt> or <tt class="docutils literal"><span class="pre">'I*'</span></tt>. Network code
+may contain wild cards.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'ANMO'</span></tt> or <tt class="docutils literal"><span class="pre">'A*'</span></tt>. Station code
+may contain wild cards.</li>
+<li><strong>location</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'00'</span></tt> or <tt class="docutils literal"><span class="pre">'*'</span></tt>. Location code
+may contain wild cards.</li>
+<li><strong>channel</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'BHZ'</span></tt> or <tt class="docutils literal"><span class="pre">'B*'</span></tt>. Channel code
+may contain wild cards.</li>
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Start date and time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> End date and time.</li>
+<li><strong>quality</strong> (<tt class="docutils literal"><span class="pre">'D'</span></tt>, <tt class="docutils literal"><span class="pre">'R'</span></tt>, <tt class="docutils literal"><span class="pre">'Q'</span></tt>, <tt class="docutils literal"><span class="pre">'M'</span></tt> or <tt class="docutils literal"><span class="pre">'B'</span></tt>, optional) <span class="dash" /> Mini-SEED data quality indicator. <tt class="docutils literal"><span class="pre">'M'</span></tt> and <tt class="docutils literal"><span class="pre">'B'</span></tt>
+(default) are treated the same and indicate best available.
+If <tt class="docutils literal"><span class="pre">'M'</span></tt> or <tt class="docutils literal"><span class="pre">'B'</span></tt> are selected, the output data records will be
+stamped with a <tt class="docutils literal"><span class="pre">'M'</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<ol class="arabic">
+<li><p class="first">Requesting waveform of a single channel.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T06:30:00.000&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T07:00:00.000&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="s">&quot;ANMO&quot;</span><span class="p">,</span> <span class="s">&quot;00&quot;</span><span class="p">,</span> <span class="s">&quot;BHZ&quot;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">IU.ANMO.00.BHZ | 2010-02-27T06:30:00... | 20.0 Hz, 36001 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Requesting waveforms of multiple channels using wildcard
+characters.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-084T00:00:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-084T00:30:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;TA&quot;</span><span class="p">,</span> <span class="s">&quot;A25A&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;BH*&quot;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">3 Trace(s) in Stream:</span>
+<span class="go">TA.A25A..BHE | 2010-03-25T00:00:00... | 40.0 Hz, 72001 samples</span>
+<span class="go">TA.A25A..BHN | 2010-03-25T00:00:00... | 40.0 Hz, 72001 samples</span>
+<span class="go">TA.A25A..BHZ | 2010-03-25T00:00:00... | 40.0 Hz, 72001 samples</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.getWaveform.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.resp.html" title="obspy.iris.client.Client.resp"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.getEvents.html" title="obspy.iris.client.Client.getEvents"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

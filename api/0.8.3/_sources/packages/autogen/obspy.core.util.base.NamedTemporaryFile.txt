@@ -1,0 +1,6 @@
+obspy.core.util.base.NamedTemporaryFile
+=======================================
+
+.. currentmodule:: obspy.core.util.base
+
+.. autofunction:: NamedTemporaryFile

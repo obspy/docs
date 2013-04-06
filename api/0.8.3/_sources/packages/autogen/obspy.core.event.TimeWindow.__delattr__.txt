@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.__delattr__
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.__delattr__

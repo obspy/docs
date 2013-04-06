@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._principal_axes
+==========================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._principal_axes

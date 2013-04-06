@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.count
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.count

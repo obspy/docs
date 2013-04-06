@@ -1,0 +1,6 @@
+obspy.signal.trigger.plotTrigger
+================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: plotTrigger

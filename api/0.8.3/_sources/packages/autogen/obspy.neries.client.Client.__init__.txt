@@ -1,0 +1,6 @@
+obspy.neries.client.Client.__init__
+===================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.__init__

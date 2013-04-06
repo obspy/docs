@@ -1,0 +1,6 @@
+obspy.core.event.Origin.clear
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.clear

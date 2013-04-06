@@ -1,0 +1,6 @@
+obspy.xseed.utils.LookupCode
+============================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: LookupCode

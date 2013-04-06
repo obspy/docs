@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism._pretty_str
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism._pretty_str

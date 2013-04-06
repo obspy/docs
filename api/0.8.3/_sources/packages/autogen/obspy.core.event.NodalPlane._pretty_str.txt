@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane._pretty_str
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane._pretty_str

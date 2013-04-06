@@ -1,0 +1,6 @@
+obspy.xseed.fields.Field.__str__
+================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Field.__str__

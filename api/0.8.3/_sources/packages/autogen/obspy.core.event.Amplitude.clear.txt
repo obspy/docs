@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.clear
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.clear

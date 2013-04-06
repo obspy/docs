@@ -1,0 +1,28 @@
+obspy.signal.detrend
+====================
+
+.. currentmodule:: obspy.signal.detrend
+.. automodule:: obspy.signal.detrend
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      simple
+   
+   
+
+   
+   
+   
+
+   
+   
+   

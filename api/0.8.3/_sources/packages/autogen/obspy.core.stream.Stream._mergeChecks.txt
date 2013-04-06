@@ -1,0 +1,6 @@
+obspy.core.stream.Stream._mergeChecks
+=====================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream._mergeChecks

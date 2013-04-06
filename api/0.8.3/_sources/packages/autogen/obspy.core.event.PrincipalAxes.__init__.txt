@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.__init__
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.__init__

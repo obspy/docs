@@ -1,0 +1,6 @@
+obspy.core.event.Comment.iteritems
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.iteritems

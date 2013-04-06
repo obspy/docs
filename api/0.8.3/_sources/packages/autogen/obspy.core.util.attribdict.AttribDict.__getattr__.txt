@@ -1,0 +1,6 @@
+obspy.core.util.attribdict.AttribDict.__getattr__
+=================================================
+
+.. currentmodule:: obspy.core.util.attribdict
+
+.. automethod:: AttribDict.__getattr__

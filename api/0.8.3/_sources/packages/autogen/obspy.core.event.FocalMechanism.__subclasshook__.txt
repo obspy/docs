@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.__subclasshook__
+================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.__subclasshook__

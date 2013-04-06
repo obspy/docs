@@ -1,0 +1,6 @@
+obspy.db.indexer.WaveformFileCrawler._processOutputQueue
+========================================================
+
+.. currentmodule:: obspy.db.indexer
+
+.. automethod:: WaveformFileCrawler._processOutputQueue

@@ -1,0 +1,6 @@
+obspy.signal.trigger.coincidenceTrigger
+=======================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: coincidenceTrigger

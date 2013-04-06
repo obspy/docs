@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.__str__
+================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.__str__

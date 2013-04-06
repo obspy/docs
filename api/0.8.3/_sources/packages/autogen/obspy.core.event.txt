@@ -1,0 +1,66 @@
+obspy.core.event
+================
+
+.. currentmodule:: obspy.core.event
+.. automodule:: obspy.core.event
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      readEvents
+      validate
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      Amplitude
+      Arrival
+      Axis
+      Catalog
+      Comment
+      CompositeTime
+      ConfidenceEllipsoid
+      CreationInfo
+      DataUsed
+      Event
+      EventDescription
+      FocalMechanism
+      Magnitude
+      MomentTensor
+      NodalPlane
+      NodalPlanes
+      Origin
+      OriginQuality
+      OriginUncertainty
+      Pick
+      PrincipalAxes
+      QuantityError
+      ResourceIdentifier
+      SourceTimeFunction
+      StationMagnitude
+      StationMagnitudeContribution
+      Tensor
+      TimeWindow
+      WaveformStreamID
+   
+   
+
+   
+   
+   

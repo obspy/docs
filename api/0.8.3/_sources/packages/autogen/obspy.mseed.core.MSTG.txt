@@ -1,0 +1,62 @@
+obspy.mseed.core.MSTG
+=====================
+
+.. currentmodule:: obspy.mseed.core
+.. autoclass:: MSTG
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~MSTG.__dict__
+     ~MSTG.__doc__
+     ~MSTG.__module__
+     ~MSTG.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MSTG.getMstg
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MSTG.__del__
+     ~MSTG.__init__
+  
+
+  
+  

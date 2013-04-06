@@ -1,0 +1,42 @@
+obspy.xseed.fields
+==================
+
+.. currentmodule:: obspy.xseed.fields
+.. automodule:: obspy.xseed.fields
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      Field
+      FixedString
+      Float
+      Integer
+      Loop
+      VariableString
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEEDTypeException
+   
+   

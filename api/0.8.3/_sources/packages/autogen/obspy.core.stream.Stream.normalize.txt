@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.normalize
+==================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.normalize

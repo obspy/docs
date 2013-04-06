@@ -1,0 +1,6 @@
+obspy.signal.util.utlGeoKm
+==========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: utlGeoKm

@@ -1,0 +1,11 @@
+obspy.imaging.scripts.mopad
+===========================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-mopad``. For more info on the command line options,
+    please run ``$ obspy-mopad --help``.
+    Alternatively you can also execute ``$ python -m obspy.imaging.scripts.mopad``.
+
+.. currentmodule:: obspy.imaging.scripts.mopad
+.. automodule:: obspy.imaging.scripts.mopad

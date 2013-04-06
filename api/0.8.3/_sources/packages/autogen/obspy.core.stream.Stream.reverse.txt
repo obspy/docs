@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.reverse
+================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.reverse

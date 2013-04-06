@@ -1,0 +1,6 @@
+obspy.segy.core.isSU
+====================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: isSU

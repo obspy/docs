@@ -1,0 +1,162 @@
+obspy.core.util.types.OrderedDict
+=================================
+
+.. currentmodule:: obspy.core.util.types
+.. autoclass:: OrderedDict
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~OrderedDict.__dict__
+     ~OrderedDict.__doc__
+     ~OrderedDict.__hash__
+     ~OrderedDict.__module__
+     ~OrderedDict.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OrderedDict.clear
+     ~OrderedDict.copy
+     ~OrderedDict.fromkeys
+     ~OrderedDict.items
+     ~OrderedDict.iteritems
+     ~OrderedDict.iterkeys
+     ~OrderedDict.itervalues
+     ~OrderedDict.keys
+     ~OrderedDict.pop
+     ~OrderedDict.popitem
+     ~OrderedDict.setdefault
+     ~OrderedDict.update
+     ~OrderedDict.values
+     ~OrderedDict.viewitems
+     ~OrderedDict.viewkeys
+     ~OrderedDict.viewvalues
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OrderedDict._OrderedDict__update
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OrderedDict.__delitem__
+     ~OrderedDict.__eq__
+     ~OrderedDict.__init__
+     ~OrderedDict.__iter__
+     ~OrderedDict.__ne__
+     ~OrderedDict.__reduce__
+     ~OrderedDict.__repr__
+     ~OrderedDict.__reversed__
+     ~OrderedDict.__setitem__
+  
+
+  
+  

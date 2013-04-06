@@ -1,0 +1,6 @@
+obspy.imaging.beachball.Pol2Cart
+================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: Pol2Cart

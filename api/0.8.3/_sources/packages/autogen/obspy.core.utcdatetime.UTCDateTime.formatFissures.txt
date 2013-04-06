@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.formatFissures
+=================================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.formatFissures

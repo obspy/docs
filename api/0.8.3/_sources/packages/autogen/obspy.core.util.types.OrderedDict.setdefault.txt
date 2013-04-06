@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict.setdefault
+============================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict.setdefault

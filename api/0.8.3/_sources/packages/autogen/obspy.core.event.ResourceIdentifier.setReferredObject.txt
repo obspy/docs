@@ -1,0 +1,6 @@
+obspy.core.event.ResourceIdentifier.setReferredObject
+=====================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ResourceIdentifier.setReferredObject

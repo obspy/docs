@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__contains__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__contains__

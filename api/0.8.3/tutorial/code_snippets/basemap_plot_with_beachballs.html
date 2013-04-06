@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>19. Basemap Plot with Beachballs &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="20. Interfacing R from Python" href="interfacing_r_from_python.html" />
+    <link rel="prev" title="18. Beachball Plot" href="beachball_plot.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="interfacing_r_from_python.html" title="20. Interfacing R from Python"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="beachball_plot.html" title="18. Beachball Plot"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="basemap-plot-with-beachballs">
+<h1>19. Basemap Plot with Beachballs<a class="headerlink" href="#basemap-plot-with-beachballs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basemap-plot-of-a-local-area">
+<h2>19.1. Basemap Plot of a Local Area<a class="headerlink" href="#basemap-plot-of-a-local-area" title="Permalink to this headline">¶</a></h2>
+<p>The following example shows how to plot beachballs into a basemap plot together
+with some stations. The example requires the <a class="reference external" href="http://matplotlib.sourceforge.net/basemap/doc/html/index.html">basemap</a> package (<a class="reference external" href="http://sourceforge.net/projects/matplotlib/files/matplotlib-toolkits/">download</a> site)
+to be installed. The SRTM file used can be downloaded <a class="reference external" href="http://examples.obspy.org/srtm_1240-1300E_4740-4750N.asc.gz">here</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.beachball</span> <span class="kn">import</span> <span class="n">Beach</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+
+<span class="c"># read in topo data (on a regular lat/lon grid)</span>
+<span class="c"># (SRTM data from: http://srtm.csi.cgiar.org/)</span>
+<span class="n">srtm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;srtm_1240-1300E_4740-4750N.asc.gz&quot;</span><span class="p">),</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c"># origin of data grid as stated in SRTM data file header</span>
+<span class="c"># create arrays with all lon/lat values from min to max and</span>
+<span class="n">lats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">47.8333</span><span class="p">,</span> <span class="mf">47.6666</span><span class="p">,</span> <span class="n">srtm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">lons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">12.6666</span><span class="p">,</span> <span class="mf">13.0000</span><span class="p">,</span> <span class="n">srtm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c"># create Basemap instance with Mercator projection</span>
+<span class="c"># we want a slightly smaller region than covered by our SRTM data</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">&#39;merc&#39;</span><span class="p">,</span> <span class="n">lon_0</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">lat_0</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="s">&quot;h&quot;</span><span class="p">,</span>
+            <span class="n">llcrnrlon</span><span class="o">=</span><span class="mf">12.75</span><span class="p">,</span> <span class="n">llcrnrlat</span><span class="o">=</span><span class="mf">47.69</span><span class="p">,</span> <span class="n">urcrnrlon</span><span class="o">=</span><span class="mf">12.95</span><span class="p">,</span> <span class="n">urcrnrlat</span><span class="o">=</span><span class="mf">47.81</span><span class="p">)</span>
+
+<span class="c"># create grids and compute map projection coordinates for lon/lat grid</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">))</span>
+
+<span class="c"># Make contour plot</span>
+<span class="n">cs</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">srtm</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawcountries</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># Draw a lon/lat grid (20 lines for an interval of one degree)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawparallels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span>
+                <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawmeridians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span>
+                <span class="n">dashes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="c"># Plot station positions and names into the map</span>
+<span class="c"># again we have to compute the projection of our lon/lat values</span>
+<span class="n">lats</span> <span class="o">=</span> <span class="p">[</span><span class="mf">47.761659</span><span class="p">,</span> <span class="mf">47.7405</span><span class="p">,</span> <span class="mf">47.755100</span><span class="p">,</span> <span class="mf">47.737167</span><span class="p">]</span>
+<span class="n">lons</span> <span class="o">=</span> <span class="p">[</span><span class="mf">12.864466</span><span class="p">,</span> <span class="mf">12.8671</span><span class="p">,</span> <span class="mf">12.849660</span><span class="p">,</span> <span class="mf">12.795714</span><span class="p">]</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot; RMOA&quot;</span><span class="p">,</span> <span class="s">&quot; RNON&quot;</span><span class="p">,</span> <span class="s">&quot; RTSH&quot;</span><span class="p">,</span> <span class="s">&quot; RJOB&quot;</span><span class="p">]</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">&quot;k&quot;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">va</span><span class="o">=</span><span class="s">&quot;top&quot;</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s">&quot;monospace&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">)</span>
+
+<span class="c"># Add beachballs for two events</span>
+<span class="n">lats</span> <span class="o">=</span> <span class="p">[</span><span class="mf">47.751602</span><span class="p">,</span> <span class="mf">47.75577</span><span class="p">]</span>
+<span class="n">lons</span> <span class="o">=</span> <span class="p">[</span><span class="mf">12.866492</span><span class="p">,</span> <span class="mf">12.893850</span><span class="p">]</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">)</span>
+<span class="c"># Two focal mechanisms for beachball routine, specified as [strike, dip, rake]</span>
+<span class="n">focmecs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">]]</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">focmecs</span><span class="p">)):</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Beach</span><span class="p">(</span><span class="n">focmecs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The first lines of our SRTM data file (from
+<a class="reference external" href="http://srtm.csi.cgiar.org/">CGIAR</a>) look like this:</p>
+<div class="highlight-python"><pre>ncols         400
+nrows         200
+xllcorner     12°40'E
+yllcorner     47°40'N
+xurcorner     13°00'E
+yurcorner     47°50'N
+cellsize      0.00083333333333333
+NODATA_value  -9999
+682 681 685 690 691 689 678 670 675 680 681 679 675 671 674 680 679 679 675 671 668 664 659 660 656 655 662 666 660 659 659 658 ....</pre>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/basemap_plot_with_beachballs.png" src="../../_images/basemap_plot_with_beachballs.png" />
+</div>
+<p><strong>Some notes:</strong></p>
+<ul>
+<li><p class="first">The Python package <a class="reference external" href="http://trac.osgeo.org/gdal/wiki/GdalOgrInPython">GDAL</a> allows you to directly read a GeoTiff into <a class="reference external" href="http://numpy.scipy.org/">NumPy</a>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">geo</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="s">&quot;file.geotiff&quot;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span>  
+</pre></div>
+</div>
+</li>
+<li><p class="first">GeoTiff elevation data is available e.g. from <a class="reference external" href="http://www.gdem.aster.ersdac.or.jp/search.jsp">ASTER</a></p>
+</li>
+<li><p class="first">Shading/Illumination can be added. See the basemap example <a class="reference external" href="http://matplotlib.svn.sourceforge.net/viewvc/matplotlib/trunk/toolkits/basemap/examples/plotmap_shaded.py">plotmap_shaded.py</a>
+for more info.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="basemap-plot-of-the-globe">
+<h2>19.2. Basemap Plot of the Globe<a class="headerlink" href="#basemap-plot-of-the-globe" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+<span class="kn">from</span> <span class="nn">obspy.imaging.beachball</span> <span class="kn">import</span> <span class="n">Beach</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">&#39;cyl&#39;</span><span class="p">,</span> <span class="n">lon_0</span><span class="o">=</span><span class="mf">142.36929</span><span class="p">,</span> <span class="n">lat_0</span><span class="o">=</span><span class="mf">38.3215</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">drawcoastlines</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">fillcontinents</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawparallels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">120.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">))</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawmeridians</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">420.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">))</span>
+<span class="n">m</span><span class="o">.</span><span class="n">drawmapboundary</span><span class="p">()</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="mf">142.36929</span><span class="p">,</span> <span class="mf">38.3215</span><span class="p">)</span>
+<span class="n">focmecs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.136</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.591</span><span class="p">,</span> <span class="mf">0.455</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.396</span><span class="p">,</span> <span class="mf">0.046</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.615</span><span class="p">]</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Beach</span><span class="p">(</span><span class="n">focmecs</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs2.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs2.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/basemap_plot_with_beachballs2.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/basemap_plot_with_beachballs2.png" src="../../_images/basemap_plot_with_beachballs2.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">19. Basemap Plot with Beachballs</a><ul>
+<li><a class="reference internal" href="#basemap-plot-of-a-local-area">19.1. Basemap Plot of a Local Area</a></li>
+<li><a class="reference internal" href="#basemap-plot-of-the-globe">19.2. Basemap Plot of the Globe</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/basemap_plot_with_beachballs.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="interfacing_r_from_python.html" title="20. Interfacing R from Python"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="beachball_plot.html" title="18. Beachball Plot"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

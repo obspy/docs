@@ -1,0 +1,195 @@
+obspy.core.event.OriginQuality
+==============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: OriginQuality
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~OriginQuality.__abstractmethods__
+     ~OriginQuality.__dict__
+     ~OriginQuality.__doc__
+     ~OriginQuality.__hash__
+     ~OriginQuality.__module__
+     ~OriginQuality.__weakref__
+     ~OriginQuality.defaults
+     ~OriginQuality.item
+     ~OriginQuality.key
+     ~OriginQuality.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginQuality.clear
+     ~OriginQuality.copy
+     ~OriginQuality.get
+     ~OriginQuality.items
+     ~OriginQuality.iteritems
+     ~OriginQuality.iterkeys
+     ~OriginQuality.itervalues
+     ~OriginQuality.keys
+     ~OriginQuality.pop
+     ~OriginQuality.popitem
+     ~OriginQuality.setdefault
+     ~OriginQuality.update
+     ~OriginQuality.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginQuality._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginQuality.__contains__
+     ~OriginQuality.__deepcopy__
+     ~OriginQuality.__delattr__
+     ~OriginQuality.__delitem__
+     ~OriginQuality.__eq__
+     ~OriginQuality.__getattr__
+     ~OriginQuality.__getitem__
+     ~OriginQuality.__getstate__
+     ~OriginQuality.__init__
+     ~OriginQuality.__iter__
+     ~OriginQuality.__len__
+     ~OriginQuality.__ne__
+     ~OriginQuality.__nonzero__
+     ~OriginQuality.__repr__
+     ~OriginQuality.__setattr__
+     ~OriginQuality.__setitem__
+     ~OriginQuality.__setstate__
+     ~OriginQuality.__str__
+     ~OriginQuality.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.cross_correlation.xcorr &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.cross_correlation" href="obspy.signal.cross_correlation.html" />
+    <link rel="next" title="obspy.signal.cross_correlation.xcorrPickCorrection" href="obspy.signal.cross_correlation.xcorrPickCorrection.html" />
+    <link rel="prev" title="obspy.signal.cross_correlation.xcorr_max" href="obspy.signal.cross_correlation.xcorr_max.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.cross_correlation.xcorrPickCorrection.html" title="obspy.signal.cross_correlation.xcorrPickCorrection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.cross_correlation.xcorr_max.html" title="obspy.signal.cross_correlation.xcorr_max"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.cross_correlation.html" accesskey="U">obspy.signal.cross_correlation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-cross-correlation-xcorr">
+<h1>obspy.signal.cross_correlation.xcorr<a class="headerlink" href="#obspy-signal-cross-correlation-xcorr" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.cross_correlation.xcorr">
+<tt class="descname">xcorr</tt><big>(</big><em>tr1</em>, <em>tr2</em>, <em>shift_len</em>, <em>full_xcorr=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/cross_correlation.html#xcorr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.cross_correlation.xcorr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross correlation of tr1 and tr2 in the time domain using window_len.</p>
+<div class="highlight-python"><pre>                            Mid Sample
+                                |
+|AAAAAAAAAAAAAAA|AAAAAAAAAAAAAAA|AAAAAAAAAAAAAAA|AAAAAAAAAAAAAAA|
+|BBBBBBBBBBBBBBB|BBBBBBBBBBBBBBB|BBBBBBBBBBBBBBB|BBBBBBBBBBBBBBB|
+|&lt;-shift_len/2-&gt;|   &lt;- region of support -&gt;     |&lt;-shift_len/2-&gt;|</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tr1</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a>, <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>) <span class="dash" /> Trace 1</li>
+<li><strong>tr2</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a>, <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>) <span class="dash" /> Trace 2 to correlate with trace 1</li>
+<li><strong>shift_len</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> Total length of samples to shift for cross correlation.</li>
+<li><strong>full_xcorr</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) <span class="dash" /> If <tt class="docutils literal"><span class="pre">True</span></tt>, the complete xcorr function will be
+returned as <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>index, value[, fct]</strong> - Index of maximum xcorr value and the
+value itself. The complete xcorr function is returned only if
+<tt class="docutils literal"><span class="pre">full_xcorr=True</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As shift_len gets higher the window supporting the cross correlation
+actually gets smaller. So with shift_len=0 you get the correlation
+coefficient of both traces as a whole without any shift applied. As the
+xcorr function works in time domain and does not zero pad at all, with
+higher shifts allowed the window of support gets smaller so that the
+moving windows shifted against each other do not run out of the
+timeseries bounds at high time shifts. Of course there are other
+possibilities to do cross correlations e.g. in frequency domain.</p>
+</div>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://lists.obspy.org/pipermail/obspy-users/2011-March/000056.html">ObsPy-users mailing list</a>
+and
+<a class="reference external" href="https://obspy.org/ticket/249">ticket #249</a>.</p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float32&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2</span> <span class="o">=</span> <span class="n">tr1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">xcorr</span><span class="p">(</span><span class="n">tr1</span><span class="p">,</span> <span class="n">tr2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.cross_correlation.xcorr.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.cross_correlation.xcorrPickCorrection.html" title="obspy.signal.cross_correlation.xcorrPickCorrection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.cross_correlation.xcorr_max.html" title="obspy.signal.cross_correlation.xcorr_max"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.cross_correlation.html" >obspy.signal.cross_correlation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.core.util.misc.complexifyString
+=====================================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autofunction:: complexifyString

@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.WriteSacBinary
+====================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.WriteSacBinary

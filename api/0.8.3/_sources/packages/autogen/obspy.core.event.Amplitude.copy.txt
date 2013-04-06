@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.copy
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.copy

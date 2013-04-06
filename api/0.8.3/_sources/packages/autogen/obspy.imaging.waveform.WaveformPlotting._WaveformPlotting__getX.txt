@@ -1,0 +1,6 @@
+obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getX
+===============================================================
+
+.. currentmodule:: obspy.imaging.waveform
+
+.. automethod:: WaveformPlotting._WaveformPlotting__getX

@@ -1,0 +1,84 @@
+obspy.seishub.client._StationMapperClient
+=========================================
+
+.. currentmodule:: obspy.seishub.client
+.. autoclass:: _StationMapperClient
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~_StationMapperClient.__dict__
+     ~_StationMapperClient.__doc__
+     ~_StationMapperClient.__module__
+     ~_StationMapperClient.__weakref__
+     ~_StationMapperClient.package
+     ~_StationMapperClient.resourcetype
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_StationMapperClient.deleteResource
+     ~_StationMapperClient.getCoordinates
+     ~_StationMapperClient.getList
+     ~_StationMapperClient.getPAZ
+     ~_StationMapperClient.getResource
+     ~_StationMapperClient.getXMLResource
+     ~_StationMapperClient.putResource
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_StationMapperClient.__init__
+  
+
+  
+  

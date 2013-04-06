@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.arclink.client.Client.saveWaveform &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.arclink.client.Client" href="obspy.arclink.client.Client.html" />
+    <link rel="next" title="obspy.arclink.client.Client._Client__parsePAZ" href="obspy.arclink.client.Client._Client__parsePAZ.html" />
+    <link rel="prev" title="obspy.arclink.client.Client.saveResponse" href="obspy.arclink.client.Client.saveResponse.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client._Client__parsePAZ.html" title="obspy.arclink.client.Client._Client__parsePAZ"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.saveResponse.html" title="obspy.arclink.client.Client.saveResponse"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" >obspy.arclink.client</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.Client.html" accesskey="U">obspy.arclink.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-arclink-client-client-savewaveform">
+<h1>obspy.arclink.client.Client.saveWaveform<a class="headerlink" href="#obspy-arclink-client-client-savewaveform" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.arclink.client.Client.saveWaveform">
+<tt class="descclassname">Client.</tt><tt class="descname">saveWaveform</tt><big>(</big><em>filename</em>, <em>network</em>, <em>station</em>, <em>location</em>, <em>channel</em>, <em>starttime</em>, <em>endtime</em>, <em>format='MSEED'</em>, <em>compressed=True</em>, <em>route=True</em>, <em>unpack=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/arclink/client.html#Client.saveWaveform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.arclink.client.Client.saveWaveform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a retrieved waveform directly into a file.</p>
+<p>This method ensures the storage of the unmodified waveform data
+delivered by the ArcLink server, e.g. preserving the record based
+quality flags of MiniSEED files which would be neglected reading it
+with <a class="reference internal" href="../obspy.mseed.html#module-obspy.mseed" title="obspy.mseed"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.mseed</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Name of the output file.</li>
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'BW'</span></tt>.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'MANZ'</span></tt>.</li>
+<li><strong>location</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'01'</span></tt>. Location code may
+contain wild cards.</li>
+<li><strong>channel</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'EHE'</span></tt>. Channel code may
+contain wild cards.</li>
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Start date and time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> End date and time.</li>
+<li><strong>format</strong> (<tt class="docutils literal"><span class="pre">'FSEED'</span></tt> or <tt class="docutils literal"><span class="pre">'MSEED'</span></tt>, optional) <span class="dash" /> <p>Output format. Either as full SEED (<tt class="docutils literal"><span class="pre">'FSEED'</span></tt>) or
+Mini-SEED (<tt class="docutils literal"><span class="pre">'MSEED'</span></tt>) volume. Defaults to <tt class="docutils literal"><span class="pre">'MSEED'</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A format <tt class="docutils literal"><span class="pre">'XSEED'</span></tt> is documented, but not yet implemented in
+ArcLink.</p>
+</div>
+</li>
+<li><strong>compressed</strong> (<em>bool, optional</em>) <span class="dash" /> Request compressed files from ArcLink server.
+Default is <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>route</strong> (<em>bool, optional</em>) <span class="dash" /> Enables ArcLink routing. Default is <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>unpack</strong> (<em>bool, optional</em>) <span class="dash" /> Unpack compressed waveform files before storing to disk.
+Default is <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;webdc.eu&quot;</span><span class="p">,</span> <span class="mi">18001</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveWaveform</span><span class="p">(</span><span class="s">&#39;BW.MANZ.fullseed&#39;</span><span class="p">,</span> <span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;MANZ&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;FSEED&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.arclink.client.Client.saveWaveform.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client._Client__parsePAZ.html" title="obspy.arclink.client.Client._Client__parsePAZ"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.saveResponse.html" title="obspy.arclink.client.Client.saveResponse"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" >obspy.arclink.client</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.Client.html" >obspy.arclink.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

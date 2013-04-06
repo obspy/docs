@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.get
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.get

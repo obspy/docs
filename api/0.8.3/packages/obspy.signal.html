@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal - Signal Processing Routines for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.signal.array_analysis.array_rotation_strain" href="autogen/obspy.signal.array_analysis.array_rotation_strain.html" />
+    <link rel="prev" title="obspy.realtime.signal.tauc" href="autogen/obspy.realtime.signal.tauc.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.signal.array_analysis.array_rotation_strain.html" title="obspy.signal.array_analysis.array_rotation_strain"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.realtime.signal.tauc.html" title="obspy.realtime.signal.tauc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.signal"></span><div class="section" id="obspy-signal-signal-processing-routines-for-obspy">
+<h1>obspy.signal - Signal Processing Routines for ObsPy<a class="headerlink" href="#obspy-signal-signal-processing-routines-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>Capabilities include filtering, triggering, rotation, instrument
+correction and coordinate transformations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3 (LGPLv3)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="filter">
+<h2>Filter<a class="headerlink" href="#filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="autogen/obspy.signal.filter.html#module-obspy.signal.filter" title="obspy.signal.filter"><tt class="xref py py-mod docutils literal"><span class="pre">filter</span></tt></a> module provides various filters, including
+different bandpass, lowpass, highpass, bandstop and FIR filter.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Before filtering you should make sure that data is demeaned/detrended, e.g.
+using <a class="reference internal" href="autogen/obspy.core.stream.Stream.detrend.html#obspy.core.stream.Stream.detrend" title="obspy.core.stream.Stream.detrend"><tt class="xref py py-meth docutils literal"><span class="pre">detrend()</span></tt></a>. Otherwise there can be
+massive artifacts from filtering.</p>
+</div>
+<p>The following example shows how to highpass a seismogram at 1.0Hz.
+In the example only the first trace is processed to see the changes in
+comparison with the other traces in the plot.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The filter takes the data explicitly as argument (i.e. an
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>) and therefore the <tt class="docutils literal"><span class="pre">sampling_rate</span></tt> needs to be
+also specified. It returns the filtered data.  For
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> and <a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+objects simply use their respective filtering methods
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.filter.html#obspy.core.stream.Stream.filter" title="obspy.core.stream.Stream.filter"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.filter()</span></tt></a> and
+<a class="reference internal" href="autogen/obspy.core.trace.Trace.filter.html#obspy.core.trace.Trace.filter" title="obspy.core.trace.Trace.filter"><tt class="xref py py-meth docutils literal"><span class="pre">Trace.filter()</span></tt></a>.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">obspy.signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">obspy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">highpass</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">corners</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">zerophase</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="gp">... </span>                                <span class="n">df</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>Working with the convenience methods implemented on
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>/<a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+works similar:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;highpass&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">corners</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">zerophase</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/6c62146db1.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/6c62146db1.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/6c62146db1.png" src="../_images/6c62146db1.png" />
+</div>
+</div>
+<div class="section" id="instrument-correction">
+<h2>Instrument Correction<a class="headerlink" href="#instrument-correction" title="Permalink to this headline">¶</a></h2>
+<p>The response of the instrument can be removed by the
+<a class="reference internal" href="autogen/obspy.signal.invsim.html#module-obspy.signal.invsim" title="obspy.signal.invsim"><tt class="xref py py-mod docutils literal"><span class="pre">invsim</span></tt></a> module. The following example shows how to remove
+the the instrument response of a STS2 and simulate an instrument with 2Hz
+corner frequency.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/ecbd2f6c57.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/ecbd2f6c57.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/ecbd2f6c57.png" src="../_images/ecbd2f6c57.png" />
+</div>
+<p>Now we apply the instrument correction and simulation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">seisSim</span><span class="p">,</span> <span class="n">cornFreq2Paz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inst2hz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sts2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">60077000.0</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.037004</span><span class="o">+</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">),</span>
+<span class="gp">... </span>                  <span class="p">(</span><span class="o">-</span><span class="mf">0.037004</span><span class="o">-</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">),</span>
+<span class="gp">... </span>                  <span class="p">(</span><span class="o">-</span><span class="mf">251.33</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">),</span>
+<span class="gp">... </span>                  <span class="p">(</span><span class="o">-</span><span class="mf">131.04</span><span class="o">-</span><span class="mf">467.29</span><span class="n">j</span><span class="p">),</span>
+<span class="gp">... </span>                  <span class="p">(</span><span class="o">-</span><span class="mf">131.04</span><span class="o">+</span><span class="mf">467.29</span><span class="n">j</span><span class="p">)],</span>
+<span class="gp">... </span>        <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">2516778400.0</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">df</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="gp">... </span>    <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">seisSim</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">paz_remove</span><span class="o">=</span><span class="n">sts2</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">inst2hz</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">water_level</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>Again, there are convenience methods implemented on
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>/<a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="n">sts2</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">inst2hz</span><span class="p">,</span> <span class="n">water_level</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/0984f358c4.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/0984f358c4.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/0984f358c4.png" src="../_images/0984f358c4.png" />
+</div>
+</div>
+<div class="section" id="trigger">
+<h2>Trigger<a class="headerlink" href="#trigger" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="autogen/obspy.signal.trigger.html#module-obspy.signal.trigger" title="obspy.signal.trigger"><tt class="xref py py-mod docutils literal"><span class="pre">trigger</span></tt></a> module provides various triggering algorithms,
+including different STA/LTA routines, Z-Detector, AR picker and the P-picker by
+M. Bear. The implementation is based on <a class="reference internal" href="../citations.html#withers1998">[Withers1998]</a> and <a class="reference internal" href="../citations.html#baer1987">[Baer1987]</a>.</p>
+<p>The following example demonstrates a recursive STA/LTA triggering:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal.trigger</span> <span class="kn">import</span> <span class="n">recSTALTA</span><span class="p">,</span> <span class="n">plotTrigger</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;Z&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&quot;bandpass&quot;</span><span class="p">,</span> <span class="n">freqmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">freqmax</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sta</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lta</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cft</span> <span class="o">=</span> <span class="n">recSTALTA</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">sta</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="nb">int</span><span class="p">(</span><span class="n">lta</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">thrOn</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">thrOff</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTrigger</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">cft</span><span class="p">,</span> <span class="n">thrOn</span><span class="p">,</span> <span class="n">thrOff</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/ee6fe62b21.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/ee6fe62b21.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/ee6fe62b21.png" src="../_images/ee6fe62b21.png" />
+</div>
+<p>There is also a convenience method implemented on
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>/<a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>.
+It works on and overwrites the traces waveform data and is intended for batch
+processing rather than for interactive determination of triggering parameters.
+But it also means that the trace&#8217;s built-in methods can be used.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="s">&quot;recstalta&quot;</span><span class="p">,</span> <span class="n">sta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lta</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/2abff3b640.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/2abff3b640.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/2abff3b640.png" src="../_images/2abff3b640.png" />
+</div>
+<p>For more examples check out the <a class="reference external" href="http://docs.obspy.org/tutorial/trigger_tutorial.html">triggering page</a> in the <a class="reference external" href="http://tutorial.obspy.org">Tutorial</a>. For
+network coincidence refer to <a class="reference internal" href="autogen/obspy.signal.trigger.coincidenceTrigger.html#obspy.signal.trigger.coincidenceTrigger" title="obspy.signal.trigger.coincidenceTrigger"><tt class="xref py py-func docutils literal"><span class="pre">obspy.signal.trigger.coincidenceTrigger()</span></tt></a>
+and the same page in the <a class="reference external" href="http://tutorial.obspy.org">Tutorial</a>. For automated use see the following
+<a class="reference external" href="https://github.com/obspy/branches/tree/master/sandbox/stalta">stalta</a> example scripts.</p>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.array_analysis.array_rotation_strain.html#obspy.signal.array_analysis.array_rotation_strain" title="obspy.signal.array_analysis.array_rotation_strain"><tt class="xref py py-obj docutils literal"><span class="pre">array_rotation_strain</span></tt></a></td>
+<td>This routine calculates the best-fitting rigid body rotation and uniform strain as functions of time, and their formal errors, given three-component ground motion time series recorded on a seismic array.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.trigger.arPick.html#obspy.signal.trigger.arPick" title="obspy.signal.trigger.arPick"><tt class="xref py py-obj docutils literal"><span class="pre">arPick</span></tt></a></td>
+<td>Return corresponding picks of the AR picker</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.filter.bandpass.html#obspy.signal.filter.bandpass" title="obspy.signal.filter.bandpass"><tt class="xref py py-obj docutils literal"><span class="pre">bandpass</span></tt></a></td>
+<td>Butterworth-Bandpass Filter.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.filter.bandstop.html#obspy.signal.filter.bandstop" title="obspy.signal.filter.bandstop"><tt class="xref py py-obj docutils literal"><span class="pre">bandstop</span></tt></a></td>
+<td>Butterworth-Bandstop Filter.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.trigger.carlSTATrig.html#obspy.signal.trigger.carlSTATrig" title="obspy.signal.trigger.carlSTATrig"><tt class="xref py py-obj docutils literal"><span class="pre">carlSTATrig</span></tt></a></td>
+<td>Computes the carlSTATrig characteristic function.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.trigger.classicSTALTA.html#obspy.signal.trigger.classicSTALTA" title="obspy.signal.trigger.classicSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">classicSTALTA</span></tt></a></td>
+<td>Computes the standard STA/LTA from a given input array a. The length of</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.trigger.coincidenceTrigger.html#obspy.signal.trigger.coincidenceTrigger" title="obspy.signal.trigger.coincidenceTrigger"><tt class="xref py py-obj docutils literal"><span class="pre">coincidenceTrigger</span></tt></a></td>
+<td>Perform a network coincidence trigger.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.invsim.cornFreq2Paz.html#obspy.signal.invsim.cornFreq2Paz" title="obspy.signal.invsim.cornFreq2Paz"><tt class="xref py py-obj docutils literal"><span class="pre">cornFreq2Paz</span></tt></a></td>
+<td>Convert corner frequency and damping to poles and zeros.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.invsim.cosTaper.html#obspy.signal.invsim.cosTaper" title="obspy.signal.invsim.cosTaper"><tt class="xref py py-obj docutils literal"><span class="pre">cosTaper</span></tt></a></td>
+<td>Cosine Taper.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.trigger.delayedSTALTA.html#obspy.signal.trigger.delayedSTALTA" title="obspy.signal.trigger.delayedSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">delayedSTALTA</span></tt></a></td>
+<td>Delayed STA/LTA.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.filter.envelope.html#obspy.signal.filter.envelope" title="obspy.signal.filter.envelope"><tt class="xref py py-obj docutils literal"><span class="pre">envelope</span></tt></a></td>
+<td>Envelope of a function.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.invsim.estimateMagnitude.html#obspy.signal.invsim.estimateMagnitude" title="obspy.signal.invsim.estimateMagnitude"><tt class="xref py py-obj docutils literal"><span class="pre">estimateMagnitude</span></tt></a></td>
+<td>Estimates local magnitude from poles and zeros of given instrument, the peak to peak amplitude and the time span from peak to peak.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.invsim.evalresp.html#obspy.signal.invsim.evalresp" title="obspy.signal.invsim.evalresp"><tt class="xref py py-obj docutils literal"><span class="pre">evalresp</span></tt></a></td>
+<td>Use the evalresp library to extract instrument response</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.filter.highpass.html#obspy.signal.filter.highpass" title="obspy.signal.filter.highpass"><tt class="xref py py-obj docutils literal"><span class="pre">highpass</span></tt></a></td>
+<td>Butterworth-Highpass Filter.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.filter.lowpass.html#obspy.signal.filter.lowpass" title="obspy.signal.filter.lowpass"><tt class="xref py py-obj docutils literal"><span class="pre">lowpass</span></tt></a></td>
+<td>Butterworth-Lowpass Filter.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.invsim.pazToFreqResp.html#obspy.signal.invsim.pazToFreqResp" title="obspy.signal.invsim.pazToFreqResp"><tt class="xref py py-obj docutils literal"><span class="pre">pazToFreqResp</span></tt></a></td>
+<td>Convert Poles and Zeros (PAZ) to frequency response. The output</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.trigger.pkBaer.html#obspy.signal.trigger.pkBaer" title="obspy.signal.trigger.pkBaer"><tt class="xref py py-obj docutils literal"><span class="pre">pkBaer</span></tt></a></td>
+<td>Wrapper for P-picker routine by M. Baer, Schweizer Erdbebendienst.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD" title="obspy.signal.spectral_estimation.PPSD"><tt class="xref py py-obj docutils literal"><span class="pre">PPSD</span></tt></a></td>
+<td>Class to compile probabilistic power spectral densities for one combination of network/station/location/channel/sampling_rate.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.spectral_estimation.psd.html#obspy.signal.spectral_estimation.psd" title="obspy.signal.spectral_estimation.psd"><tt class="xref py py-obj docutils literal"><span class="pre">psd</span></tt></a></td>
+<td>Wrapper for <a class="reference external" href="http://matplotlib.sourceforge.net/api/mlab_api.html#matplotlib.mlab.psd" title="(in Matplotlib v1.2.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.mlab.psd()</span></tt></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.trigger.recSTALTA.html#obspy.signal.trigger.recSTALTA" title="obspy.signal.trigger.recSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">recSTALTA</span></tt></a></td>
+<td>Recursive STA/LTA.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.rotate.rotate_NE_RT.html#obspy.signal.rotate.rotate_NE_RT" title="obspy.signal.rotate.rotate_NE_RT"><tt class="xref py py-obj docutils literal"><span class="pre">rotate_NE_RT</span></tt></a></td>
+<td>Rotates horizontal components of a seismogram.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.invsim.seisSim.html#obspy.signal.invsim.seisSim" title="obspy.signal.invsim.seisSim"><tt class="xref py py-obj docutils literal"><span class="pre">seisSim</span></tt></a></td>
+<td>Simulate/Correct seismometer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.array_analysis.sonic.html#obspy.signal.array_analysis.sonic" title="obspy.signal.array_analysis.sonic"><tt class="xref py py-obj docutils literal"><span class="pre">sonic</span></tt></a></td>
+<td>DEPRECATED: Please use <tt class="docutils literal"><span class="pre">obspy.signal.array_processing()</span></tt></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.util.utlGeoKm.html#obspy.signal.util.utlGeoKm" title="obspy.signal.util.utlGeoKm"><tt class="xref py py-obj docutils literal"><span class="pre">utlGeoKm</span></tt></a></td>
+<td>Transform lon, lat to km in reference to orig_lon and orig_lat</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.util.utlLonLat.html#obspy.signal.util.utlLonLat" title="obspy.signal.util.utlLonLat"><tt class="xref py py-obj docutils literal"><span class="pre">utlLonLat</span></tt></a></td>
+<td>Transform x, y [km] to decimal degree in reference to orig_lon and orig_lat</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.cross_correlation.xcorr.html#obspy.signal.cross_correlation.xcorr" title="obspy.signal.cross_correlation.xcorr"><tt class="xref py py-obj docutils literal"><span class="pre">xcorr</span></tt></a></td>
+<td>Cross correlation of tr1 and tr2 in the time domain using window_len.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.trigger.zDetect.html#obspy.signal.trigger.zDetect" title="obspy.signal.trigger.zDetect"><tt class="xref py py-obj docutils literal"><span class="pre">zDetect</span></tt></a></td>
+<td>Z-detector.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.array_analysis.html#module-obspy.signal.array_analysis" title="obspy.signal.array_analysis"><tt class="xref py py-obj docutils literal"><span class="pre">array_analysis</span></tt></a></td>
+<td>Functions for Array Analysis</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.calibration.html#module-obspy.signal.calibration" title="obspy.signal.calibration"><tt class="xref py py-obj docutils literal"><span class="pre">calibration</span></tt></a></td>
+<td>Functions for relative calibration.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.cpxtrace.html#module-obspy.signal.cpxtrace" title="obspy.signal.cpxtrace"><tt class="xref py py-obj docutils literal"><span class="pre">cpxtrace</span></tt></a></td>
+<td>Complex Trace Analysis</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.cross_correlation.html#module-obspy.signal.cross_correlation" title="obspy.signal.cross_correlation"><tt class="xref py py-obj docutils literal"><span class="pre">cross_correlation</span></tt></a></td>
+<td>Signal processing routines based on cross correlation techniques.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.detrend.html#module-obspy.signal.detrend" title="obspy.signal.detrend"><tt class="xref py py-obj docutils literal"><span class="pre">detrend</span></tt></a></td>
+<td>Python module containing detrend methods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.filter.html#module-obspy.signal.filter" title="obspy.signal.filter"><tt class="xref py py-obj docutils literal"><span class="pre">filter</span></tt></a></td>
+<td>Various Seismogram Filtering Functions</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.freqattributes.html#module-obspy.signal.freqattributes" title="obspy.signal.freqattributes"><tt class="xref py py-obj docutils literal"><span class="pre">freqattributes</span></tt></a></td>
+<td>Frequency Attributes</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.hoctavbands.html#module-obspy.signal.hoctavbands" title="obspy.signal.hoctavbands"><tt class="xref py py-obj docutils literal"><span class="pre">hoctavbands</span></tt></a></td>
+<td>Half Octave Bands</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.invsim.html#module-obspy.signal.invsim" title="obspy.signal.invsim"><tt class="xref py py-obj docutils literal"><span class="pre">invsim</span></tt></a></td>
+<td>Python Module for Instrument Correction (Seismology).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.konnoohmachismoothing.html#module-obspy.signal.konnoohmachismoothing" title="obspy.signal.konnoohmachismoothing"><tt class="xref py py-obj docutils literal"><span class="pre">konnoohmachismoothing</span></tt></a></td>
+<td>Functions to smooth spectra with the so called Konno &amp; Ohmachi method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.polarization.html#module-obspy.signal.polarization" title="obspy.signal.polarization"><tt class="xref py py-obj docutils literal"><span class="pre">polarization</span></tt></a></td>
+<td>Polarization Analysis</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.spectral_estimation.html#module-obspy.signal.spectral_estimation" title="obspy.signal.spectral_estimation"><tt class="xref py py-obj docutils literal"><span class="pre">spectral_estimation</span></tt></a></td>
+<td>Various Routines Related to Spectral Estimation</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.rotate.html#module-obspy.signal.rotate" title="obspy.signal.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a></td>
+<td>Various Seismogram Rotation Functions</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.tf_misfit.html#module-obspy.signal.tf_misfit" title="obspy.signal.tf_misfit"><tt class="xref py py-obj docutils literal"><span class="pre">tf_misfit</span></tt></a></td>
+<td>Various Time Frequency Misfit Functions based on Kristekova et. al. (2006) and</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.signal.trigger.html#module-obspy.signal.trigger" title="obspy.signal.trigger"><tt class="xref py py-obj docutils literal"><span class="pre">trigger</span></tt></a></td>
+<td>Various routines related to triggering/picking</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.signal.util.html#module-obspy.signal.util" title="obspy.signal.util"><tt class="xref py py-obj docutils literal"><span class="pre">util</span></tt></a></td>
+<td>Various additional utilities for obspy.signal.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.signal - Signal Processing Routines for ObsPy</a><ul>
+<li><a class="reference internal" href="#filter">Filter</a></li>
+<li><a class="reference internal" href="#instrument-correction">Instrument Correction</a></li>
+<li><a class="reference internal" href="#trigger">Trigger</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.signal.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.signal.array_analysis.array_rotation_strain.html" title="obspy.signal.array_analysis.array_rotation_strain"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.realtime.signal.tauc.html" title="obspy.realtime.signal.tauc"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

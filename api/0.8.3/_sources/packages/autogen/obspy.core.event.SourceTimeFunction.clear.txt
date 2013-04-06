@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.clear
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.clear

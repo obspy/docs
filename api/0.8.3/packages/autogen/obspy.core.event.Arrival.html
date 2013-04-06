@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.Arrival &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.Arrival.clear" href="obspy.core.event.Arrival.clear.html" />
+    <link rel="prev" title="obspy.core.event.Amplitude.__subclasshook__" href="obspy.core.event.Amplitude.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Arrival.clear.html" title="obspy.core.event.Arrival.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Amplitude.__subclasshook__.html" title="obspy.core.event.Amplitude.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-arrival">
+<h1>obspy.core.event.Arrival<a class="headerlink" href="#obspy-core-event-arrival" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.Arrival">
+<em class="property">class </em><tt class="descname">Arrival</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#Arrival"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.Arrival" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.__Arrival</span></tt></p>
+<p>Successful association of a pick with an origin qualifies this pick as an
+arrival. An arrival thus connects a pick with an origin and provides
+additional attributes that describe this relationship. Usually
+qualification of a pick as an arrival for a given origin is a hypothesis,
+which is based on assumptions about the type of arrival (phase) as well as
+observed and (on the basis of an earth model) computed arrival times, or
+the residual, respectively.  Additional pick attributes like the horizontal
+slowness and backazimuth of the observed wave - especially if derived from
+array data - may further constrain the nature of the arrival.
+[from the QuakeML Basic Event Description, Version 1.1, page 38]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>) <span class="dash" /> Resource identifier of Arrival.</li>
+<li><strong>pick_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>) <span class="dash" /> Refers to a resource_id of associated Pick.</li>
+<li><strong>phase</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Phase identification. Free-form text field describing the
+phase. In QuakeML this is a separate type but it just contains a single
+field containing the phase as a string.</li>
+<li><strong>time_correction</strong> (<em>float, optional</em>) <span class="dash" /> Time correction value in seconds.</li>
+<li><strong>azimuth</strong> (<em>float, optional</em>) <span class="dash" /> Azimuth of station as seen from the epicenter in degree.</li>
+<li><strong>distance</strong> (<em>float, optional</em>) <span class="dash" /> Epicentral distance in degree.</li>
+<li><strong>takeoff_angle</strong> (<em>float, optional</em>) <span class="dash" /> Take-off angle.</li>
+<li><strong>takeoff_angle_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>time_residual</strong> (<em>float, optional</em>) <span class="dash" /> Residual between observed and expected arrival time
+assuming proper phase identification and given the earth_model_id of
+the Origin in seconds.</li>
+<li><strong>horizontal_slowness_residual</strong> (<em>float, optional</em>) <span class="dash" /> Residual of horizontal slowness in
+seconds per degree.</li>
+<li><strong>backazimuth_residual</strong> (<em>float, optional</em>) <span class="dash" /> Residual of backazimuth in degree.</li>
+<li><strong>time_weight</strong> (<em>float, optional</em>) <span class="dash" /> Weight of this Arrival in the computation of the
+associated Origin.</li>
+<li><strong>horizontal_slowness_weight</strong> (<em>float, optional</em>) <span class="dash" /> Weight of horizontal slowness.</li>
+<li><strong>backazimuth_weight</strong> (<em>float, optional</em>) <span class="dash" /> Weight of backazimuth.</li>
+<li><strong>earth_model_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>,
+optional) <span class="dash" /> Earth model which is used for the association of
+Arrival to Pick and computation of the residuals.</li>
+<li><strong>comments</strong> (list of <a class="reference internal" href="obspy.core.event.Comment.html#obspy.core.event.Comment" title="obspy.core.event.Comment"><tt class="xref py py-class docutils literal"><span class="pre">Comment</span></tt></a>, optional) <span class="dash" /> Additional comments.</li>
+<li><strong>creation_info</strong> (<a class="reference internal" href="obspy.core.event.CreationInfo.html#obspy.core.event.CreationInfo" title="obspy.core.event.CreationInfo"><tt class="xref py py-class docutils literal"><span class="pre">CreationInfo</span></tt></a>, optional) <span class="dash" /> Creation information used to describe author,
+version, and creation time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">key</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.clear.html#obspy.core.event.Arrival.clear" title="obspy.core.event.Arrival.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.copy.html#obspy.core.event.Arrival.copy" title="obspy.core.event.Arrival.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.get.html#obspy.core.event.Arrival.get" title="obspy.core.event.Arrival.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.items.html#obspy.core.event.Arrival.items" title="obspy.core.event.Arrival.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.iteritems.html#obspy.core.event.Arrival.iteritems" title="obspy.core.event.Arrival.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.iterkeys.html#obspy.core.event.Arrival.iterkeys" title="obspy.core.event.Arrival.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.itervalues.html#obspy.core.event.Arrival.itervalues" title="obspy.core.event.Arrival.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.keys.html#obspy.core.event.Arrival.keys" title="obspy.core.event.Arrival.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.pop.html#obspy.core.event.Arrival.pop" title="obspy.core.event.Arrival.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.popitem.html#obspy.core.event.Arrival.popitem" title="obspy.core.event.Arrival.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.setdefault.html#obspy.core.event.Arrival.setdefault" title="obspy.core.event.Arrival.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.update.html#obspy.core.event.Arrival.update" title="obspy.core.event.Arrival.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.values.html#obspy.core.event.Arrival.values" title="obspy.core.event.Arrival.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival._pretty_str.html#obspy.core.event.Arrival._pretty_str" title="obspy.core.event.Arrival._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__contains__.html#obspy.core.event.Arrival.__contains__" title="obspy.core.event.Arrival.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__deepcopy__.html#obspy.core.event.Arrival.__deepcopy__" title="obspy.core.event.Arrival.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__delattr__.html#obspy.core.event.Arrival.__delattr__" title="obspy.core.event.Arrival.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__delitem__.html#obspy.core.event.Arrival.__delitem__" title="obspy.core.event.Arrival.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__eq__.html#obspy.core.event.Arrival.__eq__" title="obspy.core.event.Arrival.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Two instances are considered equal if all attributes and all lists</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__getattr__.html#obspy.core.event.Arrival.__getattr__" title="obspy.core.event.Arrival.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__getitem__.html#obspy.core.event.Arrival.__getitem__" title="obspy.core.event.Arrival.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__getstate__.html#obspy.core.event.Arrival.__getstate__" title="obspy.core.event.Arrival.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__init__.html#obspy.core.event.Arrival.__init__" title="obspy.core.event.Arrival.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__iter__.html#obspy.core.event.Arrival.__iter__" title="obspy.core.event.Arrival.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__len__.html#obspy.core.event.Arrival.__len__" title="obspy.core.event.Arrival.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__ne__.html#obspy.core.event.Arrival.__ne__" title="obspy.core.event.Arrival.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__nonzero__.html#obspy.core.event.Arrival.__nonzero__" title="obspy.core.event.Arrival.__nonzero__"><tt class="xref py py-obj docutils literal"><span class="pre">__nonzero__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__repr__.html#obspy.core.event.Arrival.__repr__" title="obspy.core.event.Arrival.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__setattr__.html#obspy.core.event.Arrival.__setattr__" title="obspy.core.event.Arrival.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>Custom property implementation that works if the class is</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__setitem__.html#obspy.core.event.Arrival.__setitem__" title="obspy.core.event.Arrival.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__setstate__.html#obspy.core.event.Arrival.__setstate__" title="obspy.core.event.Arrival.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.__str__.html#obspy.core.event.Arrival.__str__" title="obspy.core.event.Arrival.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Fairly extensive in an attempt to cover several use cases.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Arrival.__subclasshook__.html#obspy.core.event.Arrival.__subclasshook__" title="obspy.core.event.Arrival.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.Arrival.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Arrival.clear.html" title="obspy.core.event.Arrival.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Amplitude.__subclasshook__.html" title="obspy.core.event.Amplitude.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

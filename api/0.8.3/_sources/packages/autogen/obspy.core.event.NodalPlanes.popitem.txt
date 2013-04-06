@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlanes.popitem
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlanes.popitem

@@ -1,0 +1,6 @@
+obspy.core.stream.isPickle
+==========================
+
+.. currentmodule:: obspy.core.stream
+
+.. autofunction:: isPickle

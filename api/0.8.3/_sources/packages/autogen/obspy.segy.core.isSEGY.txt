@@ -1,0 +1,6 @@
+obspy.segy.core.isSEGY
+======================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: isSEGY

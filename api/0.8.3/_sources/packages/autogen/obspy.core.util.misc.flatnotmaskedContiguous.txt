@@ -1,0 +1,6 @@
+obspy.core.util.misc.flatnotmaskedContiguous
+============================================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autofunction:: flatnotmaskedContiguous

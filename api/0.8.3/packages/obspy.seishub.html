@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.seishub - SeisHub database client for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.seishub.client.Client" href="autogen/obspy.seishub.client.Client.html" />
+    <link rel="prev" title="obspy.neries.client.Client.__init__" href="autogen/obspy.neries.client.Client.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seishub.client.Client.html" title="obspy.seishub.client.Client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.neries.client.Client.__init__.html" title="obspy.neries.client.Client.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.seishub"></span><div class="section" id="obspy-seishub-seishub-database-client-for-obspy">
+<h1>obspy.seishub - SeisHub database client for ObsPy<a class="headerlink" href="#obspy-seishub-seishub-database-client-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>The obspy.seishub package contains a client for the seismological database
+SeisHub (<a class="reference external" href="http://www.seishub.org">http://www.seishub.org</a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-example">
+<h2>Basic Example<a class="headerlink" href="#basic-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.seishub</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&#39;2010-01-01T10:00:00&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">waveform</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;BW&quot;</span><span class="p">,</span> <span class="s">&quot;MANZ&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;EH*&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">3 Trace(s) in Stream:</span>
+<span class="go">BW.MANZ..EHE | 2010-01-01T10:00:00.000000Z - ... | 200.0 Hz, 4001 samples</span>
+<span class="go">BW.MANZ..EHN | 2010-01-01T10:00:00.000000Z - ... | 200.0 Hz, 4001 samples</span>
+<span class="go">BW.MANZ..EHZ | 2010-01-01T10:00:00.000000Z - ... | 200.0 Hz, 4001 samples</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="advanced-examples">
+<h2>Advanced Examples<a class="headerlink" href="#advanced-examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">waveform</span><span class="o">.</span><span class="n">getNetworkIds</span><span class="p">()</span>     
+<span class="go">[&#39;KT&#39;, &#39;BW&#39;, &#39;NZ&#39;, &#39;GR&#39;, ...]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sta_ids</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">waveform</span><span class="o">.</span><span class="n">getStationIds</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="s">&#39;BW&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">sta_ids</span><span class="p">)</span>  
+<span class="go">[&#39;ALTM&#39;, &#39;BGLD&#39;, &#39;BW01&#39;,..., &#39;WETR&#39;, &#39;ZUGS&#39;]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cha_ids</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">waveform</span><span class="o">.</span><span class="n">getChannelIds</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="s">&#39;MANZ&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">cha_ids</span><span class="p">)</span>
+<span class="go">[&#39;AEX&#39;, &#39;AEY&#39;, &#39;EHE&#39;, &#39;EHN&#39;, &#39;EHZ&#39;, &#39;LOG&#39;, &#39;SHE&#39;, &#39;SHN&#39;, &#39;SHZ&#39;]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">station</span><span class="o">.</span><span class="n">getResource</span><span class="p">(</span><span class="s">&#39;dataless.seed.BW_MANZ.xml&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                 <span class="n">format</span><span class="o">=</span><span class="s">&#39;metadata&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>  
+<span class="go">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="go">&lt;metadata&gt;</span>
+<span class="go">  &lt;item title=&quot;Station Name&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;Manzenberg,Bavaria, BW-Net&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Station ID&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;MANZ&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Network ID&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;BW&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Channel IDs&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;EHZ&quot;/&gt;</span>
+<span class="go">    &lt;text text=&quot;EHN&quot;/&gt;</span>
+<span class="go">    &lt;text text=&quot;EHE&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Latitude (°)&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;+49.986198&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Longitude (°)&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;+12.108300&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">  &lt;item title=&quot;Elevation (m)&quot;&gt;</span>
+<span class="go">    &lt;text text=&quot;+635.0&quot;/&gt;</span>
+<span class="go">  &lt;/item&gt;</span>
+<span class="go">&lt;/metadata&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">station</span><span class="o">.</span><span class="n">getPAZ</span><span class="p">(</span><span class="s">&#39;BW.MANZ..EHZ&#39;</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&#39;20090808&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span> <span class="o">=</span> <span class="n">paz</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">paz</span><span class="p">)</span>  
+<span class="go">[(&#39;gain&#39;, 60077000.0),</span>
+<span class="go"> (&#39;poles&#39;, [(-0.037004+0.037016j), (-0.037004-0.037016j), (-251.33+0j),</span>
+<span class="go">            (-131.04-467.29j), (-131.04+467.29j)]),</span>
+<span class="go"> (&#39;sensitivity&#39;, 2516800000.0),</span>
+<span class="go"> (&#39;zeros&#39;, [0j, 0j])]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.seishub.client.Client.html#obspy.seishub.client.Client" title="obspy.seishub.client.Client"><tt class="xref py py-obj docutils literal"><span class="pre">client.Client</span></tt></a></td>
+<td>SeisHub database request Client class.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.seishub.client._EventMapperClient.html#obspy.seishub.client._EventMapperClient" title="obspy.seishub.client._EventMapperClient"><tt class="xref py py-obj docutils literal"><span class="pre">client._EventMapperClient</span></tt></a></td>
+<td>Interface to access the SeisHub Event Web service.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.seishub.client._StationMapperClient.html#obspy.seishub.client._StationMapperClient" title="obspy.seishub.client._StationMapperClient"><tt class="xref py py-obj docutils literal"><span class="pre">client._StationMapperClient</span></tt></a></td>
+<td>Interface to access the SeisHub Station Web service.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.seishub.client._WaveformMapperClient.html#obspy.seishub.client._WaveformMapperClient" title="obspy.seishub.client._WaveformMapperClient"><tt class="xref py py-obj docutils literal"><span class="pre">client._WaveformMapperClient</span></tt></a></td>
+<td>Interface to access the SeisHub Waveform Web service.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.seishub.client.html#module-obspy.seishub.client" title="obspy.seishub.client"><tt class="xref py py-obj docutils literal"><span class="pre">client</span></tt></a></td>
+<td>SeisHub database client for ObsPy.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.seishub - SeisHub database client for ObsPy</a><ul>
+<li><a class="reference internal" href="#basic-example">Basic Example</a></li>
+<li><a class="reference internal" href="#advanced-examples">Advanced Examples</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.seishub.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seishub.client.Client.html" title="obspy.seishub.client.Client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.neries.client.Client.__init__.html" title="obspy.neries.client.Client.__init__"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

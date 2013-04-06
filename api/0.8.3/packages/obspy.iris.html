@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris - IRIS Web service client for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.iris.client.Client" href="autogen/obspy.iris.client.Client.html" />
+    <link rel="prev" title="obspy.earthworm.client.Client.__init__" href="autogen/obspy.earthworm.client.Client.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.iris.client.Client.html" title="obspy.iris.client.Client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.earthworm.client.Client.__init__.html" title="obspy.earthworm.client.Client.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.iris"></span><div class="section" id="obspy-iris-iris-web-service-client-for-obspy">
+<h1>obspy.iris - IRIS Web service client for ObsPy<a class="headerlink" href="#obspy-iris-iris-web-service-client-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>The obspy.iris package contains a client for the DMC Web services provided by
+IRIS (<a class="reference external" href="http://www.iris.edu/ws/">http://www.iris.edu/ws/</a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first"><a class="reference internal" href="autogen/obspy.iris.client.Client.getWaveform.html#obspy.iris.client.Client.getWaveform" title="obspy.iris.client.Client.getWaveform"><tt class="xref py py-meth docutils literal"><span class="pre">getWaveform()</span></tt></a>: The following example
+illustrates how to request and plot 60 minutes of the <tt class="docutils literal"><span class="pre">&quot;BHZ&quot;</span></tt> channel of
+station Albuquerque, New Mexico (<tt class="docutils literal"><span class="pre">&quot;ANMO&quot;</span></tt>) of the Global Seismograph
+Network (<tt class="docutils literal"><span class="pre">&quot;IU&quot;</span></tt>) for an seismic event around 2010-02-27 06:45 (UTC).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T06:45:00.000&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="s">&quot;ANMO&quot;</span><span class="p">,</span> <span class="s">&quot;00&quot;</span><span class="p">,</span> <span class="s">&quot;BHZ&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/64f167cbd0.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/64f167cbd0.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/64f167cbd0.png" src="../_images/64f167cbd0.png" />
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.iris.client.Client.saveWaveform.html#obspy.iris.client.Client.saveWaveform" title="obspy.iris.client.Client.saveWaveform"><tt class="xref py py-meth docutils literal"><span class="pre">saveWaveform()</span></tt></a>: Writes the requested
+waveform unmodified into your local file system. Here we request a Full
+SEED volume.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T06:30:00.000&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T07:30:00.000&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveWaveform</span><span class="p">(</span><span class="s">&#39;IU.ANMO.00.BHZ.mseed&#39;</span><span class="p">,</span> <span class="s">&#39;IU&#39;</span><span class="p">,</span> <span class="s">&#39;ANMO&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="s">&#39;00&#39;</span><span class="p">,</span> <span class="s">&#39;BHZ&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span> 
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.iris.client.Client.saveResponse.html#obspy.iris.client.Client.saveResponse" title="obspy.iris.client.Client.saveResponse"><tt class="xref py py-meth docutils literal"><span class="pre">saveResponse()</span></tt></a>: Writes the response
+information into a file. You may choose one of the format
+<tt class="docutils literal"><span class="pre">'RESP'</span></tt>, <tt class="docutils literal"><span class="pre">'StationXML'</span></tt> or <tt class="docutils literal"><span class="pre">'SACPZ'</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveResponse</span><span class="p">(</span><span class="s">&#39;resp.txt&#39;</span><span class="p">,</span> <span class="s">&#39;IU&#39;</span><span class="p">,</span> <span class="s">&#39;ANMO&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;RESP&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.iris.client.Client.getEvents.html#obspy.iris.client.Client.getEvents" title="obspy.iris.client.Client.getEvents"><tt class="xref py py-meth docutils literal"><span class="pre">getEvents()</span></tt></a>: Retrieves event data from
+IRIS. You may choose one of the format <tt class="docutils literal"><span class="pre">'xml'</span></tt> (QuakeML format) or
+<tt class="docutils literal"><span class="pre">'catalog'</span></tt> (<a class="reference internal" href="autogen/obspy.core.event.Catalog.html#obspy.core.event.Catalog" title="obspy.core.event.Catalog"><tt class="xref py py-class docutils literal"><span class="pre">Catalog</span></tt></a>).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2011-04-01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2011-04-15&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cat</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getEvents</span><span class="p">(</span><span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">,</span>
+<span class="gp">... </span>                       <span class="n">minmag</span><span class="o">=</span><span class="mf">6.7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>  
+<span class="go">4 Event(s) in Catalog:</span>
+<span class="go">2011-04-11T08:16:12.730000Z | +37.001, +140.401 | 6.7 MW</span>
+<span class="go">2011-04-07T14:32:43.290000Z | +38.276, +141.588 | 7.1 MW</span>
+<span class="go">2011-04-07T13:11:22.400000Z | +17.208,  -94.338 | 6.7 MW</span>
+<span class="go">2011-04-03T20:06:40.390000Z |  -9.848, +107.693 | 6.7 MW</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cat</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/d1846f50c0.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/d1846f50c0.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/d1846f50c0.png" src="../_images/d1846f50c0.png" />
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="low-level-web-service-interfaces">
+<h2>Low-level Web service Interfaces<a class="headerlink" href="#low-level-web-service-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>Each of the following methods directly wrap a single Web service provided by
+IRIS (<a class="reference external" href="http://www.iris.edu/ws/">http://www.iris.edu/ws/</a>):</p>
+<p><strong>Request Tools</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.availability.html#obspy.iris.client.Client.availability" title="obspy.iris.client.Client.availability"><tt class="xref py py-meth docutils literal"><span class="pre">availability()</span></tt></a> - returns information about
+what time series data is available at the IRIS DMC</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.bulkdataselect.html#obspy.iris.client.Client.bulkdataselect" title="obspy.iris.client.Client.bulkdataselect"><tt class="xref py py-meth docutils literal"><span class="pre">bulkdataselect()</span></tt></a> - returns multiple
+channels of time series data for specified time ranges</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.dataselect.html#obspy.iris.client.Client.dataselect" title="obspy.iris.client.Client.dataselect"><tt class="xref py py-meth docutils literal"><span class="pre">dataselect()</span></tt></a> - returns a single channel
+of time series data</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.evalresp.html#obspy.iris.client.Client.evalresp" title="obspy.iris.client.Client.evalresp"><tt class="xref py py-meth docutils literal"><span class="pre">evalresp()</span></tt></a> - evaluates instrument response
+information stored at the IRIS DMC and outputs ASCII data or
+<a class="reference external" href="http://en.wikipedia.org/wiki/Bode_plots">Bode Plots</a>.</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.event.html#obspy.iris.client.Client.event" title="obspy.iris.client.Client.event"><tt class="xref py py-meth docutils literal"><span class="pre">event()</span></tt></a> - returns event information in the
+<a class="reference external" href="https://quake.ethz.ch/quakeml/">QuakeML</a> format. Events may be selected
+based on location, time, catalog, contributor and internal identifiers.</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.resp.html#obspy.iris.client.Client.resp" title="obspy.iris.client.Client.resp"><tt class="xref py py-meth docutils literal"><span class="pre">resp()</span></tt></a> - provides access to channel
+response information in the SEED RESP format (as used by evalresp)</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.sacpz.html#obspy.iris.client.Client.sacpz" title="obspy.iris.client.Client.sacpz"><tt class="xref py py-meth docutils literal"><span class="pre">sacpz()</span></tt></a> - provides access to instrument
+response information (per-channel) as poles and zeros in the ASCII format
+used by SAC and other programs</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.station.html#obspy.iris.client.Client.station" title="obspy.iris.client.Client.station"><tt class="xref py py-meth docutils literal"><span class="pre">station()</span></tt></a> - provides access to station
+metadata in the IRIS DMC database</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.timeseries.html#obspy.iris.client.Client.timeseries" title="obspy.iris.client.Client.timeseries"><tt class="xref py py-meth docutils literal"><span class="pre">timeseries()</span></tt></a> - fetches segments of seismic
+data and returns data formatted in either MiniSEED, ASCII or SAC. It can
+optionally filter the data.</li>
+</ul>
+<p><strong>Calculation Tools</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.traveltime.html#obspy.iris.client.Client.traveltime" title="obspy.iris.client.Client.traveltime"><tt class="xref py py-meth docutils literal"><span class="pre">traveltime()</span></tt></a> - calculates travel-times for
+seismic phases using a 1-D spherical earth model.</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.distaz.html#obspy.iris.client.Client.distaz" title="obspy.iris.client.Client.distaz"><tt class="xref py py-meth docutils literal"><span class="pre">distaz()</span></tt></a> - calculate the distance and
+azimuth between two points on a sphere.</li>
+<li><a class="reference internal" href="autogen/obspy.iris.client.Client.flinnengdahl.html#obspy.iris.client.Client.flinnengdahl" title="obspy.iris.client.Client.flinnengdahl"><tt class="xref py py-meth docutils literal"><span class="pre">flinnengdahl()</span></tt></a> - converts a latitude,
+longitude pair into either a Flinn-Engdahl seismic region code or region
+name.</li>
+</ul>
+<p>Please see the documentation for each method for further information and
+examples to retrieve various data from the IRIS DMC.</p>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.iris.client.Client.html#obspy.iris.client.Client" title="obspy.iris.client.Client"><tt class="xref py py-obj docutils literal"><span class="pre">client.Client</span></tt></a></td>
+<td>IRIS Web service request client.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.iris.client.html#module-obspy.iris.client" title="obspy.iris.client"><tt class="xref py py-obj docutils literal"><span class="pre">client</span></tt></a></td>
+<td>IRIS Web service client for ObsPy.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.iris - IRIS Web service client for ObsPy</a><ul>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#low-level-web-service-interfaces">Low-level Web service Interfaces</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.iris.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.iris.client.Client.html" title="obspy.iris.client.Client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.earthworm.client.Client.__init__.html" title="obspy.earthworm.client.Client.__init__"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

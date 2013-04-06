@@ -1,0 +1,6 @@
+obspy.core.stream.Stream._rtrim
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream._rtrim

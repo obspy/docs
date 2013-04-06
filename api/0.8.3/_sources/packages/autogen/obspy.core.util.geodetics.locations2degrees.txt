@@ -1,0 +1,6 @@
+obspy.core.util.geodetics.locations2degrees
+===========================================
+
+.. currentmodule:: obspy.core.util.geodetics
+
+.. autofunction:: locations2degrees

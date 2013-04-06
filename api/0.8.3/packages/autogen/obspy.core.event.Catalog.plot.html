@@ -1,0 +1,202 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.Catalog.plot &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event.Catalog" href="obspy.core.event.Catalog.html" />
+    <link rel="next" title="obspy.core.event.Catalog.write" href="obspy.core.event.Catalog.write.html" />
+    <link rel="prev" title="obspy.core.event.Catalog.filter" href="obspy.core.event.Catalog.filter.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.write.html" title="obspy.core.event.Catalog.write"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.filter.html" title="obspy.core.event.Catalog.filter"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li>
+          <li><a href="obspy.core.event.Catalog.html" accesskey="U">obspy.core.event.Catalog</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-catalog-plot">
+<h1>obspy.core.event.Catalog.plot<a class="headerlink" href="#obspy-core-event-catalog-plot" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.event.Catalog.plot">
+<tt class="descclassname">Catalog.</tt><tt class="descname">plot</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#Catalog.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.Catalog.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates preview map of all events in current Catalog object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>projection</strong> (<em>str, optional</em>) <span class="dash" /> The map projection. Currently supported are
+* <tt class="docutils literal"><span class="pre">&quot;cyl&quot;</span></tt> (Will plot the whole world.)
+* <tt class="docutils literal"><span class="pre">&quot;ortho&quot;</span></tt> (Will center around the mean lat/long.)
+* <tt class="docutils literal"><span class="pre">&quot;local&quot;</span></tt> (Will plot around local events)
+Defaults to &#8220;cyl&#8221;</li>
+<li><strong>resolution</strong> (<em>str, optional</em>) <span class="dash" /> Resolution of the boundary database to use. Will be
+based directly to the basemap module. Possible values are
+* <tt class="docutils literal"><span class="pre">&quot;c&quot;</span></tt> (crude)
+* <tt class="docutils literal"><span class="pre">&quot;l&quot;</span></tt> (low)
+* <tt class="docutils literal"><span class="pre">&quot;i&quot;</span></tt> (intermediate)
+* <tt class="docutils literal"><span class="pre">&quot;h&quot;</span></tt> (high)
+* <tt class="docutils literal"><span class="pre">&quot;f&quot;</span></tt> (full)
+Defaults to <tt class="docutils literal"><span class="pre">&quot;l&quot;</span></tt></li>
+<li><strong>continent_fill_color</strong> (<em>Valid matplotlib color, optional</em>) <span class="dash" /> Color of the continents. Defaults to
+<tt class="docutils literal"><span class="pre">&quot;0.8&quot;</span></tt> which is a light gray.</li>
+<li><strong>water_fill_color</strong> (<em>Valid matplotlib color, optional</em>) <span class="dash" /> Color of all water bodies.
+Defaults to <tt class="docutils literal"><span class="pre">&quot;white&quot;</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>:param label:Events will be labeld based on the chosen property.</dt>
+<dd>Possible values are
+* <tt class="docutils literal"><span class="pre">&quot;magnitude&quot;</span></tt>
+* <tt class="docutils literal"><span class="pre">None</span></tt>
+Defaults to <tt class="docutils literal"><span class="pre">&quot;magnitude&quot;</span></tt></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+</tbody>
+</table>
+<dl class="docutils">
+<dt>:param color:The events will be color-coded based on the chosen</dt>
+<dd>proberty. Possible values are
+* <tt class="docutils literal"><span class="pre">&quot;date&quot;</span></tt>
+* <tt class="docutils literal"><span class="pre">&quot;depth&quot;</span></tt>
+Defaults to <tt class="docutils literal"><span class="pre">&quot;date&quot;</span></tt></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>colormap</strong> (<em>str, optional, any matplotlib colormap</em>) <span class="dash" /> The colormap for color-coding the events.
+The event with the smallest property will have the
+color of one end of the colormap and the event with the biggest
+property the color of the other end with all other events in
+between.
+Defaults to None which will use the default colormap.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cat</span> <span class="o">=</span> <span class="n">readEvents</span><span class="p">(</span>\ 
+<span class="go">    &quot;http://www.seismicportal.eu/services/event/search?magMin=8.0&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cat</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span> 
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.Catalog.plot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.write.html" title="obspy.core.event.Catalog.write"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.filter.html" title="obspy.core.event.Catalog.filter"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li>
+          <li><a href="obspy.core.event.Catalog.html" >obspy.core.event.Catalog</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

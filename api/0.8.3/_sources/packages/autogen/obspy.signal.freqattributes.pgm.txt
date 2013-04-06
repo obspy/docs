@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.pgm
+===============================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: pgm

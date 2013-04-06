@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.stream.Stream &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.stream" href="obspy.core.stream.html" />
+    <link rel="next" title="obspy.core.stream.Stream.append" href="obspy.core.stream.Stream.append.html" />
+    <link rel="prev" title="obspy.core.stream.writePickle" href="obspy.core.stream.writePickle.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.append.html" title="obspy.core.stream.Stream.append"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.writePickle.html" title="obspy.core.stream.writePickle"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" accesskey="U">obspy.core.stream</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-stream-stream">
+<h1>obspy.core.stream.Stream<a class="headerlink" href="#obspy-core-stream-stream" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.stream.Stream">
+<em class="property">class </em><tt class="descname">Stream</tt><big>(</big><em>traces=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/stream.html#Stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.stream.Stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>List like object of multiple ObsPy Trace objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>traces</strong> (list of <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>, optional) <span class="dash" /> Initial list of ObsPy <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+objects.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Basic Usage</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">trace1</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trace2</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="p">[</span><span class="n">trace1</span><span class="p">,</span> <span class="n">trace2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>  
+<span class="go">2 Trace(s) in Stream:</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p class="rubric">Supported Operations</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">stream</span> <span class="pre">=</span> <span class="pre">streamA</span> <span class="pre">+</span> <span class="pre">streamB</span></tt></dt>
+<dd>Merges all traces within the two Stream objects <tt class="docutils literal"><span class="pre">streamA</span></tt> and
+<tt class="docutils literal"><span class="pre">streamB</span></tt> into the new Stream object <tt class="docutils literal"><span class="pre">stream</span></tt>.
+See also: <a class="reference internal" href="obspy.core.stream.Stream.__add__.html#obspy.core.stream.Stream.__add__" title="obspy.core.stream.Stream.__add__"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.__add__()</span></tt></a>.</dd>
+<dt><tt class="docutils literal"><span class="pre">stream</span> <span class="pre">+=</span> <span class="pre">streamA</span></tt></dt>
+<dd>Extends the Stream object <tt class="docutils literal"><span class="pre">stream</span></tt> with all traces from <tt class="docutils literal"><span class="pre">streamA</span></tt>.
+See also: <a class="reference internal" href="obspy.core.stream.Stream.__iadd__.html#obspy.core.stream.Stream.__iadd__" title="obspy.core.stream.Stream.__iadd__"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.__iadd__()</span></tt></a>.</dd>
+<dt><tt class="docutils literal"><span class="pre">len(stream)</span></tt></dt>
+<dd>Returns the number of Traces in the Stream object <tt class="docutils literal"><span class="pre">stream</span></tt>.
+See also: <a class="reference internal" href="obspy.core.stream.Stream.__len__.html#obspy.core.stream.Stream.__len__" title="obspy.core.stream.Stream.__len__"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.__len__()</span></tt></a>.</dd>
+<dt><tt class="docutils literal"><span class="pre">str(stream)</span></tt></dt>
+<dd>Contains the number of traces in the Stream object and returns the
+value of each Trace&#8217;s __str__ method.
+See also: <a class="reference internal" href="obspy.core.stream.Stream.__str__.html#obspy.core.stream.Stream.__str__" title="obspy.core.stream.Stream.__str__"><tt class="xref py py-meth docutils literal"><span class="pre">Stream.__str__()</span></tt></a>.</dd>
+</dl>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.append.html#obspy.core.stream.Stream.append" title="obspy.core.stream.Stream.append"><tt class="xref py py-obj docutils literal"><span class="pre">append</span></tt></a></td>
+<td>Appends a single Trace object to the current Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.clear.html#obspy.core.stream.Stream.clear" title="obspy.core.stream.Stream.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td>Clear trace list (convenient method).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.copy.html#obspy.core.stream.Stream.copy" title="obspy.core.stream.Stream.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td>Returns a deepcopy of the Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.count.html#obspy.core.stream.Stream.count" title="obspy.core.stream.Stream.count"><tt class="xref py py-obj docutils literal"><span class="pre">count</span></tt></a></td>
+<td>Returns the number of Traces in the Stream object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.cutout.html#obspy.core.stream.Stream.cutout" title="obspy.core.stream.Stream.cutout"><tt class="xref py py-obj docutils literal"><span class="pre">cutout</span></tt></a></td>
+<td>Cuts the given time range out of all traces of this Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.decimate.html#obspy.core.stream.Stream.decimate" title="obspy.core.stream.Stream.decimate"><tt class="xref py py-obj docutils literal"><span class="pre">decimate</span></tt></a></td>
+<td>Downsample data in all traces of stream by an integer factor.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.detrend.html#obspy.core.stream.Stream.detrend" title="obspy.core.stream.Stream.detrend"><tt class="xref py py-obj docutils literal"><span class="pre">detrend</span></tt></a></td>
+<td>Method to remove a linear trend from all traces.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.differentiate.html#obspy.core.stream.Stream.differentiate" title="obspy.core.stream.Stream.differentiate"><tt class="xref py py-obj docutils literal"><span class="pre">differentiate</span></tt></a></td>
+<td>Method to differentiate all traces with respect to time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.extend.html#obspy.core.stream.Stream.extend" title="obspy.core.stream.Stream.extend"><tt class="xref py py-obj docutils literal"><span class="pre">extend</span></tt></a></td>
+<td>Extends the current Stream object with a list of Trace objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.filter.html#obspy.core.stream.Stream.filter" title="obspy.core.stream.Stream.filter"><tt class="xref py py-obj docutils literal"><span class="pre">filter</span></tt></a></td>
+<td>Filters the data of all traces in the Stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.getGaps.html#obspy.core.stream.Stream.getGaps" title="obspy.core.stream.Stream.getGaps"><tt class="xref py py-obj docutils literal"><span class="pre">getGaps</span></tt></a></td>
+<td>Returns a list of all trace gaps/overlaps of the Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.insert.html#obspy.core.stream.Stream.insert" title="obspy.core.stream.Stream.insert"><tt class="xref py py-obj docutils literal"><span class="pre">insert</span></tt></a></td>
+<td>Inserts either a single Trace or a list of Traces before index.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.integrate.html#obspy.core.stream.Stream.integrate" title="obspy.core.stream.Stream.integrate"><tt class="xref py py-obj docutils literal"><span class="pre">integrate</span></tt></a></td>
+<td>Method to integrate all traces with respect to time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.max.html#obspy.core.stream.Stream.max" title="obspy.core.stream.Stream.max"><tt class="xref py py-obj docutils literal"><span class="pre">max</span></tt></a></td>
+<td>Method to get the values of the absolute maximum amplitudes of all traces in the stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.merge.html#obspy.core.stream.Stream.merge" title="obspy.core.stream.Stream.merge"><tt class="xref py py-obj docutils literal"><span class="pre">merge</span></tt></a></td>
+<td>Merges ObsPy Trace objects with same IDs.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.normalize.html#obspy.core.stream.Stream.normalize" title="obspy.core.stream.Stream.normalize"><tt class="xref py py-obj docutils literal"><span class="pre">normalize</span></tt></a></td>
+<td>Normalizes all trace in the stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.plot.html#obspy.core.stream.Stream.plot" title="obspy.core.stream.Stream.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a></td>
+<td>Creates a waveform plot of the current ObsPy Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.pop.html#obspy.core.stream.Stream.pop" title="obspy.core.stream.Stream.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td>Removes the Trace object specified by index from the Stream object and</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.printGaps.html#obspy.core.stream.Stream.printGaps" title="obspy.core.stream.Stream.printGaps"><tt class="xref py py-obj docutils literal"><span class="pre">printGaps</span></tt></a></td>
+<td>Print gap/overlap list summary information of the Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.remove.html#obspy.core.stream.Stream.remove" title="obspy.core.stream.Stream.remove"><tt class="xref py py-obj docutils literal"><span class="pre">remove</span></tt></a></td>
+<td>Removes the first occurrence of the specified Trace object in the</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.resample.html#obspy.core.stream.Stream.resample" title="obspy.core.stream.Stream.resample"><tt class="xref py py-obj docutils literal"><span class="pre">resample</span></tt></a></td>
+<td>Resample data in all traces of stream using Fourier method.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.reverse.html#obspy.core.stream.Stream.reverse" title="obspy.core.stream.Stream.reverse"><tt class="xref py py-obj docutils literal"><span class="pre">reverse</span></tt></a></td>
+<td>Reverses the Traces of the Stream object in place.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.rotate.html#obspy.core.stream.Stream.rotate" title="obspy.core.stream.Stream.rotate"><tt class="xref py py-obj docutils literal"><span class="pre">rotate</span></tt></a></td>
+<td>Convenience method for rotating stream objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.select.html#obspy.core.stream.Stream.select" title="obspy.core.stream.Stream.select"><tt class="xref py py-obj docutils literal"><span class="pre">select</span></tt></a></td>
+<td>Returns new Stream object only with these traces that match the given</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.simulate.html#obspy.core.stream.Stream.simulate" title="obspy.core.stream.Stream.simulate"><tt class="xref py py-obj docutils literal"><span class="pre">simulate</span></tt></a></td>
+<td>Correct for instrument response / Simulate new instrument response.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.slice.html#obspy.core.stream.Stream.slice" title="obspy.core.stream.Stream.slice"><tt class="xref py py-obj docutils literal"><span class="pre">slice</span></tt></a></td>
+<td>Returns new Stream object cut to the given start- and endtime.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.sort.html#obspy.core.stream.Stream.sort" title="obspy.core.stream.Stream.sort"><tt class="xref py py-obj docutils literal"><span class="pre">sort</span></tt></a></td>
+<td>Method to sort the traces in the Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.spectrogram.html#obspy.core.stream.Stream.spectrogram" title="obspy.core.stream.Stream.spectrogram"><tt class="xref py py-obj docutils literal"><span class="pre">spectrogram</span></tt></a></td>
+<td>Creates a spectrogram plot for each trace in the stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.split.html#obspy.core.stream.Stream.split" title="obspy.core.stream.Stream.split"><tt class="xref py py-obj docutils literal"><span class="pre">split</span></tt></a></td>
+<td>Splits any trace containing gaps into contiguous unmasked traces.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.std.html#obspy.core.stream.Stream.std" title="obspy.core.stream.Stream.std"><tt class="xref py py-obj docutils literal"><span class="pre">std</span></tt></a></td>
+<td>Method to get the standard deviations of amplitudes in all trace in the stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.taper.html#obspy.core.stream.Stream.taper" title="obspy.core.stream.Stream.taper"><tt class="xref py py-obj docutils literal"><span class="pre">taper</span></tt></a></td>
+<td>Method to taper all Traces in Stream.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.trigger.html#obspy.core.stream.Stream.trigger" title="obspy.core.stream.Stream.trigger"><tt class="xref py py-obj docutils literal"><span class="pre">trigger</span></tt></a></td>
+<td>Runs a triggering algorithm on all traces in the stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.trim.html#obspy.core.stream.Stream.trim" title="obspy.core.stream.Stream.trim"><tt class="xref py py-obj docutils literal"><span class="pre">trim</span></tt></a></td>
+<td>Cuts all traces of this Stream object to given start and end time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.verify.html#obspy.core.stream.Stream.verify" title="obspy.core.stream.Stream.verify"><tt class="xref py py-obj docutils literal"><span class="pre">verify</span></tt></a></td>
+<td>Verifies all traces of current Stream against available meta data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<td>Saves stream into a file.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream._cleanup.html#obspy.core.stream.Stream._cleanup" title="obspy.core.stream.Stream._cleanup"><tt class="xref py py-obj docutils literal"><span class="pre">_cleanup</span></tt></a></td>
+<td>Merge consistent trace objects but leave everything else alone.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream._ltrim.html#obspy.core.stream.Stream._ltrim" title="obspy.core.stream.Stream._ltrim"><tt class="xref py py-obj docutils literal"><span class="pre">_ltrim</span></tt></a></td>
+<td>Cuts all traces of this Stream object to given start time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream._mergeChecks.html#obspy.core.stream.Stream._mergeChecks" title="obspy.core.stream.Stream._mergeChecks"><tt class="xref py py-obj docutils literal"><span class="pre">_mergeChecks</span></tt></a></td>
+<td>Sanity checks for merging.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream._rtrim.html#obspy.core.stream.Stream._rtrim" title="obspy.core.stream.Stream._rtrim"><tt class="xref py py-obj docutils literal"><span class="pre">_rtrim</span></tt></a></td>
+<td>Cuts all traces of this Stream object to given end time.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__add__.html#obspy.core.stream.Stream.__add__" title="obspy.core.stream.Stream.__add__"><tt class="xref py py-obj docutils literal"><span class="pre">__add__</span></tt></a></td>
+<td>Method to add two streams or a stream with a single trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__delitem__.html#obspy.core.stream.Stream.__delitem__" title="obspy.core.stream.Stream.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td>Passes on the __delitem__ method to the underlying list of traces.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__eq__.html#obspy.core.stream.Stream.__eq__" title="obspy.core.stream.Stream.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Implements rich comparison of Stream objects for &#8220;==&#8221; operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__ge__.html#obspy.core.stream.Stream.__ge__" title="obspy.core.stream.Stream.__ge__"><tt class="xref py py-obj docutils literal"><span class="pre">__ge__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__getitem__.html#obspy.core.stream.Stream.__getitem__" title="obspy.core.stream.Stream.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td>__getitem__ method of obspy.Stream objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__getslice__.html#obspy.core.stream.Stream.__getslice__" title="obspy.core.stream.Stream.__getslice__"><tt class="xref py py-obj docutils literal"><span class="pre">__getslice__</span></tt></a></td>
+<td>__getslice__ method of obspy.Stream objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__gt__.html#obspy.core.stream.Stream.__gt__" title="obspy.core.stream.Stream.__gt__"><tt class="xref py py-obj docutils literal"><span class="pre">__gt__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__iadd__.html#obspy.core.stream.Stream.__iadd__" title="obspy.core.stream.Stream.__iadd__"><tt class="xref py py-obj docutils literal"><span class="pre">__iadd__</span></tt></a></td>
+<td>Method to add two streams with self += other.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__init__.html#obspy.core.stream.Stream.__init__" title="obspy.core.stream.Stream.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__iter__.html#obspy.core.stream.Stream.__iter__" title="obspy.core.stream.Stream.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td>Return a robust iterator for stream.traces.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__le__.html#obspy.core.stream.Stream.__le__" title="obspy.core.stream.Stream.__le__"><tt class="xref py py-obj docutils literal"><span class="pre">__le__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__len__.html#obspy.core.stream.Stream.__len__" title="obspy.core.stream.Stream.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td>Returns the number of Traces in the Stream object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__lt__.html#obspy.core.stream.Stream.__lt__" title="obspy.core.stream.Stream.__lt__"><tt class="xref py py-obj docutils literal"><span class="pre">__lt__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__mul__.html#obspy.core.stream.Stream.__mul__" title="obspy.core.stream.Stream.__mul__"><tt class="xref py py-obj docutils literal"><span class="pre">__mul__</span></tt></a></td>
+<td>Creates a new Stream containing num copies of this stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__ne__.html#obspy.core.stream.Stream.__ne__" title="obspy.core.stream.Stream.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td>Implements rich comparison of Stream objects for &#8221;!=&#8221; operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.stream.Stream.__setitem__.html#obspy.core.stream.Stream.__setitem__" title="obspy.core.stream.Stream.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td>__setitem__ method of obspy.Stream objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.stream.Stream.__str__.html#obspy.core.stream.Stream.__str__" title="obspy.core.stream.Stream.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Returns short summary string of the current stream.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.stream.Stream.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.append.html" title="obspy.core.stream.Stream.append"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.writePickle.html" title="obspy.core.stream.writePickle"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

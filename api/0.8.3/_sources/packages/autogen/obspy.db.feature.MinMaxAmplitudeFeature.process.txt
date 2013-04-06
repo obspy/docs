@@ -1,0 +1,6 @@
+obspy.db.feature.MinMaxAmplitudeFeature.process
+===============================================
+
+.. currentmodule:: obspy.db.feature
+
+.. automethod:: MinMaxAmplitudeFeature.process

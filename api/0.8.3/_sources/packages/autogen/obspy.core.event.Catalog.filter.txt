@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.filter
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.filter

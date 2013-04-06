@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.slice
+==============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.slice

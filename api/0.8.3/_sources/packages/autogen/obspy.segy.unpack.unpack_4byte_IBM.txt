@@ -1,0 +1,6 @@
+obspy.segy.unpack.unpack_4byte_IBM
+==================================
+
+.. currentmodule:: obspy.segy.unpack
+
+.. autofunction:: unpack_4byte_IBM

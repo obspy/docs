@@ -1,0 +1,6 @@
+obspy.core.trace.Trace._rtrim
+=============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace._rtrim

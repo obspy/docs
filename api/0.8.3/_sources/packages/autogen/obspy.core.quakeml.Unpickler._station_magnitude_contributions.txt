@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._station_magnitude_contributions
+=============================================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._station_magnitude_contributions

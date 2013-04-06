@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.registerRtProcess
+================================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.registerRtProcess

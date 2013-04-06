@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Exercise Solution 4c &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="Advanced Exercise" href="advanced_exercise.html" />
+    <link rel="next" title="Advanced Exercise Solution 5" href="advanced_exercise_solution_5.html" />
+    <link rel="prev" title="Advanced Exercise Solution 4b" href="advanced_exercise_solution_4b.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_5.html" title="Advanced Exercise Solution 5"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_4b.html" title="Advanced Exercise Solution 4b"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li>
+          <li><a href="advanced_exercise.html" accesskey="U">Advanced Exercise</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-exercise-solution-4c">
+<h1>Advanced Exercise Solution 4c<a class="headerlink" href="#advanced-exercise-solution-4c" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.geodetics</span> <span class="kn">import</span> <span class="n">gps2DistAzimuth</span>
+<span class="kn">from</span> <span class="nn">obspy.arclink</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log10</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">median</span>
+
+<span class="n">paz_wa</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mi">2800</span><span class="p">,</span> <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">],</span> <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">6.2832</span> <span class="o">-</span> <span class="mf">4.7124</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.2832</span> <span class="o">+</span> <span class="mf">4.7124</span><span class="n">j</span><span class="p">]}</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&quot;sed-workshop@obspy.org&quot;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2012-04-03T02:45:03&quot;</span><span class="p">)</span>
+
+<span class="n">stations</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getStations</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">300</span><span class="p">,</span> <span class="s">&quot;CH&quot;</span><span class="p">)</span>
+<span class="n">mags</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;CH&quot;</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;[EH]H[ZNE]&quot;</span><span class="p">,</span> <span class="n">t</span> <span class="o">-</span> <span class="mi">300</span><span class="p">,</span>
+                                <span class="n">t</span> <span class="o">+</span> <span class="mi">300</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">st</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">station</span><span class="p">,</span> <span class="s">&quot;---&quot;</span>
+        <span class="k">continue</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="s">&quot;self&quot;</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">paz_wa</span><span class="p">,</span> <span class="n">water_level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="n">tr_n</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;N&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ampl_n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">tr_n</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">tr_e</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;E&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ampl_e</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">tr_e</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">ampl</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ampl_n</span><span class="p">,</span> <span class="n">ampl_e</span><span class="p">)</span>
+
+    <span class="n">sta_lat</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">latitude</span>
+    <span class="n">sta_lon</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">longitude</span>
+    <span class="n">event_lat</span> <span class="o">=</span> <span class="mf">46.218</span>
+    <span class="n">event_lon</span> <span class="o">=</span> <span class="mf">7.706</span>
+
+    <span class="n">epi_dist</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">gps2DistAzimuth</span><span class="p">(</span><span class="n">event_lat</span><span class="p">,</span> <span class="n">event_lon</span><span class="p">,</span> <span class="n">sta_lat</span><span class="p">,</span> <span class="n">sta_lon</span><span class="p">)</span>
+    <span class="n">epi_dist</span> <span class="o">=</span> <span class="n">epi_dist</span> <span class="o">/</span> <span class="mi">1000</span>
+
+    <span class="k">if</span> <span class="n">epi_dist</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mf">0.018</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mf">2.17</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mf">0.0038</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mf">3.02</span>
+    <span class="n">ml</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">ampl</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">epi_dist</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">print</span> <span class="n">station</span><span class="p">,</span> <span class="n">ml</span>
+    <span class="n">mags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
+
+<span class="n">net_mag</span> <span class="o">=</span> <span class="n">median</span><span class="p">(</span><span class="n">mags</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;Network magnitude:&quot;</span><span class="p">,</span> <span class="n">net_mag</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/advanced_exercise/advanced_exercise_solution_4c.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_5.html" title="Advanced Exercise Solution 5"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_4b.html" title="Advanced Exercise Solution 4b"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li>
+          <li><a href="advanced_exercise.html" >Advanced Exercise</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

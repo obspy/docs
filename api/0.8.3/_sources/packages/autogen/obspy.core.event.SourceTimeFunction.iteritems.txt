@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.iteritems
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.iteritems

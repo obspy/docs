@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.pop
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.pop

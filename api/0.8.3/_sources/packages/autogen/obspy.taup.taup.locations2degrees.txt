@@ -1,0 +1,6 @@
+obspy.taup.taup.locations2degrees
+=================================
+
+.. currentmodule:: obspy.taup.taup
+
+.. autofunction:: locations2degrees

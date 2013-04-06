@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__delitem__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__delitem__

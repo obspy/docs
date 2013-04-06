@@ -1,0 +1,61 @@
+obspy.db.db.WaveformGaps
+========================
+
+.. currentmodule:: obspy.db.db
+.. autoclass:: WaveformGaps
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~WaveformGaps.__dict__
+     ~WaveformGaps.__doc__
+     ~WaveformGaps.__mapper__
+     ~WaveformGaps.__module__
+     ~WaveformGaps.__table__
+     ~WaveformGaps.__tablename__
+     ~WaveformGaps.__weakref__
+     ~WaveformGaps.channel_id
+     ~WaveformGaps.endtime
+     ~WaveformGaps.gap
+     ~WaveformGaps.id
+     ~WaveformGaps.metadata
+     ~WaveformGaps.samples
+     ~WaveformGaps.starttime
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformGaps.__init__
+     ~WaveformGaps.__repr__
+  
+
+  
+  

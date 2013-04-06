@@ -1,0 +1,195 @@
+obspy.core.event.DataUsed
+=========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: DataUsed
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~DataUsed.__abstractmethods__
+     ~DataUsed.__dict__
+     ~DataUsed.__doc__
+     ~DataUsed.__hash__
+     ~DataUsed.__module__
+     ~DataUsed.__weakref__
+     ~DataUsed.defaults
+     ~DataUsed.item
+     ~DataUsed.key
+     ~DataUsed.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~DataUsed.clear
+     ~DataUsed.copy
+     ~DataUsed.get
+     ~DataUsed.items
+     ~DataUsed.iteritems
+     ~DataUsed.iterkeys
+     ~DataUsed.itervalues
+     ~DataUsed.keys
+     ~DataUsed.pop
+     ~DataUsed.popitem
+     ~DataUsed.setdefault
+     ~DataUsed.update
+     ~DataUsed.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~DataUsed._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~DataUsed.__contains__
+     ~DataUsed.__deepcopy__
+     ~DataUsed.__delattr__
+     ~DataUsed.__delitem__
+     ~DataUsed.__eq__
+     ~DataUsed.__getattr__
+     ~DataUsed.__getitem__
+     ~DataUsed.__getstate__
+     ~DataUsed.__init__
+     ~DataUsed.__iter__
+     ~DataUsed.__len__
+     ~DataUsed.__ne__
+     ~DataUsed.__nonzero__
+     ~DataUsed.__repr__
+     ~DataUsed.__setattr__
+     ~DataUsed.__setitem__
+     ~DataUsed.__setstate__
+     ~DataUsed.__str__
+     ~DataUsed.__subclasshook__
+  
+
+  
+  

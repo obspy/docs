@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__getattr__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__getattr__

@@ -1,0 +1,1137 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.array_analysis &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.array_analysis</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: array.py</span>
+<span class="c">#  Purpose: Functions for Array Analysis</span>
+<span class="c">#   Author: Martin van Driel, Moritz Beyreuther</span>
+<span class="c">#    Email: driel@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2010 Martin van Driel, Moritz Beyreuther</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for Array Analysis</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.util</span> <span class="kn">import</span> <span class="n">utlGeoKm</span><span class="p">,</span> <span class="n">nextpow2</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.headers</span> <span class="kn">import</span> <span class="n">clibsignal</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.decorator</span> <span class="kn">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.invsim</span> <span class="kn">import</span> <span class="n">cosTaper</span>
+
+
+<div class="viewcode-block" id="array_rotation_strain"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.array_rotation_strain.html#obspy.signal.array_analysis.array_rotation_strain">[docs]</a><span class="k">def</span> <span class="nf">array_rotation_strain</span><span class="p">(</span><span class="n">subarray</span><span class="p">,</span> <span class="n">ts1</span><span class="p">,</span> <span class="n">ts2</span><span class="p">,</span> <span class="n">ts3</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">array_coords</span><span class="p">,</span>
+                          <span class="n">sigmau</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This routine calculates the best-fitting rigid body rotation and</span>
+<span class="sd">    uniform strain as functions of time, and their formal errors, given</span>
+<span class="sd">    three-component ground motion time series recorded on a seismic array.</span>
+<span class="sd">    The theory implemented herein is presented in the papers [Spudich1995]_,</span>
+<span class="sd">    (abbreviated S95 herein) [Spudich2008]_ (SF08) and [Spudich2009]_ (SF09).</span>
+
+<span class="sd">    This is a translation of the Matlab Code presented in (SF09) with</span>
+<span class="sd">    small changes in details only. Output has been checked to be the same</span>
+<span class="sd">    as the original Matlab Code.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        ts\_ below means &quot;time series&quot;</span>
+
+<span class="sd">    :type vp: Float</span>
+<span class="sd">    :param vp: P wave speed in the soil under the array (km/s)</span>
+<span class="sd">    :type vs: Float</span>
+<span class="sd">    :param vs: S wave speed in the soil under the array Note - vp and vs may be</span>
+<span class="sd">        any unit (e.g. miles/week), and this unit need not be related to the</span>
+<span class="sd">        units of the station coordinates or ground motions, but the units of vp</span>
+<span class="sd">        and vs must be the SAME because only their ratio is used.</span>
+<span class="sd">    :type array_coords: numpy.ndarray</span>
+<span class="sd">    :param array_coords: array of dimension Na x 3, where Na is the number of</span>
+<span class="sd">        stations in the array.  array_coords[i,j], i in arange(Na), j in</span>
+<span class="sd">        arange(3) is j coordinate of station i.  units of array_coords may be</span>
+<span class="sd">        anything, but see the &quot;Discussion of input and output units&quot; above.</span>
+<span class="sd">        The origin of coordinates is arbitrary and does not affect the</span>
+<span class="sd">        calculated strains and rotations.  Stations may be entered in any</span>
+<span class="sd">        order.</span>
+<span class="sd">    :type ts1: numpy.ndarray</span>
+<span class="sd">    :param ts1: array of x1-component seismograms, dimension nt x Na.</span>
+<span class="sd">        ts1[j,k], j in arange(nt), k in arange(Na) contains the kth time sample</span>
+<span class="sd">        of the x1 component ground motion at station k. NOTE that the</span>
+<span class="sd">        seismogram in column k must correspond to the station whos coordinates</span>
+<span class="sd">        are in row k of in.array_coords. nt is the number of time samples in</span>
+<span class="sd">        the seismograms.  Seismograms may be displacement, velocity,</span>
+<span class="sd">        acceleration, jerk, etc.  See the &quot;Discussion of input and output</span>
+<span class="sd">        units&quot; below.</span>
+<span class="sd">    :type ts2: numpy.ndarray</span>
+<span class="sd">    :param ts2: same as ts1, but for the x2 component of motion.</span>
+<span class="sd">    :type ts3: numpy.ndarray</span>
+<span class="sd">    :param ts3: same as ts1, but for the x3 (UP or DOWN) component of motion.</span>
+<span class="sd">    :type sigmau: Float or numpy.ndarray</span>
+<span class="sd">    :param sigmau: standard deviation (NOT VARIANCE) of ground noise,</span>
+<span class="sd">        corresponds to sigma-sub-u in S95 lines above eqn (A5).</span>
+<span class="sd">        NOTE: This may be entered as a scalar, vector, or matrix!</span>
+
+<span class="sd">        * If sigmau is a scalar, it will be used for all components of all</span>
+<span class="sd">          stations.</span>
+<span class="sd">        * If sigmau is a 1D array of length Na, sigmau[i] will be the noise</span>
+<span class="sd">          assigned to all components of the station corresponding to</span>
+<span class="sd">          array_coords[i,:]</span>
+<span class="sd">        * If sigmau is a 2D array of dimension  Na x 3, then sigmau[i,j] is</span>
+<span class="sd">          used as the noise of station i, component j.</span>
+
+<span class="sd">        In all cases, this routine assumes that the noise covariance between</span>
+<span class="sd">        different stations and/or components is zero.</span>
+<span class="sd">    :type subarray: numpy.ndarray</span>
+<span class="sd">    :param subarray: NumPy array of subarray stations to use. I.e. if subarray</span>
+<span class="sd">        = array([1, 4, 10]), then only rows 1, 4, and 10 of array_coords will</span>
+<span class="sd">        be used, and only ground motion time series in the first, fourth, and</span>
+<span class="sd">        tenth columns of ts1 will be used. Nplus1 is the number of elements in</span>
+<span class="sd">        the subarray vector, and N is set to Nplus1 - 1. To use all stations in</span>
+<span class="sd">        the array, set in.subarray = arange(Na), where Na is the total number</span>
+<span class="sd">        of stations in the array (equal to the number of rows of</span>
+<span class="sd">        in.array_coords. Sequence of stations in the subarray vector is</span>
+<span class="sd">        unimportant; i.e.  subarray = array([1, 4, 10]) will yield essentially</span>
+<span class="sd">        the same rotations and strains as subarray = array([10, 4, 1]).</span>
+<span class="sd">        &quot;Essentially&quot; because permuting subarray sequence changes the d vector,</span>
+<span class="sd">        yielding a slightly different numerical result.</span>
+<span class="sd">    :return: Dictionary with fields:</span>
+<span class="sd">        | **A:** (array, dimension 3N x 6) - data mapping matrix &#39;A&#39; of</span>
+<span class="sd">        |     S95(A4)</span>
+<span class="sd">        | **g:** (array, dimension 6 x 3N) - generalized inverse matrix</span>
+<span class="sd">        |     relating ptilde and data vector, in S95(A5)</span>
+<span class="sd">        | **Ce:** (4 x 4) covariance matrix of the 4 independent strain</span>
+<span class="sd">        |     tensor elements e11, e21, e22, e33</span>
+<span class="sd">        | **ts_d:** (array, length nt) - dilatation</span>
+<span class="sd">        |     (trace of the 3x3 strain tensor) as a function of time</span>
+<span class="sd">        | **sigmad:** scalar, standard deviation of dilatation</span>
+<span class="sd">        | **ts_dh:** (array, length nt) - horizontal dilatation (also</span>
+<span class="sd">        |     known as areal strain) (eEE+eNN) as a function of time</span>
+<span class="sd">        | **sigmadh:** scalar, standard deviation of horizontal dilatation</span>
+<span class="sd">        |     (areal strain)</span>
+<span class="sd">        | **ts_e:** (array, dimension nt x 3 x 3) - strain tensor</span>
+<span class="sd">        | **ts_s:** (array, length nt) -  maximum strain</span>
+<span class="sd">        |     ( .5*(max eigval of e - min eigval of e) as a</span>
+<span class="sd">        |     function of time, where e is the 3x3 strain tensor</span>
+<span class="sd">        | **Cgamma:** (4 x 4) covariance matrix of the 4 independent shear</span>
+<span class="sd">        |     strain tensor elements g11, g12, g22, g33 (includes full</span>
+<span class="sd">        |     covariance effects). gamma is traceless part of e.</span>
+<span class="sd">        | **ts_sh:** (array, length nt) - maximum horizontal strain</span>
+<span class="sd">        |     ( .5*(max eigval of eh - min eigval of eh)</span>
+<span class="sd">        |     as a function of time, where eh is e(1:2,1:2)</span>
+<span class="sd">        | **Cgammah:** (3 x 3) covariance matrix of the 3 independent</span>
+<span class="sd">        |     horizontal shear strain tensor elements gamma11, gamma12,</span>
+<span class="sd">        |     gamma22 gamma is traceless part of e.</span>
+<span class="sd">        | **ts_wmag:** (array, length nt) -  total rotation</span>
+<span class="sd">        |     angle (radians) as a function of time.  I.e. if the</span>
+<span class="sd">        |     rotation vector at the j&#39;th time step is</span>
+<span class="sd">        |     w = array([w1, w2, w3]), then ts_wmag[j] = sqrt(sum(w**2))</span>
+<span class="sd">        |     positive for right-handed rotation</span>
+<span class="sd">        | **Cw:** (3 x 3) covariance matrix of the 3 independent</span>
+<span class="sd">        |     rotation tensor elements w21, w31, w32</span>
+<span class="sd">        | **ts_w1:** (array, length nt) - rotation</span>
+<span class="sd">        |     (rad) about the x1 axis, positive for right-handed rotation</span>
+<span class="sd">        | **sigmaw1:** scalar, standard deviation of the ts_w1</span>
+<span class="sd">        |     (sigma-omega-1 in SF08)</span>
+<span class="sd">        | **ts_w2:** (array, length nt) - rotation</span>
+<span class="sd">        |     (rad) about the x2 axis, positive for right-handed rotation</span>
+<span class="sd">        | **sigmaw2:** scalar, standard deviation of ts_w2</span>
+<span class="sd">        |     (sigma-omega-2 in SF08)</span>
+<span class="sd">        | **ts_w3:** (array, length nt) - &quot;torsion&quot;, rotation</span>
+<span class="sd">        |     (rad) about a vertical up or down axis, i.e. x3, positive</span>
+<span class="sd">        |     for right-handed rotation</span>
+<span class="sd">        | **sigmaw3:** scalar, standard deviation of the torsion</span>
+<span class="sd">        |     (sigma-omega-3 in SF08)</span>
+<span class="sd">        | **ts_tilt:** (array, length nt) - tilt (rad)</span>
+<span class="sd">        |     (rotation about a horizontal axis, positive for right</span>
+<span class="sd">        |     handed rotation)</span>
+<span class="sd">        |     as a function of time.  tilt = sqrt( w1^2 + w2^2)</span>
+<span class="sd">        | **sigmat:** scalar, standard deviation of the tilt</span>
+<span class="sd">        |     (not defined in SF08, From Papoulis (1965, p. 195,</span>
+<span class="sd">        |     example 7.8))</span>
+<span class="sd">        | **ts_data:** (array, shape (nt x 3N)). time series of</span>
+<span class="sd">        |     the observed displacement</span>
+<span class="sd">        |     differences, which are the di in S95 eqn A1.</span>
+<span class="sd">        | **ts_pred:** (array, shape (nt x 3N)) time series of</span>
+<span class="sd">        |     the fitted model&#39;s predicted displacement difference</span>
+<span class="sd">        |     Note that the fitted model displacement</span>
+<span class="sd">        |     differences correspond to linalg.dot(A, ptilde), where A</span>
+<span class="sd">        |     is the big matrix in S95 eqn A4 and ptilde is S95 eqn A5.</span>
+<span class="sd">        | **ts_misfit:** (array, shape (nt x 3N)) time series of the</span>
+<span class="sd">        |     residuals (fitted model displacement differences minus</span>
+<span class="sd">        |     observed displacement differences). Note that the fitted</span>
+<span class="sd">        |     model displacement differences correspond to</span>
+<span class="sd">        |     linalg.dot(A, ptilde), where A is the big</span>
+<span class="sd">        |     matrix in S95 eqn A4 and ptilde is S95 eqn A5.</span>
+<span class="sd">        | **ts_M:** (array, length nt) Time series of M, misfit</span>
+<span class="sd">        |     ratio of S95, p. 688.</span>
+<span class="sd">        | **ts_ptilde:** (array, shape (nt x 6)) - solution</span>
+<span class="sd">        |     vector p-tilde (from S95 eqn A5) as a function of time</span>
+<span class="sd">        | **Cp:** 6x6 solution covariance matrix defined in SF08.</span>
+
+<span class="sd">    .. rubric:: Warnings</span>
+
+<span class="sd">    This routine does not check to verify that your array is small</span>
+<span class="sd">    enough to conform to the assumption that the array aperture is less</span>
+<span class="sd">    than 1/4 of the shortest seismic wavelength in the data. See SF08</span>
+<span class="sd">    for a discussion of this assumption.</span>
+
+<span class="sd">    This code assumes that ts1[j,:], ts2[j,:], and ts3[j,:] are all sampled</span>
+<span class="sd">    SIMULTANEOUSLY.</span>
+
+<span class="sd">    .. rubric:: Notes</span>
+
+<span class="sd">    (1) Note On Specifying Input Array And Selecting Subarrays</span>
+
+<span class="sd">        This routine allows the user to input the coordinates and ground</span>
+<span class="sd">        motion time series of all stations in a seismic array having Na</span>
+<span class="sd">        stations and the user may select for analysis a subarray of Nplus1</span>
+<span class="sd">        &lt;= Na stations.</span>
+
+<span class="sd">    (2) Discussion Of Physical Units Of Input And Output</span>
+
+<span class="sd">        If the input seismograms are in units of displacement, the output</span>
+<span class="sd">        strains and rotations will be in units of strain (unitless) and</span>
+<span class="sd">        angle (radians).  If the input seismograms are in units of</span>
+<span class="sd">        velocity, the output will be strain rate (units = 1/s) and rotation</span>
+<span class="sd">        rate (rad/s).  Higher temporal derivative inputs yield higher</span>
+<span class="sd">        temporal derivative outputs.</span>
+
+<span class="sd">        Input units of the array station coordinates must match the spatial</span>
+<span class="sd">        units of the seismograms.  For example, if the input seismograms</span>
+<span class="sd">        are in units of m/s^2, array coordinates must be entered in m.</span>
+
+<span class="sd">    (3) Note On Coordinate System</span>
+
+<span class="sd">        This routine assumes x1-x2-x3 is a RIGHT handed orthogonal</span>
+<span class="sd">        coordinate system. x3 must point either UP or DOWN.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># start the code -------------------------------------------------</span>
+    <span class="c"># This assumes that all stations and components have the same number of</span>
+    <span class="c"># time samples, nt</span>
+    <span class="p">[</span><span class="n">nt</span><span class="p">,</span> <span class="n">Na</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ts1</span><span class="p">)</span>
+
+    <span class="c"># check to ensure all components have same duration</span>
+    <span class="k">if</span> <span class="n">ts1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;ts1 and ts2 have different sizes&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ts1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">ts3</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;ts1 and ts3 have different sizes&#39;</span><span class="p">)</span>
+
+    <span class="c"># check to verify that the number of stations in ts1 agrees with the number</span>
+    <span class="c"># of stations in array_coords</span>
+    <span class="p">[</span><span class="n">nrac</span><span class="p">,</span> <span class="n">_ncac</span><span class="p">]</span> <span class="o">=</span> <span class="n">array_coords</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">nrac</span> <span class="o">!=</span> <span class="n">Na</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;ts1 has </span><span class="si">%s</span><span class="s"> columns(stations) but array_coords has &#39;</span> <span class="o">%</span> <span class="n">Na</span> <span class="o">+</span> \
+              <span class="s">&#39;</span><span class="si">%s</span><span class="s"> rows(stations)&#39;</span> <span class="o">%</span> <span class="n">nrac</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c"># check stations in subarray exist</span>
+    <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">subarray</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Station number &lt; 0 in subarray&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">subarray</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">Na</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Station number &gt; Na in subarray&#39;</span><span class="p">)</span>
+
+    <span class="c"># extract the stations of the subarray to be used</span>
+    <span class="n">subarraycoords</span> <span class="o">=</span> <span class="n">array_coords</span><span class="p">[</span><span class="n">subarray</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="c"># count number of subarray stations: Nplus1 and number of station</span>
+    <span class="c"># offsets: N</span>
+    <span class="n">Nplus1</span> <span class="o">=</span> <span class="n">subarray</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">Nplus1</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">Nplus1</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The problem is underdetermined for fewer than 3 stations&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Nplus1</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;For a 3-station array the problem is even-determined&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c"># ------------------- NOW SOME SEISMOLOGY!! --------------------------</span>
+    <span class="c"># constants</span>
+    <span class="n">eta</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">vp</span> <span class="o">**</span> <span class="mi">2</span>
+
+    <span class="c"># form A matrix, which relates model vector of 6 displacement derivatives</span>
+    <span class="c"># to vector of observed displacement differences. S95(A3)</span>
+    <span class="c"># dim(A) = (3*N) * 6</span>
+    <span class="c"># model vector is [ u1,1 u1,2 u1,3 u2,1 u2,2 u2,3 ] (free surface boundary</span>
+    <span class="c"># conditions applied, S95(A2))</span>
+    <span class="c"># first initialize A to the null matrix</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">z3t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="c"># fill up A</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">ss</span> <span class="o">=</span> <span class="n">subarraycoords</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">subarraycoords</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">A</span><span class="p">[(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="p">):(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">),</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ss</span><span class="p">,</span> <span class="n">z3t</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">z3t</span><span class="p">,</span> <span class="n">ss</span><span class="p">],</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">eta</span> <span class="o">*</span> <span class="n">ss</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> \
+            <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">ss</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">eta</span> <span class="o">*</span> <span class="n">ss</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">ss</span><span class="p">[</span><span class="mi">1</span><span class="p">]])]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+    <span class="c">#------------------------------------------------------</span>
+    <span class="c"># define data covariance matrix Cd.</span>
+    <span class="c"># step 1 - define data differencing matrix D</span>
+    <span class="c"># dimension of D is (3*N) * (3*Nplus1)</span>
+    <span class="n">I3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">II</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="o">-</span><span class="n">I3</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">D</span><span class="p">,</span> <span class="o">-</span><span class="n">I3</span><span class="p">]</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">D</span><span class="p">,</span> <span class="n">II</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c"># step 2 - define displacement u covariance matrix Cu</span>
+    <span class="c"># This assembles a covariance matrix Cu that reflects actual data errors.</span>
+    <span class="c"># populate Cu depending on the size of sigmau</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sigmau</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c"># sigmau is a scalar.  Make all diag elements of Cu the same</span>
+        <span class="n">Cu</span> <span class="o">=</span> <span class="n">sigmau</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">Nplus1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">sigmau</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sigmau</span><span class="p">),):</span>
+        <span class="c"># sigmau is a row or column vector</span>
+        <span class="c"># check dimension is okay</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sigmau</span><span class="p">)</span> <span class="o">!=</span> <span class="n">Na</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;sigmau must have </span><span class="si">%s</span><span class="s"> elements&#39;</span> <span class="o">%</span> <span class="n">Na</span><span class="p">)</span>
+        <span class="n">junk</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">sigmau</span><span class="p">,</span> <span class="n">sigmau</span><span class="p">,</span> <span class="n">sigmau</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c"># matrix of variances</span>
+        <span class="n">Cu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">junk</span><span class="p">[</span><span class="n">subarray</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">Nplus1</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">sigmau</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">Na</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">Cu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(((</span><span class="n">sigmau</span><span class="p">[</span><span class="n">subarray</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> \
+                <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">Nplus1</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;sigmau has the wrong dimensions&#39;</span><span class="p">)</span>
+
+    <span class="c"># Cd is the covariance matrix of the displ differences</span>
+    <span class="c"># dim(Cd) is (3*N) * (3*N)</span>
+    <span class="n">Cd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">Cu</span><span class="p">),</span> <span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c">#---------------------------------------------------------</span>
+    <span class="c"># form generalized inverse matrix g.  dim(g) is 6 x (3*N)</span>
+    <span class="n">Cdi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Cd</span><span class="p">)</span>
+    <span class="n">AtCdiA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Cdi</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">AtCdiA</span><span class="p">),</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">Cdi</span><span class="p">)</span>
+
+    <span class="n">condition_number</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span><span class="n">AtCdiA</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">condition_number</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Condition number is </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">condition_number</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c"># set up storage for vectors that will contain time series</span>
+    <span class="n">ts_wmag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_w2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_w3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_tilt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_dh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_sh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">ts_misfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">ts_M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+    <span class="n">ts_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">ts_ptilde</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ts_wmag</span><span class="p">,</span> <span class="n">ts_w1</span><span class="p">,</span> <span class="n">ts_w2</span><span class="p">,</span> <span class="n">ts_w3</span><span class="p">,</span> <span class="n">ts_tilt</span><span class="p">,</span> <span class="n">ts_dh</span><span class="p">,</span> <span class="n">ts_sh</span><span class="p">,</span> <span class="n">ts_s</span><span class="p">,</span>
+                  <span class="n">ts_pred</span><span class="p">,</span> <span class="n">ts_misfit</span><span class="p">,</span> <span class="n">ts_M</span><span class="p">,</span> <span class="n">ts_data</span><span class="p">,</span> <span class="n">ts_ptilde</span><span class="p">):</span>
+        <span class="n">array</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+    <span class="n">ts_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nt</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c"># other matrices</span>
+    <span class="n">udif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">udif</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+
+    <span class="c">#---------------------------------------------------------------</span>
+    <span class="c"># here we define 4x6 Be and 3x6 Bw matrices.  these map the solution</span>
+    <span class="c"># ptilde to strain or to rotation.  These matrices will be used</span>
+    <span class="c"># in the calculation of the covariances of strain and rotation.</span>
+    <span class="c"># Columns of both matrices correspond to the model solution vector</span>
+    <span class="c"># containing elements [u1,1 u1,2 u1,3 u2,1 u2,2 u2,3 ]&#39;</span>
+    <span class="c">#</span>
+    <span class="c"># the rows of Be correspond to e11 e21 e22 and e33</span>
+    <span class="n">Be</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">eta</span>
+    <span class="n">Be</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">eta</span>
+    <span class="n">Be</span> <span class="o">=</span> <span class="n">Be</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="c">#</span>
+    <span class="c"># the rows of Bw correspond to w21 w31 and w32</span>
+    <span class="n">Bw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">Bw</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="n">Bw</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
+    <span class="n">Bw</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="n">Bw</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="n">Bw</span> <span class="o">=</span> <span class="n">Bw</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="c">#</span>
+    <span class="c"># this is the 4x6 matrix mapping solution to total shear strain gamma</span>
+    <span class="c"># where gamma = strain - tr(strain)/3 * eye(3)</span>
+    <span class="c"># the four elements of shear are 11, 12, 22, and 33.  It is symmetric.</span>
+    <span class="n">aa</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">eta</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">eta</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+    <span class="n">Bgamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">aa</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">b</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">b</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">aa</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">c</span>
+    <span class="n">Bgamma</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">c</span>
+    <span class="c">#</span>
+    <span class="c"># this is the 3x6 matrix mapping solution to horizontal shear strain</span>
+    <span class="c"># gamma</span>
+    <span class="c"># the four elements of horiz shear are 11, 12, and 22.  It is symmetric.</span>
+    <span class="n">Bgammah</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">5</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">5</span>
+    <span class="n">Bgammah</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+
+    <span class="c"># solution covariance matrix.  dim(Cp) = 6 * 6</span>
+    <span class="c"># corresponding to solution elements [u1,1 u1,2 u1,3 u2,1 u2,2 u2,3 ]</span>
+    <span class="n">Cp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">Cd</span><span class="p">),</span> <span class="n">g</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># Covariance of strain tensor elements</span>
+    <span class="c"># Ce should be 4x4, correspond to e11, e21, e22, e33</span>
+    <span class="n">Ce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Be</span><span class="p">,</span> <span class="n">Cp</span><span class="p">),</span> <span class="n">Be</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="c"># Cw should be 3x3 correspond to w21, w31, w32</span>
+    <span class="n">Cw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Bw</span><span class="p">,</span> <span class="n">Cp</span><span class="p">),</span> <span class="n">Bw</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># Cgamma is 4x4 correspond to 11, 12, 22, and 33.</span>
+    <span class="n">Cgamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Bgamma</span><span class="p">,</span> <span class="n">Cp</span><span class="p">),</span> <span class="n">Bgamma</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="c">#</span>
+    <span class="c">#  Cgammah is 3x3 correspond to 11, 12, and 22</span>
+    <span class="n">Cgammah</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Bgammah</span><span class="p">,</span> <span class="n">Cp</span><span class="p">),</span> <span class="n">Bgammah</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="c">#</span>
+    <span class="c">#</span>
+    <span class="c"># covariance of the horizontal dilatation and the total dilatation</span>
+    <span class="c"># both are 1x1, i.e. scalars</span>
+    <span class="n">Cdh</span> <span class="o">=</span> <span class="n">Cp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Cp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">Cp</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+    <span class="n">sigmadh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Cdh</span><span class="p">)</span>
+
+    <span class="c"># covariance of the (total) dilatation, ts_dd</span>
+    <span class="n">sigmadsq</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Cdh</span>
+    <span class="n">sigmad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigmadsq</span><span class="p">)</span>
+    <span class="c">#</span>
+    <span class="c"># Cw3, covariance of w3 rotation, i.e. torsion, is 1x1, i.e. scalar</span>
+    <span class="n">Cw3</span> <span class="o">=</span> <span class="p">(</span><span class="n">Cp</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Cp</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">Cp</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="n">sigmaw3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Cw3</span><span class="p">)</span>
+
+    <span class="c"># For tilt cannot use same approach because tilt is not a linear function</span>
+    <span class="c"># of the solution.  Here is an approximation :</span>
+    <span class="c"># For tilt use conservative estimate from</span>
+    <span class="c"># Papoulis (1965, p. 195, example 7.8)</span>
+    <span class="n">sigmaw1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Cp</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="n">sigmaw2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Cp</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">sigmat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sigmaw1</span><span class="p">,</span> <span class="n">sigmaw2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c">#</span>
+    <span class="c"># BEGIN LOOP OVER DATA POINTS IN TIME SERIES==============================</span>
+    <span class="c">#</span>
+    <span class="k">for</span> <span class="n">itime</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">nt</span><span class="p">):</span>
+        <span class="c">#</span>
+        <span class="c"># data vector is differences of stn i displ from stn 1 displ</span>
+        <span class="c"># sum the lengths of the displ difference vectors</span>
+        <span class="n">sumlen</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">udif</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts1</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">ts1</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">udif</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts2</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">ts2</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">udif</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts3</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">ts3</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="n">subarray</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">sumlen</span> <span class="o">=</span> <span class="n">sumlen</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">udif</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">udif</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">udif</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="c">#</span>
+        <span class="c"># form solution</span>
+        <span class="c"># ptilde is (u1,1 u1,2 u1,3 u2,1 u2,2 u2,3).T</span>
+        <span class="n">ptilde</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="c">#</span>
+        <span class="c"># place in uij_vector the full 9 elements of the displacement gradients</span>
+        <span class="c"># uij_vector is (u1,1 u1,2 u1,3 u2,1 u2,2 u2,3 u3,1 u3,2 u3,3).T</span>
+        <span class="c"># The following implements the free surface boundary condition</span>
+        <span class="n">u31</span> <span class="o">=</span> <span class="o">-</span><span class="n">ptilde</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">u32</span> <span class="o">=</span> <span class="o">-</span><span class="n">ptilde</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">u33</span> <span class="o">=</span> <span class="o">-</span><span class="n">eta</span> <span class="o">*</span> <span class="p">(</span><span class="n">ptilde</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ptilde</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">uij_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ptilde</span><span class="p">,</span> <span class="n">u31</span><span class="p">,</span> <span class="n">u32</span><span class="p">,</span> <span class="n">u33</span><span class="p">]</span>
+        <span class="c">#</span>
+        <span class="c"># calculate predicted data</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">ptilde</span><span class="p">)</span>  <span class="c"># 9/8/92.I.3(9) and 8/26/92.I.3.T bottom</span>
+        <span class="c">#</span>
+        <span class="c"># calculate  residuals (misfits concatenated for all stations)</span>
+        <span class="n">misfit</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">-</span> <span class="n">data</span>
+
+        <span class="c"># Calculate ts_M, misfit ratio.</span>
+        <span class="c"># calculate summed length of misfits (residual displacements)</span>
+        <span class="n">misfit_sq</span> <span class="o">=</span> <span class="n">misfit</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">misfit_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">misfit_sq</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">misfit_sumsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">misfit_sumsq</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">misfit_sumsq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">misfit_sq</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">misfit_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">misfit_sumsq</span><span class="p">))</span>
+        <span class="n">ts_M</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">misfit_len</span> <span class="o">/</span> <span class="n">sumlen</span>
+        <span class="c">#</span>
+        <span class="n">ts_data</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">ts_pred</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">ts_misfit</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span> <span class="o">*</span> <span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">misfit</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">ts_ptilde</span><span class="p">[</span><span class="n">itime</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ptilde</span><span class="o">.</span><span class="n">T</span>
+        <span class="c">#</span>
+        <span class="c">#---------------------------------------------------------------</span>
+        <span class="c">#populate the displacement gradient matrix U</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+        <span class="n">U</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">uij_vector</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="c">#</span>
+        <span class="c"># calculate strain tensors</span>
+        <span class="c"># Fung eqn 5.1 p 97 gives dui = (eij-wij)*dxj</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">U</span> <span class="o">+</span> <span class="n">U</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">ts_e</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+
+        <span class="c"># Three components of the rotation vector omega (=w here)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">ptilde</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptilde</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ptilde</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">ptilde</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c"># amount of total rotation is length of rotation vector</span>
+        <span class="n">ts_wmag</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="c">#</span>
+        <span class="c"># Calculate tilt and torsion</span>
+        <span class="n">ts_w1</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ts_w2</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ts_w3</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c"># torsion in radians</span>
+        <span class="n">ts_tilt</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c"># 7/21/06.II.6(19), amount of tilt in radians</span>
+
+        <span class="c">#---------------------------------------------------------------</span>
+        <span class="c">#</span>
+        <span class="c"># Here I calculate horizontal quantities only</span>
+        <span class="c"># ts_dh is horizontal dilatation (+ --&gt; expansion).</span>
+        <span class="c"># Total dilatation, ts_dd, will be calculated outside the time</span>
+        <span class="c"># step loop.</span>
+        <span class="c">#</span>
+        <span class="n">ts_dh</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c">#</span>
+        <span class="c"># find maximum shear strain in horizontal plane, and find its azimuth</span>
+        <span class="n">eh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]]</span>
+            <span class="c"># 7/21/06.II.2(4)</span>
+        <span class="n">gammah</span> <span class="o">=</span> <span class="n">eh</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">eh</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+            <span class="c"># 9/14/92.II.4, 7/21/06.II.2(5)</span>
+
+        <span class="c"># eigvecs are principal axes, eigvals are principal strains</span>
+        <span class="p">[</span><span class="n">eigvals</span><span class="p">,</span> <span class="n">_eigvecs</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">gammah</span><span class="p">)</span>
+        <span class="c"># max shear strain, from Fung (1965, p71, eqn (8)</span>
+        <span class="n">ts_sh</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">eigvals</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">eigvals</span><span class="p">))</span>
+
+        <span class="c"># calculate max of total shear strain, not just horizontal strain</span>
+        <span class="c"># eigvecs are principal axes, eigvals are principal strains</span>
+        <span class="p">[</span><span class="n">eigvalt</span><span class="p">,</span> <span class="n">_eigvect</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="c"># max shear strain, from Fung (1965, p71, eqn (8)</span>
+        <span class="n">ts_s</span><span class="p">[</span><span class="n">itime</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">eigvalt</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">eigvalt</span><span class="p">))</span>
+        <span class="c">#</span>
+
+    <span class="c">#=========================================================================</span>
+    <span class="c">#</span>
+    <span class="c"># (total) dilatation is a scalar times horizontal dilatation owing to there</span>
+    <span class="c"># free surface boundary condition</span>
+    <span class="n">ts_d</span> <span class="o">=</span> <span class="n">ts_dh</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span>
+
+    <span class="c"># load output structure</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;Ce&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ce</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_d&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_d</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmad</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_dh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_dh</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmadh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmadh</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_s</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;Cgamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cgamma</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_sh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_sh</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;Cgammah&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cgammah</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_wmag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_wmag</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;Cw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cw</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_w1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_w1</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmaw1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmaw1</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_w2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_w2</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmaw2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmaw2</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_w3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_w3</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmaw3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmaw3</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_tilt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_tilt</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;sigmat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmat</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_data</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_pred&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_pred</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_misfit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_misfit</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_M&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_M</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_e&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_e</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_ptilde&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_ptilde</span>
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;Cp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cp</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s">&#39;ts_M&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_M</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+</div>
+<span class="nd">@deprecated</span>
+<div class="viewcode-block" id="sonic"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.sonic.html#obspy.signal.array_analysis.sonic">[docs]</a><span class="k">def</span> <span class="nf">sonic</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">win_len</span><span class="p">,</span> <span class="n">win_frac</span><span class="p">,</span> <span class="n">sll_x</span><span class="p">,</span> <span class="n">slm_x</span><span class="p">,</span> <span class="n">sll_y</span><span class="p">,</span> <span class="n">slm_y</span><span class="p">,</span> <span class="n">sl_s</span><span class="p">,</span>
+          <span class="n">semb_thres</span><span class="p">,</span> <span class="n">vel_thres</span><span class="p">,</span> <span class="n">frqlow</span><span class="p">,</span> <span class="n">frqhigh</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">,</span> <span class="n">prewhiten</span><span class="p">,</span>
+          <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s">&#39;mlabday&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DEPRECATED: Please use ``obspy.signal.array_processing()``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">array_processing</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">win_len</span><span class="p">,</span> <span class="n">win_frac</span><span class="p">,</span> <span class="n">sll_x</span><span class="p">,</span> <span class="n">slm_x</span><span class="p">,</span> <span class="n">sll_y</span><span class="p">,</span>
+        <span class="n">slm_y</span><span class="p">,</span> <span class="n">sl_s</span><span class="p">,</span> <span class="n">semb_thres</span><span class="p">,</span> <span class="n">vel_thres</span><span class="p">,</span> <span class="n">frqlow</span><span class="p">,</span> <span class="n">frqhigh</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">,</span>
+        <span class="n">prewhiten</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s">&#39;mlabday&#39;</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_geometry"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.get_geometry.html#obspy.signal.array_analysis.get_geometry">[docs]</a><span class="k">def</span> <span class="nf">get_geometry</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">,</span> <span class="n">return_center</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to calculate the array geometry and the center coordinates in km</span>
+
+<span class="sd">    :param stream: Stream object, the trace.stats dict like class must</span>
+<span class="sd">        contain a obspy.core.util.attribdict with &#39;latitude&#39;, &#39;longitude&#39; (in</span>
+<span class="sd">        degrees) and &#39;elevation&#39; (in km), or &#39;x&#39;, &#39;y&#39;, &#39;elevation&#39; (in km)</span>
+<span class="sd">        items/attributes. See param coordsys</span>
+<span class="sd">    :param coordsys: valid values: &#39;lonlat&#39; and &#39;xy&#39;, choose which stream</span>
+<span class="sd">        attributes to use for coordinates</span>
+<span class="sd">    :param return_center: Retruns the center coordinates as extra tuple</span>
+<span class="sd">    :return: Returns the geometry of the stations as 2d numpy.ndarray</span>
+<span class="sd">            The first dimension are the station indexes with the same order</span>
+<span class="sd">            as the traces in the stream object. The second index are the</span>
+<span class="sd">            values of [lat, lon, elev] in km</span>
+<span class="sd">            last index contains center [lat, lon, elev] in degrees and km if</span>
+<span class="sd">            return_center is true</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nstat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="n">center_lat</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">center_lon</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">center_h</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstat</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Stream</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">coordsys</span> <span class="o">==</span> <span class="s">&#39;lonlat&#39;</span><span class="p">:</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">longitude</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">latitude</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">elevation</span>
+            <span class="k">elif</span> <span class="n">coordsys</span> <span class="o">==</span> <span class="s">&#39;xy&#39;</span><span class="p">:</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">x</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">y</span>
+                <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">elevation</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;only Stream or numpy.ndarray allowed&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;coordys = &quot;</span> <span class="o">+</span> <span class="n">coordsys</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">coordsys</span> <span class="o">==</span> <span class="s">&#39;lonlat&#39;</span><span class="p">:</span>
+        <span class="n">center_lon</span> <span class="o">=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">center_lat</span> <span class="o">=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">center_h</span> <span class="o">=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nstat</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">utlGeoKm</span><span class="p">(</span><span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span><span class="p">,</span> <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                            <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="n">geometry</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">center_h</span>
+    <span class="k">elif</span> <span class="n">coordsys</span> <span class="o">==</span> <span class="s">&#39;xy&#39;</span><span class="p">:</span>
+        <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Coordsys must be one of &#39;lonlat&#39;, &#39;xy&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_center</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span><span class="p">,</span> <span class="n">center_h</span><span class="p">))]</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geometry</span>
+
+</div>
+<div class="viewcode-block" id="get_timeshift"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.get_timeshift.html#obspy.signal.array_analysis.get_timeshift">[docs]</a><span class="k">def</span> <span class="nf">get_timeshift</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sll_x</span><span class="p">,</span> <span class="n">sll_y</span><span class="p">,</span> <span class="n">sl_s</span><span class="p">,</span> <span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns timeshift table for given array geometry</span>
+
+<span class="sd">    :param geometry: Nested list containing the arrays geometry, as returned by</span>
+<span class="sd">            get_group_geometry</span>
+<span class="sd">    :param sll_x: slowness x min (lower)</span>
+<span class="sd">    :param sll_y: slowness y min (lower)</span>
+<span class="sd">    :param sl_s: slowness step</span>
+<span class="sd">    :param grdpts_x: number of grid points in x direction</span>
+<span class="sd">    :param grdpts_x: number of grid points in y direction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># unoptimized version for reference</span>
+    <span class="c">#nstat = len(geometry)  # last index are center coordinates</span>
+    <span class="c">#</span>
+    <span class="c">#time_shift_tbl = np.empty((nstat, grdpts_x, grdpts_y), dtype=&quot;float32&quot;)</span>
+    <span class="c">#for k in xrange(grdpts_x):</span>
+    <span class="c">#    sx = sll_x + k * sl_s</span>
+    <span class="c">#    for l in xrange(grdpts_y):</span>
+    <span class="c">#        sy = sll_y + l * sl_s</span>
+    <span class="c">#        time_shift_tbl[:,k,l] = sx * geometry[:, 0] + sy * geometry[:,1]</span>
+    <span class="c">#time_shift_tbl[:, k, l] = sx * geometry[:, 0] + sy * geometry[:, 1]</span>
+    <span class="c">#return time_shift_tbl</span>
+    <span class="c"># optimized version</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">geometry</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sll_x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grdpts_x</span><span class="p">)</span> <span class="o">*</span> <span class="n">sl_s</span><span class="p">)</span>
+    <span class="n">my</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">geometry</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sll_y</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grdpts_y</span><span class="p">)</span> <span class="o">*</span> <span class="n">sl_s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span> \
+        <span class="n">mx</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">grdpts_y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+        <span class="n">my</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">grdpts_x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_spoint"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.get_spoint.html#obspy.signal.array_analysis.get_spoint">[docs]</a><span class="k">def</span> <span class="nf">get_spoint</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param stime: UTCDateTime to start</span>
+<span class="sd">    :param etime: UTCDateTime to end</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">slatest</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+    <span class="n">eearliest</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span>
+    <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">&gt;=</span> <span class="n">slatest</span><span class="p">:</span>
+            <span class="n">slatest</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="o">&lt;=</span> <span class="n">eearliest</span><span class="p">:</span>
+            <span class="n">eearliest</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span>
+
+    <span class="n">nostat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="n">spoint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nostat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;int32&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">epoint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nostat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;int32&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&quot;C&quot;</span><span class="p">)</span>
+    <span class="c"># now we have to adjust to the beginning of real start time</span>
+    <span class="k">if</span> <span class="n">slatest</span> <span class="o">&gt;</span> <span class="n">stime</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Specified start-time is smaller than starttime in stream&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">eearliest</span> <span class="o">&lt;</span> <span class="n">etime</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Specified end-time bigger is than endtime in stream&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">nostat</span><span class="p">):</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">stime</span> <span class="o">-</span> <span class="n">slatest</span><span class="p">)</span> <span class="o">/</span> <span class="n">stream</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">))</span>
+        <span class="n">negoffset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">eearliest</span> <span class="o">-</span> <span class="n">etime</span><span class="p">)</span> <span class="o">/</span> <span class="n">stream</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">))</span>
+        <span class="n">diffstart</span> <span class="o">=</span> <span class="n">slatest</span> <span class="o">-</span> <span class="n">stream</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+        <span class="n">frac</span><span class="p">,</span> <span class="n">ddummy</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">modf</span><span class="p">(</span><span class="n">diffstart</span><span class="p">)</span>
+        <span class="n">spoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ddummy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frac</span> <span class="o">&gt;</span> <span class="n">stream</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Difference in start times exceeds 25</span><span class="si">% o</span><span class="s">f samp rate&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">spoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">offset</span>
+        <span class="n">diffend</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">eearliest</span>
+        <span class="n">frac</span><span class="p">,</span> <span class="n">ddummy</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">modf</span><span class="p">(</span><span class="n">diffend</span><span class="p">)</span>
+        <span class="n">epoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ddummy</span><span class="p">)</span>
+        <span class="n">epoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">negoffset</span>
+
+    <span class="k">return</span> <span class="n">spoint</span><span class="p">,</span> <span class="n">epoint</span>
+
+</div>
+<div class="viewcode-block" id="array_transff_wavenumber"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.array_transff_wavenumber.html#obspy.signal.array_analysis.array_transff_wavenumber">[docs]</a><span class="k">def</span> <span class="nf">array_transff_wavenumber</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">klim</span><span class="p">,</span> <span class="n">kstep</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns array transfer function as a function of wavenumber difference</span>
+
+<span class="sd">    :type coords: numpy.ndarray</span>
+<span class="sd">    :param coords: coordinates of stations in longitude and latitude in degrees</span>
+<span class="sd">        elevation in km, or x, y, z in km</span>
+<span class="sd">    :type coordsys: string</span>
+<span class="sd">    :param coordsys: valid values: &#39;lonlat&#39; and &#39;xy&#39;, choose which coordinates</span>
+<span class="sd">        to use</span>
+<span class="sd">    :param klim: either a float to use symmetric limits for wavenumber</span>
+<span class="sd">        differences or the tupel (kxmin, kxmax, kymin, kymax)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">get_geometry</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klim</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">kxmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">klim</span>
+        <span class="n">kxmax</span> <span class="o">=</span> <span class="n">klim</span>
+        <span class="n">kymin</span> <span class="o">=</span> <span class="o">-</span><span class="n">klim</span>
+        <span class="n">kymax</span> <span class="o">=</span> <span class="n">klim</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klim</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">klim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">kxmin</span> <span class="o">=</span> <span class="n">klim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">kxmax</span> <span class="o">=</span> <span class="n">klim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">kymin</span> <span class="o">=</span> <span class="n">klim</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">kymax</span> <span class="o">=</span> <span class="n">klim</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;klim must either be a float or a tuple of length 4&#39;</span><span class="p">)</span>
+
+    <span class="n">nkx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">kxmax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">10.</span> <span class="o">-</span> <span class="n">kxmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">kstep</span><span class="p">)</span>
+    <span class="n">nky</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">kymax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">10.</span> <span class="o">-</span> <span class="n">kymin</span><span class="p">)</span> <span class="o">/</span> <span class="n">kstep</span><span class="p">)</span>
+
+    <span class="n">transff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nkx</span><span class="p">,</span> <span class="n">nky</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">kx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">kxmin</span><span class="p">,</span> <span class="n">kxmax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">kstep</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ky</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">kymin</span><span class="p">,</span> <span class="n">kymax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">kstep</span><span class="p">)):</span>
+            <span class="n">_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="n">j</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)):</span>
+                <span class="n">_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span>
+                        <span class="n">coords</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">kx</span> <span class="o">+</span> <span class="n">coords</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">ky</span><span class="p">))</span>
+            <span class="n">transff</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_sum</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+    <span class="n">transff</span> <span class="o">/=</span> <span class="n">transff</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">transff</span>
+
+</div>
+<div class="viewcode-block" id="array_transff_freqslowness"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.array_transff_freqslowness.html#obspy.signal.array_analysis.array_transff_freqslowness">[docs]</a><span class="k">def</span> <span class="nf">array_transff_freqslowness</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">slim</span><span class="p">,</span> <span class="n">sstep</span><span class="p">,</span> <span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="p">,</span> <span class="n">fstep</span><span class="p">,</span>
+                               <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns array transfer function as a function of slowness difference and</span>
+<span class="sd">    frequency.</span>
+
+<span class="sd">    :type coords: numpy.ndarray</span>
+<span class="sd">    :param coords: coordinates of stations in longitude and latitude in degrees</span>
+<span class="sd">        elevation in km, or x, y, z in km</span>
+<span class="sd">    :type coordsys: string</span>
+<span class="sd">    :param coordsys: valid values: &#39;lonlat&#39; and &#39;xy&#39;, choose which coordinates</span>
+<span class="sd">        to use</span>
+<span class="sd">    :param slim: either a float to use symmetric limits for slowness</span>
+<span class="sd">        differences or the tupel (sxmin, sxmax, symin, symax)</span>
+<span class="sd">    :type fmin: double</span>
+<span class="sd">    :param fmin: minimum frequency in signal</span>
+<span class="sd">    :type fmax: double</span>
+<span class="sd">    :param fmin: maximum frequency in signal</span>
+<span class="sd">    :type fstep: double</span>
+<span class="sd">    :param fmin: frequency sample distance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">get_geometry</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slim</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">sxmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">slim</span>
+        <span class="n">sxmax</span> <span class="o">=</span> <span class="n">slim</span>
+        <span class="n">symin</span> <span class="o">=</span> <span class="o">-</span><span class="n">slim</span>
+        <span class="n">symax</span> <span class="o">=</span> <span class="n">slim</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slim</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">slim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">sxmin</span> <span class="o">=</span> <span class="n">slim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sxmax</span> <span class="o">=</span> <span class="n">slim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">symin</span> <span class="o">=</span> <span class="n">slim</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">symax</span> <span class="o">=</span> <span class="n">slim</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;slim must either be a float or a tuple of length 4&#39;</span><span class="p">)</span>
+
+    <span class="n">nsx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">sxmax</span> <span class="o">+</span> <span class="n">sstep</span> <span class="o">/</span> <span class="mf">10.</span> <span class="o">-</span> <span class="n">sxmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">sstep</span><span class="p">)</span>
+    <span class="n">nsy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">symax</span> <span class="o">+</span> <span class="n">sstep</span> <span class="o">/</span> <span class="mf">10.</span> <span class="o">-</span> <span class="n">symin</span><span class="p">)</span> <span class="o">/</span> <span class="n">sstep</span><span class="p">)</span>
+    <span class="n">nf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">fmax</span> <span class="o">+</span> <span class="n">fstep</span> <span class="o">/</span> <span class="mf">10.</span> <span class="o">-</span> <span class="n">fmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">fstep</span><span class="p">)</span>
+
+    <span class="n">transff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nsx</span><span class="p">,</span> <span class="n">nsy</span><span class="p">))</span>
+    <span class="n">buff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nf</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sxmin</span><span class="p">,</span> <span class="n">sxmax</span> <span class="o">+</span> <span class="n">sstep</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">sstep</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">symin</span><span class="p">,</span> <span class="n">symax</span> <span class="o">+</span> <span class="n">sstep</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">sstep</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span> <span class="o">+</span> <span class="n">fstep</span> <span class="o">/</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">fstep</span><span class="p">)):</span>
+                <span class="n">_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="n">j</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)):</span>
+                    <span class="n">_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sx</span>
+                        <span class="o">+</span> <span class="n">coords</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sy</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span><span class="p">))</span>
+                <span class="n">buff</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_sum</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">transff</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cumtrapz</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">fstep</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">transff</span> <span class="o">/=</span> <span class="n">transff</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">transff</span>
+
+</div>
+<div class="viewcode-block" id="nop"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.nop.html#obspy.signal.array_analysis.nop">[docs]</a><span class="k">def</span> <span class="nf">nop</span><span class="p">(</span><span class="n">pow_map</span><span class="p">,</span> <span class="n">apow_map</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="dump"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.dump.html#obspy.signal.array_analysis.dump">[docs]</a><span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">pow_map</span><span class="p">,</span> <span class="n">apow_map</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s">&#39;pow_map_</span><span class="si">%d</span><span class="s">.npz&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">pow_map</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s">&#39;apow_map_</span><span class="si">%d</span><span class="s">.npz&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">apow_map</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="array_processing"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.array_analysis.array_processing.html#obspy.signal.array_analysis.array_processing">[docs]</a><span class="k">def</span> <span class="nf">array_processing</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">win_len</span><span class="p">,</span> <span class="n">win_frac</span><span class="p">,</span> <span class="n">sll_x</span><span class="p">,</span> <span class="n">slm_x</span><span class="p">,</span> <span class="n">sll_y</span><span class="p">,</span> <span class="n">slm_y</span><span class="p">,</span>
+    <span class="n">sl_s</span><span class="p">,</span> <span class="n">semb_thres</span><span class="p">,</span> <span class="n">vel_thres</span><span class="p">,</span> <span class="n">frqlow</span><span class="p">,</span> <span class="n">frqhigh</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">,</span> <span class="n">prewhiten</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;lonlat&#39;</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s">&#39;mlabday&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">store</span><span class="o">=</span><span class="n">nop</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for Seismic-Array-Beamforming/FK-Analysis/Capon</span>
+
+<span class="sd">    :param stream: Stream object, the trace.stats dict like class must</span>
+<span class="sd">        contain a obspy.core.util.AttribDict with &#39;latitude&#39;, &#39;longitude&#39; (in</span>
+<span class="sd">        degrees) and &#39;elevation&#39; (in km), or &#39;x&#39;, &#39;y&#39;, &#39;elevation&#39; (in km)</span>
+<span class="sd">        items/attributes. See param coordsys</span>
+<span class="sd">    :type win_len: Float</span>
+<span class="sd">    :param win_len: Sliding window length in seconds</span>
+<span class="sd">    :type win_frac: Float</span>
+<span class="sd">    :param win_frac: Fraction of sliding window to use for step</span>
+<span class="sd">    :type sll_x: Float</span>
+<span class="sd">    :param sll_x: slowness x min (lower)</span>
+<span class="sd">    :type slm_x: Float</span>
+<span class="sd">    :param slm_x: slowness x max</span>
+<span class="sd">    :type sll_y: Float</span>
+<span class="sd">    :param sll_y: slowness y min (lower)</span>
+<span class="sd">    :type slm_y: Float</span>
+<span class="sd">    :param slm_y: slowness y max</span>
+<span class="sd">    :type sl_s: Float</span>
+<span class="sd">    :param sl_s: slowness step</span>
+<span class="sd">    :type semb_thres: Float</span>
+<span class="sd">    :param semb_thres: Threshold for semblance</span>
+<span class="sd">    :type vel_thres: Float</span>
+<span class="sd">    :param vel_thres: Threshold for velocity</span>
+<span class="sd">    :type frqlow: Float</span>
+<span class="sd">    :param frqlow: lower frequency for fk/capon</span>
+<span class="sd">    :type frqhigh: Float</span>
+<span class="sd">    :param frqhigh: higher frequency for fk/capon</span>
+<span class="sd">    :type stime: UTCDateTime</span>
+<span class="sd">    :param stime: Starttime of interest</span>
+<span class="sd">    :type etime: UTCDateTime</span>
+<span class="sd">    :param etime: Endtime of interest</span>
+<span class="sd">    :type prewhiten: int</span>
+<span class="sd">    :param prewhiten: Do prewhitening, values: 1 or 0</span>
+<span class="sd">    :param coordsys: valid values: &#39;lonlat&#39; and &#39;xy&#39;, choose which stream</span>
+<span class="sd">        attributes to use for coordinates</span>
+<span class="sd">    :type timestamp: string</span>
+<span class="sd">    :param timestamp: valid values: &#39;julsec&#39; and &#39;mlabday&#39;; &#39;julsec&#39; returns</span>
+<span class="sd">        the timestamp in secons since 1970-01-01T00:00:00, &#39;mlabday&#39;</span>
+<span class="sd">        returns the timestamp in days (decimals represent hours, minutes</span>
+<span class="sd">        and seconds) since &#39;0001-01-01T00:00:00&#39; as needed for matplotlib</span>
+<span class="sd">        date plotting (see e.g. matplotlibs num2date)</span>
+<span class="sd">    :type method: int</span>
+<span class="sd">    :param method: the method to use 0 == bf, 1 == capon</span>
+<span class="sd">    :type store: int</span>
+<span class="sd">    :param store: a function which is called on each iteration with the</span>
+<span class="sd">        relative power map and the time offset as argument. Usefull for storing</span>
+<span class="sd">        or plotting the map for each iteration. For this purpose the dump and</span>
+<span class="sd">        nop function of this module can be used.</span>
+<span class="sd">    :return: numpy.ndarray of timestamp, relative relpow, absolute relpow,</span>
+<span class="sd">        backazimut, slowness</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">BF</span><span class="p">,</span> <span class="n">CAPON</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">eotr</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="c"># check that sampling rates do not vary</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sampling_rate</span><span class="o">=</span><span class="n">fs</span><span class="p">)):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;in sonic sampling rates of traces in stream are not equal&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">grdpts_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">slm_x</span> <span class="o">-</span> <span class="n">sll_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">sl_s</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">grdpts_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">slm_y</span> <span class="o">-</span> <span class="n">sll_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">sl_s</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">get_geometry</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="n">coordsys</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;geometry:&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;stream contains following traces:&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;stime = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stime</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, etime = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">etime</span><span class="p">))</span>
+
+    <span class="n">time_shift_table</span> <span class="o">=</span> <span class="n">get_timeshift</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sll_x</span><span class="p">,</span> <span class="n">sll_y</span><span class="p">,</span>
+                                     <span class="n">sl_s</span><span class="p">,</span> <span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">)</span>
+    <span class="c"># offset of arrays</span>
+    <span class="n">spoint</span><span class="p">,</span> <span class="n">_epoint</span> <span class="o">=</span> <span class="n">get_spoint</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">stime</span><span class="p">,</span> <span class="n">etime</span><span class="p">)</span>
+    <span class="c">#</span>
+    <span class="c"># loop with a sliding window over the dat trace array and apply bbfk</span>
+    <span class="c">#</span>
+    <span class="n">nstat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+    <span class="n">nsamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">win_len</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+    <span class="n">nstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nsamp</span> <span class="o">*</span> <span class="n">win_frac</span><span class="p">)</span>
+
+    <span class="c"># generate plan for rfftr</span>
+    <span class="n">nfft</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">nsamp</span><span class="p">)</span>
+    <span class="n">deltaf</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">nfft</span><span class="p">)</span>
+    <span class="n">nlow</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frqlow</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">deltaf</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">nhigh</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frqhigh</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">deltaf</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">nlow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nlow</span><span class="p">)</span>  <span class="c"># avoid using the offset</span>
+    <span class="n">nhigh</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nfft</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nhigh</span><span class="p">)</span>  <span class="c"># avoid using nyquist</span>
+    <span class="n">nf</span> <span class="o">=</span> <span class="n">nhigh</span> <span class="o">-</span> <span class="n">nlow</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c"># include upper and lower frequency</span>
+    <span class="c"># to spead up the routine a bit we estimate all steering vectors in advance</span>
+    <span class="n">steer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nf</span><span class="p">,</span> <span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">,</span> <span class="n">nstat</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;c16&#39;</span><span class="p">)</span>
+    <span class="n">clibsignal</span><span class="o">.</span><span class="n">calcSteer</span><span class="p">(</span><span class="n">nstat</span><span class="p">,</span> <span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">nlow</span><span class="p">,</span>
+        <span class="n">deltaf</span><span class="p">,</span> <span class="n">time_shift_table</span><span class="p">,</span> <span class="n">steer</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nf</span><span class="p">,</span> <span class="n">nstat</span><span class="p">,</span> <span class="n">nstat</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;c16&#39;</span><span class="p">)</span>
+    <span class="n">ft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstat</span><span class="p">,</span> <span class="n">nf</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;c16&#39;</span><span class="p">)</span>
+    <span class="n">newstart</span> <span class="o">=</span> <span class="n">stime</span>
+    <span class="n">tap</span> <span class="o">=</span> <span class="n">cosTaper</span><span class="p">(</span><span class="n">nsamp</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.22</span><span class="p">)</span>  <span class="c"># 0.22 matches 0.2 of historical C bbfk.c</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">relpow_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;f8&#39;</span><span class="p">)</span>
+    <span class="n">abspow_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;f8&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">eotr</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">spoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">:</span>
+                    <span class="n">spoint</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">nsamp</span><span class="p">]</span>
+                <span class="n">dat</span> <span class="o">=</span> <span class="p">(</span><span class="n">dat</span> <span class="o">-</span> <span class="n">dat</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">*</span> <span class="n">tap</span>
+                <span class="n">ft</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">nfft</span><span class="p">)[</span><span class="n">nlow</span><span class="p">:</span><span class="n">nlow</span> <span class="o">+</span> <span class="n">nf</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">ft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">ft</span><span class="p">,</span> <span class="s">&#39;c16&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">])</span>
+        <span class="n">relpow_map</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+        <span class="n">abspow_map</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+        <span class="c"># computing the covariances of the signal at different receivers</span>
+        <span class="n">dpow</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">nstat</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">nstat</span><span class="p">):</span>
+                <span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">ft</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">ft</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">CAPON</span><span class="p">:</span>
+                    <span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">R</span><span class="p">[:,</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dpow</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="n">dpow</span> <span class="o">*=</span> <span class="n">nstat</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">CAPON</span><span class="p">:</span>
+            <span class="c"># P(f) = 1/(e.H R(f)^-1 e)</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">nf</span><span class="p">):</span>
+                <span class="n">R</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">rcond</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+
+        <span class="n">errcode</span> <span class="o">=</span> <span class="n">clibsignal</span><span class="o">.</span><span class="n">generalizedBeamformer</span><span class="p">(</span><span class="n">relpow_map</span><span class="p">,</span> <span class="n">abspow_map</span><span class="p">,</span>
+            <span class="n">steer</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">,</span> <span class="n">nstat</span><span class="p">,</span> <span class="n">prewhiten</span><span class="p">,</span> <span class="n">grdpts_x</span><span class="p">,</span> <span class="n">grdpts_y</span><span class="p">,</span> <span class="n">nfft</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span>
+            <span class="n">dpow</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;generalizedBeamforming exited with error </span><span class="si">%d</span><span class="s">&#39;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="n">errcode</span><span class="p">)</span>
+        <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">relpow_map</span><span class="o">.</span><span class="n">argmax</span><span class="p">(),</span> <span class="n">relpow_map</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">relpow</span><span class="p">,</span> <span class="n">abspow</span> <span class="o">=</span> <span class="n">relpow_map</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">],</span> <span class="n">abspow_map</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span>
+        <span class="n">store</span><span class="p">(</span><span class="n">relpow_map</span><span class="p">,</span> <span class="n">abspow_map</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+        <span class="c"># here we compute baz, slow</span>
+        <span class="n">slow_x</span> <span class="o">=</span> <span class="n">sll_x</span> <span class="o">+</span> <span class="n">ix</span> <span class="o">*</span> <span class="n">sl_s</span>
+        <span class="n">slow_y</span> <span class="o">=</span> <span class="n">sll_y</span> <span class="o">+</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">sl_s</span>
+
+        <span class="n">slow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">slow_x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">slow_y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slow</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
+            <span class="n">slow</span> <span class="o">=</span> <span class="mf">1e-8</span>
+        <span class="n">azimut</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">slow_x</span><span class="p">,</span> <span class="n">slow_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">baz</span> <span class="o">=</span> <span class="n">azimut</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">azimut</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span>
+        <span class="k">if</span> <span class="n">relpow</span> <span class="o">&gt;</span> <span class="n">semb_thres</span> <span class="ow">and</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">slow</span> <span class="o">&gt;</span> <span class="n">vel_thres</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">newstart</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">relpow</span><span class="p">,</span> <span class="n">abspow</span><span class="p">,</span> <span class="n">baz</span><span class="p">,</span>
+                                 <span class="n">slow</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">newstart</span><span class="p">,</span> <span class="p">(</span><span class="n">newstart</span> <span class="o">+</span> <span class="p">(</span><span class="n">nsamp</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)),</span> <span class="n">res</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">newstart</span> <span class="o">+</span> <span class="p">(</span><span class="n">nsamp</span> <span class="o">+</span> <span class="n">nstep</span><span class="p">)</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">etime</span><span class="p">:</span>
+            <span class="n">eotr</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">offset</span> <span class="o">+=</span> <span class="n">nstep</span>
+
+        <span class="n">newstart</span> <span class="o">+=</span> <span class="n">nstep</span> <span class="o">/</span> <span class="n">fs</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">timestamp</span> <span class="o">==</span> <span class="s">&#39;julsec&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">timestamp</span> <span class="o">==</span> <span class="s">&#39;mlabday&#39;</span><span class="p">:</span>
+        <span class="c"># 719162 == hours between 1970 and 0001</span>
+        <span class="n">res</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mf">24.</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">+</span> <span class="mi">719162</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Option timestamp must be one of &#39;julsec&#39;, or &#39;mlabday&#39;&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

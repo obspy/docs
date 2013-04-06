@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13. Seismometer Correction/Simulation &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="14. Clone an Existing Dataless SEED File" href="clone_dataless_seed.html" />
+    <link rel="prev" title="12. Poles and Zeros, Frequency Response" href="frequency_response.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="clone_dataless_seed.html" title="14. Clone an Existing Dataless SEED File"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="frequency_response.html" title="12. Poles and Zeros, Frequency Response"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="seismometer-correction-simulation">
+<h1>13. Seismometer Correction/Simulation<a class="headerlink" href="#seismometer-correction-simulation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-a-paz-dictionary">
+<h2>13.1. Using a PAZ dictionary<a class="headerlink" href="#using-a-paz-dictionary" title="Permalink to this headline">¶</a></h2>
+<p>The following script shows how to simulate a 1Hz seismometer from a STS-2
+seismometer with the given poles and zeros. Poles, zeros, gain
+(<em>A0 normalization factor</em>) and sensitivity (<em>overall sensitivity</em>) are
+specified as keys of a dictionary.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cornFreq2Paz</span>
+
+<span class="n">paz_sts2</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.037004</span> <span class="o">+</span> <span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.037004</span> <span class="o">-</span> <span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">251.33</span> <span class="o">+</span> <span class="mi">0</span><span class="n">j</span><span class="p">,</span>
+              <span class="o">-</span> <span class="mf">131.04</span> <span class="o">-</span> <span class="mf">467.29</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">131.04</span> <span class="o">+</span> <span class="mf">467.29</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">60077000.0</span><span class="p">,</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">2516778400.0</span><span class="p">}</span>
+<span class="n">paz_1hz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">damp</span><span class="o">=</span><span class="mf">0.707</span><span class="p">)</span>  <span class="c"># 1Hz instrument</span>
+<span class="n">paz_1hz</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="c"># make a copy to keep our original data</span>
+<span class="n">st_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># Simulate instrument given poles, zeros and gain of</span>
+<span class="c"># the original and desired instrument</span>
+<span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="n">paz_sts2</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">paz_1hz</span><span class="p">)</span>
+
+<span class="c"># plot original and simulated data</span>
+<span class="n">st_orig</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/seismometer_correction_simulation_1_00.png" src="../../_images/seismometer_correction_simulation_1_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_1_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/seismometer_correction_simulation_1_01.png" src="../../_images/seismometer_correction_simulation_1_01.png" />
+</div>
+<p>For more customized plotting we could also work with <a class="reference external" href="http://matplotlib.sourceforge.net/">matplotlib</a> manually from
+here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tr_orig</span> <span class="o">=</span> <span class="n">st_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">)</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tr_orig</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;STS-2 [counts]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;1Hz Instrument [m/s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Time [s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_2.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_2.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_2.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/seismometer_correction_simulation_2.png" src="../../_images/seismometer_correction_simulation_2.png" />
+</div>
+</div>
+<div class="section" id="using-a-resp-file">
+<h2>13.2. Using a RESP file<a class="headerlink" href="#using-a-resp-file" title="Permalink to this headline">¶</a></h2>
+<p>It is further possible to use <a class="reference external" href="http://www.iris.edu/software/downloads/seed_tools/">evalresp</a> to evaluate the instrument
+response information from a RESP file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c"># MW 7.1 Darfield earthquake, New Zealand</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-09-3T16:30:00.000&quot;</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-09-3T17:00:00.000&quot;</span><span class="p">)</span>
+
+<span class="c"># Fetch waveform from IRIS web service into a ObsPy stream object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&#39;NZ&#39;</span><span class="p">,</span> <span class="s">&#39;BFZ&#39;</span><span class="p">,</span> <span class="s">&#39;10&#39;</span><span class="p">,</span> <span class="s">&#39;HHZ&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+
+<span class="c"># Download and save instrument response file into a temporary file</span>
+<span class="n">respf</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+<span class="n">client</span><span class="o">.</span><span class="n">saveResponse</span><span class="p">(</span><span class="n">respf</span><span class="p">,</span> <span class="s">&#39;NZ&#39;</span><span class="p">,</span> <span class="s">&#39;BFZ&#39;</span><span class="p">,</span> <span class="s">&#39;10&#39;</span><span class="p">,</span> <span class="s">&#39;HHZ&#39;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;RESP&quot;</span><span class="p">)</span>
+
+<span class="c"># make a copy to keep our original data</span>
+<span class="n">st_orig</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c"># define a filter band to prevent amplifying noise during the deconvolution</span>
+<span class="n">fl1</span> <span class="o">=</span> <span class="mf">0.005</span>
+<span class="n">fl2</span> <span class="o">=</span> <span class="mf">0.006</span>
+<span class="n">fl3</span> <span class="o">=</span> <span class="mf">30.</span>
+<span class="n">fl4</span> <span class="o">=</span> <span class="mf">35.</span>
+
+<span class="c"># this can be the date of your raw data or any date for which the</span>
+<span class="c"># SEED RESP-file is valid</span>
+<span class="n">date</span> <span class="o">=</span> <span class="n">t1</span>
+
+<span class="n">seedresp</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;filename&#39;</span><span class="p">:</span> <span class="n">respf</span><span class="p">,</span>  <span class="c"># RESP filename</span>
+            <span class="s">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+            <span class="s">&#39;units&#39;</span><span class="p">:</span> <span class="s">&#39;VEL&#39;</span>  <span class="c"># Units to return response in (&#39;DIS&#39;, &#39;VEL&#39; or ACC)</span>
+<span class="p">}</span>
+
+<span class="c"># Remove instrument response using the information from the given RESP file</span>
+<span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pre_filt</span><span class="o">=</span><span class="p">(</span><span class="n">fl1</span><span class="p">,</span> <span class="n">fl2</span><span class="p">,</span> <span class="n">fl3</span><span class="p">,</span> <span class="n">fl4</span><span class="p">),</span> <span class="n">seedresp</span><span class="o">=</span><span class="n">seedresp</span><span class="p">)</span>
+
+<span class="c"># plot original and simulated data</span>
+<span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tr_orig</span> <span class="o">=</span> <span class="n">st_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">)</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">tr_orig</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;STS-2 [counts]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Velocity [m/s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Time [s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c"># cleanup - delete temporary file</span>
+<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">respf</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_3.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_3.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/seismometer_correction_simulation_3.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/seismometer_correction_simulation_3.png" src="../../_images/seismometer_correction_simulation_3.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">13. Seismometer Correction/Simulation</a><ul>
+<li><a class="reference internal" href="#using-a-paz-dictionary">13.1. Using a PAZ dictionary</a></li>
+<li><a class="reference internal" href="#using-a-resp-file">13.2. Using a RESP file</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/seismometer_correction_simulation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="clone_dataless_seed.html" title="14. Clone an Existing Dataless SEED File"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="frequency_response.html" title="12. Poles and Zeros, Frequency Response"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

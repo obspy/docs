@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.sh.core &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.sh.core</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SH bindings to ObsPy core module.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">Stats</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">loadtxt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="n">MONTHS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;JAN&#39;</span><span class="p">,</span> <span class="s">&#39;FEB&#39;</span><span class="p">,</span> <span class="s">&#39;MAR&#39;</span><span class="p">,</span> <span class="s">&#39;APR&#39;</span><span class="p">,</span> <span class="s">&#39;MAY&#39;</span><span class="p">,</span> <span class="s">&#39;JUN&#39;</span><span class="p">,</span> <span class="s">&#39;JUL&#39;</span><span class="p">,</span> <span class="s">&#39;AUG&#39;</span><span class="p">,</span> <span class="s">&#39;SEP&#39;</span><span class="p">,</span>
+          <span class="s">&#39;OCT&#39;</span><span class="p">,</span> <span class="s">&#39;NOV&#39;</span><span class="p">,</span> <span class="s">&#39;DEC&#39;</span><span class="p">]</span>
+
+<span class="n">SH_IDX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;LENGTH&#39;</span><span class="p">:</span> <span class="s">&#39;L001&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SIGN&#39;</span><span class="p">:</span> <span class="s">&#39;I011&#39;</span><span class="p">,</span>
+    <span class="s">&#39;EVENTNO&#39;</span><span class="p">:</span> <span class="s">&#39;I012&#39;</span><span class="p">,</span>
+    <span class="s">&#39;MARK&#39;</span><span class="p">:</span> <span class="s">&#39;I014&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DELTA&#39;</span><span class="p">:</span> <span class="s">&#39;R000&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CALIB&#39;</span><span class="p">:</span> <span class="s">&#39;R026&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DISTANCE&#39;</span><span class="p">:</span> <span class="s">&#39;R011&#39;</span><span class="p">,</span>
+    <span class="s">&#39;AZIMUTH&#39;</span><span class="p">:</span> <span class="s">&#39;R012&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SLOWNESS&#39;</span><span class="p">:</span> <span class="s">&#39;R018&#39;</span><span class="p">,</span>
+    <span class="s">&#39;INCI&#39;</span><span class="p">:</span> <span class="s">&#39;R013&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DEPTH&#39;</span><span class="p">:</span> <span class="s">&#39;R014&#39;</span><span class="p">,</span>
+    <span class="s">&#39;MAGNITUDE&#39;</span><span class="p">:</span> <span class="s">&#39;R015&#39;</span><span class="p">,</span>
+    <span class="s">&#39;LAT&#39;</span><span class="p">:</span> <span class="s">&#39;R016&#39;</span><span class="p">,</span>
+    <span class="s">&#39;LON&#39;</span><span class="p">:</span> <span class="s">&#39;R017&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SIGNOISE&#39;</span><span class="p">:</span> <span class="s">&#39;R022&#39;</span><span class="p">,</span>
+    <span class="s">&#39;PWDW&#39;</span><span class="p">:</span> <span class="s">&#39;R023&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DCVREG&#39;</span><span class="p">:</span> <span class="s">&#39;R024&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DCVINCI&#39;</span><span class="p">:</span> <span class="s">&#39;R025&#39;</span><span class="p">,</span>
+    <span class="s">&#39;COMMENT&#39;</span><span class="p">:</span> <span class="s">&#39;S000&#39;</span><span class="p">,</span>
+    <span class="s">&#39;STATION&#39;</span><span class="p">:</span> <span class="s">&#39;S001&#39;</span><span class="p">,</span>
+    <span class="s">&#39;OPINFO&#39;</span><span class="p">:</span> <span class="s">&#39;S002&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FILTER&#39;</span><span class="p">:</span> <span class="s">&#39;S011&#39;</span><span class="p">,</span>
+    <span class="s">&#39;QUAL&#39;</span><span class="p">:</span> <span class="s">&#39;S012&#39;</span><span class="p">,</span>
+    <span class="s">&#39;COMP&#39;</span><span class="p">:</span> <span class="s">&#39;C000&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CHAN1&#39;</span><span class="p">:</span> <span class="s">&#39;C001&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CHAN2&#39;</span><span class="p">:</span> <span class="s">&#39;C002&#39;</span><span class="p">,</span>
+    <span class="s">&#39;BYTEORDER&#39;</span><span class="p">:</span> <span class="s">&#39;C003&#39;</span><span class="p">,</span>
+    <span class="s">&#39;START&#39;</span><span class="p">:</span> <span class="s">&#39;S021&#39;</span><span class="p">,</span>
+    <span class="s">&#39;P-ONSET&#39;</span><span class="p">:</span> <span class="s">&#39;S022&#39;</span><span class="p">,</span>
+    <span class="s">&#39;S-ONSET&#39;</span><span class="p">:</span> <span class="s">&#39;S023&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ORIGIN&#39;</span><span class="p">:</span> <span class="s">&#39;S024&#39;</span>
+<span class="p">}</span>
+
+<span class="n">STANDARD_ASC_HEADERS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;START&#39;</span><span class="p">,</span> <span class="s">&#39;COMP&#39;</span><span class="p">,</span> <span class="s">&#39;CHAN1&#39;</span><span class="p">,</span> <span class="s">&#39;CHAN2&#39;</span><span class="p">,</span> <span class="s">&#39;STATION&#39;</span><span class="p">,</span> <span class="s">&#39;CALIB&#39;</span><span class="p">]</span>
+
+<span class="n">SH_KEYS_INT</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">SH_IDX</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;I&#39;</span><span class="p">)]</span>
+<span class="n">SH_KEYS_FLOAT</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">SH_IDX</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">)]</span>
+<span class="n">INVERTED_SH_IDX</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">SH_IDX</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()])</span>
+
+
+<div class="viewcode-block" id="isASC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.isASC.html#obspy.sh.core.isASC">[docs]</a><span class="k">def</span> <span class="nf">isASC</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is a Seismic Handler ASCII file or not.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the ASCII file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a Seismic Handler ASCII file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isASC(&quot;/path/to/QFILE-TEST-ASC.ASC&quot;)  #doctest: +SKIP</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># first six chars should contain &#39;DELTA:&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="s">&#39;DELTA:&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readASC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.readASC.html#obspy.sh.core.readASC">[docs]</a><span class="k">def</span> <span class="nf">readASC</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a Seismic Handler ASCII file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: ASCII file to be read.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the head. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :type skip: int, optional</span>
+<span class="sd">    :param skip: Number of lines to be skipped from top of file. If defined</span>
+<span class="sd">        only one trace is read from file.</span>
+<span class="sd">    :type delta: float, optional</span>
+<span class="sd">    :param delta: If &quot;skip&quot; is used, &quot;delta&quot; defines sample offset in seconds.</span>
+<span class="sd">    :type length: int, optional</span>
+<span class="sd">    :param length: If &quot;skip&quot; is used, &quot;length&quot; defines the number of values to</span>
+<span class="sd">        be read.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/QFILE-TEST-ASC.ASC&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; st  # doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;obspy.core.stream.Stream object at 0x...&gt;</span>
+<span class="sd">    &gt;&gt;&gt; print(st)  # doctest: +ELLIPSIS</span>
+<span class="sd">    3 Trace(s) in Stream:</span>
+<span class="sd">    .TEST..BHN | 2009-10-01T12:46:01.000000Z - ... | 20.0 Hz, 801 samples</span>
+<span class="sd">    .TEST..BHE | 2009-10-01T12:46:01.000000Z - ... | 20.0 Hz, 801 samples</span>
+<span class="sd">    .WET..HHZ  | 2010-01-01T01:01:05.999000Z - ... | 100.0 Hz, 4001 samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span>
+    <span class="c"># read file and split text into channels</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="n">skip</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+            <span class="c"># blank line</span>
+            <span class="c"># check if any data fetched yet</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c"># append current channel</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+            <span class="c"># create new channel</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">skip</span><span class="p">:</span>
+                <span class="c"># if skip is set only one trace is read, everything else makes</span>
+                <span class="c"># no sense.</span>
+                <span class="k">break</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+            <span class="c"># header entry</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># data entry - may be written in multiple columns</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c"># create ObsPy stream object</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="c"># custom header</span>
+    <span class="n">custom_header</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">delta</span><span class="p">:</span>
+        <span class="n">custom_header</span><span class="p">[</span><span class="s">&quot;delta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span>
+    <span class="k">if</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">custom_header</span><span class="p">[</span><span class="s">&quot;npts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">length</span>
+
+    <span class="k">for</span> <span class="n">headers</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="c"># create Stats</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">Stats</span><span class="p">(</span><span class="n">custom_header</span><span class="p">)</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">]</span>
+        <span class="c"># generate headers</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;DELTA&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;LENGTH&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;CALIB&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;calib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;STATION&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;COMP&#39;</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;CHAN1&#39;</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;CHAN2&#39;</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;START&#39;</span><span class="p">:</span>
+                <span class="c"># 01-JAN-2009_01:01:01.0</span>
+                <span class="c"># 1-OCT-2009_12:46:01.000</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># everything else gets stored into sh entry</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SH_KEYS_INT</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SH_KEYS_FLOAT</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c"># set channel code</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># read data</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">ndlim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c"># cut data if requested</span>
+            <span class="k">if</span> <span class="n">skip</span> <span class="ow">and</span> <span class="n">length</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span>
+
+            <span class="c"># use correct value in any case</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&quot;npts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">stream</span>
+
+</div>
+<div class="viewcode-block" id="writeASC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.writeASC.html#obspy.sh.core.writeASC">[docs]</a><span class="k">def</span> <span class="nf">writeASC</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">included_headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">npl</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+             <span class="n">custom_format</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%-.6e</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a Seismic Handler ASCII file from given ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the ASCII file to write.</span>
+<span class="sd">    :type npl: int, optional</span>
+<span class="sd">    :param npl: Number of data columns in file, default to four.</span>
+<span class="sd">    :type included_headers: list or None, optional</span>
+<span class="sd">    :param included_headers: If set to a list, only these header entries will</span>
+<span class="sd">        be written to file. DELTA and LENGTH are written in any case. If it&#39;s</span>
+<span class="sd">        set to None, a basic set will be included.</span>
+<span class="sd">    :type custom_format: string, optional</span>
+<span class="sd">    :param custom_format: Parameter for number formatting of samples, defaults</span>
+<span class="sd">        to &quot;%-.6e&quot;.</span>
+<span class="sd">    :type append: bool, optional</span>
+<span class="sd">    :param append: If filename exists append all data to file, default False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">included_headers</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">included_headers</span> <span class="o">=</span> <span class="n">STANDARD_ASC_HEADERS</span>
+
+    <span class="k">if</span> <span class="n">append</span><span class="p">:</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;ab&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="c"># write headers</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;DELTA: </span><span class="si">%-.6e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;LENGTH: </span><span class="si">%d</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">)</span>
+        <span class="c"># additional headers</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;sh&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">included_headers</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="c"># special format for start time</span>
+        <span class="k">if</span> <span class="s">&quot;START&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;START: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">fromUTCDateTime</span><span class="p">(</span><span class="n">dt</span><span class="p">))</span>
+        <span class="c"># component must be split</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s">&quot;COMP&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;COMP: </span><span class="si">%c</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s">&quot;CHAN1&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;CHAN1: </span><span class="si">%c</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s">&quot;CHAN2&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;CHAN2: </span><span class="si">%c</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&quot;STATION&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;STATION: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&quot;CALIB&quot;</span> <span class="ow">in</span> <span class="n">included_headers</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;CALIB: </span><span class="si">%-.6e</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span><span class="p">))</span>
+        <span class="c"># write data in npl columns</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">([</span><span class="s">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">npl</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">]</span>
+        <span class="n">delimiter</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="p">((</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">/</span> <span class="n">npl</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">delimiter</span> <span class="o">=</span> <span class="n">delimiter</span><span class="p">[:</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">delimiter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">delim</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">custom_format</span> <span class="o">%</span> <span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">delim</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="isQ"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.isQ.html#obspy.sh.core.isQ">[docs]</a><span class="k">def</span> <span class="nf">isQ</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is a Seismic Handler Q file or not.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the Q file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a Seismic Handler Q file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isQ(&quot;/path/to/QFILE-TEST.QHD&quot;)  #doctest: +SKIP</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># file must start with magic number 43981</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="s">&#39;43981&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readQ"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.readQ.html#obspy.sh.core.readQ">[docs]</a><span class="k">def</span> <span class="nf">readQ</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">data_directory</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s">&#39;=&#39;</span><span class="p">,</span>
+          <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a Seismic Handler Q file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Q header file to be read. Must have a `QHD` file</span>
+<span class="sd">        extension.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the head. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :type data_directory: str, optional</span>
+<span class="sd">    :param data_directory: Data directory where the corresponding QBN file can</span>
+<span class="sd">        be found.</span>
+<span class="sd">    :type byteorder: ``&#39;&lt;&#39;``, ``&#39;&gt;&#39;``, or ``&#39;=&#39;``, optional</span>
+<span class="sd">    :param byteorder: Enforce byte order for data file. This is important for</span>
+<span class="sd">        Q files written in older versions of Seismic Handler, which don&#39;t</span>
+<span class="sd">        explicit state the `BYTEORDER` flag within the header file. Defaults</span>
+<span class="sd">        to ``&#39;=&#39;`` (local byte order).</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    Q files consists of two files per data set:</span>
+
+<span class="sd">     * a ASCII header file with file extension `QHD` and the</span>
+<span class="sd">     * binary data file with file extension `QBN`.</span>
+
+<span class="sd">    The read method only accepts header files for the ``filename`` parameter.</span>
+<span class="sd">    ObsPy assumes that the corresponding data file is within the same directory</span>
+<span class="sd">    if the ``data_directory`` parameter is not set. Otherwise it will search</span>
+<span class="sd">    in the given ``data_directory`` for a file with the `QBN` file extension.</span>
+<span class="sd">    This function should NOT be called directly, it registers via the</span>
+<span class="sd">    ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/QFILE-TEST.QHD&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; st    #doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;obspy.core.stream.Stream object at 0x...&gt;</span>
+<span class="sd">    &gt;&gt;&gt; print(st)  # doctest: +ELLIPSIS</span>
+<span class="sd">    3 Trace(s) in Stream:</span>
+<span class="sd">    .TEST..BHN | 2009-10-01T12:46:01.000000Z - ... | 20.0 Hz, 801 samples</span>
+<span class="sd">    .TEST..BHE | 2009-10-01T12:46:01.000000Z - ... | 20.0 Hz, 801 samples</span>
+<span class="sd">    .WET..HHZ  | 2010-01-01T01:01:05.999000Z - ... | 100.0 Hz, 4001 samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_directory</span><span class="p">:</span>
+            <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.QBN&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="n">data_file</span> <span class="o">+</span> <span class="s">&#39;.QBN&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">data_file</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Can&#39;t find corresponding QBN file at </span><span class="si">%s</span><span class="s">.&quot;</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="n">data_file</span><span class="p">)</span>
+        <span class="n">fh_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="c"># loop through read header file</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">cmtlines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="c"># comment lines</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cmtlines</span><span class="p">):</span>
+        <span class="n">comments</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()]</span>
+    <span class="c"># trace lines</span>
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">cid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">cid</span> <span class="o">!=</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">cid</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">traces</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">traces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="c"># create stream object</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">traces</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="c"># fetch headers</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;FROMQ&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="s">&quot;FILE&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;L001&#39;</span><span class="p">:</span>
+                <span class="n">npts</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;L000&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;R000&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;R026&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;calib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;S001&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C000&#39;</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C001&#39;</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C002&#39;</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">channel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;C003&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+                    <span class="n">byteorder</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="s">&#39;BYTEORDER&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;S021&#39;</span><span class="p">:</span>
+                <span class="c"># 01-JAN-2009_01:01:01.0</span>
+                <span class="c"># 1-OCT-2009_12:46:01.000</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;S022&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="s">&#39;P-ONSET&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;S023&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="s">&#39;S-ONSET&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;S024&#39;</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="s">&#39;ORIGIN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">INVERTED_SH_IDX</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SH_KEYS_INT</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SH_KEYS_FLOAT</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c"># set channel code</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="c"># remember record number</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;sh&#39;</span><span class="p">][</span><span class="s">&#39;RECNO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">npts</span><span class="p">:</span>
+                <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="c"># read data</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">fh_data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">npts</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">byteorder</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="c"># convert to system byte order</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;=f4&#39;</span><span class="p">)</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="n">fh_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">stream</span>
+
+</div>
+<div class="viewcode-block" id="writeQ"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.writeQ.html#obspy.sh.core.writeQ">[docs]</a><span class="k">def</span> <span class="nf">writeQ</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data_directory</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+           <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a Seismic Handler Q file from given ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the Q file to write.</span>
+<span class="sd">    :type data_directory: str, optional</span>
+<span class="sd">    :param data_directory: Data directory where the corresponding QBN will be</span>
+<span class="sd">        written.</span>
+<span class="sd">    :type byteorder: ``&#39;&lt;&#39;``, ``&#39;&gt;&#39;``, or ``&#39;=&#39;``, optional</span>
+<span class="sd">    :param byteorder: Enforce byte order for data file. Defaults to ``&#39;=&#39;``</span>
+<span class="sd">        (local byte order).</span>
+<span class="sd">    :type append: bool, optional</span>
+<span class="sd">    :param append: If filename exists append all data to file, default False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.QHD&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.QBN&#39;</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">data_directory</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">filename_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filename_data</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="n">filename_header</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.QHD&#39;</span>
+
+    <span class="c"># if the header file exists its assumed that the data is also there</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename_header</span><span class="p">)</span> <span class="ow">and</span> <span class="n">append</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trcs</span> <span class="o">=</span> <span class="n">readQ</span><span class="p">(</span><span class="n">filename_header</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;ab&#39;</span>
+            <span class="n">count_offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trcs</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Target filename &#39;</span><span class="si">%s</span><span class="s">&#39; not readable!&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">append</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;wb&#39;</span>
+        <span class="n">count_offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_header</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="n">fh_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_data</span> <span class="o">+</span> <span class="s">&#39;.QBN&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="c"># build up header strings</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">minnol</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">cur_npts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="s">&quot;L000:</span><span class="si">%d</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">cur_npts</span>
+        <span class="n">cur_npts</span> <span class="o">+=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+        <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;L001:</span><span class="si">%d</span><span class="s">~ R000:</span><span class="si">%f</span><span class="s">~ R026:</span><span class="si">%f</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">,</span>
+                                                 <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span>
+                                                 <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;S001:</span><span class="si">%s</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+        <span class="c"># component must be split</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;C000:</span><span class="si">%c</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;C001:</span><span class="si">%c</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;C002:</span><span class="si">%c</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># special format for start time</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+        <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;S021:</span><span class="si">%s</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="n">fromUTCDateTime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;sh&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="c"># skip unknown keys</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SH_IDX</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="c"># convert UTCDateTimes into strings</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">fromUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">~ &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">SH_IDX</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="c"># get maximal number of trclines</span>
+        <span class="n">nol</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">/</span> <span class="mi">74</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">nol</span> <span class="o">&gt;</span> <span class="n">minnol</span><span class="p">:</span>
+            <span class="n">minnol</span> <span class="o">=</span> <span class="n">nol</span>
+    <span class="c"># first line: magic number, cmtlines, trclines</span>
+    <span class="c"># XXX: comment lines are ignored</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">append</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;43981 1 </span><span class="si">%d</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">minnol</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+        <span class="c"># write headers</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">:</span><span class="n">j</span> <span class="o">+</span> <span class="mi">74</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">74</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">minnol</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%02d</span><span class="s">|</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">count_offset</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span><span class="p">,</span> <span class="n">temp</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%02d</span><span class="s">|</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">count_offset</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="c"># write data in given byte order</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">byteorder</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">fh_data</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">fh_data</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="toUTCDateTime"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.toUTCDateTime.html#obspy.sh.core.toUTCDateTime">[docs]</a><span class="k">def</span> <span class="nf">toUTCDateTime</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts time string used within Seismic Handler into a UTCDateTime.</span>
+
+<span class="sd">    :type value: str</span>
+<span class="sd">    :param value: A Date time string.</span>
+<span class="sd">    :return: Converted :class:`~obspy.core.UTCDateTime` object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39; 2-JAN-2008_03:04:05.123&#39;)</span>
+<span class="sd">    UTCDateTime(2008, 1, 2, 3, 4, 5, 123000)</span>
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39;2-JAN-2008&#39;)</span>
+<span class="sd">    UTCDateTime(2008, 1, 2, 0, 0)</span>
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39;2-JAN-08&#39;)</span>
+<span class="sd">    UTCDateTime(2008, 1, 2, 0, 0)</span>
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39;2-JAN-99&#39;)</span>
+<span class="sd">    UTCDateTime(1999, 1, 2, 0, 0)</span>
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39;2-JAN-2008_1&#39;)</span>
+<span class="sd">    UTCDateTime(2008, 1, 2, 1, 0)</span>
+<span class="sd">    &gt;&gt;&gt; toUTCDateTime(&#39;2-JAN-2008_1:1&#39;)</span>
+<span class="sd">    UTCDateTime(2008, 1, 2, 1, 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">date</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="s">&quot;0:0:0&quot;</span>
+    <span class="n">day</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">hour</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">secs</span> <span class="o">=</span> <span class="n">time</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">hour</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="s">&quot;0&quot;</span>
+        <span class="n">secs</span> <span class="o">=</span> <span class="s">&quot;0&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">mins</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="n">MONTHS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">month</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">70</span><span class="p">:</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="s">&quot;20&quot;</span> <span class="o">+</span> <span class="n">year</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="s">&quot;19&quot;</span> <span class="o">+</span> <span class="n">year</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hour</span><span class="p">)</span>
+    <span class="n">mins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mins</span><span class="p">)</span>
+    <span class="n">secs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">secs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">mins</span><span class="p">)</span> <span class="o">+</span> <span class="n">secs</span>
+
+</div>
+<div class="viewcode-block" id="fromUTCDateTime"><a class="viewcode-back" href="../../../packages/autogen/obspy.sh.core.fromUTCDateTime.html#obspy.sh.core.fromUTCDateTime">[docs]</a><span class="k">def</span> <span class="nf">fromUTCDateTime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts UTCDateTime object into a time string used within Seismic Handler.</span>
+
+<span class="sd">    :type dt: :class:`~obspy.core.UTCDateTime`</span>
+<span class="sd">    :param dt: A UTCDateTime object.</span>
+<span class="sd">    :return: Converted date time string usable by Seismic Handler.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">    &gt;&gt;&gt; dt = UTCDateTime(2008, 1, 2, 3, 4, 5, 123456)</span>
+<span class="sd">    &gt;&gt;&gt; fromUTCDateTime(dt)</span>
+<span class="sd">    &#39; 2-JAN-2008_03:04:05.123&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%2d</span><span class="s">-</span><span class="si">%3s</span><span class="s">-</span><span class="si">%4d</span><span class="s">_</span><span class="si">%02d</span><span class="s">:</span><span class="si">%02d</span><span class="s">:</span><span class="si">%02d</span><span class="s">.</span><span class="si">%03d</span><span class="s">&quot;</span>
+
+    <span class="k">return</span> <span class="n">pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">MONTHS</span><span class="p">[</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                        <span class="n">dt</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">second</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

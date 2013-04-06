@@ -1,0 +1,23 @@
+obspy.core.util.base.FILE
+=========================
+
+.. currentmodule:: obspy.core.util.base
+.. autoclass:: FILE
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~FILE.__dict__
+     ~FILE.__doc__
+     ~FILE.__module__
+     ~FILE.__weakref__
+  
+  
+
+  
+  
+  

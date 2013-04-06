@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.invsim.seisSim &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.invsim" href="obspy.signal.invsim.html" />
+    <link rel="next" title="obspy.signal.invsim.specInv" href="obspy.signal.invsim.specInv.html" />
+    <link rel="prev" title="obspy.signal.invsim.pazToFreqResp" href="obspy.signal.invsim.pazToFreqResp.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.specInv.html" title="obspy.signal.invsim.specInv"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.pazToFreqResp.html" title="obspy.signal.invsim.pazToFreqResp"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" accesskey="U">obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-invsim-seissim">
+<h1>obspy.signal.invsim.seisSim<a class="headerlink" href="#obspy-signal-invsim-seissim" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.invsim.seisSim">
+<tt class="descname">seisSim</tt><big>(</big><em>data</em>, <em>samp_rate</em>, <em>paz_remove=None</em>, <em>paz_simulate=None</em>, <em>remove_sensitivity=True</em>, <em>simulate_sensitivity=True</em>, <em>water_level=600.0</em>, <em>zero_mean=True</em>, <em>taper=True</em>, <em>taper_fraction=0.05</em>, <em>pre_filt=None</em>, <em>seedresp=None</em>, <em>nfft_pow2=False</em>, <em>pitsasim=True</em>, <em>sacsim=False</em>, <em>shsim=False</em>, <em>**_kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/invsim.html#seisSim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.invsim.seisSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate/Correct seismometer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>NumPy ndarray</em>) <span class="dash" /> Seismogram, detrend before hand (e.g. zero mean)</li>
+<li><strong>samp_rate</strong> (<em>Float</em>) <span class="dash" /> Sample Rate of Seismogram</li>
+<li><strong>paz_remove</strong> (<em>Dictionary, None</em>) <span class="dash" /> Dictionary containing keys &#8216;poles&#8217;, &#8216;zeros&#8217;, &#8216;gain&#8217;
+(A0 normalization factor). poles and zeros must be a list of complex
+floating point numbers, gain must be of type float. Poles and Zeros are
+assumed to correct to m/s, SEED convention. Use None for no inverse
+filtering.</li>
+<li><strong>paz_simulate</strong> (<em>Dictionary, None</em>) <span class="dash" /> Dictionary containing keys &#8216;poles&#8217;, &#8216;zeros&#8217;, &#8216;gain&#8217;.
+Poles and zeros must be a list of complex floating point numbers, gain
+must be of type float. Or None for no simulation.</li>
+<li><strong>remove_sensitivity</strong> (<em>Boolean</em>) <span class="dash" /> Determines if data is divided by
+<cite>paz_remove[&#8216;sensitivity&#8217;]</cite> to correct for overall sensitivity of
+recording instrument (seismometer/digitizer) during instrument
+correction.</li>
+<li><strong>simulate_sensitivity</strong> (<em>Boolean</em>) <span class="dash" /> Determines if data is multiplied with
+<cite>paz_simulate[&#8216;sensitivity&#8217;]</cite> to simulate overall sensitivity of
+new instrument (seismometer/digitizer) during instrument simulation.</li>
+<li><strong>water_level</strong> (<em>Float</em>) <span class="dash" /> Water_Level for spectrum to simulate</li>
+<li><strong>zero_mean</strong> (<em>Boolean</em>) <span class="dash" /> If true the mean of the data is subtracted</li>
+<li><strong>taper</strong> (<em>Boolean</em>) <span class="dash" /> If true a cosine taper is applied.</li>
+<li><strong>taper_fraction</strong> (<em>Float</em>) <span class="dash" /> Taper fraction of cosine taper to use</li>
+<li><strong>pre_filt</strong> (<em>List or tuple of floats</em>) <span class="dash" /> Apply a bandpass filter to the data trace before
+deconvolution. The list or tuple defines the four corner frequencies
+(f1,f2,f3,f4) of a cosine taper which is one between f2 and f3 and
+tapers to zero for f1 &lt; f &lt; f2 and f3 &lt; f &lt; f4.</li>
+<li><strong>seedresp</strong> (<em>Dictionary, None</em>) <span class="dash" /> Dictionary contains keys &#8216;filename&#8217;, &#8216;date&#8217;, &#8216;units&#8217;.
+&#8216;filename&#8217; is the path to a RESP-file generated from a dataless SEED
+volume;
+&#8216;date&#8217; is a <cite>~obspy.core.utcdatetime.UTCDateTime</cite> object for the date
+that the response function should be extracted for;
+&#8216;units&#8217; defines the units of the response function.
+Can be either &#8216;DIS&#8217;, &#8216;VEL&#8217; or &#8216;ACC&#8217;.</li>
+<li><strong>nfft_pow2</strong> (<em>Boolean</em>) <span class="dash" /> Number of frequency points to use for FFT. If True,
+the exact power of two is taken (default in PITSA). If False the
+data are not zeropadded to the next power of two which makes a
+slower FFT but is then much faster for e.g. evalresp which scales
+with the FFT points.</li>
+<li><strong>pitsasim</strong> (<em>Boolean</em>) <span class="dash" /> Choose parameters to match
+instrument correction as done by PITSA.</li>
+<li><strong>sacsim</strong> (<em>Boolean</em>) <span class="dash" /> Choose parameters to match
+instrument correction as done by SAC.</li>
+<li><strong>shsim</strong> (<em>Boolean</em>) <span class="dash" /> Choose parameters to match
+instrument correction as done by Seismic Handler.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The corrected data are returned as numpy.ndarray float64
+array. float64 is chosen to avoid numerical instabilities.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function works in the frequency domain, where nfft is the next power
+of len(data) to avoid wrap around effects during convolution. The inverse
+of the frequency response of the seismometer (<tt class="docutils literal"><span class="pre">paz_remove</span></tt>) is
+convolved with the spectrum of the data and with the frequency response
+of the seismometer to simulate (<tt class="docutils literal"><span class="pre">paz_simulate</span></tt>). A 5% cosine taper is
+taken before simulation. The data must be detrended (e.g.) zero mean
+beforehand. If paz_simulate=None only the instrument correction is done.
+In the latter case, a broadband filter can be applied to the data trace
+using pre_filt. This restricts the signal to the valid frequency band and
+thereby avoids artefacts due to amplification of frequencies outside of the
+instrument&#8217;s passband (for a detailed discussion see
+<em>Of Poles and Zeros</em>, F. Scherbaum, Kluwer Academic Publishers).</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.5.1: </span>The default for <cite>remove_sensitivity</cite> and <cite>simulate_sensitivity</cite> has
+been changed to <tt class="docutils literal"><span class="pre">True</span></tt>. Old deprecated keyword arguments <cite>paz</cite>,
+<cite>inst_sim</cite>, <cite>no_inverse_filtering</cite> have been removed.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.invsim.seisSim.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.specInv.html" title="obspy.signal.invsim.specInv"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.pazToFreqResp.html" title="obspy.signal.invsim.pazToFreqResp"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" >obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

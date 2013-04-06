@@ -1,0 +1,6 @@
+obspy.iris.client.Client.getWaveform
+====================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.getWaveform

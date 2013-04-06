@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.__iadd__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.__iadd__

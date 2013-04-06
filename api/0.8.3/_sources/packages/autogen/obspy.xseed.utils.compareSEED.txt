@@ -1,0 +1,6 @@
+obspy.xseed.utils.compareSEED
+=============================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: compareSEED

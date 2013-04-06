@@ -1,0 +1,6 @@
+obspy.signal.tf_misfit.teg
+==========================
+
+.. currentmodule:: obspy.signal.tf_misfit
+
+.. autofunction:: teg

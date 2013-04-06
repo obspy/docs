@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTrace._createEmptyTrace
+===========================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYTrace._createEmptyTrace

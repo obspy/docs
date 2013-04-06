@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile._autodetectEndianness
+==============================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile._autodetectEndianness

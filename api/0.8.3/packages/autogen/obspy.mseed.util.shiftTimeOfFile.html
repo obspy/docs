@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.util.shiftTimeOfFile &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.util" href="obspy.mseed.util.html" />
+    <link rel="next" title="obspy.mseed.scripts.recordanalyzer" href="obspy.mseed.scripts.recordanalyzer.html" />
+    <link rel="prev" title="obspy.mseed.util.getTimingAndDataQuality" href="obspy.mseed.util.getTimingAndDataQuality.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.scripts.recordanalyzer.html" title="obspy.mseed.scripts.recordanalyzer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getTimingAndDataQuality.html" title="obspy.mseed.util.getTimingAndDataQuality"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" accesskey="U">obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-util-shifttimeoffile">
+<h1>obspy.mseed.util.shiftTimeOfFile<a class="headerlink" href="#obspy-mseed-util-shifttimeoffile" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.util.shiftTimeOfFile">
+<tt class="descname">shiftTimeOfFile</tt><big>(</big><em>input_file</em>, <em>output_file</em>, <em>timeshift</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/util.html#shiftTimeOfFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.util.shiftTimeOfFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a MiniSEED file and shifts the time of every record by the given
+amount.</p>
+<p>The same could be achieved by reading the MiniSEED file with ObsPy,
+modifying the starttime and writing it again. The problem with this
+approach is that some record specific flags and special blockettes might
+not be conserved. This function directly operates on the file and simply
+changes some header fields, not touching the rest, thus preserving it.</p>
+<p>Will only work correctly if all records have the same record length which
+usually should be the case.</p>
+<p>All times are in 0.0001 seconds, that is in 1/10000 seconds. NOT ms but one
+order of magnitude smaller! This is due to the way time corrections are
+stored in the MiniSEED format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_file</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> The input filename.</li>
+<li><strong>output_file</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> The output filename.</li>
+<li><strong>timeshift</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> The time-shift to be applied in 0.0001, e.g. 1E-4
+seconds. Use an integer number.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Please do NOT use identical input and output files because if something
+goes wrong, your data WILL be corrupted/destroyed. Also always check the
+resulting output file.</p>
+<p class="rubric">Technical details</p>
+<p>The function will loop over every record and change the &#8220;Time correction&#8221;
+field in the fixed section of the MiniSEED data header by the specified
+amount. Unfortunately a further flag (bit 1 in the &#8220;Activity flags&#8221; field)
+determines whether or not the time correction has already been applied to
+the record start time. If it has not, all is fine and changing the &#8220;Time
+correction&#8221; field is enough. Otherwise the actual time also needs to be
+changed.</p>
+<p>One further detail: If bit 1 in the &#8220;Activity flags&#8221; field is 1 (True) and
+the &#8220;Time correction&#8221; field is 0, then the bit will be set to 0 and only
+the time correction will be changed thus avoiding the need to change the
+record start time which is preferable.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.util.shiftTimeOfFile.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.scripts.recordanalyzer.html" title="obspy.mseed.scripts.recordanalyzer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getTimingAndDataQuality.html" title="obspy.mseed.util.getTimingAndDataQuality"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" >obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

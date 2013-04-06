@@ -1,0 +1,195 @@
+obspy.core.event.OriginUncertainty
+==================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: OriginUncertainty
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~OriginUncertainty.__abstractmethods__
+     ~OriginUncertainty.__dict__
+     ~OriginUncertainty.__doc__
+     ~OriginUncertainty.__hash__
+     ~OriginUncertainty.__module__
+     ~OriginUncertainty.__weakref__
+     ~OriginUncertainty.defaults
+     ~OriginUncertainty.item
+     ~OriginUncertainty.key
+     ~OriginUncertainty.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginUncertainty.clear
+     ~OriginUncertainty.copy
+     ~OriginUncertainty.get
+     ~OriginUncertainty.items
+     ~OriginUncertainty.iteritems
+     ~OriginUncertainty.iterkeys
+     ~OriginUncertainty.itervalues
+     ~OriginUncertainty.keys
+     ~OriginUncertainty.pop
+     ~OriginUncertainty.popitem
+     ~OriginUncertainty.setdefault
+     ~OriginUncertainty.update
+     ~OriginUncertainty.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginUncertainty._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OriginUncertainty.__contains__
+     ~OriginUncertainty.__deepcopy__
+     ~OriginUncertainty.__delattr__
+     ~OriginUncertainty.__delitem__
+     ~OriginUncertainty.__eq__
+     ~OriginUncertainty.__getattr__
+     ~OriginUncertainty.__getitem__
+     ~OriginUncertainty.__getstate__
+     ~OriginUncertainty.__init__
+     ~OriginUncertainty.__iter__
+     ~OriginUncertainty.__len__
+     ~OriginUncertainty.__ne__
+     ~OriginUncertainty.__nonzero__
+     ~OriginUncertainty.__repr__
+     ~OriginUncertainty.__setattr__
+     ~OriginUncertainty.__setitem__
+     ~OriginUncertainty.__setstate__
+     ~OriginUncertainty.__str__
+     ~OriginUncertainty.__subclasshook__
+  
+
+  
+  

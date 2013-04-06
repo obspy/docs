@@ -1,0 +1,30 @@
+obspy.signal.konnoohmachismoothing
+==================================
+
+.. currentmodule:: obspy.signal.konnoohmachismoothing
+.. automodule:: obspy.signal.konnoohmachismoothing
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      calculateSmoothingMatrix
+      konnoOhmachiSmoothing
+      konnoOhmachiSmoothingWindow
+   
+   
+
+   
+   
+   
+
+   
+   
+   

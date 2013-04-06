@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.spectral_estimation.PPSD.__init__ &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.spectral_estimation.PPSD" href="obspy.signal.spectral_estimation.PPSD.html" />
+    <link rel="next" title="obspy.signal.rotate" href="obspy.signal.rotate.html" />
+    <link rel="prev" title="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins" href="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.rotate.html" title="obspy.signal.rotate"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins.html" title="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.html" >obspy.signal.spectral_estimation</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.PPSD.html" accesskey="U">obspy.signal.spectral_estimation.PPSD</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-spectral-estimation-ppsd-init">
+<h1>obspy.signal.spectral_estimation.PPSD.__init__<a class="headerlink" href="#obspy-signal-spectral-estimation-ppsd-init" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.signal.spectral_estimation.PPSD.__init__">
+<tt class="descclassname">PPSD.</tt><tt class="descname">__init__</tt><big>(</big><em>stats, paz=None, parser=None, skip_on_gaps=False, is_rotational_data=False, db_bins=[-200, -50, 0.5]</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/spectral_estimation.html#PPSD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.spectral_estimation.PPSD.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the PPSD object setting all fixed information on the station
+that should not change afterwards to guarantee consistent spectral
+estimates.
+The necessary instrument response information can be provided in two
+ways:</p>
+<ul class="simple">
+<li>Providing an <cite>obspy.xseed</cite> <a class="reference internal" href="obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser" title="obspy.xseed.parser.Parser"><tt class="xref py py-class docutils literal"><span class="pre">Parser</span></tt></a>,
+e.g. containing metadata from a Dataless SEED file. This is the safer
+way but it might a bit slower because for every processed time
+segment the response information is extracted from the parser.</li>
+<li>Providing a dictionary containing poles and zeros information. Be
+aware that this leads to wrong results if the instrument&#8217;s response
+is changing with data added to the PPSD. Use with caution!</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first">When using <cite>is_rotational_data=True</cite> the applied processing
+steps are changed. Differentiation of data (converting velocity
+to acceleration data) will be omitted and a flat instrument
+response is assumed, leaving away response removal and only
+dividing by <cite>paz[&#8216;sensitivity&#8217;]</cite> specified in the provided <cite>paz</cite>
+dictionary (other keys do not have to be present then). For
+scaling factors that are usually multiplied to the data remember
+to use the inverse as <cite>paz[&#8216;sensitivity&#8217;]</cite>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stats</strong> (<a class="reference internal" href="obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a>) <span class="dash" /> Stats of the station/instrument to process</li>
+<li><strong>paz</strong> (<em>dict (optional)</em>) <span class="dash" /> Response information of instrument. If not specified the
+information is supposed to be present as stats.paz.</li>
+<li><strong>parser</strong> (<a class="reference internal" href="obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser" title="obspy.xseed.parser.Parser"><tt class="xref py py-class docutils literal"><span class="pre">obspy.xseed.parser.Parser</span></tt></a> (optional)) <span class="dash" /> Parser instance with response information (e.g. read
+from a Dataless SEED volume)</li>
+<li><strong>skip_on_gaps</strong> (<em>Boolean (optional)</em>) <span class="dash" /> Determines whether time segments with gaps should
+be skipped entirely. McNamara &amp; Buland merge gappy
+traces by filling with zeros. This results in a clearly
+identifiable outlier psd line in the PPSD visualization. Select
+<cite>skip_on_gaps=True</cite> for not filling gaps with zeros which might
+result in some data segments shorter than 1 hour not used in
+the PPSD.</li>
+<li><strong>is_rotational_data</strong> (<em>Boolean (optional)</em>) <span class="dash" /> If set to True adapt processing of data to
+rotational data. See note for details.</li>
+<li><strong>db_bins</strong> (<em>List of three ints/floats</em>) <span class="dash" /> Specify the lower and upper boundary and the width of
+the db bins. The bin width might get adjusted to fit  a number
+of equally spaced bins in between the given boundaries.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.spectral_estimation.PPSD.__init__.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.rotate.html" title="obspy.signal.rotate"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins.html" title="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.html" >obspy.signal.spectral_estimation</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.PPSD.html" >obspy.signal.spectral_estimation.PPSD</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

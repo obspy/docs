@@ -1,0 +1,6 @@
+obspy.core.event.Comment.copy
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.copy

@@ -1,0 +1,195 @@
+obspy.core.event.Arrival
+========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Arrival
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Arrival.__abstractmethods__
+     ~Arrival.__dict__
+     ~Arrival.__doc__
+     ~Arrival.__hash__
+     ~Arrival.__module__
+     ~Arrival.__weakref__
+     ~Arrival.defaults
+     ~Arrival.item
+     ~Arrival.key
+     ~Arrival.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Arrival.clear
+     ~Arrival.copy
+     ~Arrival.get
+     ~Arrival.items
+     ~Arrival.iteritems
+     ~Arrival.iterkeys
+     ~Arrival.itervalues
+     ~Arrival.keys
+     ~Arrival.pop
+     ~Arrival.popitem
+     ~Arrival.setdefault
+     ~Arrival.update
+     ~Arrival.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Arrival._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Arrival.__contains__
+     ~Arrival.__deepcopy__
+     ~Arrival.__delattr__
+     ~Arrival.__delitem__
+     ~Arrival.__eq__
+     ~Arrival.__getattr__
+     ~Arrival.__getitem__
+     ~Arrival.__getstate__
+     ~Arrival.__init__
+     ~Arrival.__iter__
+     ~Arrival.__len__
+     ~Arrival.__ne__
+     ~Arrival.__nonzero__
+     ~Arrival.__repr__
+     ~Arrival.__setattr__
+     ~Arrival.__setitem__
+     ~Arrival.__setstate__
+     ~Arrival.__str__
+     ~Arrival.__subclasshook__
+  
+
+  
+  

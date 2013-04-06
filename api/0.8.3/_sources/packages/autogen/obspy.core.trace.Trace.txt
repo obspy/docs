@@ -1,0 +1,222 @@
+obspy.core.trace.Trace
+======================
+
+.. currentmodule:: obspy.core.trace
+.. autoclass:: Trace
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Trace.__dict__
+     ~Trace.__doc__
+     ~Trace.__module__
+     ~Trace.__weakref__
+     ~Trace.id
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Trace.copy
+     ~Trace.count
+     ~Trace.decimate
+     ~Trace.detrend
+     ~Trace.differentiate
+     ~Trace.filter
+     ~Trace.getId
+     ~Trace.integrate
+     ~Trace.max
+     ~Trace.normalize
+     ~Trace.plot
+     ~Trace.resample
+     ~Trace.simulate
+     ~Trace.slice
+     ~Trace.spectrogram
+     ~Trace.split
+     ~Trace.std
+     ~Trace.taper
+     ~Trace.times
+     ~Trace.trigger
+     ~Trace.trim
+     ~Trace.verify
+     ~Trace.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Trace._addProcessingInfo
+     ~Trace._ltrim
+     ~Trace._rtrim
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Trace.__add__
+     ~Trace.__div__
+     ~Trace.__eq__
+     ~Trace.__ge__
+     ~Trace.__getitem__
+     ~Trace.__gt__
+     ~Trace.__init__
+     ~Trace.__le__
+     ~Trace.__len__
+     ~Trace.__lt__
+     ~Trace.__mod__
+     ~Trace.__mul__
+     ~Trace.__ne__
+     ~Trace.__setattr__
+     ~Trace.__str__
+  
+
+  
+  

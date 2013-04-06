@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.array_processing
+============================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: array_processing

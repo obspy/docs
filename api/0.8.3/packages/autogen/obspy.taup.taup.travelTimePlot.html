@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.taup.taup.travelTimePlot &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.taup.taup" href="obspy.taup.taup.html" />
+    <link rel="next" title="obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy" href="../obspy.xseed.html" />
+    <link rel="prev" title="obspy.taup.taup.locations2degrees" href="obspy.taup.taup.locations2degrees.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../obspy.xseed.html" title="obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.taup.taup.locations2degrees.html" title="obspy.taup.taup.locations2degrees"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.taup.html" >obspy.taup - Travel time calculation tool</a> &raquo;</li>
+          <li><a href="obspy.taup.taup.html" accesskey="U">obspy.taup.taup</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-taup-taup-traveltimeplot">
+<h1>obspy.taup.taup.travelTimePlot<a class="headerlink" href="#obspy-taup-taup-traveltimeplot" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.taup.taup.travelTimePlot">
+<tt class="descname">travelTimePlot</tt><big>(</big><em>min_degree=0</em>, <em>max_degree=360</em>, <em>npoints=1000</em>, <em>phases=None</em>, <em>depth=100</em>, <em>model='iasp91'</em><big>)</big><a class="reference internal" href="../../_modules/obspy/taup/taup.html#travelTimePlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.taup.taup.travelTimePlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic travel time plotting function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>min_degree</strong> (<em>float, optional</em>) <span class="dash" /> Minimum distance in degree used in plot.
+Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+<li><strong>max_degree</strong> (<em>float, optional</em>) <span class="dash" /> Maximum distance in degree used in plot.
+Defaults to <tt class="docutils literal"><span class="pre">360</span></tt>.</li>
+<li><strong>npoints</strong> (<em>int, optional</em>) <span class="dash" /> Number of points to plot. Defaults to <tt class="docutils literal"><span class="pre">1000</span></tt>.</li>
+<li><strong>phases</strong> (<em>list of strings, optional</em>) <span class="dash" /> List of phase names which should be used within the plot.
+Defaults to all phases if not explicit set.</li>
+<li><strong>depth</strong> (<em>float, optional</em>) <span class="dash" /> Depth in kilometer. Defaults to <tt class="docutils literal"><span class="pre">100</span></tt>.</li>
+<li><strong>model</strong> (<em>string, optional</em>) <span class="dash" /> Either <tt class="docutils literal"><span class="pre">'iasp91'</span></tt> or <tt class="docutils literal"><span class="pre">'ak135'</span></tt> velocity model.
+Defaults to <tt class="docutils literal"><span class="pre">'iasp91'</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.taup.taup</span> <span class="kn">import</span> <span class="n">travelTimePlot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">travelTimePlot</span><span class="p">(</span><span class="n">min_degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_degree</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="s">&#39;PP&#39;</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">depth</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">&#39;iasp91&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/3bf8f306bd.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/3bf8f306bd.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/3bf8f306bd.png" src="../../_images/3bf8f306bd.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.taup.taup.travelTimePlot.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../obspy.xseed.html" title="obspy.xseed - Dataless SEED, RESP and XML-SEED read and write support for ObsPy"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.taup.taup.locations2degrees.html" title="obspy.taup.taup.locations2degrees"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.taup.html" >obspy.taup - Travel time calculation tool</a> &raquo;</li>
+          <li><a href="obspy.taup.taup.html" >obspy.taup.taup</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

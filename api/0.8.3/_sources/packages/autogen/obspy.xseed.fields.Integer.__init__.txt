@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.__init__
+===================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.__init__

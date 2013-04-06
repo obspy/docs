@@ -1,0 +1,6 @@
+obspy.mseed.core.writeMSEED
+===========================
+
+.. currentmodule:: obspy.mseed.core
+
+.. autofunction:: writeMSEED

@@ -1,0 +1,6 @@
+obspy.seishub.client._WaveformMapperClient.getChannelIds
+========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _WaveformMapperClient.getChannelIds

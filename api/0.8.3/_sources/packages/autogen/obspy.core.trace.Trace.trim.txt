@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.trim
+===========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.trim

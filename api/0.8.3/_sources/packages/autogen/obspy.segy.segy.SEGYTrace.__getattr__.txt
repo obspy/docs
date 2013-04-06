@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTrace.__getattr__
+=====================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYTrace.__getattr__

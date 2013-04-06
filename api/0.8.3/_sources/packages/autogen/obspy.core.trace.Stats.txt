@@ -1,0 +1,189 @@
+obspy.core.trace.Stats
+======================
+
+.. currentmodule:: obspy.core.trace
+.. autoclass:: Stats
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Stats.__abstractmethods__
+     ~Stats.__dict__
+     ~Stats.__doc__
+     ~Stats.__hash__
+     ~Stats.__module__
+     ~Stats.__weakref__
+     ~Stats.defaults
+     ~Stats.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stats.clear
+     ~Stats.copy
+     ~Stats.get
+     ~Stats.items
+     ~Stats.iteritems
+     ~Stats.iterkeys
+     ~Stats.itervalues
+     ~Stats.keys
+     ~Stats.pop
+     ~Stats.popitem
+     ~Stats.setdefault
+     ~Stats.update
+     ~Stats.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stats._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stats.__contains__
+     ~Stats.__deepcopy__
+     ~Stats.__delattr__
+     ~Stats.__delitem__
+     ~Stats.__eq__
+     ~Stats.__getattr__
+     ~Stats.__getitem__
+     ~Stats.__getstate__
+     ~Stats.__init__
+     ~Stats.__iter__
+     ~Stats.__len__
+     ~Stats.__ne__
+     ~Stats.__repr__
+     ~Stats.__setattr__
+     ~Stats.__setitem__
+     ~Stats.__setstate__
+     ~Stats.__str__
+     ~Stats.__subclasshook__
+  
+
+  
+  

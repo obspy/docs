@@ -1,0 +1,6 @@
+obspy.signal.filter.bandpass
+============================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: bandpass

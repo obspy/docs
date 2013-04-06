@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.popitem
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.popitem

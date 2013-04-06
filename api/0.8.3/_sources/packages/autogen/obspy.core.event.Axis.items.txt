@@ -1,0 +1,6 @@
+obspy.core.event.Axis.items
+===========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.items

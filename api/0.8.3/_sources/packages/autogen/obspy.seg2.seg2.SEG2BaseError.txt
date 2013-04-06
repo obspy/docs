@@ -1,0 +1,6 @@
+obspy.seg2.seg2.SEG2BaseError
+=============================
+
+.. currentmodule:: obspy.seg2.seg2
+
+.. autoexception:: SEG2BaseError

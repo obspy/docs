@@ -1,0 +1,70 @@
+obspy.seg2.seg2.SEG2
+====================
+
+.. currentmodule:: obspy.seg2.seg2
+.. autoclass:: SEG2
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SEG2.__dict__
+     ~SEG2.__doc__
+     ~SEG2.__module__
+     ~SEG2.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEG2.parseFreeForm
+     ~SEG2.parseNextTrace
+     ~SEG2.readFile
+     ~SEG2.readFileDescriptorBlock
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEG2.__init__
+  
+
+  
+  

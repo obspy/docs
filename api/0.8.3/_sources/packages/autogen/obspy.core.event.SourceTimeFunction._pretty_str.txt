@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction._pretty_str
+===============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction._pretty_str

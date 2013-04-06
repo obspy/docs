@@ -1,0 +1,185 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.array_analysis &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal - Signal Processing Routines for ObsPy" href="../obspy.signal.html" />
+    <link rel="next" title="obspy.signal.array_analysis.array_processing" href="obspy.signal.array_analysis.array_processing.html" />
+    <link rel="prev" title="11.2.5. obspy.signal.trigger.zDetect" href="obspy.signal.trigger.zDetect.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_processing.html" title="obspy.signal.array_analysis.array_processing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.zDetect.html" title="11.2.5. obspy.signal.trigger.zDetect"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" accesskey="U">obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.signal.array_analysis">
+<span id="obspy-signal-array-analysis"></span><h1>obspy.signal.array_analysis<a class="headerlink" href="#module-obspy.signal.array_analysis" title="Permalink to this headline">¶</a></h1>
+<p>Functions for Array Analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.array_analysis.array_processing.html#obspy.signal.array_analysis.array_processing" title="obspy.signal.array_analysis.array_processing"><tt class="xref py py-obj docutils literal"><span class="pre">array_processing</span></tt></a></td>
+<td>Method for Seismic-Array-Beamforming/FK-Analysis/Capon</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.array_analysis.array_rotation_strain.html#obspy.signal.array_analysis.array_rotation_strain" title="obspy.signal.array_analysis.array_rotation_strain"><tt class="xref py py-obj docutils literal"><span class="pre">array_rotation_strain</span></tt></a></td>
+<td>This routine calculates the best-fitting rigid body rotation and uniform strain as functions of time, and their formal errors, given three-component ground motion time series recorded on a seismic array.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.array_analysis.array_transff_freqslowness.html#obspy.signal.array_analysis.array_transff_freqslowness" title="obspy.signal.array_analysis.array_transff_freqslowness"><tt class="xref py py-obj docutils literal"><span class="pre">array_transff_freqslowness</span></tt></a></td>
+<td>Returns array transfer function as a function of slowness difference and frequency.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.array_analysis.array_transff_wavenumber.html#obspy.signal.array_analysis.array_transff_wavenumber" title="obspy.signal.array_analysis.array_transff_wavenumber"><tt class="xref py py-obj docutils literal"><span class="pre">array_transff_wavenumber</span></tt></a></td>
+<td>Returns array transfer function as a function of wavenumber difference</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.array_analysis.dump.html#obspy.signal.array_analysis.dump" title="obspy.signal.array_analysis.dump"><tt class="xref py py-obj docutils literal"><span class="pre">dump</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.array_analysis.get_geometry.html#obspy.signal.array_analysis.get_geometry" title="obspy.signal.array_analysis.get_geometry"><tt class="xref py py-obj docutils literal"><span class="pre">get_geometry</span></tt></a></td>
+<td>Method to calculate the array geometry and the center coordinates in km</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.array_analysis.get_spoint.html#obspy.signal.array_analysis.get_spoint" title="obspy.signal.array_analysis.get_spoint"><tt class="xref py py-obj docutils literal"><span class="pre">get_spoint</span></tt></a></td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param stime:</th><td class="field-body">UTCDateTime to start</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.array_analysis.get_timeshift.html#obspy.signal.array_analysis.get_timeshift" title="obspy.signal.array_analysis.get_timeshift"><tt class="xref py py-obj docutils literal"><span class="pre">get_timeshift</span></tt></a></td>
+<td>Returns timeshift table for given array geometry</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.array_analysis.nop.html#obspy.signal.array_analysis.nop" title="obspy.signal.array_analysis.nop"><tt class="xref py py-obj docutils literal"><span class="pre">nop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.array_analysis.sonic.html#obspy.signal.array_analysis.sonic" title="obspy.signal.array_analysis.sonic"><tt class="xref py py-obj docutils literal"><span class="pre">sonic</span></tt></a></td>
+<td>DEPRECATED: Please use <tt class="docutils literal"><span class="pre">obspy.signal.array_processing()</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.array_analysis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_processing.html" title="obspy.signal.array_analysis.array_processing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.zDetect.html" title="11.2.5. obspy.signal.trigger.zDetect"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

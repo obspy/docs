@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.gse2.libgse1 &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.gse2.libgse1</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: libgse1.py</span>
+<span class="c">#  Purpose: Python wrapper for reading GSE1 files</span>
+<span class="c">#   Author: Moritz Beyreuther</span>
+<span class="c">#    Email: moritz.beyreuther@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Moritz Beyreuther</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Low-level module internally used for handling GSE1 files</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.gse2.libgse2</span> <span class="kn">import</span> <span class="n">uncompress_CM6</span><span class="p">,</span> <span class="n">verifyChecksum</span>
+<span class="kn">import</span> <span class="nn">doctest</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse1.read.html#obspy.gse2.libgse1.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read GSE1 file and return header and data.</span>
+
+<span class="sd">    Currently supports only CM6 compressed and plain integer GSE1 files, this</span>
+<span class="sd">    should be sufficient for most cases. Data are in circular frequency counts,</span>
+<span class="sd">    for correction of calper multiply by 2PI and calper: data * 2 * pi *</span>
+<span class="sd">    header[&#39;calper&#39;].</span>
+
+<span class="sd">    :type fh: File Pointer</span>
+<span class="sd">    :param fh: Open file pointer of GSE1 file to read, opened in binary mode,</span>
+<span class="sd">        e.g. fh = open(&#39;myfile&#39;,&#39;rb&#39;)</span>
+<span class="sd">    :type verify_chksum: Bool</span>
+<span class="sd">    :param verify_chksum: If True verify Checksum and raise Exception if not</span>
+<span class="sd">        correct</span>
+<span class="sd">    :rtype: Dictionary, Numpy.ndarray int32</span>
+<span class="sd">    :return: Header entries and data as numpy.ndarray of type int32.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">readHeader</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s">&#39;CMP6&#39;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">uncompress_CM6</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s">&#39;INTV&#39;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">readIntegerData</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Unsupported data type </span><span class="si">%s</span><span class="s"> in GSE1 file&quot;</span> <span class="o">%</span> <span class="n">dtype</span><span class="p">)</span>
+    <span class="c"># test checksum only if enabled</span>
+    <span class="k">if</span> <span class="n">verify_chksum</span><span class="p">:</span>
+        <span class="n">verifyChecksum</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="readIntegerData"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse1.readIntegerData.html#obspy.gse2.libgse1.readIntegerData">[docs]</a><span class="k">def</span> <span class="nf">readIntegerData</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">npts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads npts points of uncompressed integers from given file handler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># find next DAT1 section within file</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">buf</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;DAT1&quot;</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">npts</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="readHeader"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse1.readHeader.html#obspy.gse2.libgse1.readHeader">[docs]</a><span class="k">def</span> <span class="nf">readHeader</span><span class="p">(</span><span class="n">fh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads GSE1 header from file pointer and returns it as dictionary.</span>
+
+<span class="sd">    The method searches for the next available WID1 field beginning from the</span>
+<span class="sd">    current file position.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># search for WID1 field</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;WID1&quot;</span><span class="p">):</span>
+            <span class="c"># valid GSE1 header</span>
+            <span class="k">break</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span>
+    <span class="c"># fetch header</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c"># first line</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+    <span class="n">julday</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">13</span><span class="p">])</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">16</span><span class="p">])</span>
+    <span class="n">minute</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="p">])</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span><span class="p">])</span>
+    <span class="n">millisec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">26</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">julday</span><span class="o">=</span><span class="n">julday</span><span class="p">,</span>
+                                      <span class="n">hour</span><span class="o">=</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="n">minute</span><span class="p">,</span>
+                                      <span class="n">second</span><span class="o">=</span><span class="n">second</span><span class="p">,</span>
+                                      <span class="n">microsecond</span><span class="o">=</span><span class="n">millisec</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">27</span><span class="p">:</span><span class="mi">35</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">42</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;instype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">:</span><span class="mi">51</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%03s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">[</span><span class="mi">52</span><span class="p">:</span><span class="mi">54</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;sampling_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">55</span><span class="p">:</span><span class="mi">66</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">67</span><span class="p">:</span><span class="mi">73</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">74</span><span class="p">:</span><span class="mi">78</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;dflag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">79</span><span class="p">:</span><span class="mi">80</span><span class="p">])</span>
+    <span class="c"># second line</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;calib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">17</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;cperiod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">18</span><span class="p">:</span><span class="mi">27</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">37</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">47</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">48</span><span class="p">:</span><span class="mi">57</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;unknown1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">58</span><span class="p">:</span><span class="mi">65</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;unknown2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">66</span><span class="p">:</span><span class="mi">73</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;unknown3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">74</span><span class="p">:</span><span class="mi">81</span><span class="p">])</span>
+    <span class="n">header</span><span class="p">[</span><span class="s">&#39;gse1&#39;</span><span class="p">][</span><span class="s">&#39;unknown4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">74</span><span class="p">:</span><span class="mi">80</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">header</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

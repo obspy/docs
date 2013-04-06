@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.itervalues
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.itervalues

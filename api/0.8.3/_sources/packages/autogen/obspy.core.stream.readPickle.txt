@@ -1,0 +1,6 @@
+obspy.core.stream.readPickle
+============================
+
+.. currentmodule:: obspy.core.stream
+
+.. autofunction:: readPickle

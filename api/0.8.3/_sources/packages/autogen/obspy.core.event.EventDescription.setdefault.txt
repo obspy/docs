@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.setdefault
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.setdefault

@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.tf_misfit &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal - Signal Processing Routines for ObsPy" href="../obspy.signal.html" />
+    <link rel="next" title="obspy.signal.tf_misfit.cwt" href="obspy.signal.tf_misfit.cwt.html" />
+    <link rel="prev" title="obspy.signal.rotate.rotate_ZNE_LQT" href="obspy.signal.rotate.rotate_ZNE_LQT.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.cwt.html" title="obspy.signal.tf_misfit.cwt"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.rotate.rotate_ZNE_LQT.html" title="obspy.signal.rotate.rotate_ZNE_LQT"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" accesskey="U">obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.signal.tf_misfit">
+<span id="obspy-signal-tf-misfit"></span><h1>obspy.signal.tf_misfit<a class="headerlink" href="#module-obspy.signal.tf_misfit" title="Permalink to this headline">¶</a></h1>
+<p>Various Time Frequency Misfit Functions based on Kristekova et. al. (2006) and
+Kristekova et. al. (2009).</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../citations.html#kristekova2006">[Kristekova2006]</a> and <a class="reference internal" href="../../citations.html#kristekova2009">[Kristekova2009]</a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.cwt.html#obspy.signal.tf_misfit.cwt" title="obspy.signal.tf_misfit.cwt"><tt class="xref py py-obj docutils literal"><span class="pre">cwt</span></tt></a></td>
+<td>Continuous Wavelet Transformation in the Frequency Domain.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.eg.html#obspy.signal.tf_misfit.eg" title="obspy.signal.tf_misfit.eg"><tt class="xref py py-obj docutils literal"><span class="pre">eg</span></tt></a></td>
+<td>Single Valued Envelope Goodness-Of-Fit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.em.html#obspy.signal.tf_misfit.em" title="obspy.signal.tf_misfit.em"><tt class="xref py py-obj docutils literal"><span class="pre">em</span></tt></a></td>
+<td>Single Valued Envelope Misfit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.feg.html#obspy.signal.tf_misfit.feg" title="obspy.signal.tf_misfit.feg"><tt class="xref py py-obj docutils literal"><span class="pre">feg</span></tt></a></td>
+<td>Frequency Dependent Envelope Goodness-Of-Fit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.fem.html#obspy.signal.tf_misfit.fem" title="obspy.signal.tf_misfit.fem"><tt class="xref py py-obj docutils literal"><span class="pre">fem</span></tt></a></td>
+<td>Frequency-dependent Envelope Misfit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.fpg.html#obspy.signal.tf_misfit.fpg" title="obspy.signal.tf_misfit.fpg"><tt class="xref py py-obj docutils literal"><span class="pre">fpg</span></tt></a></td>
+<td>Frequency Dependent Phase Goodness-Of-Fit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.fpm.html#obspy.signal.tf_misfit.fpm" title="obspy.signal.tf_misfit.fpm"><tt class="xref py py-obj docutils literal"><span class="pre">fpm</span></tt></a></td>
+<td>Frequency-dependent Phase Misfit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.pg.html#obspy.signal.tf_misfit.pg" title="obspy.signal.tf_misfit.pg"><tt class="xref py py-obj docutils literal"><span class="pre">pg</span></tt></a></td>
+<td>Single Valued Phase Goodness-Of-Fit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.plotTfGofs.html#obspy.signal.tf_misfit.plotTfGofs" title="obspy.signal.tf_misfit.plotTfGofs"><tt class="xref py py-obj docutils literal"><span class="pre">plotTfGofs</span></tt></a></td>
+<td>Plot all timefrequency Goodnes-Of-Fits and the time series in one plot (per</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.plotTfMisfits.html#obspy.signal.tf_misfit.plotTfMisfits" title="obspy.signal.tf_misfit.plotTfMisfits"><tt class="xref py py-obj docutils literal"><span class="pre">plotTfMisfits</span></tt></a></td>
+<td>Plot all timefrequency misfits and the time series in one plot (per component).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.plotTfr.html#obspy.signal.tf_misfit.plotTfr" title="obspy.signal.tf_misfit.plotTfr"><tt class="xref py py-obj docutils literal"><span class="pre">plotTfr</span></tt></a></td>
+<td>Plot time-frequency representation, spectrum and time series of the signal.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.pm.html#obspy.signal.tf_misfit.pm" title="obspy.signal.tf_misfit.pm"><tt class="xref py py-obj docutils literal"><span class="pre">pm</span></tt></a></td>
+<td>Single Valued Phase Misfit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.teg.html#obspy.signal.tf_misfit.teg" title="obspy.signal.tf_misfit.teg"><tt class="xref py py-obj docutils literal"><span class="pre">teg</span></tt></a></td>
+<td>Time Dependent Envelope Goodness-Of-Fit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.tem.html#obspy.signal.tf_misfit.tem" title="obspy.signal.tf_misfit.tem"><tt class="xref py py-obj docutils literal"><span class="pre">tem</span></tt></a></td>
+<td>Time-dependent Envelope Misfit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.tfeg.html#obspy.signal.tf_misfit.tfeg" title="obspy.signal.tf_misfit.tfeg"><tt class="xref py py-obj docutils literal"><span class="pre">tfeg</span></tt></a></td>
+<td>Time Frequency Envelope Goodness-Of-Fit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.tfem.html#obspy.signal.tf_misfit.tfem" title="obspy.signal.tf_misfit.tfem"><tt class="xref py py-obj docutils literal"><span class="pre">tfem</span></tt></a></td>
+<td>Time Frequency Envelope Misfit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.tfpg.html#obspy.signal.tf_misfit.tfpg" title="obspy.signal.tf_misfit.tfpg"><tt class="xref py py-obj docutils literal"><span class="pre">tfpg</span></tt></a></td>
+<td>Time Frequency Phase Goodness-Of-Fit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.tfpm.html#obspy.signal.tf_misfit.tfpm" title="obspy.signal.tf_misfit.tfpm"><tt class="xref py py-obj docutils literal"><span class="pre">tfpm</span></tt></a></td>
+<td>Time Frequency Phase Misfit</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.tf_misfit.tpg.html#obspy.signal.tf_misfit.tpg" title="obspy.signal.tf_misfit.tpg"><tt class="xref py py-obj docutils literal"><span class="pre">tpg</span></tt></a></td>
+<td>Time Dependent Phase Goodness-Of-Fit</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.tf_misfit.tpm.html#obspy.signal.tf_misfit.tpm" title="obspy.signal.tf_misfit.tpm"><tt class="xref py py-obj docutils literal"><span class="pre">tpm</span></tt></a></td>
+<td>Time-dependent Phase Misfit</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.tf_misfit.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.cwt.html" title="obspy.signal.tf_misfit.cwt"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.rotate.rotate_ZNE_LQT.html" title="obspy.signal.rotate.rotate_ZNE_LQT"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.seishub.client.Client.__init__
+====================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client.__init__

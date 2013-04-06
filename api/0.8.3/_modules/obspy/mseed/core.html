@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.core &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.mseed.core</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">MSEED bindings to ObsPy core module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">headers</span> <span class="kn">import</span> <span class="n">clibmseed</span><span class="p">,</span> <span class="n">ENCODINGS</span><span class="p">,</span> <span class="n">HPTMODULUS</span><span class="p">,</span> <span class="n">SAMPLETYPE</span><span class="p">,</span> <span class="n">DATATYPES</span><span class="p">,</span> \
+    <span class="n">SAMPLESIZES</span><span class="p">,</span> <span class="n">VALID_RECORD_LENGTHS</span><span class="p">,</span> <span class="n">HPTERROR</span><span class="p">,</span> <span class="n">SelectTime</span><span class="p">,</span> <span class="n">Selections</span><span class="p">,</span> \
+    <span class="n">blkt_1001_s</span><span class="p">,</span> <span class="n">VALID_CONTROL_HEADERS</span><span class="p">,</span> <span class="n">SEED_CONTROL_HEADERS</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">NATIVE_BYTEORDER</span>
+<span class="kn">from</span> <span class="nn">obspy.mseed.headers</span> <span class="kn">import</span> <span class="n">blkt_100_s</span>
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<div class="viewcode-block" id="isMSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.isMSEED.html#obspy.mseed.core.isMSEED">[docs]</a><span class="k">def</span> <span class="nf">isMSEED</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is Mini-SEED/full SEED or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: Mini-SEED/full SEED file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a Mini-SEED file.</span>
+
+<span class="sd">    This method only reads the first seven bytes of the file and checks</span>
+<span class="sd">    whether its a Mini-SEED or full SEED file.</span>
+
+<span class="sd">    It also is true for fullSEED files because libmseed can read the data</span>
+<span class="sd">    part of fullSEED files. If the method finds a fullSEED file it also</span>
+<span class="sd">    checks if it has a data part and returns False otherwise.</span>
+
+<span class="sd">    Thus it cannot be used to validate a Mini-SEED or SEED file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+    <span class="c"># File has less than 7 characters</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Sequence number must contains a single number or be empty</span>
+    <span class="n">seqnr</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">seqnr</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="n">seqnr</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Check for any valid control header types.</span>
+    <span class="k">if</span> <span class="n">header</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="c"># Check if Full-SEED</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;V&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Parse the whole file and check whether it has has a data record.</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">_i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c"># search for blockettes 010 or 008</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;010&#39;</span><span class="p">,</span> <span class="s">&#39;008&#39;</span><span class="p">]:</span>
+            <span class="k">break</span>
+        <span class="c"># the next for bytes are the record length</span>
+        <span class="c"># as we are currently at position 7 (fp.read(3) fp.read(4))</span>
+        <span class="c"># we need to subtract this first before we seek</span>
+        <span class="c"># to the appropriate position</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">_i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c"># break after 3 cycles</span>
+        <span class="k">if</span> <span class="n">_i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Try to get a record length.</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">record_length</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c"># Jump to the second record.</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">record_length</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="c"># Loop over all records and return True if one record is a data</span>
+    <span class="c"># record</span>
+    <span class="k">while</span> <span class="n">fp</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">file_size</span><span class="p">:</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">record_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="readMSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.readMSEED.html#obspy.mseed.core.readMSEED">[docs]</a><span class="k">def</span> <span class="nf">readMSEED</span><span class="p">(</span><span class="n">mseed_object</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="n">sourcename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reclen</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">recinfo</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">details</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a Mini-SEED file and returns a Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :param mseed_object: Filename or open file like object that contains the</span>
+<span class="sd">        binary Mini-SEED data. Any object that provides a read() method will be</span>
+<span class="sd">        considered to be a file like object.</span>
+<span class="sd">    :type starttime: UTCDateTime</span>
+<span class="sd">    :param starttime: Only read data samples after or at the starttime.</span>
+<span class="sd">    :type endtime: UTCDateTime</span>
+<span class="sd">    :param endtime: Only read data samples before or at the starttime.</span>
+<span class="sd">    :param headonly: Determines whether or not to unpack the data or just</span>
+<span class="sd">        read the headers.</span>
+<span class="sd">    :type sourcename: str</span>
+<span class="sd">    :param sourcename: Sourcename has to have the structure</span>
+<span class="sd">        &#39;network.station.location.channel&#39; and can contain globbing characters.</span>
+<span class="sd">        Defaults to ``None``.</span>
+<span class="sd">    :param reclen: If it is None, it will be automatically determined for every</span>
+<span class="sd">        record. If it is known, just set it to the record length in bytes which</span>
+<span class="sd">        will increase the reading speed slightly.</span>
+<span class="sd">    :type recinfo: bool, optional</span>
+<span class="sd">    :param recinfo: If ``True`` the byteorder, record length and the</span>
+<span class="sd">        encoding of the file will be read and stored in every Trace&#39;s</span>
+<span class="sd">        stats.mseed AttribDict. These stored attributes will also be used while</span>
+<span class="sd">        writing a Mini-SEED file. Only the very first record of the file will</span>
+<span class="sd">        be read and all following records are assumed to be the same. Defaults</span>
+<span class="sd">        to ``True``.</span>
+<span class="sd">    :type details: bool, optional</span>
+<span class="sd">    :param details: If ``True`` read additional information: timing quality</span>
+<span class="sd">        and availability of calibration information.</span>
+<span class="sd">        Note, that the traces are then also split on these additional</span>
+<span class="sd">        information. Thus the number of traces in a stream will change.</span>
+<span class="sd">        Details are stored in the mseed stats AttribDict of each trace.</span>
+<span class="sd">        -1 specifies for both cases, that these information is not available.</span>
+<span class="sd">        ``timing_quality`` specifies the timing quality from 0 to 100 [%].</span>
+<span class="sd">        ``calibration_type`` specifies the type of available calibration</span>
+<span class="sd">        information: 1 == Step Calibration, 2 == Sine Calibration, 3 ==</span>
+<span class="sd">        Pseudo-random Calibration, 4 == Generic Calibration and -2 ==</span>
+<span class="sd">        Calibration Abort.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/two_channels.mseed&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(st)  # doctest: +ELLIPSIS</span>
+<span class="sd">    2 Trace(s) in Stream:</span>
+<span class="sd">    BW.UH3..EHE | 2010-06-20T00:00:00.279999Z - ... | 200.0 Hz, 386 samples</span>
+<span class="sd">    BW.UH3..EHZ | 2010-06-20T00:00:00.279999Z - ... | 200.0 Hz, 386 samples</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/test.mseed&quot;,</span>
+<span class="sd">    ...           starttime=UTCDateTime(&quot;2003-05-29T02:16:00&quot;),</span>
+<span class="sd">    ...           selection=&quot;NL.*.*.?HZ&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(st)  # doctest: +ELLIPSIS</span>
+<span class="sd">    1 Trace(s) in Stream:</span>
+<span class="sd">    NL.HGN.00.BHZ | 2003-05-29T02:15:59.993400Z - ... | 40.0 Hz, 5629 samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Parse the headonly and reclen flags.</span>
+    <span class="k">if</span> <span class="n">headonly</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">unpack_data</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unpack_data</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">reclen</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">reclen</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">reclen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">reclen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_RECORD_LENGTHS</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid record length. Autodetection will be used.&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">reclen</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reclen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">reclen</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c"># The quality flag is no more supported. Raise a warning.</span>
+    <span class="k">if</span> <span class="s">&#39;quality&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The quality flag is no more supported in this version of &#39;</span> <span class="o">+</span> \
+        <span class="s">&#39;obspy.mseed. obspy.mseed.util has some functions with similar &#39;</span> <span class="o">+</span> \
+        <span class="s">&#39;behaviour.&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+    <span class="c"># Parse some information about the file.</span>
+    <span class="k">if</span> <span class="n">recinfo</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">getRecordInformation</span><span class="p">(</span><span class="n">mseed_object</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ENCODINGS</span><span class="p">[</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># Only keep information relevant for the whole file.</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;encoding&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">],</span>
+                <span class="s">&#39;filesize&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;filesize&#39;</span><span class="p">],</span>
+                <span class="s">&#39;record_length&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;record_length&#39;</span><span class="p">],</span>
+                <span class="s">&#39;byteorder&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">],</span>
+                <span class="s">&#39;number_of_records&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;number_of_records&#39;</span><span class="p">]}</span>
+
+    <span class="c"># If its a filename just read it.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mseed_object</span><span class="p">,</span>  <span class="nb">basestring</span><span class="p">):</span>
+        <span class="c"># Read to NumPy array which is used as a buffer.</span>
+        <span class="nb">buffer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">mseed_object</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mseed_object</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">):</span>
+        <span class="nb">buffer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">mseed_object</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+
+    <span class="c"># Get the record length</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">record_length</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">buffer</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">21</span><span class="p">]])))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">record_length</span> <span class="o">=</span> <span class="mi">4096</span>
+
+    <span class="c"># Search for data records and pass only the data part to the underlying C</span>
+    <span class="c"># routine.</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c"># 0 to 9 are defined in a row in the ASCII charset.</span>
+    <span class="n">min_ascii</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+    <span class="c"># Small function to check whether an array of ASCII values contains only</span>
+    <span class="c"># digits.</span>
+    <span class="n">isdigit</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">min_ascii</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="k">else</span> <span class="bp">False</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c"># This should never happen</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">isdigit</span><span class="p">(</span><span class="nb">buffer</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">6</span><span class="p">])</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">)</span> <span class="ow">or</span> \
+            <span class="p">(</span><span class="nb">buffer</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">6</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_CONTROL_HEADERS</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Not a valid (Mini-)SEED file&#39;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">buffer</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="n">SEED_CONTROL_HEADERS</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">record_length</span>
+            <span class="k">continue</span>
+        <span class="k">break</span>
+    <span class="nb">buffer</span> <span class="o">=</span> <span class="nb">buffer</span><span class="p">[</span><span class="n">offset</span><span class="p">:]</span>
+    <span class="n">buflen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+
+    <span class="c"># If no selection is given pass None to the C function.</span>
+    <span class="k">if</span> <span class="n">starttime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">endtime</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">sourcename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">selections</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">select_time</span> <span class="o">=</span> <span class="n">SelectTime</span><span class="p">()</span>
+        <span class="n">selections</span> <span class="o">=</span> <span class="n">Selections</span><span class="p">()</span>
+        <span class="n">selections</span><span class="o">.</span><span class="n">timewindows</span><span class="o">.</span><span class="n">contents</span> <span class="o">=</span> <span class="n">select_time</span>
+        <span class="k">if</span> <span class="n">starttime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;starttime needs to be a UTCDateTime object&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">timewindows</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> \
+                <span class="n">util</span><span class="o">.</span><span class="n">_convertDatetimeToMSTime</span><span class="p">(</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># HPTERROR results in no starttime.</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">timewindows</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">HPTERROR</span>
+        <span class="k">if</span> <span class="n">endtime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endtime</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;endtime needs to be a UTCDateTime object&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">timewindows</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> \
+                <span class="n">util</span><span class="o">.</span><span class="n">_convertDatetimeToMSTime</span><span class="p">(</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># HPTERROR results in no starttime.</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">timewindows</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> <span class="n">HPTERROR</span>
+        <span class="k">if</span> <span class="n">sourcename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sourcename</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;sourcename needs to be a string&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c"># libmseed uses underscores as separators and allows filtering</span>
+            <span class="c"># after the dataquality which is disabled here to not confuse</span>
+            <span class="c"># users. (* == all data qualities)</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">srcname</span> <span class="o">=</span> <span class="n">sourcename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;_*&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">selections</span><span class="o">.</span><span class="n">srcname</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span>
+    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># Use a callback function to allocate the memory and keep track of the</span>
+    <span class="c"># data.</span>
+    <span class="k">def</span> <span class="nf">allocate_data</span><span class="p">(</span><span class="n">samplecount</span><span class="p">,</span> <span class="n">sampletype</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">samplecount</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DATATYPES</span><span class="p">[</span><span class="n">sampletype</span><span class="p">])</span>
+        <span class="n">all_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
+    <span class="c"># XXX: Do this properly!</span>
+    <span class="c"># Define Python callback function for use in C function. Return a long so</span>
+    <span class="c"># it hopefully works on 32 and 64 bit systems.</span>
+    <span class="n">allocData</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_long</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span><span class="p">)(</span><span class="n">allocate_data</span><span class="p">)</span>
+
+    <span class="n">lil</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">readMSEEDBuffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">,</span> <span class="n">buflen</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">unpack_data</span><span class="p">,</span>
+                                    <span class="n">reclen</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">(</span><span class="n">details</span><span class="p">),</span> <span class="n">allocData</span><span class="p">)</span>
+
+    <span class="c"># XXX: Check if the freeing works.</span>
+    <span class="k">del</span> <span class="n">selections</span>
+
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">currentID</span> <span class="o">=</span> <span class="n">lil</span><span class="o">.</span><span class="n">contents</span>
+    <span class="c"># Return stream if not traces are found.</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">clibmseed</span><span class="o">.</span><span class="n">lil_free</span><span class="p">(</span><span class="n">lil</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">lil</span>
+        <span class="k">return</span> <span class="n">Stream</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c"># Init header with the essential information.</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;network&#39;</span><span class="p">:</span> <span class="n">currentID</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                  <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="n">currentID</span><span class="o">.</span><span class="n">station</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                  <span class="s">&#39;location&#39;</span><span class="p">:</span> <span class="n">currentID</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                  <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="n">currentID</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                  <span class="s">&#39;mseed&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;dataquality&#39;</span><span class="p">:</span> <span class="n">currentID</span><span class="o">.</span><span class="n">dataquality</span><span class="p">}}</span>
+        <span class="c"># Loop over segments.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">currentSegment</span> <span class="o">=</span> <span class="n">currentID</span><span class="o">.</span><span class="n">firstSegment</span><span class="o">.</span><span class="n">contents</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;sampling_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">currentSegment</span><span class="o">.</span><span class="n">samprate</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">util</span><span class="o">.</span><span class="n">_convertMSTimeToDatetime</span><span class="p">(</span><span class="n">currentSegment</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+            <span class="c"># TODO: write support is missing</span>
+            <span class="k">if</span> <span class="n">details</span><span class="p">:</span>
+                <span class="n">timing_quality</span> <span class="o">=</span> <span class="n">currentSegment</span><span class="o">.</span><span class="n">timing_quality</span>
+                <span class="k">if</span> <span class="n">timing_quality</span> <span class="o">==</span> <span class="mh">0xFF</span><span class="p">:</span>  <span class="c"># 0xFF is mask for not known timing</span>
+                    <span class="n">timing_quality</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;mseed&#39;</span><span class="p">][</span><span class="s">&#39;timing_quality&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timing_quality</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;mseed&#39;</span><span class="p">][</span><span class="s">&#39;calibration_type&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="n">currentSegment</span><span class="o">.</span><span class="n">calibration_type</span>
+
+            <span class="k">if</span> <span class="n">headonly</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="c"># The data always will be in sequential order.</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">all_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">currentSegment</span><span class="o">.</span><span class="n">samplecnt</span>
+            <span class="c"># Make sure to init the number of samples.</span>
+            <span class="n">trace</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+            <span class="c"># Append information if necessary.</span>
+            <span class="k">if</span> <span class="n">recinfo</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+            <span class="c"># A Null pointer access results in a ValueError</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">currentSegment</span> <span class="o">=</span> <span class="n">currentSegment</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">contents</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">currentID</span> <span class="o">=</span> <span class="n">currentID</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">contents</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">clibmseed</span><span class="o">.</span><span class="n">lil_free</span><span class="p">(</span><span class="n">lil</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">lil</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">traces</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="writeMSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.writeMSEED.html#obspy.mseed.core.writeMSEED">[docs]</a><span class="k">def</span> <span class="nf">writeMSEED</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reclen</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">flush</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write Mini-SEED file from a Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: A Stream object.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the output file</span>
+<span class="sd">    :type encoding: int or str, optional</span>
+<span class="sd">    :param encoding: Should be set to one of the following supported Mini-SEED</span>
+<span class="sd">        data encoding formats: ASCII (``0``)*, INT16 (``1``), INT32 (``3``),</span>
+<span class="sd">        FLOAT32 (``4``)*, FLOAT64 (``5``)*, STEIM1 (``10``) and STEIM2</span>
+<span class="sd">        (``11``)*. Default data types a marked with an asterisk. Currently</span>
+<span class="sd">        INT24 (``2``) is not supported due to lacking NumPy support.</span>
+<span class="sd">    :type reclen: int, optional</span>
+<span class="sd">    :param reclen: Should be set to the desired data record length in bytes</span>
+<span class="sd">        which must be expressible as 2 raised to the power of X where X is</span>
+<span class="sd">        between (and including) 8 to 20.</span>
+<span class="sd">        Defaults to 4096</span>
+<span class="sd">    :type byteorder: [``0`` or ``&#39;&lt;&#39;`` | ``1`` or ``&#39;&gt;&#39;`` | ``&#39;=&#39;``], optional</span>
+<span class="sd">    :param byteorder: Must be either ``0`` or ``&#39;&lt;&#39;`` for LSBF or</span>
+<span class="sd">        little-endian, ``1`` or ``&#39;&gt;&#39;`` for MBF or big-endian. ``&#39;=&#39;`` is the</span>
+<span class="sd">        native byteorder. If ``-1`` it will be passed directly to libmseed</span>
+<span class="sd">        which will also default it to big endian. Defaults to big endian.</span>
+<span class="sd">    :type flush: int, optional</span>
+<span class="sd">    :param flush: If it is not zero all of the data will be packed into</span>
+<span class="sd">        records, otherwise records will only be packed while there are</span>
+<span class="sd">        enough data samples to completely fill a record.</span>
+<span class="sd">    :type verbose: int, optional</span>
+<span class="sd">    :param verbose: Controls verbosity, a value of zero will result in no</span>
+<span class="sd">        diagnostic output.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The reclen, encoding and byteorder keyword arguments can be set</span>
+<span class="sd">        in the stats.mseed of each :class:`~obspy.core.trace.Trace` as well as</span>
+<span class="sd">        as kwargs of this function. If both are given the kwargs will be used.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&#39;filename.mseed&#39;, format=&#39;MSEED&#39;)  # doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some sanity checks for the keyword arguments.</span>
+    <span class="k">if</span> <span class="n">reclen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">reclen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_RECORD_LENGTHS</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid record length. The record length must be a value</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+                <span class="s">&#39;of 2 to the power of X where 8 &lt;= X &lt;= 20.&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">byteorder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">byteorder</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;=&#39;</span><span class="p">:</span>
+            <span class="n">byteorder</span> <span class="o">=</span> <span class="n">NATIVE_BYTEORDER</span>
+        <span class="c"># If not elif because NATIVE_BYTEORDER is &#39;&lt;&#39; or &#39;&gt;&#39;.</span>
+        <span class="k">if</span> <span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+            <span class="n">byteorder</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+            <span class="n">byteorder</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Invalid byteorder. It must be either &#39;&lt;&#39;, &#39;&gt;&#39;, &#39;=&#39;, &quot;</span> <span class="o">+</span> \
+                  <span class="s">&quot;0, 1 or -1&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c"># Check if encoding kwarg is set and catch invalid encodings.</span>
+    <span class="c"># XXX: Currently INT24 is not working due to lacking NumPy support.</span>
+    <span class="n">encoding_strings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ENCODINGS</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()])</span>
+
+    <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">encoding</span> <span class="ow">in</span> <span class="n">ENCODINGS</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">encoding</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">encoding</span> \
+                <span class="ow">in</span> <span class="n">encoding_strings</span><span class="p">:</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding_strings</span><span class="p">[</span><span class="n">encoding</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid encoding </span><span class="si">%s</span><span class="s">. Valid encodings: </span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">encoding_strings</span><span class="p">))</span>
+
+    <span class="n">trace_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">use_blkt_1001</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c"># The data might need to be modified. To not modify the input data keep</span>
+    <span class="c"># references of which data to finally write.</span>
+    <span class="n">trace_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># Loop over every trace and figure out the correct settings.</span>
+    <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">trace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+        <span class="c"># Create temporary dict for storing information while writing.</span>
+        <span class="n">trace_attr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">trace_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace_attr</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span>
+
+        <span class="c"># Figure out whether or not to use Blockette 1001. This check is done</span>
+        <span class="c"># once to ensure that Blockette 1001 is either written for every record</span>
+        <span class="c"># in the file or for none. It checks the starttime as well as the</span>
+        <span class="c"># sampling rate. If either one has a precision of more than 100</span>
+        <span class="c"># microseconds, Blockette 1001 will be written for every record.</span>
+        <span class="n">starttime</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">_convertDatetimeToMSTime</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">starttime</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">*</span> <span class="n">HPTMODULUS</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">use_blkt_1001</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c"># Determine if a blockette 100 will be needed to represent the input</span>
+        <span class="c"># sample rate or if the sample rate in the fixed section of the data</span>
+        <span class="c"># header will suffice (see ms_genfactmult in libmseed/genutils.c)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">&gt;=</span> <span class="mf">32727.0</span> <span class="ow">or</span> \
+           <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">32727.0</span><span class="p">):</span>
+            <span class="n">use_blkt_100</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">use_blkt_100</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="c"># Set data quality to indeterminate (= D) if it is not already set.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;dataquality&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">&#39;mseed&#39;</span><span class="p">][</span><span class="s">&#39;dataquality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;dataquality&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;D&#39;</span>
+        <span class="c"># Sanity check for the dataquality to get a nice Python exception</span>
+        <span class="c"># instead of a C error.</span>
+        <span class="k">if</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;dataquality&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">]:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid dataquality in Stream[</span><span class="si">%i</span><span class="s">].stats&#39;</span> <span class="o">%</span> <span class="n">_i</span> <span class="o">+</span> \
+                  <span class="s">&#39;.mseed.dataquality</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+                  <span class="s">&#39;The dataquality for Mini-SEED must be either D, R, Q &#39;</span> <span class="o">+</span> \
+                  <span class="s">&#39;or M. See the SEED manual for further information.&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Check that data is of the right type.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unsupported data type </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> \
+                  <span class="s">&quot; for Stream[</span><span class="si">%i</span><span class="s">].data.&quot;</span> <span class="o">%</span> <span class="n">_i</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Check if ndarray is contiguous (see #192, #193)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">c_contiguous</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Detected non contiguous data array in Stream[</span><span class="si">%i</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="n">_i</span> <span class="o">+</span> \
+                  <span class="s">&quot;.data. Trying to fix array.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">requirements</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">,))</span>
+
+        <span class="c"># Handle the record length.</span>
+        <span class="k">if</span> <span class="n">reclen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;reclen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reclen</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="p">,</span> <span class="s">&#39;record_length&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">record_length</span> <span class="ow">in</span> <span class="n">VALID_RECORD_LENGTHS</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;reclen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">record_length</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid record length in Stream[</span><span class="si">%i</span><span class="s">].stats.&#39;</span> <span class="o">%</span> <span class="n">_i</span> <span class="o">+</span> \
+                      <span class="s">&#39;mseed.reclen.</span><span class="se">\n</span><span class="s">The record length must be a value &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;of 2 to the power of X where 8 &lt;= X &lt;= 20.&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;reclen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4096</span>
+
+        <span class="c"># Handle the byteorder.</span>
+        <span class="k">if</span> <span class="n">byteorder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">byteorder</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="p">,</span> <span class="s">&#39;byteorder&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">byteorder</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">byteorder</span>
+            <span class="k">elif</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">NATIVE_BYTEORDER</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+                    <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Invalid byteorder in Stream[</span><span class="si">%i</span><span class="s">].stats.&quot;</span> <span class="o">%</span> <span class="n">_i</span> <span class="o">+</span> \
+                       <span class="s">&quot;mseed.byteorder. It must be either &#39;&lt;&#39;, &#39;&gt;&#39;, &#39;=&#39;,&quot;</span> <span class="o">+</span> \
+                       <span class="s">&quot; 0, 1 or -1&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">NATIVE_BYTEORDER</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c"># Handle the encoding.</span>
+        <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Check if the dtype for all traces is compatible with the enforced</span>
+            <span class="c"># encoding.</span>
+            <span class="nb">id</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">ENCODINGS</span><span class="p">[</span><span class="n">encoding</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                    Wrong dtype for Stream[</span><span class="si">%i</span><span class="s">].data for encoding </span><span class="si">%s</span><span class="s">.</span>
+<span class="s">                    Please change the dtype of your data or use an appropriate</span>
+<span class="s">                    encoding. See the obspy.mseed documentation for more</span>
+<span class="s">                    information.</span>
+<span class="s">                    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_i</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoding</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="p">,</span>
+                                                       <span class="s">&#39;encoding&#39;</span><span class="p">):</span>
+            <span class="n">mseed_encoding</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">encoding</span>
+            <span class="c"># Check if the encoding is valid.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mseed_encoding</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mseed_encoding</span> <span class="ow">in</span> <span class="n">ENCODINGS</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mseed_encoding</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mseed_encoding</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="n">mseed_encoding</span> <span class="ow">in</span> <span class="n">encoding_strings</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoding_strings</span><span class="p">[</span><span class="n">mseed_encoding</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid encoding </span><span class="si">%s</span><span class="s"> in &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;Stream[</span><span class="si">%i</span><span class="s">].stats.mseed.encoding. Valid encodings: </span><span class="si">%s</span><span class="s">&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">mseed_encoding</span><span class="p">,</span> <span class="n">_i</span><span class="p">,</span> <span class="n">encoding_strings</span><span class="p">))</span>
+            <span class="c"># Check if the encoding matches the data&#39;s dtype.</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">ENCODINGS</span><span class="p">[</span><span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]][</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;The encoding specified in &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;trace.stats.mseed.encoding does not match the &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;dtype of the data.</span><span class="se">\n</span><span class="s">A suitable encoding will &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;be chosen.&#39;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># automatically detect encoding if no encoding is given.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&quot;int32&quot;</span><span class="p">):</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">11</span>
+            <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&quot;float32&quot;</span><span class="p">):</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&quot;float64&quot;</span><span class="p">):</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&quot;int16&quot;</span><span class="p">):</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&#39;|S1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
+                <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unsupported data type </span><span class="si">%s</span><span class="s"> in Stream[</span><span class="si">%i</span><span class="s">].data&quot;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">_i</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Convert data if necessary, otherwise store references in list.</span>
+        <span class="k">if</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c"># INT16 needs INT32 data type</span>
+            <span class="n">trace_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trace_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c"># Do some final sanity checks and raise a warning if a file will be written</span>
+    <span class="c"># with more than one different encoding, record length or byteorder.</span>
+    <span class="n">encodings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">_i</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">trace_attributes</span><span class="p">])</span>
+    <span class="n">reclens</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">_i</span><span class="p">[</span><span class="s">&#39;reclen&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">trace_attributes</span><span class="p">])</span>
+    <span class="n">byteorders</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">_i</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">trace_attributes</span><span class="p">])</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;File will be written with more than one different </span><span class="si">%s</span><span class="s">.</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+          <span class="s">&#39;This might have a negative influence on the compatibility &#39;</span> <span class="o">+</span> \
+          <span class="s">&#39;with other programs.&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">encodings</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="s">&#39;encodings&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reclens</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="s">&#39;record lengths&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">byteorders</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="s">&#39;byteorders&#39;</span><span class="p">)</span>
+
+    <span class="c"># Open filehandler or use an existing file like object.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;write&#39;</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">filename</span>
+
+    <span class="c"># Loop over every trace and finally write it to the filehandler.</span>
+    <span class="k">for</span> <span class="n">trace</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">trace_attr</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">trace_data</span><span class="p">,</span> <span class="n">trace_attributes</span><span class="p">):</span>
+        <span class="c"># Create C struct MSTraceGroup.</span>
+        <span class="n">mstg</span> <span class="o">=</span> <span class="n">MSTG</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataquality</span><span class="o">=</span><span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;dataquality&#39;</span><span class="p">])</span>
+        <span class="c"># Initialize packedsamples pointer for the mst_pack function</span>
+        <span class="n">packedsamples</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">()</span>
+
+        <span class="c"># Callback function for mst_pack to actually write the file</span>
+        <span class="k">def</span> <span class="nf">record_handler</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">reclen</span><span class="p">,</span> <span class="n">_stream</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">reclen</span><span class="p">])</span>
+        <span class="c"># Define Python callback function for use in C function</span>
+        <span class="n">recHandler</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_char</span><span class="p">),</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span>
+                                 <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)(</span><span class="n">record_handler</span><span class="p">)</span>
+
+        <span class="c"># Fill up msr record structure, this is already contained in</span>
+        <span class="c"># mstg, however if blk1001 is set we need it anyway</span>
+        <span class="n">msr</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_init</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">msr</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">network</span>
+        <span class="n">msr</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+        <span class="n">msr</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">msr</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span>
+        <span class="n">msr</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">dataquality</span> <span class="o">=</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;dataquality&#39;</span><span class="p">]</span>
+
+        <span class="c"># Only use Blockette 1001 if necessary.</span>
+        <span class="k">if</span> <span class="n">use_blkt_1001</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">sizeof</span><span class="p">(</span><span class="n">blkt_1001_s</span><span class="p">)</span>
+            <span class="n">blkt1001</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">C</span><span class="o">.</span><span class="n">memset</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">blkt1001</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="n">ret_val</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_addblockette</span><span class="p">(</span><span class="n">msr</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">blkt1001</span><span class="p">),</span>
+                                                 <span class="n">size</span><span class="p">,</span> <span class="mi">1001</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c"># Usually returns a pointer to the added blockette in the</span>
+            <span class="c"># blockette link chain and a NULL pointer if it fails.</span>
+            <span class="c"># NULL pointers have a false boolean value according to the</span>
+            <span class="c"># ctypes manual.</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ret_val</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_free</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">msr</span><span class="p">))</span>
+                <span class="k">del</span> <span class="n">mstg</span><span class="p">,</span> <span class="n">msr</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Error in msr_addblockette&#39;</span><span class="p">)</span>
+        <span class="c"># Only use Blockette 100 if necessary.</span>
+        <span class="k">if</span> <span class="n">use_blkt_100</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">sizeof</span><span class="p">(</span><span class="n">blkt_100_s</span><span class="p">)</span>
+            <span class="n">blkt100</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">C</span><span class="o">.</span><span class="n">memset</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">blkt100</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="n">ret_val</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_addblockette</span><span class="p">(</span><span class="n">msr</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">blkt100</span><span class="p">),</span>
+                                                 <span class="n">size</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c"># Usually returns a pointer to the added blockette in the</span>
+            <span class="c"># blockette link chain and a NULL pointer if it fails.</span>
+            <span class="c"># NULL pointers have a false boolean value according to the</span>
+            <span class="c"># ctypes manual.</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ret_val</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_free</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">msr</span><span class="p">))</span>
+                <span class="k">del</span> <span class="n">mstg</span><span class="p">,</span> <span class="n">msr</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Error in msr_addblockette&#39;</span><span class="p">)</span>
+
+        <span class="c"># Pack mstg into a MSEED file using the callback record_handler as</span>
+        <span class="c"># write method.</span>
+        <span class="n">errcode</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">mst_packgroup</span><span class="p">(</span><span class="n">mstg</span><span class="o">.</span><span class="n">getMstg</span><span class="p">(),</span> <span class="n">recHandler</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                          <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;reclen&#39;</span><span class="p">],</span> <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;encoding&#39;</span><span class="p">],</span>
+                          <span class="n">trace_attr</span><span class="p">[</span><span class="s">&#39;byteorder&#39;</span><span class="p">],</span> <span class="n">C</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">packedsamples</span><span class="p">),</span>
+                          <span class="n">flush</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">msr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">errcode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Skipping empty trace &quot;</span><span class="si">%s</span><span class="s">&quot;.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">errcode</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_free</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">msr</span><span class="p">))</span>
+            <span class="k">del</span> <span class="n">mstg</span><span class="p">,</span> <span class="n">msr</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Error in mst_packgroup&#39;</span><span class="p">)</span>
+        <span class="c"># Deallocate any allocated memory.</span>
+        <span class="n">clibmseed</span><span class="o">.</span><span class="n">msr_free</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">msr</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">mstg</span><span class="p">,</span> <span class="n">msr</span>
+    <span class="c"># Close if its a file handler.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="MSTG"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.MSTG.html#obspy.mseed.core.MSTG">[docs]</a><span class="k">class</span> <span class="nc">MSTG</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that transforms a ObsPy Trace object to a libmseed internal</span>
+<span class="sd">    MSTraceGroup struct.</span>
+
+<span class="sd">    The class works on a Trace instead of a Stream because that way it is</span>
+<span class="sd">    possible to write Mini-SEED files with a different encoding per Trace.</span>
+
+<span class="sd">    The class is mainly used to achieve a clean memory management.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MSTG.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.MSTG.__init__.html#obspy.mseed.core.MSTG.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataquality</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The init function requires a ObsPy Trace object which will be used to</span>
+<span class="sd">        fill self.mstg.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Initialize MSTraceGroup</span>
+        <span class="n">mstg</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">mst_initgroup</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mstg</span> <span class="o">=</span> <span class="n">mstg</span>
+        <span class="c"># Set numtraces.</span>
+        <span class="n">mstg</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">numtraces</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># Initialize MSTrace object and connect with group</span>
+        <span class="n">mstg</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="n">clibmseed</span><span class="o">.</span><span class="n">mst_init</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">mstg</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">traces</span>
+
+        <span class="c"># Figure out the datatypes.</span>
+        <span class="n">sampletype</span> <span class="o">=</span> <span class="n">SAMPLETYPE</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+        <span class="n">c_dtype</span> <span class="o">=</span> <span class="n">DATATYPES</span><span class="p">[</span><span class="n">sampletype</span><span class="p">]</span>
+
+        <span class="c"># Set the header values.</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">network</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">dataquality</span> <span class="o">=</span> <span class="n">dataquality</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> \
+                <span class="n">util</span><span class="o">.</span><span class="n">_convertDatetimeToMSTime</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> \
+                <span class="n">util</span><span class="o">.</span><span class="n">_convertDatetimeToMSTime</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">samprate</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">samplecnt</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">numsamples</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">sampletype</span> <span class="o">=</span> <span class="n">sampletype</span>
+
+        <span class="c"># Create a single datapoint and resize its memory to be able to</span>
+        <span class="c"># hold all datapoints.</span>
+        <span class="n">tempdatpoint</span> <span class="o">=</span> <span class="n">c_dtype</span><span class="p">()</span>
+        <span class="n">datasize</span> <span class="o">=</span> <span class="n">SAMPLESIZES</span><span class="p">[</span><span class="n">sampletype</span><span class="p">]</span> <span class="o">*</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+        <span class="c"># XXX: Ugly workaround for traces with less than 17 data points</span>
+        <span class="k">if</span> <span class="n">datasize</span> <span class="o">&lt;</span> <span class="mi">17</span><span class="p">:</span>
+            <span class="n">datasize</span> <span class="o">=</span> <span class="mi">17</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">tempdatpoint</span><span class="p">,</span> <span class="n">datasize</span><span class="p">)</span>
+        <span class="c"># The datapoints in the MSTG structure are a pointer to the memory</span>
+        <span class="c"># area reserved for tempdatpoint.</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">datasamples</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">tempdatpoint</span><span class="p">),</span>
+                                            <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)</span>
+        <span class="c"># Swap if wrong byte order because libmseed expects native byteorder.</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">!=</span> <span class="s">&quot;=&quot;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+        <span class="c"># Pointer to the NumPy data buffer.</span>
+        <span class="n">datptr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="c"># Manually move the contents of the NumPy data buffer to the</span>
+        <span class="c"># address of the previously created memory area.</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">memmove</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">datasamples</span><span class="p">,</span> <span class="n">datptr</span><span class="p">,</span> <span class="n">datasize</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="MSTG.__del__"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.MSTG.__del__.html#obspy.mseed.core.MSTG.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Frees the MSTraceGroup struct. Therefore Python garbage collection can</span>
+<span class="sd">        work with this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">clibmseed</span><span class="o">.</span><span class="n">mst_freegroup</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mstg</span><span class="p">))</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mstg</span>
+</div>
+<div class="viewcode-block" id="MSTG.getMstg"><a class="viewcode-back" href="../../../packages/autogen/obspy.mseed.core.MSTG.getMstg.html#obspy.mseed.core.MSTG.getMstg">[docs]</a>    <span class="k">def</span> <span class="nf">getMstg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simply returns the mstg.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mstg</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

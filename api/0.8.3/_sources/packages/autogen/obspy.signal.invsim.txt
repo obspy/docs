@@ -1,0 +1,38 @@
+obspy.signal.invsim
+===================
+
+.. currentmodule:: obspy.signal.invsim
+.. automodule:: obspy.signal.invsim
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      c_sac_taper
+      cornFreq2Paz
+      cosTaper
+      estimateMagnitude
+      estimateWoodAndersonAmplitude
+      evalresp
+      paz2AmpValueOfFreqResp
+      pazToFreqResp
+      seisSim
+      specInv
+      waterlevel
+   
+   
+
+   
+   
+   
+
+   
+   
+   

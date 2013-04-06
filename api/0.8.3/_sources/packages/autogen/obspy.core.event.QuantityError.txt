@@ -1,0 +1,189 @@
+obspy.core.event.QuantityError
+==============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: QuantityError
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~QuantityError.__abstractmethods__
+     ~QuantityError.__dict__
+     ~QuantityError.__doc__
+     ~QuantityError.__hash__
+     ~QuantityError.__module__
+     ~QuantityError.__weakref__
+     ~QuantityError.confidence_level
+     ~QuantityError.defaults
+     ~QuantityError.lower_uncertainty
+     ~QuantityError.readonly
+     ~QuantityError.uncertainty
+     ~QuantityError.upper_uncertainty
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~QuantityError.clear
+     ~QuantityError.copy
+     ~QuantityError.get
+     ~QuantityError.items
+     ~QuantityError.iteritems
+     ~QuantityError.iterkeys
+     ~QuantityError.itervalues
+     ~QuantityError.keys
+     ~QuantityError.pop
+     ~QuantityError.popitem
+     ~QuantityError.setdefault
+     ~QuantityError.update
+     ~QuantityError.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~QuantityError._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~QuantityError.__contains__
+     ~QuantityError.__deepcopy__
+     ~QuantityError.__delattr__
+     ~QuantityError.__delitem__
+     ~QuantityError.__eq__
+     ~QuantityError.__getattr__
+     ~QuantityError.__getitem__
+     ~QuantityError.__getstate__
+     ~QuantityError.__init__
+     ~QuantityError.__iter__
+     ~QuantityError.__len__
+     ~QuantityError.__ne__
+     ~QuantityError.__repr__
+     ~QuantityError.__setattr__
+     ~QuantityError.__setitem__
+     ~QuantityError.__setstate__
+     ~QuantityError.__subclasshook__
+  
+
+  
+  

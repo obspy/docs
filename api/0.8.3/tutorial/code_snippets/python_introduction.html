@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Python Introduction for Seismologists &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="2. Reading Seismograms" href="reading_seismograms.html" />
+    <link rel="prev" title="Advanced Exercise Solution 5" href="../advanced_exercise/advanced_exercise_solution_5.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reading_seismograms.html" title="2. Reading Seismograms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../advanced_exercise/advanced_exercise_solution_5.html" title="Advanced Exercise Solution 5"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="python-introduction-for-seismologists">
+<h1>1. Python Introduction for Seismologists<a class="headerlink" href="#python-introduction-for-seismologists" title="Permalink to this headline">¶</a></h1>
+<p>Here we want to give a small, incomplete introduction to the <a class="reference external" href="http://www.python.org">Python</a>
+programming language, with links to useful packages and further resources. The
+key features are explained via the following Python script:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+
+<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;*.z&#39;</span><span class="p">):</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+    <span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%f</span><span class="s"> </span><span class="si">%f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">),</span>
+                           <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+    <span class="k">print</span> <span class="n">msg</span>
+</pre></div>
+</td></tr></table></div>
+<p>Description of each line of the example above:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>Line 1</em></dt>
+<dd>Shebang, specifying the location of the Python interpreter for Unix-like
+operating systems.</dd>
+<dt><em>Lines 2-3</em></dt>
+<dd>Import modules/libraries/packages in the current namespace. The <a class="reference external" href="http://docs.python.org/2.7/library/glob.html#glob" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">glob</span></tt></a>
+module, which allows wildcard matching on filenames, is imported here. All
+functions inside this module can be accessed via <tt class="docutils literal"><span class="pre">glob.function()</span></tt>
+afterwards, such as <a class="reference external" href="http://docs.python.org/2.7/library/glob.html#glob.glob" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">glob.glob()</span></tt></a>.
+Furthermore, a single function <a class="reference internal" href="../../packages/autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> from the
+<a class="reference internal" href="../../packages/obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a> module is imported, which is used to read various
+different seismogram file formats.</dd>
+<dt><em>Line 5</em></dt>
+<dd><p class="first">Starts a <tt class="docutils literal"><span class="pre">for</span></tt>-loop using the <a class="reference external" href="http://docs.python.org/2.7/library/glob.html#glob.glob" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">glob()</span></tt></a> function of the module
+<a class="reference external" href="http://docs.python.org/2.7/library/glob.html#glob" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">glob</span></tt></a> on all files ending with <tt class="docutils literal"><span class="pre">'.z'</span></tt>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The length of all loops in Python is determined by the indentation level.
+Do not mix spaces and tabs in your program code for indentation, this
+produces bugs that are not easy to identify.</p>
+</div>
+</dd>
+<dt><em>Line 6</em></dt>
+<dd>Uses the <a class="reference internal" href="../../packages/autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function from the
+<a class="reference internal" href="../../packages/obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a> module to read in the seismogram to a
+<a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object named <tt class="docutils literal"><span class="pre">st</span></tt>.</dd>
+<dt><em>Line 7</em></dt>
+<dd>Assigns the first <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> object of the
+list-like <a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object to the variable <tt class="docutils literal"><span class="pre">tr</span></tt>.</dd>
+<dt><em>Line 8-9</em></dt>
+<dd>A Python counterpart for the well-known C function <tt class="docutils literal"><span class="pre">sprintf</span></tt> is the <tt class="docutils literal"><span class="pre">%</span></tt>
+operator acting on a format string. Here we print the header attributes
+<tt class="docutils literal"><span class="pre">station</span></tt> and <tt class="docutils literal"><span class="pre">starttime</span></tt> as well as the return value of the methods
+<tt class="xref py py-meth docutils literal"><span class="pre">mean()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">std()</span></tt> acting on the data sub-object
+of the <a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> (which are of type
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>).</dd>
+<dt><em>Line 10</em></dt>
+<dd>Prints content of variable <tt class="docutils literal"><span class="pre">msg</span></tt> to the screen.</dd>
+</dl>
+</div></blockquote>
+<p>As <a class="reference external" href="http://www.python.org">Python</a> is an interpreter language, we recommend to use the <a class="reference external" href="http://ipython.org">IPython</a> shell
+for rapid development and trying things out. It supports tab completion,
+history expansion and various other features. E.g.
+type <tt class="docutils literal"><span class="pre">help(glob.glob)</span></tt> or <tt class="docutils literal"><span class="pre">glob.glob?</span></tt> to see the help of the
+<a class="reference external" href="http://docs.python.org/2.7/library/glob.html#glob.glob" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">glob()</span></tt></a> function (the module must be imported beforehand).</p>
+<p class="rubric">Further Resources</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://docs.python.org/tutorial/">http://docs.python.org/tutorial/</a></dt>
+<dd><p class="first last">Official Python tutorial.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://docs.python.org/library/index.html">http://docs.python.org/library/index.html</a></dt>
+<dd><p class="first last">Python library reference</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://software-carpentry.org/4_0/">http://software-carpentry.org/4_0/</a></dt>
+<dd><p class="first last">Very instructive video lectures on various computer related topics. A good
+starting point for learning Python and Version Control with Subversion.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://ipython.scipy.org/moin">http://ipython.scipy.org/moin</a></dt>
+<dd><p class="first last">An enhanced interactive Python shell.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://docs.scipy.org">http://docs.scipy.org</a></dt>
+<dd><p class="first last">NumPy and SciPy are the matrix based computation modules of Python. The
+allow fast array manipulation (functions in C). NumPy and SciPy provide
+access to fft, lapack, atlas or blas. That is svd, eigenvalues...
+ObsPy uses the numpy.ndarrays for storing the data (e.g. tr.data).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://matplotlib.sourceforge.net/gallery.html">http://matplotlib.sourceforge.net/gallery.html</a></dt>
+<dd><p class="first last">matplotlib is the 2-D plotting package for Python. The gallery is the market
+place which allows you to go shopping for all kind of figures. The source
+code for each figure is linked. Note matplotlib has even its own latex
+renderer.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://matplotlib.sourceforge.net/basemap/doc/html/index.html">http://matplotlib.sourceforge.net/basemap/doc/html/index.html</a></dt>
+<dd><p class="first last">Package plotting 2D data on maps in Python. Similar to GMT.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://trac.osgeo.org/gdal/wiki/GdalOgrInPython">http://trac.osgeo.org/gdal/wiki/GdalOgrInPython</a></dt>
+<dd><p class="first last">Package which allows to directly read a GeoTiff which then can be plotted
+with the basemap toolkit.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://www.tramy.us/numpybook.pdf">http://www.tramy.us/numpybook.pdf</a></dt>
+<dd><p class="first last">The official NumPy reference.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://openbook.galileocomputing.de/python/">http://openbook.galileocomputing.de/python/</a></dt>
+<dd><p class="first last">An German Python book (free).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference external" href="http://svn.geophysik.uni-muenchen.de/trac/mtspecpy">http://svn.geophysik.uni-muenchen.de/trac/mtspecpy</a></dt>
+<dd><p class="first last">Multitaper spectrum bindings for Python</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/python_introduction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reading_seismograms.html" title="2. Reading Seismograms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../advanced_exercise/advanced_exercise_solution_5.html" title="Advanced Exercise Solution 5"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

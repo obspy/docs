@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser.read
+==============================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser.read

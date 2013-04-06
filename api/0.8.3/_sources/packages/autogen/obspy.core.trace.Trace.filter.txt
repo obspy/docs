@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.filter
+=============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.filter

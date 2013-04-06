@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.integrate
+================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.integrate

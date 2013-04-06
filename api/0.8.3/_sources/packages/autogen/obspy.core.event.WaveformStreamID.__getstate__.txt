@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.__getstate__
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.__getstate__

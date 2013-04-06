@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime._getTimeStamp
+================================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime._getTimeStamp

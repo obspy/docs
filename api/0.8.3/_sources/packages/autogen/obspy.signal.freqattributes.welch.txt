@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.welch
+=================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: welch

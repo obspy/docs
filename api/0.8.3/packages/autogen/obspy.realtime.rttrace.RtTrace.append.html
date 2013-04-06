@@ -1,0 +1,166 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.rttrace.RtTrace.append &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.realtime.rttrace.RtTrace" href="obspy.realtime.rttrace.RtTrace.html" />
+    <link rel="next" title="obspy.realtime.rttrace.RtTrace.copy" href="obspy.realtime.rttrace.RtTrace.copy.html" />
+    <link rel="prev" title="obspy.realtime.rttrace.RtTrace" href="obspy.realtime.rttrace.RtTrace.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.copy.html" title="obspy.realtime.rttrace.RtTrace.copy"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.html" title="obspy.realtime.rttrace.RtTrace"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" >obspy.realtime.rttrace</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.RtTrace.html" accesskey="U">obspy.realtime.rttrace.RtTrace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-realtime-rttrace-rttrace-append">
+<h1>obspy.realtime.rttrace.RtTrace.append<a class="headerlink" href="#obspy-realtime-rttrace-rttrace-append" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.realtime.rttrace.RtTrace.append">
+<tt class="descclassname">RtTrace.</tt><tt class="descname">append</tt><big>(</big><em>trace</em>, <em>gap_overlap_check=False</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/realtime/rttrace.html#RtTrace.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.realtime.rttrace.RtTrace.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends a Trace object to this RtTrace.</p>
+<p>Registered real-time processing will be applied to copy of appended
+Trace object before it is appended.  This RtTrace will be truncated
+from the beginning to RtTrace.max_length, if specified.
+Sampling rate, data type and trace.id of both traces must match.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trace</strong> (<a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>) <span class="dash" /> <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> object to append to
+this RtTrace</li>
+<li><strong>gap_overlap_check</strong> (<em>bool, optional</em>) <span class="dash" /> <p>Action to take when there is a gap or overlap
+between the end of this RtTrace and start of appended Trace:</p>
+<blockquote>
+<div>If True, raise TypeError.
+If False, all trace processing memory will be re-initialized to<blockquote>
+<div>prevent false signal in processed trace.</div></blockquote>
+</div></blockquote>
+<p>(default is <tt class="docutils literal"><span class="pre">True</span></tt>).</p>
+</li>
+<li><strong>verbose</strong> (<em>bool, optional</em>) <span class="dash" /> Print additional information to stdout</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">NumPy <tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt> object containing processed trace
+data from appended Trace object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.realtime.rttrace.RtTrace.append.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.copy.html" title="obspy.realtime.rttrace.RtTrace.copy"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.html" title="obspy.realtime.rttrace.RtTrace"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" >obspy.realtime.rttrace</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.RtTrace.html" >obspy.realtime.rttrace.RtTrace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

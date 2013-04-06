@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.popitem
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.popitem

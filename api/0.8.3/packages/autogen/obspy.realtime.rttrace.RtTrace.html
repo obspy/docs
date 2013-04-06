@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.rttrace.RtTrace &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.realtime.rttrace" href="obspy.realtime.rttrace.html" />
+    <link rel="next" title="obspy.realtime.rttrace.RtTrace.append" href="obspy.realtime.rttrace.RtTrace.append.html" />
+    <link rel="prev" title="obspy.realtime.rttrace.RtTrace.__str__" href="obspy.realtime.rttrace.RtTrace.__str__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.append.html" title="obspy.realtime.rttrace.RtTrace.append"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.__str__.html" title="obspy.realtime.rttrace.RtTrace.__str__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" accesskey="U">obspy.realtime.rttrace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-realtime-rttrace-rttrace">
+<h1>obspy.realtime.rttrace.RtTrace<a class="headerlink" href="#obspy-realtime-rttrace-rttrace" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.realtime.rttrace.RtTrace">
+<em class="property">class </em><tt class="descname">RtTrace</tt><big>(</big><em>max_length=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/realtime/rttrace.html#RtTrace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.realtime.rttrace.RtTrace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">obspy.core.trace.Trace</span></tt></a></p>
+<p>An object containing data of a continuous series constructed dynamically
+from sequential data packets.</p>
+<p>New data packets may be periodically appended. Registered time-domain
+processes can be applied to the new data and the resulting trace will be
+left trimmed to maintain a specified maximum trace length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>max_length</strong> (<em>int, optional</em>) <span class="dash" /> maximum trace length in seconds</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>RtTrace has been built to handle real time processing of periodically
+append data packets, such as adding and processing data requested from an
+SeedLink server. See <tt class="xref py py-mod docutils literal"><span class="pre">obspy.seedlink</span></tt> for further information.</p>
+<p>For the sake of simplicity we will just split data of an existing example
+file into multiple chucks (Trace objects) of about equal size (step 1 + 2)
+and append those chunks in a simple loop (step 4) into an RtTrace object.
+Additionally there are two real time processing functions registered to the
+RtTrace object (step 3) which will automatically process any appended data
+chunks.</p>
+<ol class="arabic">
+<li><p class="first">Read first trace of example SAC data file and extract contained time
+offset and epicentral distance of an earthquake:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.realtime</span> <span class="kn">import</span> <span class="n">RtTrace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.realtime.signal</span> <span class="kn">import</span> <span class="n">calculateMwpMag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_trace</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;/path/to/II.TLY.BHZ.SAC&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">data_trace</span><span class="p">)</span>
+<span class="go">12684</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref_time_offset</span> <span class="o">=</span> <span class="n">data_trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sac</span><span class="o">.</span><span class="n">a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ref_time_offset</span><span class="p">)</span>
+<span class="go">301.506</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">epicentral_distance</span> <span class="o">=</span> <span class="n">data_trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sac</span><span class="o">.</span><span class="n">gcarc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">epicentral_distance</span><span class="p">)</span>
+<span class="go">30.0855</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Split given trace into a list of three sub-traces:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">traces</span> <span class="o">=</span> <span class="n">data_trace</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">]</span>
+<span class="go">[4228, 4228, 4228]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Assemble real time trace and register two processes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rt_trace</span> <span class="o">=</span> <span class="n">RtTrace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rt_trace</span><span class="o">.</span><span class="n">registerRtProcess</span><span class="p">(</span><span class="s">&#39;integrate&#39;</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rt_trace</span><span class="o">.</span><span class="n">registerRtProcess</span><span class="p">(</span><span class="s">&#39;mwpIntegral&#39;</span><span class="p">,</span> <span class="n">mem_time</span><span class="o">=</span><span class="mi">240</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ref_time</span><span class="o">=</span><span class="p">(</span><span class="n">data_trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">ref_time_offset</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">max_time</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mf">1.610210e+09</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Append and auto-process packet data into RtTrace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">processed_trace</span> <span class="o">=</span> <span class="n">rt_trace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">gap_overlap_check</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">rt_trace</span><span class="p">)</span>
+<span class="go">12684</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Some post processing to get Mwp:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">peak</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rt_trace</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">peak</span><span class="p">)</span>
+<span class="go">0.136404</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mwp</span> <span class="o">=</span> <span class="n">calculateMwpMag</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="n">epicentral_distance</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">mwp</span><span class="p">)</span>
+<span class="go">8.78902911791</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">have_appended_data</span></tt></td>
+<td>bool(x) -&gt; bool</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt></td>
+<td>Returns a SEED compatible identifier of the trace.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.append.html#obspy.realtime.rttrace.RtTrace.append" title="obspy.realtime.rttrace.RtTrace.append"><tt class="xref py py-obj docutils literal"><span class="pre">append</span></tt></a></td>
+<td>Appends a Trace object to this RtTrace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.copy.html#obspy.realtime.rttrace.RtTrace.copy" title="obspy.realtime.rttrace.RtTrace.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td>Returns a deepcopy of this RtTrace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.count.html#obspy.realtime.rttrace.RtTrace.count" title="obspy.realtime.rttrace.RtTrace.count"><tt class="xref py py-obj docutils literal"><span class="pre">count</span></tt></a></td>
+<td>Returns number of data samples of the current trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.decimate.html#obspy.realtime.rttrace.RtTrace.decimate" title="obspy.realtime.rttrace.RtTrace.decimate"><tt class="xref py py-obj docutils literal"><span class="pre">decimate</span></tt></a></td>
+<td>Downsample trace data by an integer factor.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.detrend.html#obspy.realtime.rttrace.RtTrace.detrend" title="obspy.realtime.rttrace.RtTrace.detrend"><tt class="xref py py-obj docutils literal"><span class="pre">detrend</span></tt></a></td>
+<td>Method to remove a linear trend from the trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.differentiate.html#obspy.realtime.rttrace.RtTrace.differentiate" title="obspy.realtime.rttrace.RtTrace.differentiate"><tt class="xref py py-obj docutils literal"><span class="pre">differentiate</span></tt></a></td>
+<td>Method to differentiate the trace with respect to time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.filter.html#obspy.realtime.rttrace.RtTrace.filter" title="obspy.realtime.rttrace.RtTrace.filter"><tt class="xref py py-obj docutils literal"><span class="pre">filter</span></tt></a></td>
+<td>Filters the data of the current trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.getId.html#obspy.realtime.rttrace.RtTrace.getId" title="obspy.realtime.rttrace.RtTrace.getId"><tt class="xref py py-obj docutils literal"><span class="pre">getId</span></tt></a></td>
+<td>Returns a SEED compatible identifier of the trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.integrate.html#obspy.realtime.rttrace.RtTrace.integrate" title="obspy.realtime.rttrace.RtTrace.integrate"><tt class="xref py py-obj docutils literal"><span class="pre">integrate</span></tt></a></td>
+<td>Method to integrate the trace with respect to time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.max.html#obspy.realtime.rttrace.RtTrace.max" title="obspy.realtime.rttrace.RtTrace.max"><tt class="xref py py-obj docutils literal"><span class="pre">max</span></tt></a></td>
+<td>Returns the value of the absolute maximum amplitude in the trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.normalize.html#obspy.realtime.rttrace.RtTrace.normalize" title="obspy.realtime.rttrace.RtTrace.normalize"><tt class="xref py py-obj docutils literal"><span class="pre">normalize</span></tt></a></td>
+<td>Method to normalize the trace to its absolute maximum.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.plot.html#obspy.realtime.rttrace.RtTrace.plot" title="obspy.realtime.rttrace.RtTrace.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a></td>
+<td>Creates a simple graph of the current trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.registerRtProcess.html#obspy.realtime.rttrace.RtTrace.registerRtProcess" title="obspy.realtime.rttrace.RtTrace.registerRtProcess"><tt class="xref py py-obj docutils literal"><span class="pre">registerRtProcess</span></tt></a></td>
+<td>Adds real-time processing algorithm to processing list of this RtTrace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.resample.html#obspy.realtime.rttrace.RtTrace.resample" title="obspy.realtime.rttrace.RtTrace.resample"><tt class="xref py py-obj docutils literal"><span class="pre">resample</span></tt></a></td>
+<td>Resample trace data using Fourier method.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.rtProcessFunctionsToString.html#obspy.realtime.rttrace.RtTrace.rtProcessFunctionsToString" title="obspy.realtime.rttrace.RtTrace.rtProcessFunctionsToString"><tt class="xref py py-obj docutils literal"><span class="pre">rtProcessFunctionsToString</span></tt></a></td>
+<td>Return doc string for all predefined real-time processing functions.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.simulate.html#obspy.realtime.rttrace.RtTrace.simulate" title="obspy.realtime.rttrace.RtTrace.simulate"><tt class="xref py py-obj docutils literal"><span class="pre">simulate</span></tt></a></td>
+<td>Correct for instrument response / Simulate new instrument response.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.slice.html#obspy.realtime.rttrace.RtTrace.slice" title="obspy.realtime.rttrace.RtTrace.slice"><tt class="xref py py-obj docutils literal"><span class="pre">slice</span></tt></a></td>
+<td>Returns a new Trace object with data going from start to end time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.spectrogram.html#obspy.realtime.rttrace.RtTrace.spectrogram" title="obspy.realtime.rttrace.RtTrace.spectrogram"><tt class="xref py py-obj docutils literal"><span class="pre">spectrogram</span></tt></a></td>
+<td>Creates a spectrogram plot of the trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.split.html#obspy.realtime.rttrace.RtTrace.split" title="obspy.realtime.rttrace.RtTrace.split"><tt class="xref py py-obj docutils literal"><span class="pre">split</span></tt></a></td>
+<td>Splits Trace object containing gaps using a NumPy masked array into</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.std.html#obspy.realtime.rttrace.RtTrace.std" title="obspy.realtime.rttrace.RtTrace.std"><tt class="xref py py-obj docutils literal"><span class="pre">std</span></tt></a></td>
+<td>Method to get the standard deviation of amplitudes in the trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.taper.html#obspy.realtime.rttrace.RtTrace.taper" title="obspy.realtime.rttrace.RtTrace.taper"><tt class="xref py py-obj docutils literal"><span class="pre">taper</span></tt></a></td>
+<td>Method to taper the trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.times.html#obspy.realtime.rttrace.RtTrace.times" title="obspy.realtime.rttrace.RtTrace.times"><tt class="xref py py-obj docutils literal"><span class="pre">times</span></tt></a></td>
+<td>For convenient plotting compute a Numpy array of seconds since</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.trigger.html#obspy.realtime.rttrace.RtTrace.trigger" title="obspy.realtime.rttrace.RtTrace.trigger"><tt class="xref py py-obj docutils literal"><span class="pre">trigger</span></tt></a></td>
+<td>Runs a triggering algorithm on the data of the current trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.trim.html#obspy.realtime.rttrace.RtTrace.trim" title="obspy.realtime.rttrace.RtTrace.trim"><tt class="xref py py-obj docutils literal"><span class="pre">trim</span></tt></a></td>
+<td>Cuts current trace to given start and end time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.verify.html#obspy.realtime.rttrace.RtTrace.verify" title="obspy.realtime.rttrace.RtTrace.verify"><tt class="xref py py-obj docutils literal"><span class="pre">verify</span></tt></a></td>
+<td>Verifies current trace object against available meta data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.write.html#obspy.realtime.rttrace.RtTrace.write" title="obspy.realtime.rttrace.RtTrace.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<td>Saves current trace into a file.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace._addProcessingInfo.html#obspy.realtime.rttrace.RtTrace._addProcessingInfo" title="obspy.realtime.rttrace.RtTrace._addProcessingInfo"><tt class="xref py py-obj docutils literal"><span class="pre">_addProcessingInfo</span></tt></a></td>
+<td>Adds the given informational string to the <cite>processing</cite> field in the</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace._ltrim.html#obspy.realtime.rttrace.RtTrace._ltrim" title="obspy.realtime.rttrace.RtTrace._ltrim"><tt class="xref py py-obj docutils literal"><span class="pre">_ltrim</span></tt></a></td>
+<td>Cuts current trace to given start time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace._rtrim.html#obspy.realtime.rttrace.RtTrace._rtrim" title="obspy.realtime.rttrace.RtTrace._rtrim"><tt class="xref py py-obj docutils literal"><span class="pre">_rtrim</span></tt></a></td>
+<td>Cuts current trace to given end time.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__add__.html#obspy.realtime.rttrace.RtTrace.__add__" title="obspy.realtime.rttrace.RtTrace.__add__"><tt class="xref py py-obj docutils literal"><span class="pre">__add__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__div__.html#obspy.realtime.rttrace.RtTrace.__div__" title="obspy.realtime.rttrace.RtTrace.__div__"><tt class="xref py py-obj docutils literal"><span class="pre">__div__</span></tt></a></td>
+<td>Splits Trace into new Stream containing num Traces of the same size.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__eq__.html#obspy.realtime.rttrace.RtTrace.__eq__" title="obspy.realtime.rttrace.RtTrace.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Implements rich comparison of RtTrace objects for &#8220;==&#8221; operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__ge__.html#obspy.realtime.rttrace.RtTrace.__ge__" title="obspy.realtime.rttrace.RtTrace.__ge__"><tt class="xref py py-obj docutils literal"><span class="pre">__ge__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__getitem__.html#obspy.realtime.rttrace.RtTrace.__getitem__" title="obspy.realtime.rttrace.RtTrace.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td>__getitem__ method of Trace object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__gt__.html#obspy.realtime.rttrace.RtTrace.__gt__" title="obspy.realtime.rttrace.RtTrace.__gt__"><tt class="xref py py-obj docutils literal"><span class="pre">__gt__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__init__.html#obspy.realtime.rttrace.RtTrace.__init__" title="obspy.realtime.rttrace.RtTrace.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Initializes an RtTrace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__le__.html#obspy.realtime.rttrace.RtTrace.__le__" title="obspy.realtime.rttrace.RtTrace.__le__"><tt class="xref py py-obj docutils literal"><span class="pre">__le__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__len__.html#obspy.realtime.rttrace.RtTrace.__len__" title="obspy.realtime.rttrace.RtTrace.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td>Returns number of data samples of the current trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__lt__.html#obspy.realtime.rttrace.RtTrace.__lt__" title="obspy.realtime.rttrace.RtTrace.__lt__"><tt class="xref py py-obj docutils literal"><span class="pre">__lt__</span></tt></a></td>
+<td>Too ambiguous, throw an Error.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__mod__.html#obspy.realtime.rttrace.RtTrace.__mod__" title="obspy.realtime.rttrace.RtTrace.__mod__"><tt class="xref py py-obj docutils literal"><span class="pre">__mod__</span></tt></a></td>
+<td>Splits Trace into new Stream containing Traces with num samples.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__mul__.html#obspy.realtime.rttrace.RtTrace.__mul__" title="obspy.realtime.rttrace.RtTrace.__mul__"><tt class="xref py py-obj docutils literal"><span class="pre">__mul__</span></tt></a></td>
+<td>Creates a new Stream containing num copies of this trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__ne__.html#obspy.realtime.rttrace.RtTrace.__ne__" title="obspy.realtime.rttrace.RtTrace.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td>Implements rich comparison of Trace objects for &#8221;!=&#8221; operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__original_str__.html#obspy.realtime.rttrace.RtTrace.__original_str__" title="obspy.realtime.rttrace.RtTrace.__original_str__"><tt class="xref py py-obj docutils literal"><span class="pre">__original_str__</span></tt></a></td>
+<td>Returns short summary string of the current trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__setattr__.html#obspy.realtime.rttrace.RtTrace.__setattr__" title="obspy.realtime.rttrace.RtTrace.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>__setattr__ method of Trace object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.realtime.rttrace.RtTrace.__str__.html#obspy.realtime.rttrace.RtTrace.__str__" title="obspy.realtime.rttrace.RtTrace.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Monkey patch for the __str__ method of the Trace object. SEGY object do not</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.realtime.rttrace.RtTrace.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.append.html" title="obspy.realtime.rttrace.RtTrace.append"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.__str__.html" title="obspy.realtime.rttrace.RtTrace.__str__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" >obspy.realtime.rttrace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

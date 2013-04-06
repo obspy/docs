@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.PPSD.get_percentile
+====================================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. automethod:: PPSD.get_percentile

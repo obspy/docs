@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.swap_byte_order
+=====================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.swap_byte_order

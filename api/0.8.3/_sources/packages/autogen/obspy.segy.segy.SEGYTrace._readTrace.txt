@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTrace._readTrace
+====================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYTrace._readTrace

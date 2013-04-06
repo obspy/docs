@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.util.base &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.util.base</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base utilities and constants for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy.core.util.misc</span> <span class="kn">import</span> <span class="n">toIntOrZero</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.types</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.version</span> <span class="kn">import</span> <span class="n">get_git_version</span> <span class="k">as</span> <span class="n">_getVersionString</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">require</span><span class="p">,</span> <span class="n">iter_entry_points</span><span class="p">,</span> <span class="n">load_entry_point</span>
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">doctest</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+
+<span class="c"># defining ObsPy modules currently used by runtests and the path function</span>
+<span class="n">DEFAULT_MODULES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;core&#39;</span><span class="p">,</span> <span class="s">&#39;gse2&#39;</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">,</span> <span class="s">&#39;sac&#39;</span><span class="p">,</span> <span class="s">&#39;wav&#39;</span><span class="p">,</span> <span class="s">&#39;signal&#39;</span><span class="p">,</span> <span class="s">&#39;imaging&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;xseed&#39;</span><span class="p">,</span> <span class="s">&#39;seisan&#39;</span><span class="p">,</span> <span class="s">&#39;sh&#39;</span><span class="p">,</span> <span class="s">&#39;segy&#39;</span><span class="p">,</span> <span class="s">&#39;taup&#39;</span><span class="p">,</span> <span class="s">&#39;seg2&#39;</span><span class="p">,</span> <span class="s">&#39;db&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;realtime&#39;</span><span class="p">,</span> <span class="s">&#39;datamark&#39;</span><span class="p">]</span>
+<span class="n">NETWORK_MODULES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;arclink&#39;</span><span class="p">,</span> <span class="s">&#39;seishub&#39;</span><span class="p">,</span> <span class="s">&#39;iris&#39;</span><span class="p">,</span> <span class="s">&#39;neries&#39;</span><span class="p">,</span> <span class="s">&#39;earthworm&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;seedlink&#39;</span><span class="p">]</span>
+<span class="n">ALL_MODULES</span> <span class="o">=</span> <span class="n">DEFAULT_MODULES</span> <span class="o">+</span> <span class="n">NETWORK_MODULES</span>
+
+<span class="c"># default order of automatic format detection</span>
+<span class="n">WAVEFORM_PREFERRED_ORDER</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;MSEED&#39;</span><span class="p">,</span> <span class="s">&#39;SAC&#39;</span><span class="p">,</span> <span class="s">&#39;GSE2&#39;</span><span class="p">,</span> <span class="s">&#39;SEISAN&#39;</span><span class="p">,</span> <span class="s">&#39;SACXY&#39;</span><span class="p">,</span> <span class="s">&#39;GSE1&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;SH_ASC&#39;</span><span class="p">,</span> <span class="s">&#39;SLIST&#39;</span><span class="p">,</span> <span class="s">&#39;TSPAIR&#39;</span><span class="p">,</span> <span class="s">&#39;SEGY&#39;</span><span class="p">,</span> <span class="s">&#39;SU&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;SEG2&#39;</span><span class="p">,</span> <span class="s">&#39;WAV&#39;</span><span class="p">,</span> <span class="s">&#39;PICKLE&#39;</span><span class="p">,</span> <span class="s">&#39;DATAMARK&#39;</span><span class="p">]</span>
+
+<span class="n">_sys_is_le</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;little&#39;</span>
+<span class="n">NATIVE_BYTEORDER</span> <span class="o">=</span> <span class="n">_sys_is_le</span> <span class="ow">and</span> <span class="s">&#39;&lt;&#39;</span> <span class="ow">or</span> <span class="s">&#39;&gt;&#39;</span>
+
+
+<span class="c"># C file pointer/ descriptor class</span>
+<div class="viewcode-block" id="FILE"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.FILE.html#obspy.core.util.base.FILE">[docs]</a><span class="k">class</span> <span class="nc">FILE</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>  <span class="c"># Never directly used</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    C file pointer class for type checking with argtypes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+<span class="n">c_file_p</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">FILE</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NamedTemporaryFile"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.NamedTemporaryFile.html#obspy.core.util.base.NamedTemporaryFile">[docs]</a><span class="k">def</span> <span class="nf">NamedTemporaryFile</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.tmp&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Weak replacement for the Python&#39;s tempfile.TemporaryFile.</span>
+
+<span class="sd">    This function is a replacment for :func:`tempfile.NamedTemporaryFile` but</span>
+<span class="sd">    will work also with Windows 7/Vista&#39;s UAC.</span>
+
+<span class="sd">    :type dir: str</span>
+<span class="sd">    :param dir: If specified, the file will be created in that directory,</span>
+<span class="sd">        otherwise the default directory for temporary files is used.</span>
+<span class="sd">    :type suffix: str</span>
+<span class="sd">    :param suffix: The temporary file name will end with that suffix. Defaults</span>
+<span class="sd">        to ``&#39;.tmp&#39;``.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Caller is responsible for deleting the file when done with it.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; ntf = NamedTemporaryFile()</span>
+<span class="sd">    &gt;&gt;&gt; ntf._fileobj  # doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;open file &#39;&lt;fdopen&gt;&#39;, mode &#39;w+b&#39; at 0x...&gt;</span>
+<span class="sd">    &gt;&gt;&gt; ntf._fileobj.close()</span>
+<span class="sd">    &gt;&gt;&gt; os.remove(ntf.name)</span>
+
+<span class="sd">    &gt;&gt;&gt; filename = NamedTemporaryFile().name</span>
+<span class="sd">    &gt;&gt;&gt; fh = open(filename, &#39;wb&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; fh.write(&quot;test&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; fh.close()</span>
+<span class="sd">    &gt;&gt;&gt; os.remove(filename)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">NamedTemporaryFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fileobj</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fdopen</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="s">&#39;w+b&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">fname</span>
+
+        <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileobj</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="o">*</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="nb">dir</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="createEmptyDataChunk"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.createEmptyDataChunk.html#obspy.core.util.base.createEmptyDataChunk">[docs]</a><span class="k">def</span> <span class="nf">createEmptyDataChunk</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an NumPy array depending on the given data type and fill value.</span>
+
+<span class="sd">    If no ``fill_value`` is given a masked array will be returned.</span>
+
+<span class="sd">    :param delta: Number of samples for data chunk</span>
+<span class="sd">    :param dtype: NumPy dtype for returned data chunk</span>
+<span class="sd">    :param fill_value: If ``None``, masked array is returned, else the</span>
+<span class="sd">        array is filled with the corresponding value</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; createEmptyDataChunk(3, &#39;int&#39;, 10)</span>
+<span class="sd">    array([10, 10, 10])</span>
+
+<span class="sd">    &gt;&gt;&gt; createEmptyDataChunk(6, np.dtype(&#39;complex128&#39;), 0)</span>
+<span class="sd">    array([ 0.+0.j,  0.+0.j,  0.+0.j,  0.+0.j,  0.+0.j,  0.+0.j])</span>
+
+<span class="sd">    &gt;&gt;&gt; createEmptyDataChunk(3, &#39;f&#39;) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE</span>
+<span class="sd">    masked_array(data = [-- -- --],</span>
+<span class="sd">                 mask = ...,</span>
+<span class="sd">                 ...)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fill_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> \
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c"># if two values are supplied use these as samples bordering to our data</span>
+        <span class="c"># and interpolate between:</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">fill_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rs</span> <span class="o">=</span> <span class="n">fill_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># include left and right sample (delta + 2)</span>
+        <span class="n">interpolation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="n">rs</span><span class="p">,</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c"># cut ls and rs and ensure correct data type</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">interpolation</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">temp</span> <span class="o">*=</span> <span class="n">fill_value</span>
+    <span class="k">return</span> <span class="n">temp</span>
+
+</div>
+<div class="viewcode-block" id="getExampleFile"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.getExampleFile.html#obspy.core.util.base.getExampleFile">[docs]</a><span class="k">def</span> <span class="nf">getExampleFile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to find the absolute path of a test data file</span>
+
+<span class="sd">    The ObsPy modules are installed to a custom installation directory.</span>
+<span class="sd">    That is the path cannot be predicted. This functions searches for all</span>
+<span class="sd">    installed ObsPy modules and checks whether the file is in any of</span>
+<span class="sd">    the &quot;tests/data&quot; subdirectories.</span>
+
+<span class="sd">    :param filename: A test file name to which the path should be returned.</span>
+<span class="sd">    :return: Full path to file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; getExampleFile(&#39;slist.ascii&#39;)  # doctest: +SKIP</span>
+<span class="sd">    /custom/path/to/obspy/core/tests/data/slist.ascii</span>
+
+<span class="sd">    &gt;&gt;&gt; getExampleFile(&#39;does.not.exists&#39;)  # doctest: +ELLIPSIS</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    IOError: Could not find file does.not.exists ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">ALL_MODULES</span><span class="p">:</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="s">&quot;obspy.</span><span class="si">%s</span><span class="s">.tests&quot;</span> <span class="o">%</span> <span class="n">module</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;obspy&quot;</span><span class="p">])</span>
+        <span class="nb">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">file</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Could not find file </span><span class="si">%s</span><span class="s"> in tests/data directory &quot;</span> <span class="o">%</span> <span class="n">filename</span> <span class="o">+</span> \
+          <span class="s">&quot;of ObsPy modules&quot;</span>
+    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="add_doctests"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.add_doctests.html#obspy.core.util.base.add_doctests">[docs]</a><span class="k">def</span> <span class="nf">add_doctests</span><span class="p">(</span><span class="n">testsuite</span><span class="p">,</span> <span class="n">module_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to add all available doctests of the module with given name</span>
+<span class="sd">    (e.g. &quot;obspy.core&quot;) to the given unittest TestSuite.</span>
+<span class="sd">    All submodules in the module&#39;s root directory are added.</span>
+<span class="sd">    Occurring errors are shown as warnings.</span>
+
+<span class="sd">    :type testsuite: unittest.TestSuite</span>
+<span class="sd">    :param testsuite: testsuite to which the tests should be added</span>
+<span class="sd">    :type module_name: str</span>
+<span class="sd">    :param module_name: name of the module of which the tests should be added</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; import unittest</span>
+<span class="sd">    &gt;&gt;&gt; suite = unittest.TestSuite()</span>
+<span class="sd">    &gt;&gt;&gt; add_doctests(suite, &quot;obspy.core&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODULE_NAME</span> <span class="o">=</span> <span class="n">module_name</span>
+    <span class="n">MODULE</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">MODULE_NAME</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="s">&quot;obspy&quot;</span><span class="p">)</span>
+    <span class="n">MODULE_PATH</span> <span class="o">=</span> <span class="n">MODULE</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">MODULE_PATH_LEN</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">MODULE_PATH</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">MODULE_PATH</span><span class="p">):</span>
+        <span class="c"># skip directories without __init__.py</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;__init__.py&#39;</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c"># skip tests directories</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;tests&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="c"># skip scripts directories</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;scripts&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="c"># skip lib directories</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;lib&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="c"># loop over all files</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="c"># skip if not python source file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c"># get module name</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">root</span><span class="p">[</span><span class="n">MODULE_PATH_LEN</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">MODULE_NAME</span><span class="p">]</span> <span class="o">+</span> <span class="n">parts</span> <span class="o">+</span> <span class="p">[</span><span class="nb">file</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="s">&quot;obspy&quot;</span><span class="p">)</span>
+                <span class="n">testsuite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">doctest</span><span class="o">.</span><span class="n">DocTestSuite</span><span class="p">(</span><span class="n">module</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="add_unittests"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.add_unittests.html#obspy.core.util.base.add_unittests">[docs]</a><span class="k">def</span> <span class="nf">add_unittests</span><span class="p">(</span><span class="n">testsuite</span><span class="p">,</span> <span class="n">module_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to add all available unittests of the module with given name</span>
+<span class="sd">    (e.g. &quot;obspy.core&quot;) to the given unittest TestSuite.</span>
+<span class="sd">    All submodules in the &quot;tests&quot; directory whose names are starting with</span>
+<span class="sd">    ``test_`` are added.</span>
+
+<span class="sd">    :type testsuite: unittest.TestSuite</span>
+<span class="sd">    :param testsuite: testsuite to which the tests should be added</span>
+<span class="sd">    :type module_name: str</span>
+<span class="sd">    :param module_name: name of the module of which the tests should be added</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; import unittest</span>
+<span class="sd">    &gt;&gt;&gt; suite = unittest.TestSuite()</span>
+<span class="sd">    &gt;&gt;&gt; add_unittests(suite, &quot;obspy.core&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MODULE_NAME</span> <span class="o">=</span> <span class="n">module_name</span>
+    <span class="n">MODULE_TESTS</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">MODULE_NAME</span> <span class="o">+</span> <span class="s">&quot;.tests&quot;</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="s">&quot;obspy&quot;</span><span class="p">)</span>
+
+    <span class="n">filename_pattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MODULE_TESTS</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;test_*.py&quot;</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">filename_pattern</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+    <span class="n">module_names</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">MODULE_NAME</span><span class="p">,</span> <span class="s">&quot;tests&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">module_names</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="s">&quot;obspy&quot;</span><span class="p">)</span>
+        <span class="n">testsuite</span><span class="o">.</span><span class="n">addTest</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">suite</span><span class="p">())</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_getEntryPoints</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">subgroup</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a dictionary of all available plug-ins of a group or subgroup.</span>
+
+<span class="sd">    :type group: str</span>
+<span class="sd">    :param group: Group name.</span>
+<span class="sd">    :type subgroup: str, optional</span>
+<span class="sd">    :param subgroup: Subgroup name (defaults to None).</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    :returns: Dictionary of entry points of each plug-in.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; _getEntryPoints(&#39;obspy.plugin.waveform&#39;)  # doctest: +ELLIPSIS</span>
+<span class="sd">    {...&#39;SLIST&#39;: EntryPoint.parse(&#39;SLIST = obspy.core.ascii&#39;)...}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">iter_entry_points</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">subgroup</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">group</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">subgroup</span><span class="p">)):</span>
+                <span class="n">features</span><span class="p">[</span><span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ep</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">features</span><span class="p">[</span><span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ep</span>
+    <span class="k">return</span> <span class="n">features</span>
+
+
+<span class="k">def</span> <span class="nf">_getOrderedEntryPoints</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">subgroup</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">order_list</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a ordered dictionary of all available plug-ins of a group or subgroup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># get all available entry points</span>
+    <span class="n">ep_dict</span> <span class="o">=</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">subgroup</span><span class="p">)</span>
+    <span class="c"># loop through official supported waveform plug-ins and add them to</span>
+    <span class="c"># ordered dict of entry points</span>
+    <span class="n">entry_points</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">order_list</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">entry_points</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ep_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># skip plug-ins which are not installed</span>
+            <span class="k">continue</span>
+    <span class="c"># extend entry points with any left over waveform plug-ins</span>
+    <span class="n">entry_points</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ep_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entry_points</span>
+
+
+<span class="n">ENTRY_POINTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;trigger&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.trigger&#39;</span><span class="p">),</span>
+    <span class="s">&#39;filter&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.filter&#39;</span><span class="p">),</span>
+    <span class="s">&#39;rotate&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.rotate&#39;</span><span class="p">),</span>
+    <span class="s">&#39;detrend&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.detrend&#39;</span><span class="p">),</span>
+    <span class="s">&#39;integrate&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.integrate&#39;</span><span class="p">),</span>
+    <span class="s">&#39;differentiate&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.differentiate&#39;</span><span class="p">),</span>
+    <span class="s">&#39;waveform&#39;</span><span class="p">:</span> <span class="n">_getOrderedEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.waveform&#39;</span><span class="p">,</span>
+                                       <span class="s">&#39;readFormat&#39;</span><span class="p">,</span> <span class="n">WAVEFORM_PREFERRED_ORDER</span><span class="p">),</span>
+    <span class="s">&#39;waveform_write&#39;</span><span class="p">:</span> <span class="n">_getOrderedEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.waveform&#39;</span><span class="p">,</span>
+                                      <span class="s">&#39;writeFormat&#39;</span><span class="p">,</span> <span class="n">WAVEFORM_PREFERRED_ORDER</span><span class="p">),</span>
+    <span class="s">&#39;event&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.event&#39;</span><span class="p">,</span> <span class="s">&#39;readFormat&#39;</span><span class="p">),</span>
+    <span class="s">&#39;taper&#39;</span><span class="p">:</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.plugin.taper&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_getFunctionFromEntryPoint</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A &quot;automagic&quot; function searching a given dict of entry points for a valid</span>
+<span class="sd">    entry point and returns the function call. Otherwise it will raise a</span>
+<span class="sd">    default error message.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; _getFunctionFromEntryPoint(&#39;detrend&#39;, &#39;simple&#39;)  # doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;function simple at 0x...&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; _getFunctionFromEntryPoint(&#39;detrend&#39;, &#39;XXX&#39;)  # doctest: +ELLIPSIS</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: Detrend type &quot;XXX&quot; is not supported. Supported types: ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ep_dict</span> <span class="o">=</span> <span class="n">ENTRY_POINTS</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># get entry point</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">ep_dict</span><span class="p">:</span>
+            <span class="n">entry_point</span> <span class="o">=</span> <span class="n">ep_dict</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># search using lower cases only</span>
+            <span class="n">entry_point</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ep_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+        <span class="c"># check if any entry points are available at all</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ep_dict</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Your current ObsPy installation does not support &quot;</span> <span class="o">+</span> \
+                  <span class="s">&quot;any </span><span class="si">%s</span><span class="s"> functions. Please make sure &quot;</span> <span class="o">+</span> \
+                  <span class="s">&quot;SciPy is installed properly.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()))</span>
+        <span class="c"># ok we have entry points, but specified function is not supported</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> type </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> is not supported. Supported types: </span><span class="si">%s</span><span class="s">&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="nb">type</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ep_dict</span><span class="p">)))</span>
+    <span class="c"># import function point</span>
+    <span class="c"># any issue during import of entry point should be raised, so the user has</span>
+    <span class="c"># a chance to correct the problem</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">load_entry_point</span><span class="p">(</span><span class="n">entry_point</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
+            <span class="s">&#39;obspy.plugin.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+
+<div class="viewcode-block" id="getMatplotlibVersion"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.base.getMatplotlibVersion.html#obspy.core.util.base.getMatplotlibVersion">[docs]</a><span class="k">def</span> <span class="nf">getMatplotlibVersion</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get matplotlib version information.</span>
+
+<span class="sd">    :returns: Matplotlib version as a list of three integers or ``None`` if</span>
+<span class="sd">        matplotlib import fails.</span>
+<span class="sd">        The last version number can indicate different things like it being a</span>
+<span class="sd">        version from the old svn trunk, the latest git repo, some release</span>
+<span class="sd">        candidate version, ...</span>
+<span class="sd">        If the last number cannot be converted to an integer it will be set to</span>
+<span class="sd">        0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">matplotlib</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;~rc&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">toIntOrZero</span><span class="p">,</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">version</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_readFromPlugin</span><span class="p">(</span><span class="n">plugin_type</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a single file from a plug-in&#39;s readFormat function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">EPS</span> <span class="o">=</span> <span class="n">ENTRY_POINTS</span><span class="p">[</span><span class="n">plugin_type</span><span class="p">]</span>
+    <span class="c"># get format entry point</span>
+    <span class="n">format_ep</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">format</span><span class="p">:</span>
+        <span class="c"># auto detect format - go through all known formats in given sort order</span>
+        <span class="k">for</span> <span class="n">format_ep</span> <span class="ow">in</span> <span class="n">EPS</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="c"># search isFormat for given entry point</span>
+            <span class="n">isFormat</span> <span class="o">=</span> <span class="n">load_entry_point</span><span class="p">(</span><span class="n">format_ep</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
+                <span class="s">&#39;obspy.plugin.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">plugin_type</span><span class="p">,</span> <span class="n">format_ep</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="s">&#39;isFormat&#39;</span><span class="p">)</span>
+            <span class="c"># check format</span>
+            <span class="k">if</span> <span class="n">isFormat</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Unknown format for file </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># format given via argument</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">format_ep</span> <span class="o">=</span> <span class="n">EPS</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Format </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> is not supported. Supported types: </span><span class="si">%s</span><span class="s">&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">EPS</span><span class="p">)))</span>
+    <span class="c"># file format should be known by now</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># search readFormat for given entry point</span>
+        <span class="n">readFormat</span> <span class="o">=</span> <span class="n">load_entry_point</span><span class="p">(</span><span class="n">format_ep</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
+            <span class="s">&#39;obspy.plugin.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">plugin_type</span><span class="p">,</span> <span class="n">format_ep</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="s">&#39;readFormat&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Format </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> is not supported. Supported types: </span><span class="si">%s</span><span class="s">&quot;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">format_ep</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">EPS</span><span class="p">)))</span>
+    <span class="c"># read</span>
+    <span class="n">list_obj</span> <span class="o">=</span> <span class="n">readFormat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">list_obj</span><span class="p">,</span> <span class="n">format_ep</span><span class="o">.</span><span class="n">name</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

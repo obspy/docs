@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__nonzero__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__nonzero__

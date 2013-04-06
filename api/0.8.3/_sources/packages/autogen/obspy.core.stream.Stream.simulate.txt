@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.simulate
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.simulate

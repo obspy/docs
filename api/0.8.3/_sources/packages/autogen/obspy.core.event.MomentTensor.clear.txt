@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.clear
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.clear

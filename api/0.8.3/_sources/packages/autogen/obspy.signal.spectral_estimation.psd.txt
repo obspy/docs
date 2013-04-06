@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.psd
+====================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. autofunction:: psd

@@ -1,0 +1,6 @@
+obspy.segy.util.unpack_header_value
+===================================
+
+.. currentmodule:: obspy.segy.util
+
+.. autofunction:: unpack_header_value

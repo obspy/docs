@@ -1,0 +1,11 @@
+obspy.xseed.scripts.dataless2resp
+=================================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-dataless2resp``. For more info on the command line options,
+    please run ``$ obspy-dataless2resp --help``.
+    Alternatively you can also execute ``$ python -m obspy.xseed.scripts.dataless2resp``.
+
+.. currentmodule:: obspy.xseed.scripts.dataless2resp
+.. automodule:: obspy.xseed.scripts.dataless2resp

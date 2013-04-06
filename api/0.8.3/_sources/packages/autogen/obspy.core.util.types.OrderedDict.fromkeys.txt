@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict.fromkeys
+==========================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict.fromkeys

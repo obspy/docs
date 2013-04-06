@@ -1,0 +1,43 @@
+obspy.core.util.base
+====================
+
+.. currentmodule:: obspy.core.util.base
+.. automodule:: obspy.core.util.base
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      NamedTemporaryFile
+      add_doctests
+      add_unittests
+      createEmptyDataChunk
+      getExampleFile
+      getMatplotlibVersion
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      FILE
+      c_file_p
+   
+   
+
+   
+   
+   

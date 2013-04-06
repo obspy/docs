@@ -1,0 +1,11 @@
+obspy.xseed.scripts.dataless2xseed
+==================================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-dataless2xseed``. For more info on the command line options,
+    please run ``$ obspy-dataless2xseed --help``.
+    Alternatively you can also execute ``$ python -m obspy.xseed.scripts.dataless2xseed``.
+
+.. currentmodule:: obspy.xseed.scripts.dataless2xseed
+.. automodule:: obspy.xseed.scripts.dataless2xseed

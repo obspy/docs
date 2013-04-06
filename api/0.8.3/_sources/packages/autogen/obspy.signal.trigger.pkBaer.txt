@@ -1,0 +1,6 @@
+obspy.signal.trigger.pkBaer
+===========================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: pkBaer

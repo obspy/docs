@@ -1,0 +1,6 @@
+obspy.xseed.fields.SEEDTypeException
+====================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. autoexception:: SEEDTypeException

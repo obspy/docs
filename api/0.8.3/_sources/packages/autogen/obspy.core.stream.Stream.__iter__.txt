@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__iter__
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__iter__

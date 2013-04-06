@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.setdefault
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.setdefault

@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.__repr__
+===========================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.__repr__

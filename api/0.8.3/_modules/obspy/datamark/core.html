@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.datamark.core &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.datamark.core</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DATAMARK bindings to ObsPy core module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">Stream</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<div class="viewcode-block" id="isDATAMARK"><a class="viewcode-back" href="../../../packages/autogen/obspy.datamark.core.isDATAMARK.html#obspy.datamark.core.isDATAMARK">[docs]</a><span class="k">def</span> <span class="nf">isDATAMARK</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is DATAMARK or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: DATAMARK file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a DATAMARK file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># as long we don&#39;t have full format description we just try to read the</span>
+    <span class="c"># file like readDATAMARK and check for errors</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fpin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
+        <span class="n">pklen</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">_truelen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">pklen</span><span class="p">,</span> <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># equiv to Str4Int</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">yy</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">mm</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">hh</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mi</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sec</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">_date</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">yy</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mm</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dd</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hh</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="p">),</span>
+                           <span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">))</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_chanum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_datawide</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span>
+        <span class="n">_srate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idata00</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">_idata22</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">idata00</span><span class="p">,</span> <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readDATAMARK"><a class="viewcode-back" href="../../../packages/autogen/obspy.datamark.core.readDATAMARK.html#obspy.datamark.core.readDATAMARK">[docs]</a><span class="k">def</span> <span class="nf">readDATAMARK</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">century</span><span class="o">=</span><span class="s">&quot;20&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a DATAMARK file and returns a Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: DATAMARK file to be read.</span>
+<span class="sd">    :param century: DATAMARK stores year as 2 numbers, need century to</span>
+<span class="sd">        construct proper datetime.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :returns: Stream object containing header and data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c"># read datamark file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fpin</span><span class="p">:</span>
+        <span class="n">fpin</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="n">fpin</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">leng</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">status0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">leng</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">:</span>
+            <span class="n">pklen</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pklen</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>  <span class="c"># EOF</span>
+            <span class="n">leng</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">truelen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">pklen</span><span class="p">,</span> <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># equiv to Str4Int</span>
+            <span class="n">buff</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="n">leng</span> <span class="o">+=</span> <span class="mi">6</span>
+
+            <span class="n">yy</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">century</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">mm</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">hh</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sec</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">date</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">yy</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mm</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dd</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hh</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="p">),</span>
+                               <span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">date</span>
+            <span class="k">if</span> <span class="n">status0</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sdata</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">while</span> <span class="n">leng</span> <span class="o">&lt;</span> <span class="n">truelen</span><span class="p">:</span>
+                <span class="n">buff</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">leng</span> <span class="o">+=</span> <span class="mi">4</span>
+                <span class="n">_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">chanum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">datawide</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span>
+                <span class="n">srate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">buff</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">xlen</span> <span class="o">=</span> <span class="p">(</span><span class="n">srate</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">datawide</span>
+                <span class="n">idata00</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">leng</span> <span class="o">+=</span> <span class="mi">4</span>
+                <span class="n">idata22</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">idata00</span><span class="p">,</span> <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">chanum</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+                    <span class="n">output</span><span class="p">[</span><span class="n">chanum</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idata22</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output</span><span class="p">[</span><span class="n">chanum</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">idata22</span><span class="p">,</span> <span class="p">]</span>
+                <span class="n">sdata</span> <span class="o">=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">xlen</span><span class="p">)</span>
+                <span class="n">leng</span> <span class="o">+=</span> <span class="n">xlen</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">xlen</span><span class="p">:</span>
+                    <span class="n">fpin</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">xlen</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">sdata</span> <span class="o">+=</span> <span class="n">fpin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">xlen</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="p">))</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;This shouldn&#39;t happen, it&#39;s weird...&quot;</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">xlen</span> <span class="o">/</span> <span class="n">datawide</span><span class="p">)):</span>
+                    <span class="n">idata2</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">datawide</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">idata2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">datawide</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">idata2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span>
+                                               <span class="s">&#39;&gt;h&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">datawide</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">idata2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
+                                               <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span>
+                    <span class="k">elif</span> <span class="n">datawide</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">idata2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="mi">4</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span>
+                                               <span class="s">&#39;&gt;i&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;DATAWIDE is </span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="n">datawide</span> <span class="o">+</span> \
+                              <span class="s">&quot;but only values of 1, 2, 3 or 4 are supported.&quot;</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">idata22</span> <span class="o">+=</span> <span class="n">idata2</span>
+                    <span class="n">output</span><span class="p">[</span><span class="n">chanum</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idata22</span><span class="p">)</span>
+
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">srate</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">traces</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

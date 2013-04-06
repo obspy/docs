@@ -1,0 +1,29 @@
+obspy.seisan.core
+=================
+
+.. currentmodule:: obspy.seisan.core
+.. automodule:: obspy.seisan.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isSEISAN
+      readSEISAN
+   
+   
+
+   
+   
+   
+
+   
+   
+   

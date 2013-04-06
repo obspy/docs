@@ -1,0 +1,195 @@
+obspy.core.event.MomentTensor
+=============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: MomentTensor
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~MomentTensor.__abstractmethods__
+     ~MomentTensor.__dict__
+     ~MomentTensor.__doc__
+     ~MomentTensor.__hash__
+     ~MomentTensor.__module__
+     ~MomentTensor.__weakref__
+     ~MomentTensor.defaults
+     ~MomentTensor.item
+     ~MomentTensor.key
+     ~MomentTensor.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MomentTensor.clear
+     ~MomentTensor.copy
+     ~MomentTensor.get
+     ~MomentTensor.items
+     ~MomentTensor.iteritems
+     ~MomentTensor.iterkeys
+     ~MomentTensor.itervalues
+     ~MomentTensor.keys
+     ~MomentTensor.pop
+     ~MomentTensor.popitem
+     ~MomentTensor.setdefault
+     ~MomentTensor.update
+     ~MomentTensor.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MomentTensor._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MomentTensor.__contains__
+     ~MomentTensor.__deepcopy__
+     ~MomentTensor.__delattr__
+     ~MomentTensor.__delitem__
+     ~MomentTensor.__eq__
+     ~MomentTensor.__getattr__
+     ~MomentTensor.__getitem__
+     ~MomentTensor.__getstate__
+     ~MomentTensor.__init__
+     ~MomentTensor.__iter__
+     ~MomentTensor.__len__
+     ~MomentTensor.__ne__
+     ~MomentTensor.__nonzero__
+     ~MomentTensor.__repr__
+     ~MomentTensor.__setattr__
+     ~MomentTensor.__setitem__
+     ~MomentTensor.__setstate__
+     ~MomentTensor.__str__
+     ~MomentTensor.__subclasshook__
+  
+
+  
+  

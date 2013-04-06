@@ -1,0 +1,6 @@
+obspy.mseed.core.readMSEED
+==========================
+
+.. currentmodule:: obspy.mseed.core
+
+.. autofunction:: readMSEED

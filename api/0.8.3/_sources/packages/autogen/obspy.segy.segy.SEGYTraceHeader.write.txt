@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTraceHeader.write
+=====================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYTraceHeader.write

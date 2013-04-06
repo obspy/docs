@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.__delitem__
+===============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.__delitem__

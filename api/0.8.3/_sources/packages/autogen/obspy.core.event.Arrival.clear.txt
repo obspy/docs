@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.clear
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.clear

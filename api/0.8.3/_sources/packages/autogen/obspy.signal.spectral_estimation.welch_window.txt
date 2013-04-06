@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.welch_window
+=============================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. autofunction:: welch_window

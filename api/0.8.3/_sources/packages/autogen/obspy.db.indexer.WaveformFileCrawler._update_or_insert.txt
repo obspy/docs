@@ -1,0 +1,6 @@
+obspy.db.indexer.WaveformFileCrawler._update_or_insert
+======================================================
+
+.. currentmodule:: obspy.db.indexer
+
+.. automethod:: WaveformFileCrawler._update_or_insert

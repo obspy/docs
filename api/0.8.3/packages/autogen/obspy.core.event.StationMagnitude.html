@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.StationMagnitude &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.StationMagnitude.clear" href="obspy.core.event.StationMagnitude.clear.html" />
+    <link rel="prev" title="obspy.core.event.SourceTimeFunction.__subclasshook__" href="obspy.core.event.SourceTimeFunction.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.StationMagnitude.clear.html" title="obspy.core.event.StationMagnitude.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.SourceTimeFunction.__subclasshook__.html" title="obspy.core.event.SourceTimeFunction.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-stationmagnitude">
+<h1>obspy.core.event.StationMagnitude<a class="headerlink" href="#obspy-core-event-stationmagnitude" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.StationMagnitude">
+<em class="property">class </em><tt class="descname">StationMagnitude</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#StationMagnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.StationMagnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.__StationMagnitude</span></tt></p>
+<p>This class describes the magnitude derived from a single waveform stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>, optional) <span class="dash" /> Resource identifier of StationMagnitude.</li>
+<li><strong>origin_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>, optional) <span class="dash" /> Reference to an origin’s <tt class="docutils literal"><span class="pre">resource_id</span></tt> if the
+StationMagnitude has an associated <a class="reference internal" href="obspy.core.event.Origin.html#obspy.core.event.Origin" title="obspy.core.event.Origin"><tt class="xref py py-class docutils literal"><span class="pre">Origin</span></tt></a>.</li>
+<li><strong>mag</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Estimated magnitude.</li>
+<li><strong>mag_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>station_magnitude_type</strong> (<em>str, optional</em>) <span class="dash" /> <p>Describes the type of magnitude. This is a
+free-text field because it is impossible to cover all existing
+magnitude type designations with an enumeration. Possible values are:</p>
+<blockquote>
+<div><ul>
+<li>unspecified magnitude (<tt class="docutils literal"><span class="pre">'M'</span></tt>),</li>
+<li>local magnitude (<tt class="docutils literal"><span class="pre">'ML'</span></tt>),</li>
+<li>body wave magnitude (<tt class="docutils literal"><span class="pre">'Mb'</span></tt>),</li>
+<li>surface wave magnitude (<tt class="docutils literal"><span class="pre">'MS'</span></tt>),</li>
+<li>moment magnitude (<tt class="docutils literal"><span class="pre">'Mw'</span></tt>),</li>
+<li>duration magnitude (<tt class="docutils literal"><span class="pre">'Md'</span></tt>)</li>
+<li>coda magnitude (<tt class="docutils literal"><span class="pre">'Mc'</span></tt>)</li>
+<li><tt class="docutils literal"><span class="pre">'MH'</span></tt>, <tt class="docutils literal"><span class="pre">'Mwp'</span></tt>, <tt class="docutils literal"><span class="pre">'M50'</span></tt>, <tt class="docutils literal"><span class="pre">'M100'</span></tt>, etc.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><strong>amplitude_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>, optional) <span class="dash" /> Identifies the data source of the StationMagnitude.
+For magnitudes derived from amplitudes in waveforms (e. g.,
+local magnitude ML), amplitude_id points to resource_id in class
+<a class="reference internal" href="obspy.core.event.Amplitude.html#obspy.core.event.Amplitude" title="obspy.core.event.Amplitude"><tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.Amplitude</span></tt></a>.</li>
+<li><strong>method_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>, optional) <span class="dash" /> Identifies the method of magnitude estimation. Users
+should avoid to give contradictory information in method_id and type.</li>
+<li><strong>waveform_id</strong> (<a class="reference internal" href="obspy.core.event.WaveformStreamID.html#obspy.core.event.WaveformStreamID" title="obspy.core.event.WaveformStreamID"><tt class="xref py py-class docutils literal"><span class="pre">WaveformStreamID</span></tt></a>, optional) <span class="dash" /> Identifies the waveform stream.</li>
+<li><strong>comments</strong> (list of <a class="reference internal" href="obspy.core.event.Comment.html#obspy.core.event.Comment" title="obspy.core.event.Comment"><tt class="xref py py-class docutils literal"><span class="pre">Comment</span></tt></a>, optional) <span class="dash" /> Additional comments.</li>
+<li><strong>creation_info</strong> (<a class="reference internal" href="obspy.core.event.CreationInfo.html#obspy.core.event.CreationInfo" title="obspy.core.event.CreationInfo"><tt class="xref py py-class docutils literal"><span class="pre">CreationInfo</span></tt></a>, optional) <span class="dash" /> Creation information used to describe author,
+version, and creation time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">key</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.clear.html#obspy.core.event.StationMagnitude.clear" title="obspy.core.event.StationMagnitude.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.copy.html#obspy.core.event.StationMagnitude.copy" title="obspy.core.event.StationMagnitude.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.get.html#obspy.core.event.StationMagnitude.get" title="obspy.core.event.StationMagnitude.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.items.html#obspy.core.event.StationMagnitude.items" title="obspy.core.event.StationMagnitude.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.iteritems.html#obspy.core.event.StationMagnitude.iteritems" title="obspy.core.event.StationMagnitude.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.iterkeys.html#obspy.core.event.StationMagnitude.iterkeys" title="obspy.core.event.StationMagnitude.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.itervalues.html#obspy.core.event.StationMagnitude.itervalues" title="obspy.core.event.StationMagnitude.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.keys.html#obspy.core.event.StationMagnitude.keys" title="obspy.core.event.StationMagnitude.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.pop.html#obspy.core.event.StationMagnitude.pop" title="obspy.core.event.StationMagnitude.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.popitem.html#obspy.core.event.StationMagnitude.popitem" title="obspy.core.event.StationMagnitude.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.setdefault.html#obspy.core.event.StationMagnitude.setdefault" title="obspy.core.event.StationMagnitude.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.update.html#obspy.core.event.StationMagnitude.update" title="obspy.core.event.StationMagnitude.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.values.html#obspy.core.event.StationMagnitude.values" title="obspy.core.event.StationMagnitude.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude._pretty_str.html#obspy.core.event.StationMagnitude._pretty_str" title="obspy.core.event.StationMagnitude._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__contains__.html#obspy.core.event.StationMagnitude.__contains__" title="obspy.core.event.StationMagnitude.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__deepcopy__.html#obspy.core.event.StationMagnitude.__deepcopy__" title="obspy.core.event.StationMagnitude.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__delattr__.html#obspy.core.event.StationMagnitude.__delattr__" title="obspy.core.event.StationMagnitude.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__delitem__.html#obspy.core.event.StationMagnitude.__delitem__" title="obspy.core.event.StationMagnitude.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__eq__.html#obspy.core.event.StationMagnitude.__eq__" title="obspy.core.event.StationMagnitude.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Two instances are considered equal if all attributes and all lists</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__getattr__.html#obspy.core.event.StationMagnitude.__getattr__" title="obspy.core.event.StationMagnitude.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__getitem__.html#obspy.core.event.StationMagnitude.__getitem__" title="obspy.core.event.StationMagnitude.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__getstate__.html#obspy.core.event.StationMagnitude.__getstate__" title="obspy.core.event.StationMagnitude.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__init__.html#obspy.core.event.StationMagnitude.__init__" title="obspy.core.event.StationMagnitude.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__iter__.html#obspy.core.event.StationMagnitude.__iter__" title="obspy.core.event.StationMagnitude.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__len__.html#obspy.core.event.StationMagnitude.__len__" title="obspy.core.event.StationMagnitude.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__ne__.html#obspy.core.event.StationMagnitude.__ne__" title="obspy.core.event.StationMagnitude.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__nonzero__.html#obspy.core.event.StationMagnitude.__nonzero__" title="obspy.core.event.StationMagnitude.__nonzero__"><tt class="xref py py-obj docutils literal"><span class="pre">__nonzero__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__repr__.html#obspy.core.event.StationMagnitude.__repr__" title="obspy.core.event.StationMagnitude.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__setattr__.html#obspy.core.event.StationMagnitude.__setattr__" title="obspy.core.event.StationMagnitude.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>Custom property implementation that works if the class is</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__setitem__.html#obspy.core.event.StationMagnitude.__setitem__" title="obspy.core.event.StationMagnitude.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__setstate__.html#obspy.core.event.StationMagnitude.__setstate__" title="obspy.core.event.StationMagnitude.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__str__.html#obspy.core.event.StationMagnitude.__str__" title="obspy.core.event.StationMagnitude.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Fairly extensive in an attempt to cover several use cases.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.__subclasshook__.html#obspy.core.event.StationMagnitude.__subclasshook__" title="obspy.core.event.StationMagnitude.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.StationMagnitude.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.StationMagnitude.clear.html" title="obspy.core.event.StationMagnitude.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.SourceTimeFunction.__subclasshook__.html" title="obspy.core.event.SourceTimeFunction.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

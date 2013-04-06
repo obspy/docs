@@ -1,0 +1,6 @@
+obspy.iris.client.Client.timeseries
+===================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.timeseries

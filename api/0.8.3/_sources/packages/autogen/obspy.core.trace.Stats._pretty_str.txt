@@ -1,0 +1,6 @@
+obspy.core.trace.Stats._pretty_str
+==================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats._pretty_str

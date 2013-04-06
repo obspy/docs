@@ -1,0 +1,6 @@
+obspy.signal.invsim.paz2AmpValueOfFreqResp
+==========================================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: paz2AmpValueOfFreqResp

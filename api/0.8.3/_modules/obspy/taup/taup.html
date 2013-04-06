@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.taup.taup &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.taup.taup</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">obspy.taup - Travel time calculation tool</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy.core.util.decorator</span> <span class="kn">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span> <span class="nn">obspy.taup</span> <span class="kn">import</span> <span class="n">__path__</span>
+<span class="kn">from</span> <span class="nn">obspy.taup.util</span> <span class="kn">import</span> <span class="n">flibtaup</span> <span class="k">as</span> <span class="n">lib</span>
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="n">AVAILABLE_PHASES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&quot;P&#39;P&#39;ab&quot;</span><span class="p">,</span> <span class="s">&quot;P&#39;P&#39;bc&quot;</span><span class="p">,</span> <span class="s">&quot;P&#39;P&#39;df&quot;</span><span class="p">,</span> <span class="s">&#39;PKKPab&#39;</span><span class="p">,</span> <span class="s">&#39;PKKPbc&#39;</span><span class="p">,</span> <span class="s">&#39;PKKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;PKKSab&#39;</span><span class="p">,</span>
+    <span class="s">&#39;PKKSbc&#39;</span><span class="p">,</span> <span class="s">&#39;PKKSdf&#39;</span><span class="p">,</span> <span class="s">&#39;PKPab&#39;</span><span class="p">,</span> <span class="s">&#39;PKPbc&#39;</span><span class="p">,</span> <span class="s">&#39;PKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;PKPdiff&#39;</span><span class="p">,</span> <span class="s">&#39;PKSab&#39;</span><span class="p">,</span> <span class="s">&#39;PKSbc&#39;</span><span class="p">,</span>
+    <span class="s">&#39;PKSdf&#39;</span><span class="p">,</span> <span class="s">&#39;PKiKP&#39;</span><span class="p">,</span> <span class="s">&#39;PP&#39;</span><span class="p">,</span> <span class="s">&#39;PS&#39;</span><span class="p">,</span> <span class="s">&#39;PcP&#39;</span><span class="p">,</span> <span class="s">&#39;PcS&#39;</span><span class="p">,</span> <span class="s">&#39;Pdiff&#39;</span><span class="p">,</span> <span class="s">&#39;Pn&#39;</span><span class="p">,</span> <span class="s">&#39;PnPn&#39;</span><span class="p">,</span> <span class="s">&#39;PnS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="s">&quot;S&#39;S&#39;ac&quot;</span><span class="p">,</span> <span class="s">&quot;S&#39;S&#39;df&quot;</span><span class="p">,</span> <span class="s">&#39;SKKPab&#39;</span><span class="p">,</span> <span class="s">&#39;SKKPbc&#39;</span><span class="p">,</span> <span class="s">&#39;SKKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;SKKSac&#39;</span><span class="p">,</span> <span class="s">&#39;SKKSdf&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SKPab&#39;</span><span class="p">,</span> <span class="s">&#39;SKPbc&#39;</span><span class="p">,</span> <span class="s">&#39;SKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;SKSac&#39;</span><span class="p">,</span> <span class="s">&#39;SKSdf&#39;</span><span class="p">,</span> <span class="s">&#39;SKiKP&#39;</span><span class="p">,</span> <span class="s">&#39;SP&#39;</span><span class="p">,</span> <span class="s">&#39;SPg&#39;</span><span class="p">,</span> <span class="s">&#39;SPn&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SS&#39;</span><span class="p">,</span> <span class="s">&#39;ScP&#39;</span><span class="p">,</span> <span class="s">&#39;ScS&#39;</span><span class="p">,</span> <span class="s">&#39;Sdiff&#39;</span><span class="p">,</span> <span class="s">&#39;Sn&#39;</span><span class="p">,</span> <span class="s">&#39;SnSn&#39;</span><span class="p">,</span> <span class="s">&#39;pP&#39;</span><span class="p">,</span> <span class="s">&#39;pPKPab&#39;</span><span class="p">,</span> <span class="s">&#39;pPKPbc&#39;</span><span class="p">,</span>
+    <span class="s">&#39;pPKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;pPKPdiff&#39;</span><span class="p">,</span> <span class="s">&#39;pPKiKP&#39;</span><span class="p">,</span> <span class="s">&#39;pPdiff&#39;</span><span class="p">,</span> <span class="s">&#39;pPn&#39;</span><span class="p">,</span> <span class="s">&#39;pS&#39;</span><span class="p">,</span> <span class="s">&#39;pSKSac&#39;</span><span class="p">,</span> <span class="s">&#39;pSKSdf&#39;</span><span class="p">,</span>
+    <span class="s">&#39;pSdiff&#39;</span><span class="p">,</span> <span class="s">&#39;sP&#39;</span><span class="p">,</span> <span class="s">&#39;sPKPab&#39;</span><span class="p">,</span> <span class="s">&#39;sPKPbc&#39;</span><span class="p">,</span> <span class="s">&#39;sPKPdf&#39;</span><span class="p">,</span> <span class="s">&#39;sPKPdiff&#39;</span><span class="p">,</span> <span class="s">&#39;sPKiKP&#39;</span><span class="p">,</span> <span class="s">&#39;sPb&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sPdiff&#39;</span><span class="p">,</span> <span class="s">&#39;sPg&#39;</span><span class="p">,</span> <span class="s">&#39;sPn&#39;</span><span class="p">,</span> <span class="s">&#39;sS&#39;</span><span class="p">,</span> <span class="s">&#39;sSKSac&#39;</span><span class="p">,</span> <span class="s">&#39;sSKSdf&#39;</span><span class="p">,</span> <span class="s">&#39;sSdiff&#39;</span><span class="p">,</span> <span class="s">&#39;sSn&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="getTravelTimes"><a class="viewcode-back" href="../../../packages/autogen/obspy.taup.taup.getTravelTimes.html#obspy.taup.taup.getTravelTimes">[docs]</a><span class="k">def</span> <span class="nf">getTravelTimes</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">&#39;iasp91&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the travel times calculated by the iaspei-tau, a travel time</span>
+<span class="sd">    library by Arthur Snoke (http://www.iris.edu/pub/programs/iaspei-tau/).</span>
+
+<span class="sd">    :type delta: float</span>
+<span class="sd">    :param delta: Distance in degrees.</span>
+<span class="sd">    :type depth: float</span>
+<span class="sd">    :param depth: Depth in kilometer.</span>
+<span class="sd">    :type model: string, optional</span>
+<span class="sd">    :param model: Either ``&#39;iasp91&#39;`` or ``&#39;ak135&#39;`` velocity model. Defaults</span>
+<span class="sd">        to ``&#39;iasp91&#39;``.</span>
+<span class="sd">    :rtype: list of dicts</span>
+<span class="sd">    :return:</span>
+<span class="sd">        A list of phase arrivals given in time order. Each phase is represented</span>
+<span class="sd">        by a dictionary containing phase name, travel time in seconds, take-off</span>
+<span class="sd">        angle, and various derivatives (travel time with respect to distance,</span>
+<span class="sd">        travel time with respect to depth and the second derivative of travel</span>
+<span class="sd">        time with respect to distance).</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy.taup.taup import getTravelTimes</span>
+<span class="sd">    &gt;&gt;&gt; tt = getTravelTimes(delta=52.474, depth=611.0, model=&#39;ak135&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; len(tt)</span>
+<span class="sd">    24</span>
+<span class="sd">    &gt;&gt;&gt; tt[0]  #doctest: +SKIP</span>
+<span class="sd">    {&#39;phase_name&#39;: &#39;P&#39;, &#39;dT/dD&#39;: 7.1050525, &#39;take-off angle&#39;: 45.169445,</span>
+<span class="sd">     &#39;time&#39;: 497.53741, &#39;d2T/dD2&#39;: -0.0044748308, &#39;dT/dh&#39;: -0.070258446}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;tables&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_path</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="s">&#39;hed&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+       <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_path</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="s">&#39;tbl&#39;</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Model </span><span class="si">%s</span><span class="s"> not found&#39;</span> <span class="o">%</span> <span class="n">model</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c"># Distance in degree</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+    <span class="c"># Depth in kilometer.</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">depth</span><span class="p">))</span>
+
+    <span class="c"># Max number of phases. Hard coded in the Fortran code. Do not change!</span>
+    <span class="nb">max</span> <span class="o">=</span> <span class="mi">60</span>
+
+    <span class="n">phase_names</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">*</span> <span class="nb">max</span><span class="p">)()</span>
+
+    <span class="n">modnam</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">500</span><span class="p">)()</span>
+    <span class="n">modnam</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;tables&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+    <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;F_CONTIGUOUS&#39;</span><span class="p">,</span> <span class="s">&#39;ALIGNED&#39;</span><span class="p">,</span> <span class="s">&#39;WRITEABLE&#39;</span><span class="p">]</span>
+    <span class="c"># Some arrays...</span>
+    <span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="n">toang</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="n">dtdd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="n">dtdh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="n">dddp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+
+    <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;F_CONTIGUOUS&#39;</span><span class="p">,</span> <span class="s">&#39;ALIGNED&#39;</span><span class="p">,</span> <span class="s">&#39;WRITEABLE&#39;</span><span class="p">]</span>
+
+    <span class="n">lib</span><span class="o">.</span><span class="n">ttimes</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span> <span class="n">C</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">depth</span><span class="p">),</span> <span class="n">modnam</span><span class="p">,</span>
+               <span class="n">phase_names</span><span class="p">,</span>
+               <span class="n">tt</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">)),</span>
+               <span class="n">toang</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">)),</span>
+               <span class="n">dtdd</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">)),</span>
+               <span class="n">dtdh</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">)),</span>
+               <span class="n">dddp</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">)))</span>
+
+    <span class="n">phases</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">max</span><span class="p">):</span>
+        <span class="n">phase_name</span> <span class="o">=</span> <span class="n">phase_names</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_name</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">time_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;phase_name&#39;</span><span class="p">:</span> <span class="n">phase_name</span><span class="p">,</span>
+            <span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="n">tt</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span>
+            <span class="s">&#39;take-off angle&#39;</span><span class="p">:</span> <span class="n">toang</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span>
+            <span class="s">&#39;dT/dD&#39;</span><span class="p">:</span> <span class="n">dtdd</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span>
+            <span class="s">&#39;dT/dh&#39;</span><span class="p">:</span> <span class="n">dtdh</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span>
+            <span class="s">&#39;d2T/dD2&#39;</span><span class="p">:</span> <span class="n">dddp</span><span class="p">[</span><span class="n">_i</span><span class="p">]}</span>
+        <span class="n">phases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">phases</span>
+
+</div>
+<span class="nd">@deprecated</span>
+<div class="viewcode-block" id="kilometer2degrees"><a class="viewcode-back" href="../../../packages/autogen/obspy.taup.taup.kilometer2degrees.html#obspy.taup.taup.kilometer2degrees">[docs]</a><span class="k">def</span> <span class="nf">kilometer2degrees</span><span class="p">(</span><span class="n">kilometer</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6371</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DEPRECATED: Please use ``obspy.core.util.kilometer2degree()``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">obspy.core.util.geodetics</span> <span class="kn">import</span> <span class="n">kilometer2degrees</span> <span class="k">as</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">kilometer</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+
+</div>
+<span class="nd">@deprecated</span>
+<div class="viewcode-block" id="locations2degrees"><a class="viewcode-back" href="../../../packages/autogen/obspy.taup.taup.locations2degrees.html#obspy.taup.taup.locations2degrees">[docs]</a><span class="k">def</span> <span class="nf">locations2degrees</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">long1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">long2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DEPRECATED: Please use ``obspy.core.util.locations2degrees()``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">obspy.core.util.geodetics</span> <span class="kn">import</span> <span class="n">locations2degrees</span> <span class="k">as</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">long1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">long2</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="travelTimePlot"><a class="viewcode-back" href="../../../packages/autogen/obspy.taup.taup.travelTimePlot.html#obspy.taup.taup.travelTimePlot">[docs]</a><span class="k">def</span> <span class="nf">travelTimePlot</span><span class="p">(</span><span class="n">min_degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_degree</span><span class="o">=</span><span class="mi">360</span><span class="p">,</span> <span class="n">npoints</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                   <span class="n">phases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">&#39;iasp91&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic travel time plotting function.</span>
+
+<span class="sd">    :type min_degree: float, optional</span>
+<span class="sd">    :param min_degree: Minimum distance in degree used in plot.</span>
+<span class="sd">        Defaults to ``0``.</span>
+<span class="sd">    :type max_degree: float, optional</span>
+<span class="sd">    :param max_degree: Maximum distance in degree used in plot.</span>
+<span class="sd">        Defaults to ``360``.</span>
+<span class="sd">    :type npoints: int, optional</span>
+<span class="sd">    :param npoints: Number of points to plot. Defaults to ``1000``.</span>
+<span class="sd">    :type phases: list of strings, optional</span>
+<span class="sd">    :param phases: List of phase names which should be used within the plot.</span>
+<span class="sd">        Defaults to all phases if not explicit set.</span>
+<span class="sd">    :type depth: float, optional</span>
+<span class="sd">    :param depth: Depth in kilometer. Defaults to ``100``.</span>
+<span class="sd">    :type model: string, optional</span>
+<span class="sd">    :param model: Either ``&#39;iasp91&#39;`` or ``&#39;ak135&#39;`` velocity model.</span>
+<span class="sd">        Defaults to ``&#39;iasp91&#39;``.</span>
+<span class="sd">    :return: None</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy.taup.taup import travelTimePlot</span>
+<span class="sd">    &gt;&gt;&gt; travelTimePlot(min_degree=0, max_degree=50, phases=[&#39;P&#39;, &#39;S&#39;, &#39;PP&#39;],</span>
+<span class="sd">    ...                depth=120, model=&#39;iasp91&#39;)  #doctest: +SKIP</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        from obspy.taup.taup import travelTimePlot</span>
+<span class="sd">        travelTimePlot(min_degree=0, max_degree=50, phases=[&#39;P&#39;, &#39;S&#39;, &#39;PP&#39;],</span>
+<span class="sd">                       depth=120, model=&#39;iasp91&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">phases</span><span class="p">:</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">AVAILABLE_PHASES</span>
+    <span class="k">for</span> <span class="n">phase</span> <span class="ow">in</span> <span class="n">phases</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">phase</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+
+    <span class="n">degrees</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_degree</span><span class="p">,</span> <span class="n">max_degree</span><span class="p">,</span> <span class="n">npoints</span><span class="p">)</span>
+    <span class="c"># Loop over all degrees.</span>
+    <span class="k">for</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">degrees</span><span class="p">:</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">getTravelTimes</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+        <span class="c"># Mirror if necessary.</span>
+        <span class="k">if</span> <span class="n">degree</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+            <span class="n">degree</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">-</span> <span class="p">(</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tt</span><span class="p">:</span>
+            <span class="n">phase</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;phase_name&#39;</span><span class="p">]</span>
+            <span class="c"># Check if this phase should be plotted.</span>
+            <span class="k">if</span> <span class="n">phase</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">phase</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">60.0</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">phase</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">phase</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">phase</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+    <span class="c"># Plot and some formatting.</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Distance (degrees)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Time (minutes)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_degree</span> <span class="o">&lt;=</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">min_degree</span><span class="p">,</span> <span class="n">max_degree</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">min_degree</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

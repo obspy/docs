@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.benchmark &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.segy.benchmark</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions to generate benchmark plots from given SU files.</span>
+
+<span class="sd">.. versionadded:: 0.5.1</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy.segy.segy</span> <span class="kn">import</span> <span class="n">SUFile</span><span class="p">,</span> <span class="n">readSU</span>
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="k">def</span> <span class="nf">_calcOffset</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculating offset for given trace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">th</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">header</span>
+    <span class="c"># Some programs out there use the scalco field in an non-standard</span>
+    <span class="c"># way. These programs store the scaling factor or divisor in terms</span>
+    <span class="c"># of an exponent to the base of 10. This conditional handles these</span>
+    <span class="c"># non-standard values.</span>
+    <span class="n">scalco</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">scalar_to_be_applied_to_all_coordinates</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scalco</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">scalco</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">scalco</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">scalco</span><span class="p">)</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">scalco</span> <span class="o">*</span> \
+        <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">group_coordinate_x</span> <span class="o">-</span> <span class="n">th</span><span class="o">.</span><span class="n">source_coordinate_x</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \
+                  <span class="nb">pow</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">group_coordinate_y</span> <span class="o">-</span> <span class="n">th</span><span class="o">.</span><span class="n">source_coordinate_y</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">offset</span>
+
+
+<div class="viewcode-block" id="plotBenchmark"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.benchmark.plotBenchmark.html#obspy.segy.benchmark.plotBenchmark">[docs]</a><span class="k">def</span> <span class="nf">plotBenchmark</span><span class="p">(</span><span class="n">sufiles</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s">&#39;traces&#39;</span><span class="p">,</span> <span class="n">clip_partial_traces</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                  <span class="n">scale</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plot_legend</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+                  <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">trim_to_smallest_trace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a benchmark plot from given SU files.</span>
+
+<span class="sd">    :type sufiles: List of SU file names or :class:`~obspy.segy.segy.SUFile`</span>
+<span class="sd">        objects.</span>
+<span class="sd">    :param sufiles: SU files to plot.</span>
+<span class="sd">    :type normalize: ``None``, ``&#39;stream&#39;`` or ``&#39;traces&#39;``, optional</span>
+<span class="sd">    :param normalize: If ``&#39;stream&#39;`` is given it will normalize per stream.</span>
+<span class="sd">        The keyword ``&#39;traces&#39;`` normalizes all traces in all streams. ``None``</span>
+<span class="sd">        will skip normalization. Defaults to ``&#39;traces&#39;``.</span>
+<span class="sd">    :type clip_partial_traces: bool, optional</span>
+<span class="sd">    :param clip_partial_traces: Clips traces which are not completely plotted.</span>
+<span class="sd">        Defaults to ``True``.</span>
+<span class="sd">    :type trim_to_smallest_trace: bool, optional</span>
+<span class="sd">    :param trim_to_smallest_trace: Trims all traces to shortest available</span>
+<span class="sd">        trace. Defaults to ``True``.</span>
+<span class="sd">    :type plot_legend: bool, optional</span>
+<span class="sd">    :param plot_legend: If enabled plots a legend generated by given SU files.</span>
+<span class="sd">        Defaults to ``True``.</span>
+<span class="sd">    :type title: string, optional</span>
+<span class="sd">    :param title: Plots a title if given. Disabled by default.</span>
+<span class="sd">    :type scale: float, optional</span>
+<span class="sd">    :param scale: Scales all amplitudes by this factor. Defaults to ``3.0``.</span>
+<span class="sd">    :type xmin: float, optional</span>
+<span class="sd">    :param xmin: Minimum of time axis.</span>
+<span class="sd">    :type xmax: float, optional</span>
+<span class="sd">    :param xmax: Maximum of time axis.</span>
+<span class="sd">    :type ymin: float, optional</span>
+<span class="sd">    :param ymin: Minimum of offset axis.</span>
+<span class="sd">    :type ymax: float, optional</span>
+<span class="sd">    :param ymax: Maximum of offset axis.</span>
+<span class="sd">    :type fig: :class:`matplotlib.figure.Figure`</span>
+<span class="sd">    :param fig: Use an existing matplotlib figure instance.</span>
+<span class="sd">        Default to ``None``.</span>
+<span class="sd">    :type size: tuple, optional</span>
+<span class="sd">    :param size: Size tuple in pixel for the output file. This corresponds</span>
+<span class="sd">        to the resolution of the graph for vector formats. Defaults to</span>
+<span class="sd">        ``(800, 800)`` pixel.</span>
+<span class="sd">    :type dpi: int, optional</span>
+<span class="sd">    :param dpi: Dots per inch of the output file. This also affects the</span>
+<span class="sd">        size of most elements in the graph (text, linewidth, ...).</span>
+<span class="sd">        Defaults to ``100``.</span>
+<span class="sd">    :type outfile: string, optional</span>
+<span class="sd">    :param outfile: Output file name. Also used to automatically</span>
+<span class="sd">        determine the output format. Supported file formats depend on your</span>
+<span class="sd">        matplotlib backend. Most backends support png, pdf, ps, eps and</span>
+<span class="sd">        svg. Defaults to ``None``.</span>
+<span class="sd">    :type format: string, optional</span>
+<span class="sd">    :param format: Format of the graph picture. If no format is given the</span>
+<span class="sd">        outfile parameter will be used to try to automatically determine</span>
+<span class="sd">        the output format. If no format is found it defaults to png output.</span>
+<span class="sd">        If no outfile is specified but a format is, than a binary</span>
+<span class="sd">        imagestring will be returned.</span>
+<span class="sd">        Defaults to ``None``.</span>
+
+<span class="sd">    .. versionadded:: 0.5.1</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    The following example plots four seismic unix files in one benchmark image.</span>
+
+<span class="sd">    &gt;&gt;&gt; import glob</span>
+<span class="sd">    &gt;&gt;&gt; sufiles = glob.glob(&#39;seismic01_*_vz.su&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; from obspy.segy.benchmark import plotBenchmark</span>
+<span class="sd">    &gt;&gt;&gt; plotBenchmark(sufiles, title=&quot;Homogenous halfspace&quot;)  # doctest: +SKIP</span>
+
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        from obspy.core.util import getExampleFile</span>
+<span class="sd">        files = [getExampleFile(&#39;seismic01_fdmpi_vz.su&#39;),</span>
+<span class="sd">                 getExampleFile(&#39;seismic01_gemini_vz.su&#39;),</span>
+<span class="sd">                 getExampleFile(&#39;seismic01_sofi2D_transformed_vz.su&#39;),</span>
+<span class="sd">                 getExampleFile(&#39;seismic01_specfem_vz.su&#39;)]</span>
+<span class="sd">        from obspy.segy.segy import readSU</span>
+<span class="sd">        from obspy.segy.benchmark import plotBenchmark</span>
+<span class="sd">        sufiles = [readSU(file) for file in files]</span>
+<span class="sd">        plotBenchmark(sufiles, title=&quot;Homogenous halfspace&quot;, xmax=0.14)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sufiles</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c"># ensure we have SUFile objects</span>
+    <span class="n">streams</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sufile</span> <span class="ow">in</span> <span class="n">sufiles</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sufile</span><span class="p">,</span> <span class="n">SUFile</span><span class="p">):</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sufile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">readSU</span><span class="p">(</span><span class="n">sufile</span><span class="p">))</span>
+
+    <span class="c"># get delta from first trace only and assume it for all traces</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">streams</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">traces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">sample_interval_in_ms_for_this_trace</span>
+
+    <span class="c"># trim to smallest trace</span>
+    <span class="k">if</span> <span class="n">trim_to_smallest_trace</span><span class="p">:</span>
+        <span class="c"># search smallest trace</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+            <span class="n">npts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">]))</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">npts</span><span class="p">)</span>
+        <span class="c"># trim all traces to max_npts</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">npts</span><span class="p">]</span>
+
+    <span class="c"># get offsets</span>
+    <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_calcOffset</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+        <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">))</span>
+    <span class="n">min_offset</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span>
+
+    <span class="c"># normalize</span>
+    <span class="k">if</span> <span class="n">normalize</span> <span class="o">!=</span> <span class="s">&#39;stream&#39;</span><span class="p">:</span>
+        <span class="n">maximums</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">minimums</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+            <span class="n">maximums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">_i</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">]))</span>
+            <span class="n">minimums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">min</span><span class="p">([</span><span class="n">_i</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">]))</span>
+        <span class="n">minimum</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">minimums</span><span class="p">)</span>
+        <span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maximums</span><span class="p">)</span>
+        <span class="n">data_range</span> <span class="o">=</span> <span class="n">maximum</span> <span class="o">-</span> <span class="n">minimum</span>
+    <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">normalize</span> <span class="o">==</span> <span class="s">&#39;stream&#39;</span><span class="p">:</span>
+            <span class="n">data_range</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">_i</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">])</span> <span class="o">-</span> \
+                         <span class="nb">min</span><span class="p">([</span><span class="n">_i</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">normalize</span> <span class="o">==</span> <span class="s">&#39;traces&#39;</span><span class="p">:</span>
+                <span class="n">data_range</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">data_range</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">data_range</span><span class="p">)</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">/=</span> <span class="p">(</span><span class="n">data_range</span> <span class="o">/</span> <span class="p">(</span><span class="n">min_offset</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span>
+
+    <span class="c"># Setup the figure if not passed explicitly.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fig</span><span class="p">:</span>
+        <span class="c"># Setup figure and axes</span>
+        <span class="n">_fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">,</span>
+                                                      <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">))</span>
+        <span class="c"># XXX: Figure out why this is needed sometimes.</span>
+        <span class="c"># Set size and dpi.</span>
+        <span class="n">_fig</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">_fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">)</span>
+        <span class="n">_fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">dpi</span><span class="p">)</span>
+        <span class="c"># set title</span>
+        <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span> <span class="ow">in</span> <span class="n">title</span><span class="p">:</span>
+                <span class="n">title</span><span class="p">,</span> <span class="n">subtitle</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">_fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.97</span><span class="p">)</span>
+                <span class="n">_fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">subtitle</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.935</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;x-small&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_fig</span> <span class="o">=</span> <span class="n">fig</span>
+
+    <span class="c"># get current axis</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">_fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="c"># labels - either file names or stream numbers</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">streams</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Stream #&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">streams</span><span class="p">))]</span>
+
+    <span class="c"># colors - either auto generated or use a preset</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">streams</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s">&#39;hsv&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">streams</span><span class="p">))</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">len</span><span class="p">(</span><span class="n">streams</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;grey&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">]</span>
+
+    <span class="c"># set first min and max</span>
+    <span class="n">min_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+    <span class="n">max_y</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+    <span class="n">max_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+
+    <span class="c"># plot</span>
+    <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">streams</span><span class="p">):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">_j</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">traces</span><span class="p">):</span>
+            <span class="c"># calculating offset for each trace</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">_calcOffset</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+            <span class="c"># create x and y arrays</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">))</span> <span class="o">*</span> <span class="n">delta</span> <span class="o">/</span> <span class="mf">1000000.</span>
+            <span class="c"># get boundaries</span>
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_y</span><span class="p">:</span>
+                <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_y</span><span class="p">:</span>
+                <span class="n">min_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_x</span><span class="p">:</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="c"># test if in image</span>
+            <span class="k">if</span> <span class="n">clip_partial_traces</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ymin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ymin</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">ymax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ymax</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="c"># plot, add labels only at new streams</span>
+            <span class="k">if</span> <span class="n">legend</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">legend</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># limit offset axis</span>
+    <span class="n">spacing</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_y</span> <span class="o">-</span> <span class="n">min_y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">50.0</span>
+    <span class="k">if</span> <span class="n">ymax</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">ymax</span> <span class="o">&gt;</span> <span class="n">max_y</span><span class="p">:</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">+</span> <span class="n">spacing</span>
+    <span class="k">if</span> <span class="n">ymin</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">ymin</span> <span class="o">&lt;</span> <span class="n">min_y</span><span class="p">:</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="n">min_y</span> <span class="o">-</span> <span class="n">spacing</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+
+    <span class="c"># limit time axis</span>
+    <span class="k">if</span> <span class="n">xmin</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">xmin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">xmax</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">xmax</span> <span class="o">&gt;</span> <span class="n">max_x</span><span class="p">:</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="n">max_x</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+
+    <span class="c"># axis labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;time [s]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;offset [m]&#39;</span><span class="p">)</span>
+
+    <span class="c"># add legend</span>
+    <span class="k">if</span> <span class="n">plot_legend</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                   <span class="n">bbox_transform</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">transFigure</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">leg</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend</span><span class="p">()</span>
+            <span class="n">ltext</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">get_texts</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ltext</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;x-small&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c"># handle output</span>
+    <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c"># Return an binary imagestring if not outfile but format.</span>
+        <span class="k">if</span> <span class="n">format</span><span class="p">:</span>
+            <span class="n">imgdata</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+            <span class="n">_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">imgdata</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+            <span class="n">imgdata</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">imgdata</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fig</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># If format is set use it.</span>
+        <span class="k">if</span> <span class="n">format</span><span class="p">:</span>
+            <span class="n">_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="c"># Otherwise use format from self.outfile or default to PNG.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

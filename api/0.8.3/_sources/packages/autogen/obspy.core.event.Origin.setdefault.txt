@@ -1,0 +1,6 @@
+obspy.core.event.Origin.setdefault
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.setdefault

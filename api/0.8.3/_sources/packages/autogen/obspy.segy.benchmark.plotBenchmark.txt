@@ -1,0 +1,6 @@
+obspy.segy.benchmark.plotBenchmark
+==================================
+
+.. currentmodule:: obspy.segy.benchmark
+
+.. autofunction:: plotBenchmark

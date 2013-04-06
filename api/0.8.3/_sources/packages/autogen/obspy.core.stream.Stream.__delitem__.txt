@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__delitem__
+====================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__delitem__

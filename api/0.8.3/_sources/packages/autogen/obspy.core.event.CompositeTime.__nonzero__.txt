@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.__nonzero__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.__nonzero__

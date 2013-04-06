@@ -1,0 +1,6 @@
+obspy.core.event.Comment.setdefault
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.setdefault

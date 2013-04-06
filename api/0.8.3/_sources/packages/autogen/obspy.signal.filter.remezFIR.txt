@@ -1,0 +1,6 @@
+obspy.signal.filter.remezFIR
+============================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: remezFIR

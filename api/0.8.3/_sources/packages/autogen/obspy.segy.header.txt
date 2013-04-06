@@ -1,0 +1,19 @@
+obspy.segy.header
+=================
+
+.. currentmodule:: obspy.segy.header
+.. automodule:: obspy.segy.header
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

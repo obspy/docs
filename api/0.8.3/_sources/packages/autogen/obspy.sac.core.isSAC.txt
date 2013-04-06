@@ -1,0 +1,6 @@
+obspy.sac.core.isSAC
+====================
+
+.. currentmodule:: obspy.sac.core
+
+.. autofunction:: isSAC

@@ -1,0 +1,31 @@
+obspy.taup.taup
+===============
+
+.. currentmodule:: obspy.taup.taup
+.. automodule:: obspy.taup.taup
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      getTravelTimes
+      kilometer2degrees
+      locations2degrees
+      travelTimePlot
+   
+   
+
+   
+   
+   
+
+   
+   
+   

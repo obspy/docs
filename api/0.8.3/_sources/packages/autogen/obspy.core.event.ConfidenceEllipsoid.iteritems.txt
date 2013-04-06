@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.iteritems
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.iteritems

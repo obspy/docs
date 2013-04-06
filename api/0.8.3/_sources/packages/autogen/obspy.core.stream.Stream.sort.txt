@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.sort
+=============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.sort

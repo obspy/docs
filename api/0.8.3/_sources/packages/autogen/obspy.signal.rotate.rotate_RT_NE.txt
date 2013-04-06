@@ -1,0 +1,6 @@
+obspy.signal.rotate.rotate_RT_NE
+================================
+
+.. currentmodule:: obspy.signal.rotate
+
+.. autofunction:: rotate_RT_NE

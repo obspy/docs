@@ -1,0 +1,6 @@
+obspy.imaging.beachball.StrikeDip
+=================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: StrikeDip

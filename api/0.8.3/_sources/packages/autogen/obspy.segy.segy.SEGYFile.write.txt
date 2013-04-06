@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile.write
+==============================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile.write

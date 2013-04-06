@@ -1,0 +1,33 @@
+obspy.core.util.misc
+====================
+
+.. currentmodule:: obspy.core.util.misc
+.. automodule:: obspy.core.util.misc
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      complexifyString
+      flatnotmaskedContiguous
+      guessDelta
+      loadtxt
+      scoreatpercentile
+      toIntOrZero
+   
+   
+
+   
+   
+   
+
+   
+   
+   

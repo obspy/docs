@@ -1,0 +1,6 @@
+obspy.segy.core.LazyTraceHeaderAttribDict._pretty_str
+=====================================================
+
+.. currentmodule:: obspy.segy.core
+
+.. automethod:: LazyTraceHeaderAttribDict._pretty_str

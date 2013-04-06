@@ -1,0 +1,6 @@
+obspy.neries.client.Client.getWaveform
+======================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.getWaveform

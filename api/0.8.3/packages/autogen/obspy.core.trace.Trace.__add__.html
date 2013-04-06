@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.trace.Trace.__add__ &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.trace.Trace" href="obspy.core.trace.Trace.html" />
+    <link rel="next" title="obspy.core.trace.Trace.__div__" href="obspy.core.trace.Trace.__div__.html" />
+    <link rel="prev" title="obspy.core.trace.Trace._rtrim" href="obspy.core.trace.Trace._rtrim.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.__div__.html" title="obspy.core.trace.Trace.__div__"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace._rtrim.html" title="obspy.core.trace.Trace._rtrim"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" accesskey="U">obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-trace-trace-add">
+<h1>obspy.core.trace.Trace.__add__<a class="headerlink" href="#obspy-core-trace-trace-add" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.trace.Trace.__add__">
+<tt class="descclassname">Trace.</tt><tt class="descname">__add__</tt><big>(</big><em>trace</em>, <em>method=0</em>, <em>interpolation_samples=0</em>, <em>fill_value=None</em>, <em>sanity_checks=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/trace.html#Trace.__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.trace.Trace.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds another Trace object to current trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> (<tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">1</span></tt>, optional) <span class="dash" /> Method to handle overlaps of traces. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.
+See the <a class="reference internal" href="#handling-overlaps">Handling Overlaps</a> section below for further details.</li>
+<li><strong>fill_value</strong> (int or float, <tt class="docutils literal"><span class="pre">'latest'</span></tt> or <tt class="docutils literal"><span class="pre">'interpolate'</span></tt>,
+optional) <span class="dash" /> Fill value for gaps. Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>. Traces
+will be converted to NumPy masked arrays if no value is given and
+gaps are present. If the keyword <tt class="docutils literal"><span class="pre">'latest'</span></tt> is provided it will
+use the latest value before the gap. If keyword <tt class="docutils literal"><span class="pre">'interpolate'</span></tt>
+is provided, missing values are linearly interpolated (not
+changing the data type e.g. of integer valued traces).
+See the <a class="reference internal" href="#handling-gaps">Handling Gaps</a> section below for further details.</li>
+<li><strong>interpolation_samples</strong> (<em>int, optional</em>) <span class="dash" /> Used only for <tt class="docutils literal"><span class="pre">method=1</span></tt>. It specifies
+the number of samples which are used to interpolate between
+overlapping traces. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>. If set to <tt class="docutils literal"><span class="pre">-1</span></tt> all
+overlapping samples are interpolated.</li>
+<li><strong>sanity_checks</strong> (<em>boolean, optional</em>) <span class="dash" /> Enables some sanity checks before merging traces.
+Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Trace data will be converted into a NumPy masked array data type if
+any gaps are present. This behavior may be prevented by setting the
+<tt class="docutils literal"><span class="pre">fill_value</span></tt> parameter. The <tt class="docutils literal"><span class="pre">method</span></tt> argument controls the
+handling of overlapping data values.</p>
+<p>Sampling rate, data type and trace.id of both traces must match.</p>
+<p class="rubric"><span class="target" id="handling-overlaps">Handling Overlaps</span></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td><p class="first">Discard overlapping data. Overlaps are essentially treated the
+same way as gaps:</p>
+<div class="highlight-python"><pre>Trace 1: AAAAAAAA
+Trace 2:     FFFFFFFF
+1 + 2  : AAAA----FFFF</pre>
+</div>
+<p>Contained traces with differing data will be marked as gap:</p>
+<div class="last highlight-python"><pre>Trace 1: AAAAAAAAAAAA
+Trace 2:     FF
+1 + 2  : AAAA--AAAAAA</pre>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td><p class="first">Discard data of the previous trace assuming the following trace
+contains data with a more correct time value. The parameter
+<tt class="docutils literal"><span class="pre">interpolation_samples</span></tt> specifies the number of samples used
+to linearly interpolate between the two traces in order to
+prevent steps. Note that if there are gaps inside, the
+returned array is still a masked array, only if <tt class="docutils literal"><span class="pre">fill_value</span></tt>
+is set, the returned array is a normal array and gaps are
+filled with fill value.</p>
+<p>No interpolation (<tt class="docutils literal"><span class="pre">interpolation_samples=0</span></tt>):</p>
+<div class="highlight-python"><pre>Trace 1: AAAAAAAA
+Trace 2:     FFFFFFFF
+1 + 2  : AAAAFFFFFFFF</pre>
+</div>
+<p>Interpolate first two samples (<tt class="docutils literal"><span class="pre">interpolation_samples=2</span></tt>):</p>
+<div class="highlight-python"><pre>Trace 1: AAAAAAAA
+Trace 2:     FFFFFFFF
+1 + 2  : AAAACDFFFFFF (interpolation_samples=2)</pre>
+</div>
+<p>Interpolate all samples (<tt class="docutils literal"><span class="pre">interpolation_samples=-1</span></tt>):</p>
+<div class="highlight-python"><pre>Trace 1: AAAAAAAA
+Trace 2:     FFFFFFFF
+1 + 2  : AAAABCDEFFFF</pre>
+</div>
+<p>Any contained traces with different data will be discarded:</p>
+<div class="last highlight-python"><pre>Trace 1: AAAAAAAAAAAA (contained trace)
+Trace 2:     FF
+1 + 2  : AAAAAAAAAAAA</pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric"><span class="target" id="handling-gaps">Handling gaps</span></p>
+<ol class="arabic">
+<li><p class="first">Traces with gaps and <tt class="docutils literal"><span class="pre">fill_value=None</span></tt> (default):</p>
+<div class="highlight-python"><pre>Trace 1: AAAA
+Trace 2:         FFFF
+1 + 2  : AAAA----FFFF</pre>
+</div>
+</li>
+<li><p class="first">Traces with gaps and given <tt class="docutils literal"><span class="pre">fill_value=0</span></tt>:</p>
+<div class="highlight-python"><pre>Trace 1: AAAA
+Trace 2:         FFFF
+1 + 2  : AAAA0000FFFF</pre>
+</div>
+</li>
+<li><p class="first">Traces with gaps and given <tt class="docutils literal"><span class="pre">fill_value='latest'</span></tt>:</p>
+<div class="highlight-python"><pre>Trace 1: ABCD
+Trace 2:         FFFF
+1 + 2  : ABCDDDDDFFFF</pre>
+</div>
+</li>
+<li><p class="first">Traces with gaps and given <tt class="docutils literal"><span class="pre">fill_value='interpolate'</span></tt>:</p>
+<div class="highlight-python"><pre>Trace 1: AAAA
+Trace 2:         FFFF
+1 + 2  : AAAABCDEFFFF</pre>
+</div>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.trace.Trace.__add__.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.__div__.html" title="obspy.core.trace.Trace.__div__"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace._rtrim.html" title="obspy.core.trace.Trace._rtrim"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" >obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

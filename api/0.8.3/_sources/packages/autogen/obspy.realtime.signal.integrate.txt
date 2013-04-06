@@ -1,0 +1,6 @@
+obspy.realtime.signal.integrate
+===============================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: integrate

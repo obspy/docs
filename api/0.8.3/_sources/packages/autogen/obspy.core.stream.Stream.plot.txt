@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.plot
+=============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.plot

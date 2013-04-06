@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.invsim &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal - Signal Processing Routines for ObsPy" href="../obspy.signal.html" />
+    <link rel="next" title="obspy.signal.invsim.c_sac_taper" href="obspy.signal.invsim.c_sac_taper.html" />
+    <link rel="prev" title="obspy.signal.hoctavbands.sonogram" href="obspy.signal.hoctavbands.sonogram.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.c_sac_taper.html" title="obspy.signal.invsim.c_sac_taper"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.hoctavbands.sonogram.html" title="obspy.signal.hoctavbands.sonogram"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" accesskey="U">obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.signal.invsim">
+<span id="obspy-signal-invsim"></span><h1>obspy.signal.invsim<a class="headerlink" href="#module-obspy.signal.invsim" title="Permalink to this headline">¶</a></h1>
+<p>Python Module for Instrument Correction (Seismology).
+PAZ (Poles and zeros) information must be given in SEED convention, correction
+to m/s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.c_sac_taper.html#obspy.signal.invsim.c_sac_taper" title="obspy.signal.invsim.c_sac_taper"><tt class="xref py py-obj docutils literal"><span class="pre">c_sac_taper</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.invsim.cornFreq2Paz.html#obspy.signal.invsim.cornFreq2Paz" title="obspy.signal.invsim.cornFreq2Paz"><tt class="xref py py-obj docutils literal"><span class="pre">cornFreq2Paz</span></tt></a></td>
+<td>Convert corner frequency and damping to poles and zeros.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.cosTaper.html#obspy.signal.invsim.cosTaper" title="obspy.signal.invsim.cosTaper"><tt class="xref py py-obj docutils literal"><span class="pre">cosTaper</span></tt></a></td>
+<td>Cosine Taper.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.invsim.estimateMagnitude.html#obspy.signal.invsim.estimateMagnitude" title="obspy.signal.invsim.estimateMagnitude"><tt class="xref py py-obj docutils literal"><span class="pre">estimateMagnitude</span></tt></a></td>
+<td>Estimates local magnitude from poles and zeros of given instrument, the peak to peak amplitude and the time span from peak to peak.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.estimateWoodAndersonAmplitude.html#obspy.signal.invsim.estimateWoodAndersonAmplitude" title="obspy.signal.invsim.estimateWoodAndersonAmplitude"><tt class="xref py py-obj docutils literal"><span class="pre">estimateWoodAndersonAmplitude</span></tt></a></td>
+<td>Convert amplitude in counts measured of instrument with given Poles and</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.invsim.evalresp.html#obspy.signal.invsim.evalresp" title="obspy.signal.invsim.evalresp"><tt class="xref py py-obj docutils literal"><span class="pre">evalresp</span></tt></a></td>
+<td>Use the evalresp library to extract instrument response</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.paz2AmpValueOfFreqResp.html#obspy.signal.invsim.paz2AmpValueOfFreqResp" title="obspy.signal.invsim.paz2AmpValueOfFreqResp"><tt class="xref py py-obj docutils literal"><span class="pre">paz2AmpValueOfFreqResp</span></tt></a></td>
+<td>Returns Amplitude at one frequency for the given poles and zeros</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.invsim.pazToFreqResp.html#obspy.signal.invsim.pazToFreqResp" title="obspy.signal.invsim.pazToFreqResp"><tt class="xref py py-obj docutils literal"><span class="pre">pazToFreqResp</span></tt></a></td>
+<td>Convert Poles and Zeros (PAZ) to frequency response. The output</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.seisSim.html#obspy.signal.invsim.seisSim" title="obspy.signal.invsim.seisSim"><tt class="xref py py-obj docutils literal"><span class="pre">seisSim</span></tt></a></td>
+<td>Simulate/Correct seismometer.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.invsim.specInv.html#obspy.signal.invsim.specInv" title="obspy.signal.invsim.specInv"><tt class="xref py py-obj docutils literal"><span class="pre">specInv</span></tt></a></td>
+<td>Invert Spectrum and shrink values under water-level of max spec</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.invsim.waterlevel.html#obspy.signal.invsim.waterlevel" title="obspy.signal.invsim.waterlevel"><tt class="xref py py-obj docutils literal"><span class="pre">waterlevel</span></tt></a></td>
+<td>Return the absolute spectral value corresponding</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.invsim.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.c_sac_taper.html" title="obspy.signal.invsim.c_sac_taper"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.hoctavbands.sonogram.html" title="obspy.signal.hoctavbands.sonogram"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

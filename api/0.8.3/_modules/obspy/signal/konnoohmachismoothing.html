@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.konnoohmachismoothing &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.konnoohmachismoothing</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: konnoohmachismoothing.py</span>
+<span class="c">#  Purpose: Small module to smooth spectra with the so called Konno &amp; Ohmachi</span>
+<span class="c">#           method.</span>
+<span class="c">#   Author: Lion Krischer</span>
+<span class="c">#    Email: krischer@geophysik.uni-muenchen.de</span>
+<span class="c">#  License: GPLv2</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2011 Lion Krischer</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions to smooth spectra with the so called Konno &amp; Ohmachi method.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<div class="viewcode-block" id="konnoOhmachiSmoothingWindow"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow.html#obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow">[docs]</a><span class="k">def</span> <span class="nf">konnoOhmachiSmoothingWindow</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">center_frequency</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span>
+                                <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the Konno &amp; Ohmachi Smoothing window for every frequency in</span>
+<span class="sd">    frequencies.</span>
+
+<span class="sd">    Returns the smoothing window around the center frequency with one value per</span>
+<span class="sd">    input frequency defined as follows (see [Konno1998]_):</span>
+
+<span class="sd">    [sin(b * log_10(f/f_c)) / (b * log_10(f/f_c)]^4</span>
+<span class="sd">        b   = bandwidth</span>
+<span class="sd">        f   = frequency</span>
+<span class="sd">        f_c = center frequency</span>
+
+<span class="sd">    The bandwidth of the smoothing function is constant on a logarithmic scale.</span>
+<span class="sd">    A small value will lead to a strong smoothing, while a large value of will</span>
+<span class="sd">    lead to a low smoothing of the Fourier spectra.</span>
+<span class="sd">    The default (and generally used) value for the bandwidth is 40. (From the</span>
+<span class="sd">    Geopsy documentation - www.geopsy.org)</span>
+
+<span class="sd">    All parameters need to be positive. This is not checked due to performance</span>
+<span class="sd">    reasons and therefore any negative parameters might have unexpected</span>
+<span class="sd">    results.</span>
+
+<span class="sd">    This function might raise some numpy warnings due to divisions by zero and</span>
+<span class="sd">    logarithms of zero. This is intentional and faster than prefiltering the</span>
+<span class="sd">    special cases. You can disable numpy warnings (they usually do not show up</span>
+<span class="sd">    anyways) with:</span>
+
+<span class="sd">    temp = np.geterr()</span>
+<span class="sd">    np.seterr(all=&#39;ignore&#39;)</span>
+<span class="sd">    ...code that raises numpy warning due to division by zero...</span>
+<span class="sd">    np.seterr(**temp)</span>
+
+<span class="sd">    :param frequencies: numpy.ndarray (float32 or float64)</span>
+<span class="sd">        All frequencies for which the smoothing window will be returned.</span>
+<span class="sd">    :param center_frequency: float &gt;= 0.0</span>
+<span class="sd">        The frequency around which the smoothing is performed.</span>
+<span class="sd">    :param bandwidth: float &gt; 0.0</span>
+<span class="sd">        Determines the width of the smoothing peak. Lower values result in a</span>
+<span class="sd">        broader peak. Defaults to 40.</span>
+<span class="sd">    :param normalize: boolean, optional</span>
+<span class="sd">        The Konno-Ohmachi smoothing window is normalized on a logarithmic</span>
+<span class="sd">        scale. Set this parameter to True to normalize it on a normal scale.</span>
+<span class="sd">        Default to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span> <span class="ow">and</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;frequencies needs to have a dtype of float32/64.&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># If the center_frequency is 0 return an array with zero everywhere except</span>
+    <span class="c"># at zero.</span>
+    <span class="k">if</span> <span class="n">center_frequency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">smoothing_window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">smoothing_window</span><span class="p">[</span><span class="n">frequencies</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="n">smoothing_window</span>
+    <span class="c"># Calculate the bandwidth*log10(f/f_c)</span>
+    <span class="n">smoothing_window</span> <span class="o">=</span> <span class="n">bandwidth</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">frequencies</span> <span class="o">/</span> <span class="n">center_frequency</span><span class="p">)</span>
+    <span class="c"># Just the Konno-Ohmachi formulae.</span>
+    <span class="n">smoothing_window</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">smoothing_window</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_window</span><span class="p">)</span> <span class="o">**</span> <span class="mi">4</span>
+    <span class="c"># Check if the center frequency is exactly part of the provided</span>
+    <span class="c"># frequencies. This will result in a division by 0. The limit of f-&gt;f_c is</span>
+    <span class="c"># one.</span>
+    <span class="n">smoothing_window</span><span class="p">[</span><span class="n">frequencies</span> <span class="o">==</span> <span class="n">center_frequency</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="c"># Also a frequency of zero will result in a logarithm of -inf. The limit of</span>
+    <span class="c"># f-&gt;0 with f_c!=0 is zero.</span>
+    <span class="n">smoothing_window</span><span class="p">[</span><span class="n">frequencies</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c"># Normalize to one if wished.</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">smoothing_window</span> <span class="o">/=</span> <span class="n">smoothing_window</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">smoothing_window</span>
+
+</div>
+<div class="viewcode-block" id="calculateSmoothingMatrix"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix.html#obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix">[docs]</a><span class="k">def</span> <span class="nf">calculateSmoothingMatrix</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates a len(frequencies) x len(frequencies) matrix with the Konno &amp;</span>
+<span class="sd">    Ohmachi window for each frequency as the center frequency.</span>
+
+<span class="sd">    Any spectrum with the same frequency bins as this matrix can later be</span>
+<span class="sd">    smoothed by a simple matrix multiplication with this matrix:</span>
+<span class="sd">        smoothed_spectrum = np.dot(spectrum, smoothing_matrix)</span>
+
+<span class="sd">    This also works for many spectra stored in one large matrix and is even</span>
+<span class="sd">    more efficient.</span>
+
+<span class="sd">    This makes it very efficient for smoothing the same spectra again and again</span>
+<span class="sd">    but it comes with a high memory consumption for larger frequency arrays!</span>
+
+<span class="sd">    :param frequencies: numpy.ndarray (float32 or float64)</span>
+<span class="sd">        The input frequencies.</span>
+<span class="sd">    :param bandwidth: float &gt; 0.0</span>
+<span class="sd">        Determines the width of the smoothing peak. Lower values result in a</span>
+<span class="sd">        broader peak. Defaults to 40.</span>
+<span class="sd">    :param normalize: boolean, optional</span>
+<span class="sd">        The Konno-Ohmachi smoothing window is normalized on a logarithmic</span>
+<span class="sd">        scale. Set this parameter to True to normalize it on a normal scale.</span>
+<span class="sd">        Default to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Create matrix to be filled with smoothing entries.</span>
+    <span class="n">sm_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)),</span>
+                         <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frequencies</span><span class="p">):</span>
+        <span class="n">sm_matrix</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">konnoOhmachiSmoothingWindow</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span>
+                                              <span class="n">bandwidth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sm_matrix</span>
+
+</div>
+<div class="viewcode-block" id="konnoOhmachiSmoothing"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing.html#obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing">[docs]</a><span class="k">def</span> <span class="nf">konnoOhmachiSmoothing</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">enforce_no_matrix</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">max_memory_usage</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+                  <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Smoothes a matrix containing one spectra per row with the Konno-Ohmachi</span>
+<span class="sd">    smoothing window.</span>
+
+<span class="sd">    All spectra need to have frequency bins corresponding to the same</span>
+<span class="sd">    frequencies.</span>
+
+<span class="sd">    This method first will estimate the memory usage and then either use a fast</span>
+<span class="sd">    and memory intensive method or a slow one with a better memory usage.</span>
+
+<span class="sd">    :param spectra: numpy.ndarray (float32 or float64)</span>
+<span class="sd">        One or more spectra per row. If more than one the first spectrum has to</span>
+<span class="sd">        be accessible via spectra[0], the next via spectra[1], ...</span>
+<span class="sd">    :param frequencies: numpy.ndarray (float32 or float64)</span>
+<span class="sd">        Contains the frequencies for the spectra.</span>
+<span class="sd">    :param bandwidth: float &gt; 0.0</span>
+<span class="sd">        Determines the width of the smoothing peak. Lower values result in a</span>
+<span class="sd">        broader peak. Defaults to 40.</span>
+<span class="sd">    :param count: integer, optional</span>
+<span class="sd">        How often the apply the filter. For very noisy spectra it is useful to</span>
+<span class="sd">        apply is more than once. Defaults to 1.</span>
+<span class="sd">    :param enforce_no_matrix: boolean, optional</span>
+<span class="sd">        An efficient but memory intensive matrix-multiplication algorithm is</span>
+<span class="sd">        used in case more than one spectra is to be smoothed or one spectrum is</span>
+<span class="sd">        to be smoothed more than once if enough memory is available. This flag</span>
+<span class="sd">        disables the matrix algorithm altogether. Defaults to False</span>
+<span class="sd">    :param max_memory_usage: integer, optional</span>
+<span class="sd">        Set the maximum amount of extra memory in MB for this method. Decides</span>
+<span class="sd">        whether or not the matrix multiplication method is used. Defaults to</span>
+<span class="sd">        512 MB.</span>
+<span class="sd">    :param normalize: boolean, optional</span>
+<span class="sd">        The Konno-Ohmachi smoothing window is normalized on a logarithmic</span>
+<span class="sd">        scale. Set this parameter to True to normalize it on a normal scale.</span>
+<span class="sd">        Default to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span> <span class="ow">and</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> \
+       <span class="ow">or</span> <span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span> <span class="ow">and</span> <span class="n">spectra</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;frequencies and spectra need to have a dtype of float32/64.&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># Spectra and frequencies should have the same dtype.</span>
+    <span class="k">if</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">spectra</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+        <span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;frequencies and spectra should have the same dtype. It &#39;</span> <span class="o">+</span> \
+              <span class="s">&#39;will be changed to np.float64 for both.&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># Check the dtype to get the correct size.</span>
+    <span class="k">if</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mf">4.0</span>
+    <span class="k">elif</span> <span class="n">frequencies</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mf">8.0</span>
+    <span class="c"># Calculate the approximate usage needs for the smoothing matrix algorithm.</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span>
+    <span class="n">approx_mem_usage</span> <span class="o">=</span> <span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="p">)</span> <span class="o">+</span> <span class="n">length</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="n">size</span> <span class="o">/</span> <span class="mf">1048576.0</span>
+    <span class="c"># If smaller than the allowed maximum memory consumption build a smoothing</span>
+    <span class="c"># matrix and apply to each spectrum. Also only use when more then one</span>
+    <span class="c"># spectrum is to be smoothed.</span>
+    <span class="k">if</span> <span class="n">enforce_no_matrix</span> <span class="ow">is</span> <span class="bp">False</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> \
+       <span class="ow">and</span> <span class="n">approx_mem_usage</span> <span class="o">&lt;</span> <span class="n">max_memory_usage</span><span class="p">:</span>
+        <span class="c"># Disable numpy warnings due to possible divisions by zero/logarithms</span>
+        <span class="c"># of zero.</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">geterr</span><span class="p">()</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+        <span class="n">smoothing_matrix</span> <span class="o">=</span> <span class="n">calculateSmoothingMatrix</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">,</span>
+                                             <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">temp</span><span class="p">)</span>
+        <span class="n">new_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">smoothing_matrix</span><span class="p">)</span>
+        <span class="c"># Eventually apply more than once.</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">new_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">new_spec</span><span class="p">,</span> <span class="n">smoothing_matrix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_spec</span>
+    <span class="c"># Otherwise just calculate the smoothing window every time and apply it.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">spectra</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">spectra</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c"># Separate case for just one spectrum.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c"># Disable numpy warnings due to possible divisions by</span>
+            <span class="c"># zero/logarithms of zero.</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">geterr</span><span class="p">()</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)):</span>
+                <span class="n">window</span> <span class="o">=</span> <span class="n">konnoOhmachiSmoothingWindow</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span>
+                        <span class="n">frequencies</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+                <span class="n">new_spec</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">window</span> <span class="o">*</span> <span class="n">spectra</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">temp</span><span class="p">)</span>
+        <span class="c"># Reuse smoothing window if more than one spectrum.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Disable numpy warnings due to possible divisions by</span>
+            <span class="c"># zero/logarithms of zero.</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">geterr</span><span class="p">()</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)):</span>
+                <span class="n">window</span> <span class="o">=</span> <span class="n">konnoOhmachiSmoothingWindow</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span>
+                        <span class="n">frequencies</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_j</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="p">):</span>
+                    <span class="n">new_spec</span><span class="p">[</span><span class="n">_j</span><span class="p">,</span> <span class="n">_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">window</span> <span class="o">*</span> <span class="n">spec</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="o">**</span><span class="n">temp</span><span class="p">)</span>
+        <span class="c"># Eventually apply more than once.</span>
+        <span class="k">while</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">new_spec</span> <span class="o">=</span> <span class="n">konnoOhmachiSmoothing</span><span class="p">(</span><span class="n">new_spec</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">,</span>
+                                <span class="n">enforce_no_matrix</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">new_spec</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

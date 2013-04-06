@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.__nonzero__
+===============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.__nonzero__

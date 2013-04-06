@@ -1,0 +1,6 @@
+obspy.sac.sacio.attach_paz
+==========================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. autofunction:: attach_paz

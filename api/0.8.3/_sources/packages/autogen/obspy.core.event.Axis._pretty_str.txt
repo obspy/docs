@@ -1,0 +1,6 @@
+obspy.core.event.Axis._pretty_str
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis._pretty_str

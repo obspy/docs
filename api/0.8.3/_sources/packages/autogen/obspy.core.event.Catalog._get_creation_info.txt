@@ -1,0 +1,6 @@
+obspy.core.event.Catalog._get_creation_info
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog._get_creation_info

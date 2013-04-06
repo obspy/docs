@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.pop
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.pop

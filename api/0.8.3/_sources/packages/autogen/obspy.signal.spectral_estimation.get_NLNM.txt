@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.get_NLNM
+=========================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. autofunction:: get_NLNM

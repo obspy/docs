@@ -1,0 +1,6 @@
+obspy.core.event.Origin.__eq__
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.__eq__

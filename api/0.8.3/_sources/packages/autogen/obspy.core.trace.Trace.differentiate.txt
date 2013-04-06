@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.differentiate
+====================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.differentiate

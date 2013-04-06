@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.gse2.libgse2.write &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.gse2.libgse2" href="obspy.gse2.libgse2.html" />
+    <link rel="next" title="obspy.gse2.libgse2.writeHeader" href="obspy.gse2.libgse2.writeHeader.html" />
+    <link rel="prev" title="obspy.gse2.libgse2.verifyChecksum" href="obspy.gse2.libgse2.verifyChecksum.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.gse2.libgse2.writeHeader.html" title="obspy.gse2.libgse2.writeHeader"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.gse2.libgse2.verifyChecksum.html" title="obspy.gse2.libgse2.verifyChecksum"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.gse2.html" >obspy.gse2 - GSE2/GSE1 read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.gse2.libgse2.html" accesskey="U">obspy.gse2.libgse2</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-gse2-libgse2-write">
+<h1>obspy.gse2.libgse2.write<a class="headerlink" href="#obspy-gse2-libgse2-write" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.gse2.libgse2.write">
+<tt class="descname">write</tt><big>(</big><em>headdict</em>, <em>data</em>, <em>f</em>, <em>inplace=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/gse2/libgse2.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.gse2.libgse2.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write GSE2 file, given the header and data.</p>
+<p>Currently supports only CM6 compressed GSE2 files, this should be
+sufficient for most cases. Data are in circular frequency counts, for
+correction of calper multiply by 2PI and calper:
+data * 2 * pi * header[&#8216;calper&#8217;].</p>
+<p>Warning: The data are actually compressed in place for performance
+issues, if you still want to use the data afterwards use data.copy()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first">headdict dictionary entries C{&#8216;datatype&#8217;, &#8216;n_samps&#8217;,
+&#8216;samp_rate&#8217;} are absolutely necessary</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>numpy.ndarray dtype int32</em>) <span class="dash" /> Contains the data.</li>
+<li><strong>f</strong> (<em>File Pointer</em>) <span class="dash" /> Open file pointer of GSE2 file to write, opened in binary
+mode, e.g. f = open(&#8216;myfile&#8217;,&#8217;wb&#8217;)</li>
+<li><strong>inplace</strong> (<em>Bool</em>) <span class="dash" /> If True, do compression not on a copy of the data but
+on the data itself &#8212; note this will change the data
+values and make them therefore unusable</li>
+<li><strong>headdict</strong> (<em>Dictionary</em>) <span class="dash" /> Header containing the following entries::
+&#8216;d_year&#8217;: int,
+&#8216;d_mon&#8217;: int,
+&#8216;d_mon&#8217;: int,
+&#8216;d_day&#8217;: int,
+&#8216;t_hour&#8217;: int,
+&#8216;t_min&#8217;: int,
+&#8216;t_sec&#8217;: float,
+&#8216;station&#8217;: char*6,
+&#8216;station&#8217;: char*6,
+&#8216;channel&#8217;: char*4,
+&#8216;auxid&#8217;: char*5,
+&#8216;datatype&#8217;: char*4,
+&#8216;n_samps&#8217;: int,
+&#8216;samp_rate&#8217;: float,
+&#8216;calib&#8217;: float,
+&#8216;calper&#8217;: float,
+&#8216;instype&#8217;: char*7,
+&#8216;hang&#8217;: float,
+&#8216;vang&#8217;: float</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.gse2.libgse2.write.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.gse2.libgse2.writeHeader.html" title="obspy.gse2.libgse2.writeHeader"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.gse2.libgse2.verifyChecksum.html" title="obspy.gse2.libgse2.verifyChecksum"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.gse2.html" >obspy.gse2 - GSE2/GSE1 read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.gse2.libgse2.html" >obspy.gse2.libgse2</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

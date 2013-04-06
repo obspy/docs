@@ -1,0 +1,28 @@
+obspy.iris.client
+=================
+
+.. currentmodule:: obspy.iris.client
+.. automodule:: obspy.iris.client
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      Client
+   
+   
+
+   
+   
+   

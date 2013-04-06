@@ -1,0 +1,6 @@
+obspy.db.client.Client.getEndtimes
+==================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getEndtimes

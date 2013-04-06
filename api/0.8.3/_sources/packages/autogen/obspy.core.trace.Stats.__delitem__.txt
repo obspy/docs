@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.__delitem__
+==================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.__delitem__

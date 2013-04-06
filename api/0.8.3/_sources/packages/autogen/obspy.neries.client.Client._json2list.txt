@@ -1,0 +1,6 @@
+obspy.neries.client.Client._json2list
+=====================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client._json2list

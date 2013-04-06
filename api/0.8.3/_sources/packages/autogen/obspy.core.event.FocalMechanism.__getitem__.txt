@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.__getitem__
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.__getitem__

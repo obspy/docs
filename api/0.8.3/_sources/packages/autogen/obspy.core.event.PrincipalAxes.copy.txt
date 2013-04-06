@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.copy
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.copy

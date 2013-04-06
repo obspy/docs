@@ -1,0 +1,6 @@
+obspy.core.ascii.writeSLIST
+===========================
+
+.. currentmodule:: obspy.core.ascii
+
+.. autofunction:: writeSLIST

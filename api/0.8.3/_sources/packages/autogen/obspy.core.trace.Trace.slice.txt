@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.slice
+============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.slice

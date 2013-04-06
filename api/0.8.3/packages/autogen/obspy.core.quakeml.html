@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.quakeml &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core - Core classes of ObsPy" href="../obspy.core.html" />
+    <link rel="next" title="obspy.core.quakeml.isQuakeML" href="obspy.core.quakeml.isQuakeML.html" />
+    <link rel="prev" title="obspy.core.ascii.writeTSPAIR" href="obspy.core.ascii.writeTSPAIR.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.isQuakeML.html" title="obspy.core.quakeml.isQuakeML"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.writeTSPAIR.html" title="obspy.core.ascii.writeTSPAIR"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" accesskey="U">obspy.core - Core classes of ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.core.quakeml">
+<span id="obspy-core-quakeml"></span><h1>obspy.core.quakeml<a class="headerlink" href="#module-obspy.core.quakeml" title="Permalink to this headline">¶</a></h1>
+<p>QuakeML read and write support.</p>
+<p>QuakeML is a flexible, extensible and modular XML representation of
+seismological data which is intended to cover a broad range of fields of
+application in modern seismology. QuakeML is an open standard and is developed
+by a distributed team in a transparent collaborative manner.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://quake.ethz.ch/quakeml/">https://quake.ethz.ch/quakeml/</a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.isQuakeML.html#obspy.core.quakeml.isQuakeML" title="obspy.core.quakeml.isQuakeML"><tt class="xref py py-obj docutils literal"><span class="pre">isQuakeML</span></tt></a></td>
+<td>Checks whether a file is QuakeML format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.readQuakeML.html#obspy.core.quakeml.readQuakeML" title="obspy.core.quakeml.readQuakeML"><tt class="xref py py-obj docutils literal"><span class="pre">readQuakeML</span></tt></a></td>
+<td>Reads a QuakeML file and returns a ObsPy Catalog object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.readSeisHubEventXML.html#obspy.core.quakeml.readSeisHubEventXML" title="obspy.core.quakeml.readSeisHubEventXML"><tt class="xref py py-obj docutils literal"><span class="pre">readSeisHubEventXML</span></tt></a></td>
+<td>Reads a single SeisHub event XML file and returns a ObsPy Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.writeQuakeML.html#obspy.core.quakeml.writeQuakeML" title="obspy.core.quakeml.writeQuakeML"><tt class="xref py py-obj docutils literal"><span class="pre">writeQuakeML</span></tt></a></td>
+<td>Writes a QuakeML file.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.quakeml.Pickler.html#obspy.core.quakeml.Pickler" title="obspy.core.quakeml.Pickler"><tt class="xref py py-obj docutils literal"><span class="pre">Pickler</span></tt></a></td>
+<td>Serializes an ObsPy Catalog object into QuakeML format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.quakeml.Unpickler.html#obspy.core.quakeml.Unpickler" title="obspy.core.quakeml.Unpickler"><tt class="xref py py-obj docutils literal"><span class="pre">Unpickler</span></tt></a></td>
+<td>De-serializes a QuakeML string into an ObsPy Catalog object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.quakeml.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.quakeml.isQuakeML.html" title="obspy.core.quakeml.isQuakeML"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.writeTSPAIR.html" title="obspy.core.ascii.writeTSPAIR"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

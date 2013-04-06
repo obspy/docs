@@ -1,0 +1,6 @@
+obspy.xseed.utils.SEEDParserException
+=====================================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autoexception:: SEEDParserException

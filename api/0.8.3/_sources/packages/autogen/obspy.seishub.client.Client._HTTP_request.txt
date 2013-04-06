@@ -1,0 +1,6 @@
+obspy.seishub.client.Client._HTTP_request
+=========================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client._HTTP_request

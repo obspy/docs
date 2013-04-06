@@ -1,0 +1,84 @@
+obspy.seishub.client._EventMapperClient
+=======================================
+
+.. currentmodule:: obspy.seishub.client
+.. autoclass:: _EventMapperClient
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~_EventMapperClient.__dict__
+     ~_EventMapperClient.__doc__
+     ~_EventMapperClient.__module__
+     ~_EventMapperClient.__weakref__
+     ~_EventMapperClient.package
+     ~_EventMapperClient.resourcetype
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_EventMapperClient.deleteResource
+     ~_EventMapperClient.getKML
+     ~_EventMapperClient.getList
+     ~_EventMapperClient.getResource
+     ~_EventMapperClient.getXMLResource
+     ~_EventMapperClient.putResource
+     ~_EventMapperClient.saveKML
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_EventMapperClient.__init__
+  
+
+  
+  

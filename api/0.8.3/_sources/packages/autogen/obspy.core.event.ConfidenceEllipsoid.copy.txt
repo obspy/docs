@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.copy
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.copy

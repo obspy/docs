@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.select
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.select

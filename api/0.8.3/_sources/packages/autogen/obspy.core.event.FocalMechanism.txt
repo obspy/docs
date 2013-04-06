@@ -1,0 +1,195 @@
+obspy.core.event.FocalMechanism
+===============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: FocalMechanism
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~FocalMechanism.__abstractmethods__
+     ~FocalMechanism.__dict__
+     ~FocalMechanism.__doc__
+     ~FocalMechanism.__hash__
+     ~FocalMechanism.__module__
+     ~FocalMechanism.__weakref__
+     ~FocalMechanism.defaults
+     ~FocalMechanism.item
+     ~FocalMechanism.key
+     ~FocalMechanism.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FocalMechanism.clear
+     ~FocalMechanism.copy
+     ~FocalMechanism.get
+     ~FocalMechanism.items
+     ~FocalMechanism.iteritems
+     ~FocalMechanism.iterkeys
+     ~FocalMechanism.itervalues
+     ~FocalMechanism.keys
+     ~FocalMechanism.pop
+     ~FocalMechanism.popitem
+     ~FocalMechanism.setdefault
+     ~FocalMechanism.update
+     ~FocalMechanism.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FocalMechanism._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FocalMechanism.__contains__
+     ~FocalMechanism.__deepcopy__
+     ~FocalMechanism.__delattr__
+     ~FocalMechanism.__delitem__
+     ~FocalMechanism.__eq__
+     ~FocalMechanism.__getattr__
+     ~FocalMechanism.__getitem__
+     ~FocalMechanism.__getstate__
+     ~FocalMechanism.__init__
+     ~FocalMechanism.__iter__
+     ~FocalMechanism.__len__
+     ~FocalMechanism.__ne__
+     ~FocalMechanism.__nonzero__
+     ~FocalMechanism.__repr__
+     ~FocalMechanism.__setattr__
+     ~FocalMechanism.__setitem__
+     ~FocalMechanism.__setstate__
+     ~FocalMechanism.__str__
+     ~FocalMechanism.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,97 @@
+obspy.xseed.fields.FixedString
+==============================
+
+.. currentmodule:: obspy.xseed.fields
+.. autoclass:: FixedString
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~FixedString.__dict__
+     ~FixedString.__doc__
+     ~FixedString.__module__
+     ~FixedString.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FixedString.convert
+     ~FixedString.getSEED
+     ~FixedString.getXML
+     ~FixedString.parseSEED
+     ~FixedString.parseXML
+     ~FixedString.read
+     ~FixedString.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FixedString._formatString
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~FixedString.__init__
+     ~FixedString.__str__
+  
+
+  
+  

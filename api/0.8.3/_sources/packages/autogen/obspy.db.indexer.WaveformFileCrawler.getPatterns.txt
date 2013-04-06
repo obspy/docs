@@ -1,0 +1,6 @@
+obspy.db.indexer.WaveformFileCrawler.getPatterns
+================================================
+
+.. currentmodule:: obspy.db.indexer
+
+.. automethod:: WaveformFileCrawler.getPatterns

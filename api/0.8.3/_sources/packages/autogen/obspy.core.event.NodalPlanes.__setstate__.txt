@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlanes.__setstate__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlanes.__setstate__

@@ -1,0 +1,40 @@
+obspy.core.stream
+=================
+
+.. currentmodule:: obspy.core.stream
+.. automodule:: obspy.core.stream
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isPickle
+      read
+      readPickle
+      writePickle
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      Stream
+   
+   
+
+   
+   
+   

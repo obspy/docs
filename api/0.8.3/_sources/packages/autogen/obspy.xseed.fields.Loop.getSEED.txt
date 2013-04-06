@@ -1,0 +1,6 @@
+obspy.xseed.fields.Loop.getSEED
+===============================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Loop.getSEED

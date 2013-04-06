@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.keys
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.keys

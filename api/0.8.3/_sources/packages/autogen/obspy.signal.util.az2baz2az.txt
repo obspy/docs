@@ -1,0 +1,6 @@
+obspy.signal.util.az2baz2az
+===========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: az2baz2az

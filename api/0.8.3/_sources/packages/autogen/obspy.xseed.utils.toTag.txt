@@ -1,0 +1,6 @@
+obspy.xseed.utils.toTag
+=======================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: toTag

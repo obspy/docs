@@ -1,0 +1,645 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.db.indexer &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.db.indexer</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A waveform indexer collecting metadata from a file based waveform archive and</span>
+<span class="sd">storing in into a standard SQL database.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="kn">from</span> <span class="nn">obspy.core.preview</span> <span class="kn">import</span> <span class="n">createPreview</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.base</span> <span class="kn">import</span> <span class="n">_getEntryPoints</span>
+<span class="kn">from</span> <span class="nn">obspy.db.db</span> <span class="kn">import</span> <span class="n">WaveformFile</span><span class="p">,</span> <span class="n">WaveformPath</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="p">,</span> \
+    <span class="n">WaveformGaps</span><span class="p">,</span> <span class="n">WaveformFeatures</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="WaveformFileCrawler"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler.html#obspy.db.indexer.WaveformFileCrawler">[docs]</a><span class="k">class</span> <span class="nc">WaveformFileCrawler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A waveform file crawler.</span>
+
+<span class="sd">    This class scans periodically all given paths for waveform files and</span>
+<span class="sd">    collects them into a watch list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WaveformFileCrawler._update_or_insert"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._update_or_insert.html#obspy.db.indexer.WaveformFileCrawler._update_or_insert">[docs]</a>    <span class="k">def</span> <span class="nf">_update_or_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new file into or modifies existing file in database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># check for duplicates</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">check_duplicates</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformFile</span><span class="p">,</span> <span class="n">WaveformChannel</span><span class="p">,</span> <span class="n">WaveformPath</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">WaveformFile</span><span class="o">.</span><span class="n">path_id</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformFile</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">WaveformChannel</span><span class="o">.</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformFile</span><span class="o">.</span><span class="n">file</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">channel</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">starttime</span> <span class="o">==</span> \
+                                 <span class="n">data</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">])</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformChannel</span><span class="o">.</span><span class="n">endtime</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;endtime&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Duplicate entry &#39;</span><span class="si">%s</span><span class="s">&#39; in &#39;</span><span class="si">%s</span><span class="s">&#39;.&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]))</span>
+                <span class="k">return</span>
+        <span class="c"># fetch or create path</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># search for existing path</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformPath</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># create new path entry</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">WaveformPath</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c"># search and delete existing file entry</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Inserted&quot;</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># search for existing file</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformFile</span><span class="p">)</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">path_id</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                    <span class="nb">file</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Updated&quot;</span>
+            <span class="c"># delete existing file entry and all related information</span>
+            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="c"># create new file entry</span>
+        <span class="nb">file</span> <span class="o">=</span> <span class="n">WaveformFile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="c"># add channel entries</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+            <span class="c"># create new channel entry</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">WaveformChannel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="nb">file</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="c"># add gaps</span>
+            <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;gaps&#39;</span><span class="p">]:</span>
+                <span class="n">channel</span><span class="o">.</span><span class="n">gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WaveformGaps</span><span class="p">(</span><span class="n">gap</span><span class="p">))</span>
+            <span class="c"># add features</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;features&#39;</span><span class="p">]:</span>
+                <span class="n">channel</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WaveformFeatures</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> &#39;</span><span class="si">%s</span><span class="s">&#39; in &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">],</span>
+                                                <span class="n">data</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]))</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._delete"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._delete.html#obspy.db.indexer.WaveformFileCrawler._delete">[docs]</a>    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a file or all files with a given path from the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">file</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformFile</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformFile</span><span class="o">.</span><span class="n">file</span> <span class="o">==</span> <span class="nb">file</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">archived</span> <span class="o">==</span> <span class="bp">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file_obj</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Error deleting file &#39;</span><span class="si">%s</span><span class="s">&#39; in &#39;</span><span class="si">%s</span><span class="s">&#39;: </span><span class="si">%s</span><span class="s">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Deleting file &#39;</span><span class="si">%s</span><span class="s">&#39; in &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">WaveformPath</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">WaveformPath</span><span class="o">.</span><span class="n">archived</span> <span class="o">==</span> <span class="bp">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">path_obj</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path_obj</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Error deleting path &#39;</span><span class="si">%s</span><span class="s">&#39;: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Deleting path &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._select"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._select.html#obspy.db.indexer.WaveformFileCrawler._select">[docs]</a>    <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch entry from database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c"># check database for file entries in specific path</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;file&quot;</span><span class="p">,</span> <span class="s">&quot;mtime&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">                SELECT file, mtime</span>
+<span class="s">                FROM default_waveform_paths as p, default_waveform_files as f</span>
+<span class="s">                WHERE p.id=f.path_id</span>
+<span class="s">                AND p.path=:path&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># get all path entries from database</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">from_statement</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">                SELECT path FROM default_waveform_paths&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler.getFeatures"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler.getFeatures.html#obspy.db.indexer.WaveformFileCrawler.getFeatures">[docs]</a>    <span class="k">def</span> <span class="nf">getFeatures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+</div>
+    <span class="n">features</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">getFeatures</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaveformFileCrawler.getPatterns"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler.getPatterns.html#obspy.db.indexer.WaveformFileCrawler.getPatterns">[docs]</a>    <span class="k">def</span> <span class="nf">getPatterns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</div>
+    <span class="n">patterns</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">getPatterns</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaveformFileCrawler.hasPattern"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler.hasPattern.html#obspy.db.indexer.WaveformFileCrawler.hasPattern">[docs]</a>    <span class="k">def</span> <span class="nf">hasPattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the file name fits to the preferred file pattern.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">patterns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._processOutputQueue"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._processOutputQueue.html#obspy.db.indexer.WaveformFileCrawler._processOutputQueue">[docs]</a>    <span class="k">def</span> <span class="nf">_processOutputQueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_or_insert</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._processLogQueue"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._processLogQueue.html#obspy.db.indexer.WaveformFileCrawler._processLogQueue">[docs]</a>    <span class="k">def</span> <span class="nf">_processLogQueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;[&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._resetWalker"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._resetWalker.html#obspy.db.indexer.WaveformFileCrawler._resetWalker">[docs]</a>    <span class="k">def</span> <span class="nf">_resetWalker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the crawler parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># break if options run_once is set and a run was completed already</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">run_once</span> <span class="ow">and</span> \
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;first_run_complete&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="c"># before shutting down make sure all queues are empty!</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_queue</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_queue</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Crawler stopped but waiting for empty queues to exit.&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;log_queue still has </span><span class="si">%s</span><span class="s"> item(s)&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_queue</span><span class="p">))</span>
+                    <span class="c"># Fetch items from the log queue</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_processLogQueue</span><span class="p">()</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_queue</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;output_queue still has </span><span class="si">%s</span><span class="s"> item(s)&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_queue</span><span class="p">))</span>
+                    <span class="c"># try to finalize a single processed stream object from</span>
+                    <span class="c"># output queue</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_processOutputQueue</span><span class="p">()</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_queue</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;work_queue still has </span><span class="si">%s</span><span class="s"> items&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_queue</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Crawler stopped by option run_once.&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Crawler restarted.&#39;</span><span class="p">)</span>
+        <span class="c"># reset attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c"># get search paths for waveform crawler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c"># create new walker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_walker</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># clean up paths</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">cleanup</span><span class="p">:</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="c"># no path in filesystem</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="c"># empty path in database</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c"># logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Crawling root &#39;</span><span class="si">%s</span><span class="s">&#39; ...&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_run_complete</span> <span class="o">=</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._stepWalker"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._stepWalker.html#obspy.db.indexer.WaveformFileCrawler._stepWalker">[docs]</a>    <span class="k">def</span> <span class="nf">_stepWalker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Steps current walker object to the next directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># try to fetch next directory</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_walker</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="c"># finished cycling through all directories in current walker</span>
+            <span class="c"># try get next crawler search path</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="c"># a whole cycle has been done</span>
+                <span class="c"># reset everything</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_resetWalker</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c"># reset attributes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_files</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c"># create new walker</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_walker</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># logging</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Crawling root &#39;</span><span class="si">%s</span><span class="s">&#39; ...&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c"># remove files or paths starting with a dot</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">skip_dots</span><span class="p">:</span>
+            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+                    <span class="n">files</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+                    <span class="n">dirs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_files</span> <span class="o">=</span> <span class="n">files</span>
+        <span class="c"># logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Scanning path &#39;</span><span class="si">%s</span><span class="s">&#39; ...&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span><span class="p">)</span>
+        <span class="c"># get all database entries for current path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler._preparePaths"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler._preparePaths.html#obspy.db.indexer.WaveformFileCrawler._preparePaths">[docs]</a>    <span class="k">def</span> <span class="nf">_preparePaths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="c"># strip features</span>
+            <span class="k">if</span> <span class="s">&#39;|&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">path</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;|&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c"># strip patterns</span>
+            <span class="k">if</span> <span class="s">&#39;=&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">path</span><span class="p">,</span> <span class="n">patterns</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+                    <span class="n">patterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;*.*&#39;</span><span class="p">]</span>
+            <span class="c"># normalize and absolute path name</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="c"># check path</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Skipping inaccessible path &#39;</span><span class="si">%s</span><span class="s">&#39; ...&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+</div>
+<div class="viewcode-block" id="WaveformFileCrawler.iterate"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.WaveformFileCrawler.iterate.html#obspy.db.indexer.WaveformFileCrawler.iterate">[docs]</a>    <span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles exactly one directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># skip if service is not running</span>
+        <span class="c"># be aware that the processor pool is still active waiting for work</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># skip if input queue is full</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">number_of_cpus</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># try to finalize a single processed stream object from output queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processOutputQueue</span><span class="p">()</span>
+        <span class="c"># Fetch items from the log queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processLogQueue</span><span class="p">()</span>
+        <span class="c"># walk through directories and files</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="c"># file list is empty</span>
+            <span class="c"># clean up not existing files in current path</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">cleanup</span><span class="p">:</span>
+                <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+            <span class="c"># jump into next directory</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stepWalker</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c"># skip file with wrong pattern</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasPattern</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="c"># process a single file</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_path</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+        <span class="c"># get file stats</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="n">mtime</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="c"># check if recent</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">recent</span><span class="p">:</span>
+            <span class="c"># skip older files</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">mtime</span> <span class="o">&gt;</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">recent</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">db_file_mtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">return</span>
+        <span class="c"># option force-reindex set -&gt; process file regardless if already in</span>
+        <span class="c"># database or recent or whatever</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">force_reindex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_queue</span><span class="p">[</span><span class="n">filepath</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c"># compare with database entries</span>
+        <span class="k">if</span> <span class="nb">file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c"># file does not exists in database -&gt; add file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_queue</span><span class="p">[</span><span class="n">filepath</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c"># file is already in database</span>
+        <span class="c"># -&gt; remove from file list so it won&#39;t be deleted on database cleanup</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">db_file_mtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># -&gt; compare modification times of current file with database entry</span>
+        <span class="k">if</span> <span class="n">mtime</span> <span class="o">==</span> <span class="n">db_file_mtime</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># modification time differs -&gt; update file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_queue</span><span class="p">[</span><span class="n">filepath</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="worker"><a class="viewcode-back" href="../../../packages/autogen/obspy.db.indexer.worker.html#obspy.db.indexer.worker">[docs]</a><span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="n">_i</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">work_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">log_queue</span><span class="p">,</span> <span class="n">mappings</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># fetch and initialize all possible waveform feature plug-ins</span>
+        <span class="n">all_features</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ep</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_getEntryPoints</span><span class="p">(</span><span class="s">&#39;obspy.db.feature&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c"># load plug-in</span>
+                <span class="n">cls</span> <span class="o">=</span> <span class="n">ep</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="c"># initialize class</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span><span class="o">.</span><span class="n">process</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not initialize feature </span><span class="si">%s</span><span class="s">. (</span><span class="si">%s</span><span class="s">)&#39;</span>
+                <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+                <span class="k">continue</span>
+            <span class="n">all_features</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">all_features</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;run&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">all_features</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;indexer_kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="p">[</span><span class="s">&#39;indexer_kwargs&#39;</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">all_features</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;indexer_kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c"># loop through input queue</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="c"># fetch a unprocessed item</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">filepath</span><span class="p">,</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span> <span class="o">=</span> <span class="n">input_queue</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c"># skip item if already in work queue</span>
+            <span class="k">if</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">work_queue</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">work_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="c"># get additional kwargs for read method from waveform plug-ins</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;verify_chksum&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">feature</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_features</span><span class="p">:</span>
+                    <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: Unknown feature </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span>
+                                                                 <span class="n">feature</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">all_features</span><span class="p">[</span><span class="n">feature</span><span class="p">][</span><span class="s">&#39;indexer_kwargs&#39;</span><span class="p">])</span>
+            <span class="c"># read file and get file stats</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="c"># get gap and overlap information</span>
+                <span class="n">gap_list</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getGaps</span><span class="p">()</span>
+                <span class="c"># merge channels and replace gaps/overlaps with 0 to prevent</span>
+                <span class="c"># generation of masked arrays</span>
+                <span class="n">stream</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;[Reading stream] </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span>
+                <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">work_queue</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">continue</span>
+            <span class="c"># build up dictionary of gaps and overlaps for easier lookup</span>
+            <span class="n">gap_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">gap_list</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gap</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s">&#39;gap&#39;</span><span class="p">:</span> <span class="n">gap</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s">&#39;starttime&#39;</span><span class="p">:</span> <span class="n">gap</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+                    <span class="s">&#39;endtime&#39;</span><span class="p">:</span> <span class="n">gap</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+                    <span class="s">&#39;samples&#39;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">gap</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+                <span class="p">}</span>
+                <span class="n">gap_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+            <span class="c"># loop through traces</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c"># general file information</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;mtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">st_size</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">file</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;filepath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filepath</span>
+                <span class="c"># trace information</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">format</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">_format</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">location</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">network</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">datetime</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;endtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="o">.</span><span class="n">datetime</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;calib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;npts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;sampling_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+                <span class="c"># check for any id mappings</span>
+                <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">mappings</span><span class="p">:</span>
+                    <span class="n">old_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">mappings</span><span class="p">[</span><span class="n">old_id</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="ow">and</span> \
+                           <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">&gt;</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;endtime&#39;</span><span class="p">]:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="ow">and</span> \
+                           <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="o">&lt;</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]:</span>
+                            <span class="k">continue</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">]</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Mapping &#39;</span><span class="si">%s</span><span class="s">&#39; to &#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> \
+                            <span class="p">(</span><span class="n">old_id</span><span class="p">,</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">],</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">],</span>
+                            <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">],</span> <span class="n">mapping</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">])</span>
+                        <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="c"># gaps/overlaps for current trace</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gap_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="c"># apply feature functions</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_features</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c"># run plug-in and update results</span>
+                        <span class="n">temp</span> <span class="o">=</span> <span class="n">all_features</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s">&#39;run&#39;</span><span class="p">](</span><span class="n">trace</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                            <span class="n">result</span><span class="p">[</span><span class="s">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                                                       <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;[Processing feature] </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span>
+                        <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                        <span class="k">continue</span>
+                <span class="c"># generate preview of trace</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;preview&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">if</span> <span class="s">&#39;.LOG.L.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span> <span class="o">!=</span> <span class="s">&#39;LOG&#39;</span><span class="p">:</span>
+                    <span class="c"># create previews only for non-log files (see issue #400)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">trace</span> <span class="o">=</span> <span class="n">createPreview</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s">&#39;preview&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dumps</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;[Creating preview] </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span>
+                        <span class="n">log_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="c"># update dataset</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">stream</span>
+            <span class="c"># return results to main loop</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">output_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">work_queue</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

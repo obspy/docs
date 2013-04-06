@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.__repr__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.__repr__

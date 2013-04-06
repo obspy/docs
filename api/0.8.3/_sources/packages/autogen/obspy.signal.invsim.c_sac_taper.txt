@@ -1,0 +1,6 @@
+obspy.signal.invsim.c_sac_taper
+===============================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: c_sac_taper

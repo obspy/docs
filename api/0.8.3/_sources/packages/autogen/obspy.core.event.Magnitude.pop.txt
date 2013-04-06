@@ -1,0 +1,6 @@
+obspy.core.event.Magnitude.pop
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Magnitude.pop

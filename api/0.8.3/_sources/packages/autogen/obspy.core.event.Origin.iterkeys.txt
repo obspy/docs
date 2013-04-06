@@ -1,0 +1,6 @@
+obspy.core.event.Origin.iterkeys
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.iterkeys

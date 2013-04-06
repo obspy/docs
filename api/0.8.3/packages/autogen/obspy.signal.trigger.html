@@ -1,0 +1,192 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.trigger &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal - Signal Processing Routines for ObsPy" href="../obspy.signal.html" />
+    <link rel="next" title="11.2.7. obspy.signal.trigger.arPick" href="obspy.signal.trigger.arPick.html" />
+    <link rel="prev" title="obspy.signal.tf_misfit.tpm" href="obspy.signal.tf_misfit.tpm.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.arPick.html" title="11.2.7. obspy.signal.trigger.arPick"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.tpm.html" title="obspy.signal.tf_misfit.tpm"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" accesskey="U">obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.signal.trigger">
+<span id="obspy-signal-trigger"></span><h1>obspy.signal.trigger<a class="headerlink" href="#module-obspy.signal.trigger" title="Permalink to this headline">¶</a></h1>
+<p>Various routines related to triggering/picking</p>
+<p>Module implementing the Recursive STA/LTA. Two versions, a fast ctypes one and
+a bit slower python one. Furthermore, the classic and delayed STA/LTA, the
+carlSTATrig and the zDetect are implemented.
+Also includes picking routines, routines for evaluation and visualization of
+characteristic functions and a coincidence triggering routine.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../citations.html#withers1998">[Withers1998]</a> (p. 98) and <a class="reference internal" href="../../citations.html#trnkoczy2012">[Trnkoczy2012]</a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.arPick.html#obspy.signal.trigger.arPick" title="obspy.signal.trigger.arPick"><tt class="xref py py-obj docutils literal"><span class="pre">arPick</span></tt></a></td>
+<td>Return corresponding picks of the AR picker</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.carlSTATrig.html#obspy.signal.trigger.carlSTATrig" title="obspy.signal.trigger.carlSTATrig"><tt class="xref py py-obj docutils literal"><span class="pre">carlSTATrig</span></tt></a></td>
+<td>Computes the carlSTATrig characteristic function.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.classicSTALTA.html#obspy.signal.trigger.classicSTALTA" title="obspy.signal.trigger.classicSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">classicSTALTA</span></tt></a></td>
+<td>Computes the standard STA/LTA from a given input array a. The length of</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.classicSTALTAPy.html#obspy.signal.trigger.classicSTALTAPy" title="obspy.signal.trigger.classicSTALTAPy"><tt class="xref py py-obj docutils literal"><span class="pre">classicSTALTAPy</span></tt></a></td>
+<td>Computes the standard STA/LTA from a given input array a. The length of</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.coincidenceTrigger.html#obspy.signal.trigger.coincidenceTrigger" title="obspy.signal.trigger.coincidenceTrigger"><tt class="xref py py-obj docutils literal"><span class="pre">coincidenceTrigger</span></tt></a></td>
+<td>Perform a network coincidence trigger.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.delayedSTALTA.html#obspy.signal.trigger.delayedSTALTA" title="obspy.signal.trigger.delayedSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">delayedSTALTA</span></tt></a></td>
+<td>Delayed STA/LTA.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.pkBaer.html#obspy.signal.trigger.pkBaer" title="obspy.signal.trigger.pkBaer"><tt class="xref py py-obj docutils literal"><span class="pre">pkBaer</span></tt></a></td>
+<td>Wrapper for P-picker routine by M. Baer, Schweizer Erdbebendienst.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.plotTrigger.html#obspy.signal.trigger.plotTrigger" title="obspy.signal.trigger.plotTrigger"><tt class="xref py py-obj docutils literal"><span class="pre">plotTrigger</span></tt></a></td>
+<td>Plot characteristic function of trigger along with waveform data and</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.recSTALTA.html#obspy.signal.trigger.recSTALTA" title="obspy.signal.trigger.recSTALTA"><tt class="xref py py-obj docutils literal"><span class="pre">recSTALTA</span></tt></a></td>
+<td>Recursive STA/LTA.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.recSTALTAPy.html#obspy.signal.trigger.recSTALTAPy" title="obspy.signal.trigger.recSTALTAPy"><tt class="xref py py-obj docutils literal"><span class="pre">recSTALTAPy</span></tt></a></td>
+<td>Recursive STA/LTA written in Python.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.trigger.triggerOnset.html#obspy.signal.trigger.triggerOnset" title="obspy.signal.trigger.triggerOnset"><tt class="xref py py-obj docutils literal"><span class="pre">triggerOnset</span></tt></a></td>
+<td>Calculate trigger on and off times.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.trigger.zDetect.html#obspy.signal.trigger.zDetect" title="obspy.signal.trigger.zDetect"><tt class="xref py py-obj docutils literal"><span class="pre">zDetect</span></tt></a></td>
+<td>Z-detector.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.trigger.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.arPick.html" title="11.2.7. obspy.signal.trigger.arPick"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.tpm.html" title="obspy.signal.tf_misfit.tpm"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__subclasshook__
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__subclasshook__

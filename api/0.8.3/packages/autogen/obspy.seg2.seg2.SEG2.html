@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.seg2.seg2.SEG2 &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.seg2.seg2" href="obspy.seg2.seg2.html" />
+    <link rel="next" title="obspy.seg2.seg2.SEG2.parseFreeForm" href="obspy.seg2.seg2.SEG2.parseFreeForm.html" />
+    <link rel="prev" title="obspy.seg2.seg2.writeSEG2" href="obspy.seg2.seg2.writeSEG2.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seg2.seg2.SEG2.parseFreeForm.html" title="obspy.seg2.seg2.SEG2.parseFreeForm"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seg2.seg2.writeSEG2.html" title="obspy.seg2.seg2.writeSEG2"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seg2.html" >obspy.seg2 - SEG-2 read support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.seg2.seg2.html" accesskey="U">obspy.seg2.seg2</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-seg2-seg2-seg2">
+<h1>obspy.seg2.seg2.SEG2<a class="headerlink" href="#obspy-seg2-seg2-seg2" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.seg2.seg2.SEG2">
+<em class="property">class </em><tt class="descname">SEG2</tt><a class="reference internal" href="../../_modules/obspy/seg2/seg2.html#SEG2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.seg2.seg2.SEG2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class to read and write SEG 2 formatted files. The main reason this is
+realized as a class is for the ease of passing the various parameters from
+one function to the next.</p>
+<p>Do not change the file_pointer attribute while using this class. It will
+be used to keep track of which parts have been read yet and which not.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seg2.seg2.SEG2.parseFreeForm.html#obspy.seg2.seg2.SEG2.parseFreeForm" title="obspy.seg2.seg2.SEG2.parseFreeForm"><tt class="xref py py-obj docutils literal"><span class="pre">parseFreeForm</span></tt></a></td>
+<td>Parse the free form section stored in free_form_str and save it in</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seg2.seg2.SEG2.parseNextTrace.html#obspy.seg2.seg2.SEG2.parseNextTrace" title="obspy.seg2.seg2.SEG2.parseNextTrace"><tt class="xref py py-obj docutils literal"><span class="pre">parseNextTrace</span></tt></a></td>
+<td>Parse the next trace in the trace pointer list and return a Trace</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seg2.seg2.SEG2.readFile.html#obspy.seg2.seg2.SEG2.readFile" title="obspy.seg2.seg2.SEG2.readFile"><tt class="xref py py-obj docutils literal"><span class="pre">readFile</span></tt></a></td>
+<td>Reads the following file and will return a Stream object. If</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seg2.seg2.SEG2.readFileDescriptorBlock.html#obspy.seg2.seg2.SEG2.readFileDescriptorBlock" title="obspy.seg2.seg2.SEG2.readFileDescriptorBlock"><tt class="xref py py-obj docutils literal"><span class="pre">readFileDescriptorBlock</span></tt></a></td>
+<td>Handles the reading of the file descriptor block and the free form</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seg2.seg2.SEG2.__init__.html#obspy.seg2.seg2.SEG2.__init__" title="obspy.seg2.seg2.SEG2.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.seg2.seg2.SEG2.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seg2.seg2.SEG2.parseFreeForm.html" title="obspy.seg2.seg2.SEG2.parseFreeForm"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seg2.seg2.writeSEG2.html" title="obspy.seg2.seg2.writeSEG2"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seg2.html" >obspy.seg2 - SEG-2 read support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.seg2.seg2.html" >obspy.seg2.seg2</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

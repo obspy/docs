@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.decimate
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.decimate

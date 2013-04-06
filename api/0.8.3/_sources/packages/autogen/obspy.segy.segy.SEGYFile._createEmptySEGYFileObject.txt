@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile._createEmptySEGYFileObject
+===================================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile._createEmptySEGYFileObject

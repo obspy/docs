@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.dump
+================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: dump

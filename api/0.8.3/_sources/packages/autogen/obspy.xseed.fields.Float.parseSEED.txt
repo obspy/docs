@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.parseSEED
+==================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.parseSEED

@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._origin
+==================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._origin

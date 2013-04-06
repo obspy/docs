@@ -1,0 +1,6 @@
+obspy.mseed.util.getTimingAndDataQuality
+========================================
+
+.. currentmodule:: obspy.mseed.util
+
+.. autofunction:: getTimingAndDataQuality

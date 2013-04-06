@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.getId
+============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.getId

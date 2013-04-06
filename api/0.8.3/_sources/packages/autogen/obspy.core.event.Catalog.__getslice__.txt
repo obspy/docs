@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.__getslice__
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.__getslice__

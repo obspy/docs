@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._createCutAndFlushRecord
+==================================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._createCutAndFlushRecord

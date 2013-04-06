@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.__eq__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.__eq__

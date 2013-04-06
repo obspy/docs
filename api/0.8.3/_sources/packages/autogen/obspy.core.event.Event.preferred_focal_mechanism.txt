@@ -1,0 +1,6 @@
+obspy.core.event.Event.preferred_focal_mechanism
+================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Event.preferred_focal_mechanism

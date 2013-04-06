@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYBinaryFileHeader.__init__
+=============================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYBinaryFileHeader.__init__

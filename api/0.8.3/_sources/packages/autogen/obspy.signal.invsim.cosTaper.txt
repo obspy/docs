@@ -1,0 +1,6 @@
+obspy.signal.invsim.cosTaper
+============================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: cosTaper

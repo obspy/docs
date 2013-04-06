@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>23. Visualizing Probabilistic Power Spectral Densities &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="24. Array Response Function" href="array_response_function.html" />
+    <link rel="prev" title="22. Hierarchical Clustering" href="hierarchical_clustering.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="array_response_function.html" title="24. Array Response Function"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hierarchical_clustering.html" title="22. Hierarchical Clustering"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="visualizing-probabilistic-power-spectral-densities">
+<h1>23. Visualizing Probabilistic Power Spectral Densities<a class="headerlink" href="#visualizing-probabilistic-power-spectral-densities" title="Permalink to this headline">¶</a></h1>
+<p>The following code example shows how to use the
+<a class="reference internal" href="../../packages/autogen/obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD" title="obspy.signal.spectral_estimation.PPSD"><tt class="xref py py-class docutils literal"><span class="pre">PPSD</span></tt></a> class defined in
+<a class="reference internal" href="../../packages/obspy.signal.html#module-obspy.signal" title="obspy.signal"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.signal</span></tt></a>. The routine is useful for interpretation of e.g. noise
+measurements for site quality control checks. For more information on the topic
+see <a class="reference internal" href="../../citations.html#mcnamara2004">[McNamara2004]</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.xseed</span> <span class="kn">import</span> <span class="n">Parser</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">PPSD</span>
+</pre></div>
+</div>
+<p>Read data and select a trace with the desired station/channel combination:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/BW.KW1..EHZ.D.2011.037&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&quot;BW.KW1..EHZ&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Get poles and zeros information, e.g. from a dataless SEED file. Then
+initialize a new <a class="reference internal" href="../../packages/autogen/obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD" title="obspy.signal.spectral_estimation.PPSD"><tt class="xref py py-class docutils literal"><span class="pre">PPSD</span></tt></a> instance. The
+ppsd object will then make sure that only appropriate data go into the
+probabilistic psd statistics.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/dataless.seed.BW_KW1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">getPAZ</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span> <span class="o">=</span> <span class="n">PPSD</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="n">paz</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can add data (either trace or stream objects) to the ppsd estimate. This
+step may take a while. The return value <tt class="docutils literal"><span class="pre">True</span></tt> indicates that the data was
+successfully added to the ppsd estimate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>We can check what time ranges are represented in the ppsd estimate.
+<tt class="docutils literal"><span class="pre">ppsd.times</span></tt> contains a sorted list of start times of the one hour long
+slices that the psds are computed from (here only the first two are printed).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ppsd</span><span class="o">.</span><span class="n">times</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[UTCDateTime(2011, 2, 6, 0, 0, 0, 935000), UTCDateTime(2011, 2, 6, 0, 30, 0, 935000)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;number of psd segments:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppsd</span><span class="o">.</span><span class="n">times</span><span class="p">)</span>
+<span class="go">number of psd segments: 47</span>
+</pre></div>
+</div>
+<p>Adding the same stream again will do nothing (return value <tt class="docutils literal"><span class="pre">False</span></tt>), the ppsd
+object makes sure that no overlapping data segments go into the ppsd estimate.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s">&quot;number of psd segments:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppsd</span><span class="o">.</span><span class="n">times</span><span class="p">)</span>
+<span class="go">number of psd segments: 47</span>
+</pre></div>
+</div>
+<p>Additional information from other files/sources can be added step by step.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/BW.KW1..EHZ.D.2011.038&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The graphical representation of the ppsd can be displayed in a matplotlib
+window..</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>..or saved to an image file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s">&quot;/tmp/ppsd.png&quot;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s">&quot;/tmp/ppsd.pdf&quot;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/probabilistic_power_spectral_density.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/probabilistic_power_spectral_density.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/probabilistic_power_spectral_density.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/probabilistic_power_spectral_density.png" src="../../_images/probabilistic_power_spectral_density.png" />
+</div>
+<p>Below the actual PPSD (for a detailed discussion see
+<a class="reference internal" href="../../citations.html#mcnamara2004">[McNamara2004]</a>) is a visualization of the data basis for the PPSD
+(can also be switched off during plotting). The top row shows data fed into the
+PPSD, green patches represent available data, red patches represent gaps in
+streams that were added to the PPSD. The bottom row in blue shows the single
+psd measurements that go into the histogram. The default processing method
+fills gaps with zeros, these data segments then show up as single outlying psd
+lines.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Providing metadata from e.g. a Dataless SEED volume is safer than specifying
+static poles and zeros information (see
+<a class="reference internal" href="../../packages/autogen/obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD" title="obspy.signal.spectral_estimation.PPSD"><tt class="xref py py-class docutils literal"><span class="pre">PPSD</span></tt></a>).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/probabilistic_power_spectral_density.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="array_response_function.html" title="24. Array Response Function"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hierarchical_clustering.html" title="22. Hierarchical Clustering"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

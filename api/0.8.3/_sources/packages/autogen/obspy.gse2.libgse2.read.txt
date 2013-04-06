@@ -1,0 +1,6 @@
+obspy.gse2.libgse2.read
+=======================
+
+.. currentmodule:: obspy.gse2.libgse2
+
+.. autofunction:: read

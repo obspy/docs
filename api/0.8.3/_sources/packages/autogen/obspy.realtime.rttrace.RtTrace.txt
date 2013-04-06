@@ -1,0 +1,239 @@
+obspy.realtime.rttrace.RtTrace
+==============================
+
+.. currentmodule:: obspy.realtime.rttrace
+.. autoclass:: RtTrace
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~RtTrace.__dict__
+     ~RtTrace.__doc__
+     ~RtTrace.__module__
+     ~RtTrace.__weakref__
+     ~RtTrace.have_appended_data
+     ~RtTrace.id
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~RtTrace.append
+     ~RtTrace.copy
+     ~RtTrace.count
+     ~RtTrace.decimate
+     ~RtTrace.detrend
+     ~RtTrace.differentiate
+     ~RtTrace.filter
+     ~RtTrace.getId
+     ~RtTrace.integrate
+     ~RtTrace.max
+     ~RtTrace.normalize
+     ~RtTrace.plot
+     ~RtTrace.registerRtProcess
+     ~RtTrace.resample
+     ~RtTrace.rtProcessFunctionsToString
+     ~RtTrace.simulate
+     ~RtTrace.slice
+     ~RtTrace.spectrogram
+     ~RtTrace.split
+     ~RtTrace.std
+     ~RtTrace.taper
+     ~RtTrace.times
+     ~RtTrace.trigger
+     ~RtTrace.trim
+     ~RtTrace.verify
+     ~RtTrace.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~RtTrace._addProcessingInfo
+     ~RtTrace._ltrim
+     ~RtTrace._rtrim
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~RtTrace.__add__
+     ~RtTrace.__div__
+     ~RtTrace.__eq__
+     ~RtTrace.__ge__
+     ~RtTrace.__getitem__
+     ~RtTrace.__gt__
+     ~RtTrace.__init__
+     ~RtTrace.__le__
+     ~RtTrace.__len__
+     ~RtTrace.__lt__
+     ~RtTrace.__mod__
+     ~RtTrace.__mul__
+     ~RtTrace.__ne__
+     ~RtTrace.__original_str__
+     ~RtTrace.__setattr__
+     ~RtTrace.__str__
+  
+
+  
+  

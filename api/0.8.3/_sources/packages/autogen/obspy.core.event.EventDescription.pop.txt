@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.pop
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.pop

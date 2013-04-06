@@ -1,0 +1,6 @@
+obspy.core.util.decorator.skipIf
+================================
+
+.. currentmodule:: obspy.core.util.decorator
+
+.. autofunction:: skipIf

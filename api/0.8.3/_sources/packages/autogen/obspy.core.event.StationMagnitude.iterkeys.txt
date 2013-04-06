@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.iterkeys
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.iterkeys

@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.benchmark.plotBenchmark &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.segy.benchmark" href="obspy.segy.benchmark.html" />
+    <link rel="next" title="obspy.sh - Q and ASC (Seismic Handler) read and write support for ObsPy" href="../obspy.sh.html" />
+    <link rel="prev" title="obspy.segy.benchmark.plotBenchmark" href="" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../obspy.sh.html" title="obspy.sh - Q and ASC (Seismic Handler) read and write support for ObsPy"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="#" title="obspy.segy.benchmark.plotBenchmark"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.benchmark.html" accesskey="U">obspy.segy.benchmark</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-segy-benchmark-plotbenchmark">
+<h1>obspy.segy.benchmark.plotBenchmark<a class="headerlink" href="#obspy-segy-benchmark-plotbenchmark" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.segy.benchmark.plotBenchmark">
+<tt class="descname">plotBenchmark</tt><big>(</big><em>sufiles</em>, <em>normalize='traces'</em>, <em>clip_partial_traces=True</em>, <em>scale=3.0</em>, <em>xmin=None</em>, <em>xmax=None</em>, <em>ymin=None</em>, <em>ymax=None</em>, <em>fig=None</em>, <em>plot_legend=True</em>, <em>title=''</em>, <em>size=(800</em>, <em>600)</em>, <em>dpi=100</em>, <em>outfile=None</em>, <em>format=None</em>, <em>trim_to_smallest_trace=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/segy/benchmark.html#plotBenchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.segy.benchmark.plotBenchmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a benchmark plot from given SU files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sufiles</strong> (List of SU file names or <a class="reference internal" href="obspy.segy.segy.SUFile.html#obspy.segy.segy.SUFile" title="obspy.segy.segy.SUFile"><tt class="xref py py-class docutils literal"><span class="pre">SUFile</span></tt></a>
+objects.) <span class="dash" /> SU files to plot.</li>
+<li><strong>normalize</strong> (<tt class="docutils literal"><span class="pre">None</span></tt>, <tt class="docutils literal"><span class="pre">'stream'</span></tt> or <tt class="docutils literal"><span class="pre">'traces'</span></tt>, optional) <span class="dash" /> If <tt class="docutils literal"><span class="pre">'stream'</span></tt> is given it will normalize per stream.
+The keyword <tt class="docutils literal"><span class="pre">'traces'</span></tt> normalizes all traces in all streams. <tt class="docutils literal"><span class="pre">None</span></tt>
+will skip normalization. Defaults to <tt class="docutils literal"><span class="pre">'traces'</span></tt>.</li>
+<li><strong>clip_partial_traces</strong> (<em>bool, optional</em>) <span class="dash" /> Clips traces which are not completely plotted.
+Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>trim_to_smallest_trace</strong> (<em>bool, optional</em>) <span class="dash" /> Trims all traces to shortest available
+trace. Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>plot_legend</strong> (<em>bool, optional</em>) <span class="dash" /> If enabled plots a legend generated by given SU files.
+Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>title</strong> (<em>string, optional</em>) <span class="dash" /> Plots a title if given. Disabled by default.</li>
+<li><strong>scale</strong> (<em>float, optional</em>) <span class="dash" /> Scales all amplitudes by this factor. Defaults to <tt class="docutils literal"><span class="pre">3.0</span></tt>.</li>
+<li><strong>xmin</strong> (<em>float, optional</em>) <span class="dash" /> Minimum of time axis.</li>
+<li><strong>xmax</strong> (<em>float, optional</em>) <span class="dash" /> Maximum of time axis.</li>
+<li><strong>ymin</strong> (<em>float, optional</em>) <span class="dash" /> Minimum of offset axis.</li>
+<li><strong>ymax</strong> (<em>float, optional</em>) <span class="dash" /> Maximum of offset axis.</li>
+<li><strong>fig</strong> (<a class="reference external" href="http://matplotlib.sourceforge.net/api/figure_api.html#matplotlib.figure.Figure" title="(in Matplotlib v1.2.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.figure.Figure</span></tt></a>) <span class="dash" /> Use an existing matplotlib figure instance.
+Default to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>size</strong> (<em>tuple, optional</em>) <span class="dash" /> Size tuple in pixel for the output file. This corresponds
+to the resolution of the graph for vector formats. Defaults to
+<tt class="docutils literal"><span class="pre">(800,</span> <span class="pre">800)</span></tt> pixel.</li>
+<li><strong>dpi</strong> (<em>int, optional</em>) <span class="dash" /> Dots per inch of the output file. This also affects the
+size of most elements in the graph (text, linewidth, ...).
+Defaults to <tt class="docutils literal"><span class="pre">100</span></tt>.</li>
+<li><strong>outfile</strong> (<em>string, optional</em>) <span class="dash" /> Output file name. Also used to automatically
+determine the output format. Supported file formats depend on your
+matplotlib backend. Most backends support png, pdf, ps, eps and
+svg. Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>format</strong> (<em>string, optional</em>) <span class="dash" /> Format of the graph picture. If no format is given the
+outfile parameter will be used to try to automatically determine
+the output format. If no format is found it defaults to png output.
+If no outfile is specified but a format is, than a binary
+imagestring will be returned.
+Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.1.</span></p>
+<p class="rubric">Example</p>
+<p>The following example plots four seismic unix files in one benchmark image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sufiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;seismic01_*_vz.su&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.segy.benchmark</span> <span class="kn">import</span> <span class="n">plotBenchmark</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotBenchmark</span><span class="p">(</span><span class="n">sufiles</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Homogenous halfspace&quot;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/54b42c538d.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/54b42c538d.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/54b42c538d.png" src="../../_images/54b42c538d.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.segy.benchmark.plotBenchmark.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../obspy.sh.html" title="obspy.sh - Q and ASC (Seismic Handler) read and write support for ObsPy"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="#" title="obspy.segy.benchmark.plotBenchmark"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.benchmark.html" >obspy.segy.benchmark</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

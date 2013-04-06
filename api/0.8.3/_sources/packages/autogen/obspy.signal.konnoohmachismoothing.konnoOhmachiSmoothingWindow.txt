@@ -1,0 +1,6 @@
+obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow
+==============================================================
+
+.. currentmodule:: obspy.signal.konnoohmachismoothing
+
+.. autofunction:: konnoOhmachiSmoothingWindow

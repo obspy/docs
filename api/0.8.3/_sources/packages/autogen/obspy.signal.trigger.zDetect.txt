@@ -1,0 +1,6 @@
+obspy.signal.trigger.zDetect
+============================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: zDetect

@@ -1,0 +1,567 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.ascii &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.ascii</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Simple ASCII time series formats</span>
+
+<span class="sd">* ``SLIST``, a ASCII time series format represented with a header line</span>
+<span class="sd">  followed by a sample lists (see also</span>
+<span class="sd">  :func:`SLIST format description&lt;obspy.core.ascii.writeSLIST&gt;`)::</span>
+
+<span class="sd">    TIMESERIES BW_RJOB__EHZ_D, 6001 samples, 200 sps, 2009-08-24T00:20:03.0000\</span>
+<span class="sd">00, SLIST, INTEGER,</span>
+<span class="sd">    288 300 292 285 265 287</span>
+<span class="sd">    279 250 278 278 268 258</span>
+<span class="sd">    ...</span>
+
+<span class="sd">* ``TSPAIR``, a ASCII format where data is written in time-sample pairs</span>
+<span class="sd">  (see also :func:`TSPAIR format description&lt;obspy.core.ascii.writeTSPAIR&gt;`)::</span>
+
+<span class="sd">    TIMESERIES BW_RJOB__EHZ_D, 6001 samples, 200 sps, 2009-08-24T00:20:03.0000\</span>
+<span class="sd">00, TSPAIR, INTEGER,</span>
+<span class="sd">    2009-08-24T00:20:03.000000  288</span>
+<span class="sd">    2009-08-24T00:20:03.005000  300</span>
+<span class="sd">    2009-08-24T00:20:03.010000  292</span>
+<span class="sd">    2009-08-24T00:20:03.015000  285</span>
+<span class="sd">    2009-08-24T00:20:03.020000  265</span>
+<span class="sd">    2009-08-24T00:20:03.025000  287</span>
+<span class="sd">    ...</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">Stats</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">AttribDict</span><span class="p">,</span> <span class="n">loadtxt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="n">HEADER</span> <span class="o">=</span> <span class="s">&quot;TIMESERIES </span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">, </span><span class="si">%d</span><span class="s"> samples, </span><span class="si">%d</span><span class="s"> sps, </span><span class="si">%.26s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span>
+
+
+<div class="viewcode-block" id="isSLIST"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.isSLIST.html#obspy.core.ascii.isSLIST">[docs]</a><span class="k">def</span> <span class="nf">isSLIST</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is ASCII SLIST format.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the ASCII SLIST file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if ASCII SLIST file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isSLIST(&#39;/path/to/slist.ascii&#39;)  # doctest: +SKIP</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;TIMESERIES&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;SLIST&#39;</span> <span class="ow">in</span> <span class="n">temp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="isTSPAIR"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.isTSPAIR.html#obspy.core.ascii.isTSPAIR">[docs]</a><span class="k">def</span> <span class="nf">isTSPAIR</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is ASCII TSPAIR format.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of the ASCII TSPAIR file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if ASCII TSPAIR file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isTSPAIR(&#39;/path/to/tspair.ascii&#39;)  # doctest: +SKIP</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">temp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;TIMESERIES&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;TSPAIR&#39;</span> <span class="ow">in</span> <span class="n">temp</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readSLIST"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.readSLIST.html#obspy.core.ascii.readSLIST">[docs]</a><span class="k">def</span> <span class="nf">readSLIST</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a ASCII SLIST file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: ASCII file to be read.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the head. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&#39;/path/to/slist.ascii&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span>
+    <span class="c"># read file and split text into channels</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+            <span class="c"># blank line</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;TIMESERIES&#39;</span><span class="p">):</span>
+            <span class="c"># new header line</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data for option headonly</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">key</span><span class="p">:</span>
+            <span class="c"># data entry - may be written in multiple columns</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c"># create ObsPy stream object</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="c"># create Stats</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">Stats</span><span class="p">()</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="c"># quality only used in MSEED</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span><span class="s">&#39;dataquality&#39;</span><span class="p">:</span> <span class="n">temp</span><span class="p">[</span><span class="mi">4</span><span class="p">]})</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">ascii</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span><span class="s">&#39;unit&#39;</span><span class="p">:</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">stats</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">_parse_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">stats</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">stream</span>
+
+</div>
+<div class="viewcode-block" id="readTSPAIR"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.readTSPAIR.html#obspy.core.ascii.readTSPAIR">[docs]</a><span class="k">def</span> <span class="nf">readTSPAIR</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a ASCII TSPAIR file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: ASCII file to be read.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the headers. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&#39;/path/to/tspair.ascii&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span>
+    <span class="c"># read file and split text into channels</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+            <span class="c"># blank line</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;TIMESERIES&#39;</span><span class="p">):</span>
+            <span class="c"># new header line</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data for option headonly</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">key</span><span class="p">:</span>
+            <span class="c"># data entry - may be written in multiple columns</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c"># create ObsPy stream object</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="c"># create Stats</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">Stats</span><span class="p">()</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="c"># quality only used in MSEED</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span><span class="s">&#39;dataquality&#39;</span><span class="p">:</span> <span class="n">temp</span><span class="p">[</span><span class="mi">4</span><span class="p">]})</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">ascii</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span><span class="s">&#39;unit&#39;</span><span class="p">:</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+            <span class="c"># skip data</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">stats</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">_parse_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">stats</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">stream</span>
+
+</div>
+<div class="viewcode-block" id="writeSLIST"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.writeSLIST.html#obspy.core.ascii.writeSLIST">[docs]</a><span class="k">def</span> <span class="nf">writeSLIST</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a ASCII SLIST file.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of file to write.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&quot;slist.ascii&quot;, format=&quot;SLIST&quot;)  #doctest: +SKIP</span>
+
+<span class="sd">    .. rubric:: SLIST Format Description</span>
+
+<span class="sd">    SLIST is a simple ASCII time series format. Each contiguous time series</span>
+<span class="sd">    segment (no gaps or overlaps) is represented with a header line followed by</span>
+<span class="sd">    a sample lists. There are no restrictions on how the segments are organized</span>
+<span class="sd">    into files, a file might contain a single segment or many, concatenated</span>
+<span class="sd">    segments either for the same channel or many different channels.</span>
+
+<span class="sd">    Header lines have the general form::</span>
+
+<span class="sd">        TIMESERIES SourceName, # samples, # sps, Time, Format, Type, Units</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    ``SourceName``</span>
+<span class="sd">        &quot;Net_Sta_Loc_Chan_Qual&quot;, no spaces, quality code optional</span>
+<span class="sd">    ``# samples``</span>
+<span class="sd">        Number of samples following header</span>
+<span class="sd">    ``# sps``</span>
+<span class="sd">        Sampling rate in samples per second</span>
+<span class="sd">    ``Time``</span>
+<span class="sd">        Time of first sample in ISO YYYY-MM-DDTHH:MM:SS.FFFFFF format</span>
+<span class="sd">    ``Format``</span>
+<span class="sd">        &#39;TSPAIR&#39; (fixed)</span>
+<span class="sd">    ``Type``</span>
+<span class="sd">        Sample type &#39;INTEGER&#39;, &#39;FLOAT&#39; or &#39;ASCII&#39;</span>
+<span class="sd">    ``Units``</span>
+<span class="sd">        Units of time-series, e.g. Counts, M/S, etc., may not contain</span>
+<span class="sd">        spaces</span>
+
+<span class="sd">    Samples are listed in 6 columns with the time-series incrementing from left</span>
+<span class="sd">    to right and wrapping to the next line. The time of the first sample is the</span>
+<span class="sd">    time listed in the header.</span>
+
+<span class="sd">    *Example SLIST file*::</span>
+
+<span class="sd">        TIMESERIES NL_HGN_00_BHZ_R, 12 samples, 40 sps, 2003-05-29T02:13:22.04\</span>
+<span class="sd">3400, SLIST, INTEGER, Counts</span>
+<span class="sd">        2787        2776        2774        2780        2783        2782</span>
+<span class="sd">        2776        2766        2759        2760        2765        2767</span>
+<span class="sd">        ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wt&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span>
+        <span class="c"># quality code</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dataquality</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">dataquality</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dataquality</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c"># sample type</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;int&#39;</span><span class="p">):</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;INTEGER&#39;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span>
+        <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;float&#39;</span><span class="p">):</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;FLOAT&#39;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%f</span><span class="s">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c"># unit</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ascii</span><span class="o">.</span><span class="n">unit</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c"># write trace header</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">HEADER</span> <span class="o">%</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                           <span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">dataquality</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">,</span>
+                           <span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span> <span class="s">&#39;SLIST&#39;</span><span class="p">,</span>
+                           <span class="n">dtype</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="c"># write data</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">%</span> <span class="mi">6</span>
+        <span class="k">if</span> <span class="n">rest</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="n">rest</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span> <span class="o">%</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="n">rest</span><span class="p">:]])</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="writeTSPAIR"><a class="viewcode-back" href="../../../packages/autogen/obspy.core.ascii.writeTSPAIR.html#obspy.core.ascii.writeTSPAIR">[docs]</a><span class="k">def</span> <span class="nf">writeTSPAIR</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a ASCII TSPAIR file.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of file to write.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&quot;tspair.ascii&quot;, format=&quot;TSPAIR&quot;)  #doctest: +SKIP</span>
+
+<span class="sd">    .. rubric:: TSPAIR Format Description</span>
+
+<span class="sd">    TSPAIR is a simple ASCII time series format. Each contiguous time series</span>
+<span class="sd">    segment (no gaps or overlaps) is represented with a header line followed by</span>
+<span class="sd">    data samples in time-sample pairs. There are no restrictions on how the</span>
+<span class="sd">    segments are organized into files, a file might contain a single segment</span>
+<span class="sd">    or many, concatenated segments either for the same channel or many</span>
+<span class="sd">    different channels.</span>
+
+<span class="sd">    Header lines have the general form::</span>
+
+<span class="sd">        TIMESERIES SourceName, # samples, # sps, Time, Format, Type, Units</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    ``SourceName``</span>
+<span class="sd">        &quot;Net_Sta_Loc_Chan_Qual&quot;, no spaces, quality code optional</span>
+<span class="sd">    ``# samples``</span>
+<span class="sd">        Number of samples following header</span>
+<span class="sd">    ``# sps``</span>
+<span class="sd">        Sampling rate in samples per second</span>
+<span class="sd">    ``Time``</span>
+<span class="sd">        Time of first sample in ISO YYYY-MM-DDTHH:MM:SS.FFFFFF format</span>
+<span class="sd">    ``Format``</span>
+<span class="sd">        &#39;TSPAIR&#39; (fixed)</span>
+<span class="sd">    ``Type``</span>
+<span class="sd">        Sample type &#39;INTEGER&#39;, &#39;FLOAT&#39; or &#39;ASCII&#39;</span>
+<span class="sd">    ``Units``</span>
+<span class="sd">        Units of time-series, e.g. Counts, M/S, etc., may not contain</span>
+<span class="sd">        spaces</span>
+
+<span class="sd">    *Example TSPAIR file*::</span>
+
+<span class="sd">        TIMESERIES NL_HGN_00_BHZ_R, 12 samples, 40 sps, 2003-05-29T02:13:22.04\</span>
+<span class="sd">3400, TSPAIR, INTEGER, Counts</span>
+<span class="sd">        2003-05-29T02:13:22.043400  2787</span>
+<span class="sd">        2003-05-29T02:13:22.068400  2776</span>
+<span class="sd">        2003-05-29T02:13:22.093400  2774</span>
+<span class="sd">        2003-05-29T02:13:22.118400  2780</span>
+<span class="sd">        2003-05-29T02:13:22.143400  2783</span>
+<span class="sd">        2003-05-29T02:13:22.168400  2782</span>
+<span class="sd">        2003-05-29T02:13:22.193400  2776</span>
+<span class="sd">        2003-05-29T02:13:22.218400  2766</span>
+<span class="sd">        2003-05-29T02:13:22.243400  2759</span>
+<span class="sd">        2003-05-29T02:13:22.268400  2760</span>
+<span class="sd">        2003-05-29T02:13:22.293400  2765</span>
+<span class="sd">        2003-05-29T02:13:22.318400  2767</span>
+<span class="sd">        ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wt&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span>
+        <span class="c"># quality code</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dataquality</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mseed</span><span class="o">.</span><span class="n">dataquality</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dataquality</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c"># sample type</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;int&#39;</span><span class="p">):</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;INTEGER&#39;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span>
+        <span class="k">elif</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;float&#39;</span><span class="p">):</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;FLOAT&#39;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%f</span><span class="s">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c"># unit</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ascii</span><span class="o">.</span><span class="n">unit</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c"># write trace header</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">HEADER</span> <span class="o">%</span> <span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                           <span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">dataquality</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">,</span>
+                           <span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span> <span class="s">&#39;TSPAIR&#39;</span><span class="p">,</span>
+                           <span class="n">dtype</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="c"># write data</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+                            <span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">times</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+        <span class="c"># .26s cuts the Z from the time string</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%.26s</span><span class="s">  &quot;</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_parse_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple function to read data contained in a StringIO object to a numpy</span>
+<span class="sd">    array.</span>
+
+<span class="sd">    :type data: StringIO.StringIO object.</span>
+<span class="sd">    :param data: The actual data.</span>
+<span class="sd">    :type data_type: String</span>
+<span class="sd">    :param data_type: The data type of the expected data. Currently supported</span>
+<span class="sd">        are &#39;INTEGER&#39; and &#39;FLOAT&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;INTEGER&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="s">&quot;int&quot;</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s">&quot;FLOAT&quot;</span><span class="p">:</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="s">&quot;float32&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="c"># Seek to the beginning of the StringIO.</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c"># Data will always be a StringIO. Avoid to send empty StringIOs to</span>
+    <span class="c"># numpy.readtxt() which raises a warning.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">buf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">ndlim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

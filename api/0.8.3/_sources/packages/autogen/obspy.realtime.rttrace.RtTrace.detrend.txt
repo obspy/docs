@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.detrend
+======================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.detrend

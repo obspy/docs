@@ -1,0 +1,195 @@
+obspy.core.event.TimeWindow
+===========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: TimeWindow
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~TimeWindow.__abstractmethods__
+     ~TimeWindow.__dict__
+     ~TimeWindow.__doc__
+     ~TimeWindow.__hash__
+     ~TimeWindow.__module__
+     ~TimeWindow.__weakref__
+     ~TimeWindow.defaults
+     ~TimeWindow.item
+     ~TimeWindow.key
+     ~TimeWindow.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~TimeWindow.clear
+     ~TimeWindow.copy
+     ~TimeWindow.get
+     ~TimeWindow.items
+     ~TimeWindow.iteritems
+     ~TimeWindow.iterkeys
+     ~TimeWindow.itervalues
+     ~TimeWindow.keys
+     ~TimeWindow.pop
+     ~TimeWindow.popitem
+     ~TimeWindow.setdefault
+     ~TimeWindow.update
+     ~TimeWindow.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~TimeWindow._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~TimeWindow.__contains__
+     ~TimeWindow.__deepcopy__
+     ~TimeWindow.__delattr__
+     ~TimeWindow.__delitem__
+     ~TimeWindow.__eq__
+     ~TimeWindow.__getattr__
+     ~TimeWindow.__getitem__
+     ~TimeWindow.__getstate__
+     ~TimeWindow.__init__
+     ~TimeWindow.__iter__
+     ~TimeWindow.__len__
+     ~TimeWindow.__ne__
+     ~TimeWindow.__nonzero__
+     ~TimeWindow.__repr__
+     ~TimeWindow.__setattr__
+     ~TimeWindow.__setitem__
+     ~TimeWindow.__setstate__
+     ~TimeWindow.__str__
+     ~TimeWindow.__subclasshook__
+  
+
+  
+  

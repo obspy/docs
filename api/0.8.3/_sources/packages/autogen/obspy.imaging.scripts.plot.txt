@@ -1,0 +1,11 @@
+obspy.imaging.scripts.plot
+==========================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-plot``. For more info on the command line options,
+    please run ``$ obspy-plot --help``.
+    Alternatively you can also execute ``$ python -m obspy.imaging.scripts.plot``.
+
+.. currentmodule:: obspy.imaging.scripts.plot
+.. automodule:: obspy.imaging.scripts.plot

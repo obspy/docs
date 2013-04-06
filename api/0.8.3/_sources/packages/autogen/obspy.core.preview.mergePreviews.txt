@@ -1,0 +1,6 @@
+obspy.core.preview.mergePreviews
+================================
+
+.. currentmodule:: obspy.core.preview
+
+.. autofunction:: mergePreviews

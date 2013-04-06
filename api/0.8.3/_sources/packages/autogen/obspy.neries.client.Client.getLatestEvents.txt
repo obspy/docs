@@ -1,0 +1,6 @@
+obspy.neries.client.Client.getLatestEvents
+==========================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.getLatestEvents

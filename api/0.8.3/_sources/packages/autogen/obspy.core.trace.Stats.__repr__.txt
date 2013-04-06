@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.__repr__
+===============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.__repr__

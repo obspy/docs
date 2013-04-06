@@ -1,0 +1,36 @@
+obspy.signal.util
+=================
+
+.. currentmodule:: obspy.signal.util
+.. automodule:: obspy.signal.util
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      az2baz2az
+      enframe
+      nearestPow2
+      nextpow2
+      prevpow2
+      rdct
+      smooth
+      utlGeoKm
+      utlLonLat
+   
+   
+
+   
+   
+   
+
+   
+   
+   

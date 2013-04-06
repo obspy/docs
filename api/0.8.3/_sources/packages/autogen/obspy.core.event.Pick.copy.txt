@@ -1,0 +1,6 @@
+obspy.core.event.Pick.copy
+==========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.copy

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.getId
+====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.getId

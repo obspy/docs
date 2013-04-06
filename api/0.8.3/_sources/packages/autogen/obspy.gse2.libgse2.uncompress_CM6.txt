@@ -1,0 +1,6 @@
+obspy.gse2.libgse2.uncompress_CM6
+=================================
+
+.. currentmodule:: obspy.gse2.libgse2
+
+.. autofunction:: uncompress_CM6

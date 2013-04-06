@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.detrend
+==============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.detrend

@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.__delattr__
+=============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.__delattr__

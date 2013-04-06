@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.__ge__
+=====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.__ge__

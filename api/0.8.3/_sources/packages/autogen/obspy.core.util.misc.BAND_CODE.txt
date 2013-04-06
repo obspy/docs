@@ -1,0 +1,6 @@
+obspy.core.util.misc.BAND_CODE
+==============================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autodata:: BAND_CODE

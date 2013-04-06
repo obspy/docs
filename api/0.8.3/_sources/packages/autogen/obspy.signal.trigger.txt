@@ -1,0 +1,39 @@
+obspy.signal.trigger
+====================
+
+.. currentmodule:: obspy.signal.trigger
+.. automodule:: obspy.signal.trigger
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      arPick
+      carlSTATrig
+      classicSTALTA
+      classicSTALTAPy
+      coincidenceTrigger
+      delayedSTALTA
+      pkBaer
+      plotTrigger
+      recSTALTA
+      recSTALTAPy
+      triggerOnset
+      zDetect
+   
+   
+
+   
+   
+   
+
+   
+   
+   

@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.PrintSValue
+=================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.PrintSValue

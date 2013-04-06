@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>24. Array Response Function &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="25. Continuous Wavelet Transform" href="continuous_wavelet_transform.html" />
+    <link rel="prev" title="23. Visualizing Probabilistic Power Spectral Densities" href="probabilistic_power_spectral_density.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="continuous_wavelet_transform.html" title="25. Continuous Wavelet Transform"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="probabilistic_power_spectral_density.html" title="23. Visualizing Probabilistic Power Spectral Densities"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="array-response-function">
+<h1>24. Array Response Function<a class="headerlink" href="#array-response-function" title="Permalink to this headline">¶</a></h1>
+<p>The following code block shows how to plot the array transfer function for
+beam forming as a function of wavenumber using the ObsPy function
+<a class="reference internal" href="../../packages/autogen/obspy.signal.array_analysis.array_transff_wavenumber.html#obspy.signal.array_analysis.array_transff_wavenumber" title="obspy.signal.array_analysis.array_transff_wavenumber"><tt class="xref py py-func docutils literal"><span class="pre">obspy.signal.array_analysis.array_transff_wavenumber()</span></tt></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.array_analysis</span> <span class="kn">import</span> <span class="n">array_transff_wavenumber</span>
+
+<span class="c"># generate array coordinates</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">60.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">200.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">120.</span><span class="p">,</span> <span class="mf">170.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                   <span class="p">[</span><span class="o">-</span><span class="mf">100.</span><span class="p">,</span> <span class="o">-</span><span class="mf">150.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">30.</span><span class="p">,</span> <span class="o">-</span><span class="mf">220.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+
+<span class="c"># coordinates in km</span>
+<span class="n">coords</span> <span class="o">/=</span> <span class="mf">1000.</span>
+
+<span class="c"># set limits for wavenumber differences to analyze</span>
+<span class="n">klim</span> <span class="o">=</span> <span class="mf">40.</span>
+<span class="n">kxmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">klim</span>
+<span class="n">kxmax</span> <span class="o">=</span> <span class="n">klim</span>
+<span class="n">kymin</span> <span class="o">=</span> <span class="o">-</span><span class="n">klim</span>
+<span class="n">kymax</span> <span class="o">=</span> <span class="n">klim</span>
+<span class="n">kstep</span> <span class="o">=</span> <span class="n">klim</span> <span class="o">/</span> <span class="mf">100.</span>
+
+<span class="c"># compute transfer function as a function of wavenumber difference</span>
+<span class="n">transff</span> <span class="o">=</span> <span class="n">array_transff_wavenumber</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">klim</span><span class="p">,</span> <span class="n">kstep</span><span class="p">,</span> <span class="n">coordsys</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">)</span>
+
+<span class="c"># plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">kxmin</span><span class="p">,</span> <span class="n">kxmax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">kstep</span><span class="p">)</span> <span class="o">-</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
+           <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">kymin</span><span class="p">,</span> <span class="n">kymax</span> <span class="o">+</span> <span class="n">kstep</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">kstep</span><span class="p">)</span> <span class="o">-</span> <span class="n">kstep</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
+           <span class="n">transff</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">clim</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">kxmin</span><span class="p">,</span> <span class="n">kxmax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">kymin</span><span class="p">,</span> <span class="n">kymax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/array_response_function.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/array_response_function.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/array_response_function.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/array_response_function.png" src="../../_images/array_response_function.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/array_response_function.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="continuous_wavelet_transform.html" title="25. Continuous Wavelet Transform"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="probabilistic_power_spectral_density.html" title="23. Visualizing Probabilistic Power Spectral Densities"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

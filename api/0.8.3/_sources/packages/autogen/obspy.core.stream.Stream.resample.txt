@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.resample
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.resample

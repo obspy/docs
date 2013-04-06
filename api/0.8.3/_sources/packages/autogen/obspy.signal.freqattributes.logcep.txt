@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.logcep
+==================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: logcep

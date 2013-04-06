@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.array_analysis.array_rotation_strain &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.array_analysis" href="obspy.signal.array_analysis.html" />
+    <link rel="next" title="obspy.signal.array_analysis.array_transff_freqslowness" href="obspy.signal.array_analysis.array_transff_freqslowness.html" />
+    <link rel="prev" title="obspy.signal.array_analysis.array_processing" href="obspy.signal.array_analysis.array_processing.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_transff_freqslowness.html" title="obspy.signal.array_analysis.array_transff_freqslowness"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_processing.html" title="obspy.signal.array_analysis.array_processing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.array_analysis.html" accesskey="U">obspy.signal.array_analysis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-array-analysis-array-rotation-strain">
+<h1>obspy.signal.array_analysis.array_rotation_strain<a class="headerlink" href="#obspy-signal-array-analysis-array-rotation-strain" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.array_analysis.array_rotation_strain">
+<tt class="descname">array_rotation_strain</tt><big>(</big><em>subarray</em>, <em>ts1</em>, <em>ts2</em>, <em>ts3</em>, <em>vp</em>, <em>vs</em>, <em>array_coords</em>, <em>sigmau</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/array_analysis.html#array_rotation_strain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.array_analysis.array_rotation_strain" title="Permalink to this definition">¶</a></dt>
+<dd><p>This routine calculates the best-fitting rigid body rotation and
+uniform strain as functions of time, and their formal errors, given
+three-component ground motion time series recorded on a seismic array.
+The theory implemented herein is presented in the papers <a class="reference internal" href="../../citations.html#spudich1995">[Spudich1995]</a>,
+(abbreviated S95 herein) <a class="reference internal" href="../../citations.html#spudich2008">[Spudich2008]</a> (SF08) and <a class="reference internal" href="../../citations.html#spudich2009">[Spudich2009]</a> (SF09).</p>
+<p>This is a translation of the Matlab Code presented in (SF09) with
+small changes in details only. Output has been checked to be the same
+as the original Matlab Code.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">ts_ below means &#8220;time series&#8221;</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vp</strong> (<em>Float</em>) <span class="dash" /> P wave speed in the soil under the array (km/s)</li>
+<li><strong>vs</strong> (<em>Float</em>) <span class="dash" /> S wave speed in the soil under the array Note - vp and vs may be
+any unit (e.g. miles/week), and this unit need not be related to the
+units of the station coordinates or ground motions, but the units of vp
+and vs must be the SAME because only their ratio is used.</li>
+<li><strong>array_coords</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><em>numpy.ndarray</em></a>) <span class="dash" /> array of dimension Na x 3, where Na is the number of
+stations in the array.  array_coords[i,j], i in arange(Na), j in
+arange(3) is j coordinate of station i.  units of array_coords may be
+anything, but see the &#8220;Discussion of input and output units&#8221; above.
+The origin of coordinates is arbitrary and does not affect the
+calculated strains and rotations.  Stations may be entered in any
+order.</li>
+<li><strong>ts1</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><em>numpy.ndarray</em></a>) <span class="dash" /> array of x1-component seismograms, dimension nt x Na.
+ts1[j,k], j in arange(nt), k in arange(Na) contains the kth time sample
+of the x1 component ground motion at station k. NOTE that the
+seismogram in column k must correspond to the station whos coordinates
+are in row k of in.array_coords. nt is the number of time samples in
+the seismograms.  Seismograms may be displacement, velocity,
+acceleration, jerk, etc.  See the &#8220;Discussion of input and output
+units&#8221; below.</li>
+<li><strong>ts2</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><em>numpy.ndarray</em></a>) <span class="dash" /> same as ts1, but for the x2 component of motion.</li>
+<li><strong>ts3</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><em>numpy.ndarray</em></a>) <span class="dash" /> same as ts1, but for the x3 (UP or DOWN) component of motion.</li>
+<li><strong>sigmau</strong> (<em>Float or numpy.ndarray</em>) <span class="dash" /> <p>standard deviation (NOT VARIANCE) of ground noise,
+corresponds to sigma-sub-u in S95 lines above eqn (A5).
+NOTE: This may be entered as a scalar, vector, or matrix!</p>
+<ul>
+<li>If sigmau is a scalar, it will be used for all components of all
+stations.</li>
+<li>If sigmau is a 1D array of length Na, sigmau[i] will be the noise
+assigned to all components of the station corresponding to
+array_coords[i,:]</li>
+<li>If sigmau is a 2D array of dimension  Na x 3, then sigmau[i,j] is
+used as the noise of station i, component j.</li>
+</ul>
+<p>In all cases, this routine assumes that the noise covariance between
+different stations and/or components is zero.</p>
+</li>
+<li><strong>subarray</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><em>numpy.ndarray</em></a>) <span class="dash" /> NumPy array of subarray stations to use. I.e. if subarray
+= array([1, 4, 10]), then only rows 1, 4, and 10 of array_coords will
+be used, and only ground motion time series in the first, fourth, and
+tenth columns of ts1 will be used. Nplus1 is the number of elements in
+the subarray vector, and N is set to Nplus1 - 1. To use all stations in
+the array, set in.subarray = arange(Na), where Na is the total number
+of stations in the array (equal to the number of rows of
+in.array_coords. Sequence of stations in the subarray vector is
+unimportant; i.e.  subarray = array([1, 4, 10]) will yield essentially
+the same rotations and strains as subarray = array([10, 4, 1]).
+&#8220;Essentially&#8221; because permuting subarray sequence changes the d vector,
+yielding a slightly different numerical result.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dictionary with fields:
+| <strong>A:</strong> (array, dimension 3N x 6) - data mapping matrix &#8216;A&#8217; of
+|     S95(A4)
+| <strong>g:</strong> (array, dimension 6 x 3N) - generalized inverse matrix
+|     relating ptilde and data vector, in S95(A5)
+| <strong>Ce:</strong> (4 x 4) covariance matrix of the 4 independent strain
+|     tensor elements e11, e21, e22, e33
+| <strong>ts_d:</strong> (array, length nt) - dilatation
+|     (trace of the 3x3 strain tensor) as a function of time
+| <strong>sigmad:</strong> scalar, standard deviation of dilatation
+| <strong>ts_dh:</strong> (array, length nt) - horizontal dilatation (also
+|     known as areal strain) (eEE+eNN) as a function of time
+| <strong>sigmadh:</strong> scalar, standard deviation of horizontal dilatation
+|     (areal strain)
+| <strong>ts_e:</strong> (array, dimension nt x 3 x 3) - strain tensor
+| <strong>ts_s:</strong> (array, length nt) -  maximum strain
+|     ( .5*(max eigval of e - min eigval of e) as a
+|     function of time, where e is the 3x3 strain tensor
+| <strong>Cgamma:</strong> (4 x 4) covariance matrix of the 4 independent shear
+|     strain tensor elements g11, g12, g22, g33 (includes full
+|     covariance effects). gamma is traceless part of e.
+| <strong>ts_sh:</strong> (array, length nt) - maximum horizontal strain
+|     ( .5*(max eigval of eh - min eigval of eh)
+|     as a function of time, where eh is e(1:2,1:2)
+| <strong>Cgammah:</strong> (3 x 3) covariance matrix of the 3 independent
+|     horizontal shear strain tensor elements gamma11, gamma12,
+|     gamma22 gamma is traceless part of e.
+| <strong>ts_wmag:</strong> (array, length nt) -  total rotation
+|     angle (radians) as a function of time.  I.e. if the
+|     rotation vector at the j&#8217;th time step is
+|     w = array([w1, w2, w3]), then ts_wmag[j] = sqrt(sum(w**2))
+|     positive for right-handed rotation
+| <strong>Cw:</strong> (3 x 3) covariance matrix of the 3 independent
+|     rotation tensor elements w21, w31, w32
+| <strong>ts_w1:</strong> (array, length nt) - rotation
+|     (rad) about the x1 axis, positive for right-handed rotation
+| <strong>sigmaw1:</strong> scalar, standard deviation of the ts_w1
+|     (sigma-omega-1 in SF08)
+| <strong>ts_w2:</strong> (array, length nt) - rotation
+|     (rad) about the x2 axis, positive for right-handed rotation
+| <strong>sigmaw2:</strong> scalar, standard deviation of ts_w2
+|     (sigma-omega-2 in SF08)
+| <strong>ts_w3:</strong> (array, length nt) - &#8220;torsion&#8221;, rotation
+|     (rad) about a vertical up or down axis, i.e. x3, positive
+|     for right-handed rotation
+| <strong>sigmaw3:</strong> scalar, standard deviation of the torsion
+|     (sigma-omega-3 in SF08)
+| <strong>ts_tilt:</strong> (array, length nt) - tilt (rad)
+|     (rotation about a horizontal axis, positive for right
+|     handed rotation)
+|     as a function of time.  tilt = sqrt( w1^2 + w2^2)
+| <strong>sigmat:</strong> scalar, standard deviation of the tilt
+|     (not defined in SF08, From Papoulis (1965, p. 195,
+|     example 7.8))
+| <strong>ts_data:</strong> (array, shape (nt x 3N)). time series of
+|     the observed displacement
+|     differences, which are the di in S95 eqn A1.
+| <strong>ts_pred:</strong> (array, shape (nt x 3N)) time series of
+|     the fitted model&#8217;s predicted displacement difference
+|     Note that the fitted model displacement
+|     differences correspond to linalg.dot(A, ptilde), where A
+|     is the big matrix in S95 eqn A4 and ptilde is S95 eqn A5.
+| <strong>ts_misfit:</strong> (array, shape (nt x 3N)) time series of the
+|     residuals (fitted model displacement differences minus
+|     observed displacement differences). Note that the fitted
+|     model displacement differences correspond to
+|     linalg.dot(A, ptilde), where A is the big
+|     matrix in S95 eqn A4 and ptilde is S95 eqn A5.
+| <strong>ts_M:</strong> (array, length nt) Time series of M, misfit
+|     ratio of S95, p. 688.
+| <strong>ts_ptilde:</strong> (array, shape (nt x 6)) - solution
+|     vector p-tilde (from S95 eqn A5) as a function of time
+| <strong>Cp:</strong> 6x6 solution covariance matrix defined in SF08.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Warnings</p>
+<p>This routine does not check to verify that your array is small
+enough to conform to the assumption that the array aperture is less
+than 1/4 of the shortest seismic wavelength in the data. See SF08
+for a discussion of this assumption.</p>
+<p>This code assumes that ts1[j,:], ts2[j,:], and ts3[j,:] are all sampled
+SIMULTANEOUSLY.</p>
+<p class="rubric">Notes</p>
+<ol class="arabic">
+<li><p class="first">Note On Specifying Input Array And Selecting Subarrays</p>
+<p>This routine allows the user to input the coordinates and ground
+motion time series of all stations in a seismic array having Na
+stations and the user may select for analysis a subarray of Nplus1
+&lt;= Na stations.</p>
+</li>
+<li><p class="first">Discussion Of Physical Units Of Input And Output</p>
+<p>If the input seismograms are in units of displacement, the output
+strains and rotations will be in units of strain (unitless) and
+angle (radians).  If the input seismograms are in units of
+velocity, the output will be strain rate (units = 1/s) and rotation
+rate (rad/s).  Higher temporal derivative inputs yield higher
+temporal derivative outputs.</p>
+<p>Input units of the array station coordinates must match the spatial
+units of the seismograms.  For example, if the input seismograms
+are in units of m/s^2, array coordinates must be entered in m.</p>
+</li>
+<li><p class="first">Note On Coordinate System</p>
+<p>This routine assumes x1-x2-x3 is a RIGHT handed orthogonal
+coordinate system. x3 must point either UP or DOWN.</p>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.array_analysis.array_rotation_strain.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_transff_freqslowness.html" title="obspy.signal.array_analysis.array_transff_freqslowness"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.array_analysis.array_processing.html" title="obspy.signal.array_analysis.array_processing"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.array_analysis.html" >obspy.signal.array_analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

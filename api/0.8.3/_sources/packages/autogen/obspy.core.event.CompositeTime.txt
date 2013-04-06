@@ -1,0 +1,195 @@
+obspy.core.event.CompositeTime
+==============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: CompositeTime
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~CompositeTime.__abstractmethods__
+     ~CompositeTime.__dict__
+     ~CompositeTime.__doc__
+     ~CompositeTime.__hash__
+     ~CompositeTime.__module__
+     ~CompositeTime.__weakref__
+     ~CompositeTime.defaults
+     ~CompositeTime.item
+     ~CompositeTime.key
+     ~CompositeTime.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CompositeTime.clear
+     ~CompositeTime.copy
+     ~CompositeTime.get
+     ~CompositeTime.items
+     ~CompositeTime.iteritems
+     ~CompositeTime.iterkeys
+     ~CompositeTime.itervalues
+     ~CompositeTime.keys
+     ~CompositeTime.pop
+     ~CompositeTime.popitem
+     ~CompositeTime.setdefault
+     ~CompositeTime.update
+     ~CompositeTime.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CompositeTime._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~CompositeTime.__contains__
+     ~CompositeTime.__deepcopy__
+     ~CompositeTime.__delattr__
+     ~CompositeTime.__delitem__
+     ~CompositeTime.__eq__
+     ~CompositeTime.__getattr__
+     ~CompositeTime.__getitem__
+     ~CompositeTime.__getstate__
+     ~CompositeTime.__init__
+     ~CompositeTime.__iter__
+     ~CompositeTime.__len__
+     ~CompositeTime.__ne__
+     ~CompositeTime.__nonzero__
+     ~CompositeTime.__repr__
+     ~CompositeTime.__setattr__
+     ~CompositeTime.__setitem__
+     ~CompositeTime.__setstate__
+     ~CompositeTime.__str__
+     ~CompositeTime.__subclasshook__
+  
+
+  
+  

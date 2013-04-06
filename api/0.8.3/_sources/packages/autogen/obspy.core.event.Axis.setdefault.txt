@@ -1,0 +1,6 @@
+obspy.core.event.Axis.setdefault
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.setdefault

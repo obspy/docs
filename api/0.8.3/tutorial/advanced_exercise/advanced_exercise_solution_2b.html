@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Exercise Solution 2b &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="Advanced Exercise" href="advanced_exercise.html" />
+    <link rel="next" title="Advanced Exercise Solution 3a" href="advanced_exercise_solution_3a.html" />
+    <link rel="prev" title="Advanced Exercise Solution 2a" href="advanced_exercise_solution_2a.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_3a.html" title="Advanced Exercise Solution 3a"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_2a.html" title="Advanced Exercise Solution 2a"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li>
+          <li><a href="advanced_exercise.html" accesskey="U">Advanced Exercise</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-exercise-solution-2b">
+<h1>Advanced Exercise Solution 2b<a class="headerlink" href="#advanced-exercise-solution-2b" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.geodetics</span> <span class="kn">import</span> <span class="n">gps2DistAzimuth</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log10</span>
+
+<span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;../data/LKBD_WA_CUT.MSEED&quot;</span><span class="p">)</span>
+
+<span class="n">tr_n</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;N&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ampl_n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">tr_n</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="n">tr_e</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;E&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ampl_e</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">tr_e</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="n">ampl</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ampl_n</span><span class="p">,</span> <span class="n">ampl_e</span><span class="p">)</span>
+
+<span class="n">sta_lat</span> <span class="o">=</span> <span class="mf">46.38703</span>
+<span class="n">sta_lon</span> <span class="o">=</span> <span class="mf">7.62714</span>
+<span class="n">event_lat</span> <span class="o">=</span> <span class="mf">46.218</span>
+<span class="n">event_lon</span> <span class="o">=</span> <span class="mf">7.706</span>
+
+<span class="n">epi_dist</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">baz</span> <span class="o">=</span> <span class="n">gps2DistAzimuth</span><span class="p">(</span><span class="n">event_lat</span><span class="p">,</span> <span class="n">event_lon</span><span class="p">,</span> <span class="n">sta_lat</span><span class="p">,</span> <span class="n">sta_lon</span><span class="p">)</span>
+<span class="n">epi_dist</span> <span class="o">=</span> <span class="n">epi_dist</span> <span class="o">/</span> <span class="mi">1000</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mf">0.018</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">2.17</span>
+<span class="n">ml</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">ampl</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">epi_dist</span> <span class="o">+</span> <span class="n">b</span>
+<span class="k">print</span> <span class="n">ml</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/advanced_exercise/advanced_exercise_solution_2b.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_3a.html" title="Advanced Exercise Solution 3a"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="advanced_exercise_solution_2a.html" title="Advanced Exercise Solution 2a"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li>
+          <li><a href="advanced_exercise.html" >Advanced Exercise</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

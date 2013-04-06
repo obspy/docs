@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitudeContribution.pop
+=================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitudeContribution.pop

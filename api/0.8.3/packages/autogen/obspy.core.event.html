@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core - Core classes of ObsPy" href="../obspy.core.html" />
+    <link rel="next" title="obspy.core.event.readEvents" href="obspy.core.event.readEvents.html" />
+    <link rel="prev" title="obspy.core.utcdatetime.UTCDateTime.__unicode__" href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.readEvents.html" title="obspy.core.event.readEvents"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" title="obspy.core.utcdatetime.UTCDateTime.__unicode__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" accesskey="U">obspy.core - Core classes of ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.core.event">
+<span id="obspy-core-event"></span><h1>obspy.core.event<a class="headerlink" href="#module-obspy.core.event" title="Permalink to this headline">¶</a></h1>
+<p>Module for handling ObsPy Catalog and Event objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.readEvents.html#obspy.core.event.readEvents" title="obspy.core.event.readEvents"><tt class="xref py py-obj docutils literal"><span class="pre">readEvents</span></tt></a></td>
+<td>Read event files into an ObsPy Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.validate.html#obspy.core.event.validate" title="obspy.core.event.validate"><tt class="xref py py-obj docutils literal"><span class="pre">validate</span></tt></a></td>
+<td>Validates a QuakeML file against the QuakeML 1.2 RC4 XML Schema. Returns</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Amplitude.html#obspy.core.event.Amplitude" title="obspy.core.event.Amplitude"><tt class="xref py py-obj docutils literal"><span class="pre">Amplitude</span></tt></a></td>
+<td>This class represents a single amplitude measurement or a measurement of the visible end of a record for duration magnitudes.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Arrival.html#obspy.core.event.Arrival" title="obspy.core.event.Arrival"><tt class="xref py py-obj docutils literal"><span class="pre">Arrival</span></tt></a></td>
+<td>Successful association of a pick with an origin qualifies this pick as an arrival.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Axis.html#obspy.core.event.Axis" title="obspy.core.event.Axis"><tt class="xref py py-obj docutils literal"><span class="pre">Axis</span></tt></a></td>
+<td>This class describes an eigenvector of a moment tensor expressed in its principal-axes system.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.html#obspy.core.event.Catalog" title="obspy.core.event.Catalog"><tt class="xref py py-obj docutils literal"><span class="pre">Catalog</span></tt></a></td>
+<td>This class serves as a container for Event objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Comment.html#obspy.core.event.Comment" title="obspy.core.event.Comment"><tt class="xref py py-obj docutils literal"><span class="pre">Comment</span></tt></a></td>
+<td>Comment holds information on comments to a resource as well as author and creation time information.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.CompositeTime.html#obspy.core.event.CompositeTime" title="obspy.core.event.CompositeTime"><tt class="xref py py-obj docutils literal"><span class="pre">CompositeTime</span></tt></a></td>
+<td>Focal times differ significantly in their precision.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ConfidenceEllipsoid.html#obspy.core.event.ConfidenceEllipsoid" title="obspy.core.event.ConfidenceEllipsoid"><tt class="xref py py-obj docutils literal"><span class="pre">ConfidenceEllipsoid</span></tt></a></td>
+<td>This class represents a description of the location uncertainty as a confidence ellipsoid with arbitrary orientation in space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.CreationInfo.html#obspy.core.event.CreationInfo" title="obspy.core.event.CreationInfo"><tt class="xref py py-obj docutils literal"><span class="pre">CreationInfo</span></tt></a></td>
+<td>CreationInfo is used to describe author, version, and creation time of a</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.DataUsed.html#obspy.core.event.DataUsed" title="obspy.core.event.DataUsed"><tt class="xref py py-obj docutils literal"><span class="pre">DataUsed</span></tt></a></td>
+<td>This class describes the type of data that has been used for a moment-tensor inversion.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Event.html#obspy.core.event.Event" title="obspy.core.event.Event"><tt class="xref py py-obj docutils literal"><span class="pre">Event</span></tt></a></td>
+<td>The class Event describes a seismic event which does not necessarily need</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.EventDescription.html#obspy.core.event.EventDescription" title="obspy.core.event.EventDescription"><tt class="xref py py-obj docutils literal"><span class="pre">EventDescription</span></tt></a></td>
+<td>Free-form string with additional event description.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.FocalMechanism.html#obspy.core.event.FocalMechanism" title="obspy.core.event.FocalMechanism"><tt class="xref py py-obj docutils literal"><span class="pre">FocalMechanism</span></tt></a></td>
+<td>This class describes the focal mechanism of an Event.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Magnitude.html#obspy.core.event.Magnitude" title="obspy.core.event.Magnitude"><tt class="xref py py-obj docutils literal"><span class="pre">Magnitude</span></tt></a></td>
+<td>Describes a magnitude which can, but need not be associated with an Origin.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.MomentTensor.html#obspy.core.event.MomentTensor" title="obspy.core.event.MomentTensor"><tt class="xref py py-obj docutils literal"><span class="pre">MomentTensor</span></tt></a></td>
+<td>This class represents a moment tensor solution for an Event. It is part of</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.NodalPlane.html#obspy.core.event.NodalPlane" title="obspy.core.event.NodalPlane"><tt class="xref py py-obj docutils literal"><span class="pre">NodalPlane</span></tt></a></td>
+<td>This class describes a nodal plane using the attributes strike, dip, and rake.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.NodalPlanes.html#obspy.core.event.NodalPlanes" title="obspy.core.event.NodalPlanes"><tt class="xref py py-obj docutils literal"><span class="pre">NodalPlanes</span></tt></a></td>
+<td>This class describes the nodal planes of a double-couple moment-tensor solution.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Origin.html#obspy.core.event.Origin" title="obspy.core.event.Origin"><tt class="xref py py-obj docutils literal"><span class="pre">Origin</span></tt></a></td>
+<td>This class represents the focal time and geographical location of an earthquake hypocenter, as well as additional meta-information.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.OriginQuality.html#obspy.core.event.OriginQuality" title="obspy.core.event.OriginQuality"><tt class="xref py py-obj docutils literal"><span class="pre">OriginQuality</span></tt></a></td>
+<td>This type contains various attributes commonly used to describe the quality of an origin, e.g., errors, azimuthal coverage, etc.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.OriginUncertainty.html#obspy.core.event.OriginUncertainty" title="obspy.core.event.OriginUncertainty"><tt class="xref py py-obj docutils literal"><span class="pre">OriginUncertainty</span></tt></a></td>
+<td>This class describes the location uncertainties of an origin.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Pick.html#obspy.core.event.Pick" title="obspy.core.event.Pick"><tt class="xref py py-obj docutils literal"><span class="pre">Pick</span></tt></a></td>
+<td>This class contains various attributes commonly used to describe a single pick, e.g.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.PrincipalAxes.html#obspy.core.event.PrincipalAxes" title="obspy.core.event.PrincipalAxes"><tt class="xref py py-obj docutils literal"><span class="pre">PrincipalAxes</span></tt></a></td>
+<td>This class describes the principal axes of a double-couple moment tensor solution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.QuantityError.html#obspy.core.event.QuantityError" title="obspy.core.event.QuantityError"><tt class="xref py py-obj docutils literal"><span class="pre">QuantityError</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-obj docutils literal"><span class="pre">ResourceIdentifier</span></tt></a></td>
+<td>Unique identifier of any resource so it can be referred to.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.SourceTimeFunction.html#obspy.core.event.SourceTimeFunction" title="obspy.core.event.SourceTimeFunction"><tt class="xref py py-obj docutils literal"><span class="pre">SourceTimeFunction</span></tt></a></td>
+<td>Source time function used in moment-tensor inversion.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.StationMagnitude.html#obspy.core.event.StationMagnitude" title="obspy.core.event.StationMagnitude"><tt class="xref py py-obj docutils literal"><span class="pre">StationMagnitude</span></tt></a></td>
+<td>This class describes the magnitude derived from a single waveform stream.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.StationMagnitudeContribution.html#obspy.core.event.StationMagnitudeContribution" title="obspy.core.event.StationMagnitudeContribution"><tt class="xref py py-obj docutils literal"><span class="pre">StationMagnitudeContribution</span></tt></a></td>
+<td>This class describes the weighting of magnitude values from Magnitude</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.html#obspy.core.event.Tensor" title="obspy.core.event.Tensor"><tt class="xref py py-obj docutils literal"><span class="pre">Tensor</span></tt></a></td>
+<td>The Tensor class represents the six moment-tensor elements m_rr, m_tt,</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.TimeWindow.html#obspy.core.event.TimeWindow" title="obspy.core.event.TimeWindow"><tt class="xref py py-obj docutils literal"><span class="pre">TimeWindow</span></tt></a></td>
+<td>Describes a time window for amplitude measurements.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.html#obspy.core.event.WaveformStreamID" title="obspy.core.event.WaveformStreamID"><tt class="xref py py-obj docutils literal"><span class="pre">WaveformStreamID</span></tt></a></td>
+<td>Pointer to a stream description in an inventory.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.readEvents.html" title="obspy.core.event.readEvents"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" title="obspy.core.utcdatetime.UTCDateTime.__unicode__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.mseed.core.MSTG.__del__
+=============================
+
+.. currentmodule:: obspy.mseed.core
+
+.. automethod:: MSTG.__del__

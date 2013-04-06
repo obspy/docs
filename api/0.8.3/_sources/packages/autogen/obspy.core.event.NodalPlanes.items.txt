@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlanes.items
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlanes.items

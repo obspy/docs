@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.getMetadata
+=======================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.getMetadata

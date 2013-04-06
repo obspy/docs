@@ -1,0 +1,6 @@
+obspy.segy.segy.SUFile._readTraces
+==================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SUFile._readTraces

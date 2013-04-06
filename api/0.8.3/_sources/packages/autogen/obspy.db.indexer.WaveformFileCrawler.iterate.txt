@@ -1,0 +1,6 @@
+obspy.db.indexer.WaveformFileCrawler.iterate
+============================================
+
+.. currentmodule:: obspy.db.indexer
+
+.. automethod:: WaveformFileCrawler.iterate

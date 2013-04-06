@@ -1,0 +1,97 @@
+obspy.xseed.fields.Float
+========================
+
+.. currentmodule:: obspy.xseed.fields
+.. autoclass:: Float
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Float.__dict__
+     ~Float.__doc__
+     ~Float.__module__
+     ~Float.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Float.convert
+     ~Float.getSEED
+     ~Float.getXML
+     ~Float.parseSEED
+     ~Float.parseXML
+     ~Float.read
+     ~Float.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Float._formatString
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Float.__init__
+     ~Float.__str__
+  
+
+  
+  

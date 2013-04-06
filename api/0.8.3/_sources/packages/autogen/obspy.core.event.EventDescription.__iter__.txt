@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.__iter__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.__iter__

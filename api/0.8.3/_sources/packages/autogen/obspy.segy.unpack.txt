@@ -1,0 +1,42 @@
+obspy.segy.unpack
+=================
+
+.. currentmodule:: obspy.segy.unpack
+.. automodule:: obspy.segy.unpack
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      unpack_1byte_Integer
+      unpack_2byte_Integer
+      unpack_4byte_Fixed_point
+      unpack_4byte_IBM
+      unpack_4byte_IEEE
+      unpack_4byte_Integer
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      OnTheFlyDataUnpacker
+   
+   
+
+   
+   
+   

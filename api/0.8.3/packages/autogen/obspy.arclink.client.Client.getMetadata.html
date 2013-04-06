@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.arclink.client.Client.getMetadata &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.arclink.client.Client" href="obspy.arclink.client.Client.html" />
+    <link rel="next" title="obspy.arclink.client.Client.getNetworks" href="obspy.arclink.client.Client.getNetworks.html" />
+    <link rel="prev" title="obspy.arclink.client.Client.getInventory" href="obspy.arclink.client.Client.getInventory.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getNetworks.html" title="obspy.arclink.client.Client.getNetworks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getInventory.html" title="obspy.arclink.client.Client.getInventory"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" >obspy.arclink.client</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.Client.html" accesskey="U">obspy.arclink.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-arclink-client-client-getmetadata">
+<h1>obspy.arclink.client.Client.getMetadata<a class="headerlink" href="#obspy-arclink-client-client-getmetadata" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.arclink.client.Client.getMetadata">
+<tt class="descclassname">Client.</tt><tt class="descname">getMetadata</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/arclink/client.html#Client.getMetadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.arclink.client.Client.getMetadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns poles, zeros, normalization factor and sensitivity and station
+coordinates for a single channel at a given time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'BW'</span></tt>.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'MANZ'</span></tt>.</li>
+<li><strong>location</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'01'</span></tt>.</li>
+<li><strong>channel</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'EHE'</span></tt>.</li>
+<li><strong>time</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Date and time.</li>
+<li><strong>route</strong> (<em>bool, optional</em>) <span class="dash" /> Enables ArcLink routing (default is <tt class="docutils literal"><span class="pre">True</span></tt>).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dictionary containing keys &#8216;paz&#8217; and &#8216;coordinates&#8217;.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;webdc.eu&quot;</span><span class="p">,</span> <span class="mi">18001</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getMetadata</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;MANZ&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>  
+<span class="go">{&#39;paz&#39;: AttribDict({&#39;poles&#39;: [(-0.037004+0.037016j),</span>
+<span class="go">                              (-0.037004-0.037016j), (-251.33+0j),</span>
+<span class="go">                              (-131.04-467.29j), (-131.04+467.29j)],</span>
+<span class="go">                    &#39;sensitivity&#39;: 2516778600.0, &#39;zeros&#39;: [0j, 0j],</span>
+<span class="go">                    &#39;name&#39;: &#39;LMU:STS-2/N/g=1500&#39;,</span>
+<span class="go">                    &#39;normalization_factor&#39;: 60077000.0}),</span>
+<span class="go">&#39;coordinates&#39;: AttribDict({&#39;latitude&#39;: 49.9862, &#39;elevation&#39;: 635.0,</span>
+<span class="go">                           &#39;longitude&#39;: 12.1083})}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.arclink.client.Client.getMetadata.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getNetworks.html" title="obspy.arclink.client.Client.getNetworks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getInventory.html" title="obspy.arclink.client.Client.getInventory"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" >obspy.arclink.client</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.Client.html" >obspy.arclink.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

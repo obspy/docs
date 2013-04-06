@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.copy
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.copy

@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.__repr__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.__repr__

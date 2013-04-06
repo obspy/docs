@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.PPSD._PPSD__insert_data_times
+==============================================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. automethod:: PPSD._PPSD__insert_data_times

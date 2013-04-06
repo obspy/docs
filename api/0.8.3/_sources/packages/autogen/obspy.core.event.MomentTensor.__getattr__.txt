@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__getattr__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__getattr__

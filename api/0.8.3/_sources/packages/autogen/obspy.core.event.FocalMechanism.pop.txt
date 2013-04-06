@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.pop
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.pop

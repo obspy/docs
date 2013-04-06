@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.gse2.core &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.gse2.core</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">GSE2/GSE1 bindings to ObsPy core module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.gse2</span> <span class="kn">import</span> <span class="n">libgse2</span><span class="p">,</span> <span class="n">libgse1</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="isGSE2"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.core.isGSE2.html#obspy.gse2.core.isGSE2">[docs]</a><span class="k">def</span> <span class="nf">isGSE2</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is GSE2 or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: GSE2 file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a GSE2 file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Open file.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">libgse2</span><span class="o">.</span><span class="n">isGse2</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<span class="n">convert_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="s">&#39;station&#39;</span><span class="p">,</span>
+    <span class="s">&#39;samp_rate&#39;</span><span class="p">:</span> <span class="s">&#39;sampling_rate&#39;</span><span class="p">,</span>
+    <span class="s">&#39;n_samps&#39;</span><span class="p">:</span> <span class="s">&#39;npts&#39;</span><span class="p">,</span>
+    <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="s">&#39;channel&#39;</span><span class="p">,</span>
+    <span class="s">&#39;calib&#39;</span><span class="p">:</span> <span class="s">&#39;calib&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">gse2_extra</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;instype&#39;</span><span class="p">,</span>
+    <span class="s">&#39;datatype&#39;</span><span class="p">,</span>
+    <span class="s">&#39;vang&#39;</span><span class="p">,</span>
+    <span class="s">&#39;hang&#39;</span><span class="p">,</span>
+    <span class="s">&#39;auxid&#39;</span><span class="p">,</span>
+    <span class="s">&#39;calper&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="readGSE2"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.core.readGSE2.html#obspy.gse2.core.readGSE2">[docs]</a><span class="k">def</span> <span class="nf">readGSE2</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a GSE2 file and returns a Stream object.</span>
+
+<span class="sd">    GSE2 files containing multiple WID2 entries/traces are supported.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: GSE2 file to be read.</span>
+<span class="sd">    :type headonly: boolean, optional</span>
+<span class="sd">    :param headonly: If True read only head of GSE2 file.</span>
+<span class="sd">    :type verify_chksum: boolean, optional</span>
+<span class="sd">    :param verify_chksum: If True verify Checksum and raise Exception if</span>
+<span class="sd">        it is not correct.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :returns: Stream object containing header and data.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/loc_RJOB20050831023349.z&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># read GSE2 file</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>  <span class="c"># avoid endless loop</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="n">widi</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">widi</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>  <span class="c"># end of file</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">widi</span> <span class="o">!=</span> <span class="s">&#39;WID2&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c"># valid gse2 part</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">libgse2</span><span class="o">.</span><span class="n">readHead</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">libgse2</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="n">verify_chksum</span><span class="p">)</span>
+            <span class="c"># assign all header entries to a new dictionary compatible with an</span>
+            <span class="c"># ObsPy Trace object.</span>
+            <span class="n">new_header</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">convert_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">new_header</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="c"># assign gse specific header entries</span>
+            <span class="n">new_header</span><span class="p">[</span><span class="s">&#39;gse2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gse2_extra</span><span class="p">:</span>
+                <span class="n">new_header</span><span class="p">[</span><span class="s">&#39;gse2&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c"># Calculate start time.</span>
+            <span class="n">new_header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;d_year&#39;</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;d_mon&#39;</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;d_day&#39;</span><span class="p">],</span>
+                <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_hour&#39;</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_min&#39;</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_sec&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+                <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">new_header</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">new_header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">traces</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="writeGSE2"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.core.writeGSE2.html#obspy.gse2.core.writeGSE2">[docs]</a><span class="k">def</span> <span class="nf">writeGSE2</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write GSE2 file from a Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: Name of file to write.</span>
+<span class="sd">    :type inplace: boolean, optional</span>
+<span class="sd">    :param inplace: If True, do compression not on a copy of the data but</span>
+<span class="sd">        on the data itself - note this will change the data values and make</span>
+<span class="sd">        them therefore unusable!</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&#39;filename.gse&#39;, format=&#39;GSE2&#39;) #doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#</span>
+    <span class="c"># Translate the common (renamed) entries</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_j</span><span class="p">,</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">convert_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">header</span><span class="p">[</span><span class="n">_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">_k</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_j</span> <span class="ow">in</span> <span class="n">gse2_extra</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">[</span><span class="n">_j</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gse2</span><span class="p">[</span><span class="n">_j</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="c"># year, month, day, hour, min, sec</span>
+        <span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s">&#39;d_year&#39;</span><span class="p">],</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;d_mon&#39;</span><span class="p">],</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;d_day&#39;</span><span class="p">],</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_hour&#39;</span><span class="p">],</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_min&#39;</span><span class="p">],</span>
+            <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_sec&#39;</span><span class="p">])</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;t_sec&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">/</span> <span class="mf">1.0e6</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;GSE2 data must be of type </span><span class="si">%s</span><span class="s">, but are of type </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">libgse2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="isGSE1"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.core.isGSE1.html#obspy.gse2.core.isGSE1">[docs]</a><span class="k">def</span> <span class="nf">isGSE1</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is GSE1 or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: GSE1 file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a GSE1 file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Open file.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;WID1&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;XW01&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="readGSE1"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.core.readGSE1.html#obspy.gse2.core.readGSE1">[docs]</a><span class="k">def</span> <span class="nf">readGSE1</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a GSE1 file and returns a Stream object.</span>
+
+<span class="sd">    GSE1 files containing multiple WID1 entries/traces are supported.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :type param: GSE2 file to be read.</span>
+<span class="sd">    :type headonly: boolean, optional</span>
+<span class="sd">    :param headonly: If True read only header of GSE1 file.</span>
+<span class="sd">    :type verify_chksum: boolean, optional</span>
+<span class="sd">    :param verify_chksum: If True verify Checksum and raise Exception if</span>
+<span class="sd">        it is not correct.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :returns: Stream object containing header and data.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/y2000.gse&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># read GSE1 file</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">libgse1</span><span class="o">.</span><span class="n">readHeader</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">libgse1</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="n">verify_chksum</span><span class="p">)</span>
+                <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">traces</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

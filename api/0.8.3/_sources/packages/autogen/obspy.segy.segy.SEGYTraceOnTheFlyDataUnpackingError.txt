@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTraceOnTheFlyDataUnpackingError
+===================================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. autoexception:: SEGYTraceOnTheFlyDataUnpackingError

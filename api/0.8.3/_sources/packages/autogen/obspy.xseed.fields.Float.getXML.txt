@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.getXML
+===============================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.getXML

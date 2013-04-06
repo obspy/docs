@@ -1,0 +1,6 @@
+obspy.arclink.client.ArcLinkException
+=====================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. autoexception:: ArcLinkException

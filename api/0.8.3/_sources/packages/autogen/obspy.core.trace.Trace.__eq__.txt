@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.__eq__
+=============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.__eq__

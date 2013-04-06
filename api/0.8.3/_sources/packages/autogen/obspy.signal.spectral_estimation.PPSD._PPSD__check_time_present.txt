@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.PPSD._PPSD__check_time_present
+===============================================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. automethod:: PPSD._PPSD__check_time_present

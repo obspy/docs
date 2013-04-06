@@ -1,0 +1,6 @@
+obspy.signal.calibration.spectral_helper
+========================================
+
+.. currentmodule:: obspy.signal.calibration
+
+.. autofunction:: spectral_helper

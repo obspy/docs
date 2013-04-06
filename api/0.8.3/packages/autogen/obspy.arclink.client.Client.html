@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.arclink.client.Client &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.arclink.client" href="obspy.arclink.client.html" />
+    <link rel="next" title="obspy.arclink.client.Client.getInventory" href="obspy.arclink.client.Client.getInventory.html" />
+    <link rel="prev" title="obspy.arclink.client.ArcLinkException" href="obspy.arclink.client.ArcLinkException.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getInventory.html" title="obspy.arclink.client.Client.getInventory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.ArcLinkException.html" title="obspy.arclink.client.ArcLinkException"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" accesskey="U">obspy.arclink.client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-arclink-client-client">
+<h1>obspy.arclink.client.Client<a class="headerlink" href="#obspy-arclink-client-client" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.arclink.client.Client">
+<em class="property">class </em><tt class="descname">Client</tt><big>(</big><em>host='webdc.eu'</em>, <em>port=18002</em>, <em>user='ObsPy client'</em>, <em>password=''</em>, <em>institution='Anonymous'</em>, <em>timeout=20</em>, <em>dcid_keys={'TEST': 'XYZ'</em>, <em>'BIA': 'OfH9ekhi'}</em>, <em>dcid_key_file=None</em>, <em>debug=False</em>, <em>command_delay=0</em><big>)</big><a class="reference internal" href="../../_modules/obspy/arclink/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.arclink.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>The ArcLink/WebDC client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<em>str, optional</em>) <span class="dash" /> Host name of the remote ArcLink server (default host is
+<tt class="docutils literal"><span class="pre">'webdc.eu'</span></tt>).</li>
+<li><strong>port</strong> (<em>int, optional</em>) <span class="dash" /> Port of the remote ArcLink server (default port is <tt class="docutils literal"><span class="pre">18002</span></tt>).</li>
+<li><strong>timeout</strong> (<em>int, optional</em>) <span class="dash" /> Seconds before a connection timeout is raised (default is
+<tt class="docutils literal"><span class="pre">20</span></tt> seconds).</li>
+<li><strong>user</strong> (<em>str, optional</em>) <span class="dash" /> The user name is used for identification with the ArcLink
+server. This entry is also used for usage statistics within the data
+centers, so please provide a meaningful user id (default is
+<tt class="docutils literal"><span class="pre">'ObsPy</span> <span class="pre">client'</span></tt>).</li>
+<li><strong>password</strong> (<em>str, optional</em>) <span class="dash" /> A password used for authentication with the ArcLink server
+(default is an empty string).</li>
+<li><strong>institution</strong> (<em>str, optional</em>) <span class="dash" /> A string containing the name of the institution of the
+requesting person (default is an <tt class="docutils literal"><span class="pre">'Anonymous'</span></tt>).</li>
+<li><strong>dcid_keys</strong> (<em>dict, optional</em>) <span class="dash" /> Dictionary of datacenter ids (DCID) and passwords used
+for decoding encrypted waveform requests.</li>
+<li><strong>dcid_key_file</strong> (<em>str, optional</em>) <span class="dash" /> Simple text configuration file containing lines of
+data center ids (DCIDs) and password pairs separated by a equal sign,
+e.g. for DCID <tt class="docutils literal"><span class="pre">BIA</span></tt> and password <tt class="docutils literal"><span class="pre">OfH9ekhi</span></tt> use <tt class="docutils literal"><span class="pre">&quot;BIA=OfH9ekhi&quot;</span></tt>.
+If not set, passwords found in a file called <cite>$HOME/dcidpasswords.txt</cite>
+will be used automatically.</li>
+<li><strong>debug</strong> (<em>bool, optional</em>) <span class="dash" /> Enables verbose output of the connection handling (default is
+<tt class="docutils literal"><span class="pre">False</span></tt>).</li>
+<li><strong>command_delay</strong> (<em>float, optional</em>) <span class="dash" /> Delay between each command send to the ArcLink server
+(default is <tt class="docutils literal"><span class="pre">0</span></tt>).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The following ArcLink servers may be accessed via ObsPy (partly restricted
+access only):</p>
+<ul class="simple">
+<li>WebDC servers: webdc.eu:18001, webdc.eu:18002</li>
+<li>ODC Server:  bhlsa03.knmi.nl:18001</li>
+<li>INGV Server: eida.rm.ingv.it:18001</li>
+<li>IPGP Server: geosrt2.ipgp.fr:18001</li>
+</ul>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">status_delay</span></tt></td>
+<td>float(x) -&gt; floating point number</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.getInventory.html#obspy.arclink.client.Client.getInventory" title="obspy.arclink.client.Client.getInventory"><tt class="xref py py-obj docutils literal"><span class="pre">getInventory</span></tt></a></td>
+<td>Returns information about the available networks and stations in that particular space/time region.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client.getMetadata.html#obspy.arclink.client.Client.getMetadata" title="obspy.arclink.client.Client.getMetadata"><tt class="xref py py-obj docutils literal"><span class="pre">getMetadata</span></tt></a></td>
+<td>Returns poles, zeros, normalization factor and sensitivity and station coordinates for a single channel at a given time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.getNetworks.html#obspy.arclink.client.Client.getNetworks" title="obspy.arclink.client.Client.getNetworks"><tt class="xref py py-obj docutils literal"><span class="pre">getNetworks</span></tt></a></td>
+<td>Returns a dictionary of available networks within the given time span.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client.getPAZ.html#obspy.arclink.client.Client.getPAZ" title="obspy.arclink.client.Client.getPAZ"><tt class="xref py py-obj docutils literal"><span class="pre">getPAZ</span></tt></a></td>
+<td>Returns poles, zeros, normalization factor and sensitivity for a single channel at a given time.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.getQC.html#obspy.arclink.client.Client.getQC" title="obspy.arclink.client.Client.getQC"><tt class="xref py py-obj docutils literal"><span class="pre">getQC</span></tt></a></td>
+<td>Retrieve QC information of ArcLink streams.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client.getRouting.html#obspy.arclink.client.Client.getRouting" title="obspy.arclink.client.Client.getRouting"><tt class="xref py py-obj docutils literal"><span class="pre">getRouting</span></tt></a></td>
+<td>Get primary ArcLink host for given network/stations/time combination.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.getStations.html#obspy.arclink.client.Client.getStations" title="obspy.arclink.client.Client.getStations"><tt class="xref py py-obj docutils literal"><span class="pre">getStations</span></tt></a></td>
+<td>Returns a dictionary of available stations in the given network(s).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client.getWaveform.html#obspy.arclink.client.Client.getWaveform" title="obspy.arclink.client.Client.getWaveform"><tt class="xref py py-obj docutils literal"><span class="pre">getWaveform</span></tt></a></td>
+<td>Retrieves waveform data via ArcLink and returns an ObsPy Stream object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.saveResponse.html#obspy.arclink.client.Client.saveResponse" title="obspy.arclink.client.Client.saveResponse"><tt class="xref py py-obj docutils literal"><span class="pre">saveResponse</span></tt></a></td>
+<td>Writes response information into a file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client.saveWaveform.html#obspy.arclink.client.Client.saveWaveform" title="obspy.arclink.client.Client.saveWaveform"><tt class="xref py py-obj docutils literal"><span class="pre">saveWaveform</span></tt></a></td>
+<td>Writes a retrieved waveform directly into a file.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client._Client__parsePAZ.html#obspy.arclink.client.Client._Client__parsePAZ" title="obspy.arclink.client.Client._Client__parsePAZ"><tt class="xref py py-obj docutils literal"><span class="pre">_Client__parsePAZ</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client._bye.html#obspy.arclink.client.Client._bye" title="obspy.arclink.client.Client._bye"><tt class="xref py py-obj docutils literal"><span class="pre">_bye</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client._fetch.html#obspy.arclink.client.Client._fetch" title="obspy.arclink.client.Client._fetch"><tt class="xref py py-obj docutils literal"><span class="pre">_fetch</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client._findRoute.html#obspy.arclink.client.Client._findRoute" title="obspy.arclink.client.Client._findRoute"><tt class="xref py py-obj docutils literal"><span class="pre">_findRoute</span></tt></a></td>
+<td>Searches routing table for requested stream id and date/times.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client._hello.html#obspy.arclink.client.Client._hello" title="obspy.arclink.client.Client._hello"><tt class="xref py py-obj docutils literal"><span class="pre">_hello</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client._readln.html#obspy.arclink.client.Client._readln" title="obspy.arclink.client.Client._readln"><tt class="xref py py-obj docutils literal"><span class="pre">_readln</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client._reconnect.html#obspy.arclink.client.Client._reconnect" title="obspy.arclink.client.Client._reconnect"><tt class="xref py py-obj docutils literal"><span class="pre">_reconnect</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.arclink.client.Client._request.html#obspy.arclink.client.Client._request" title="obspy.arclink.client.Client._request"><tt class="xref py py-obj docutils literal"><span class="pre">_request</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client._writeln.html#obspy.arclink.client.Client._writeln" title="obspy.arclink.client.Client._writeln"><tt class="xref py py-obj docutils literal"><span class="pre">_writeln</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.arclink.client.Client.__init__.html#obspy.arclink.client.Client.__init__" title="obspy.arclink.client.Client.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Initializes an ArcLink client.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.arclink.client.Client.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.Client.getInventory.html" title="obspy.arclink.client.Client.getInventory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.arclink.client.ArcLinkException.html" title="obspy.arclink.client.ArcLinkException"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.arclink.html" >obspy.arclink - ArcLink/WebDC request client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.arclink.client.html" >obspy.arclink.client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYTraceHeader.__str__
+=======================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYTraceHeader.__str__

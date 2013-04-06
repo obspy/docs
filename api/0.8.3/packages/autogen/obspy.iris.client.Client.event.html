@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.event &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client.flinnengdahl" href="obspy.iris.client.Client.flinnengdahl.html" />
+    <link rel="prev" title="obspy.iris.client.Client.evalresp" href="obspy.iris.client.Client.evalresp.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.flinnengdahl.html" title="obspy.iris.client.Client.flinnengdahl"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.evalresp.html" title="obspy.iris.client.Client.evalresp"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-event">
+<h1>obspy.iris.client.Client.event<a class="headerlink" href="#obspy-iris-client-client-event" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.event">
+<tt class="descclassname">Client.</tt><tt class="descname">event</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low-level interface for <cite>event</cite> Web service of IRIS
+(<a class="reference external" href="http://www.iris.edu/ws/event/">http://www.iris.edu/ws/event/</a>) - release 1.2.1 (2012-02-29).</p>
+<p>This method returns contributed earthquake origin and magnitude
+estimates stored in the IRIS database. Selected information is returned
+in <a class="reference external" href="https://quake.ethz.ch/quakeml/">QuakeML</a> format.</p>
+<p>The IRIS DMC receives earthquake location and magnitude information
+primarily from the
+<a class="reference external" href="http://earthquake.usgs.gov/regional/neic/">USGS NEIC</a> and the
+<a class="reference external" href="http://www.isc.ac.uk/">ISC</a>, other sources include the
+<a class="reference external" href="http://www.globalcmt.org/">Global CMT project</a> and the
+<a class="reference external" href="http://anf.ucsd.edu/">USArray ANF</a>.</p>
+<p><strong>Geographic constraints - bounding rectangle</strong></p>
+<p>The following four parameters work together to specify a boundary
+rectangle. All four parameters are optional, but they may not be mixed
+with the parameters used for searching within a defined radius.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>minlat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the southern boundary. The minimum latitude must
+be between -90 and 90 degrees inclusive (and less than or equal to
+maxlat). If not specified, then this value defaults to <tt class="docutils literal"><span class="pre">-90</span></tt>.</li>
+<li><strong>maxlat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the northern boundary. The maximum latitude must
+be between -90 and 90 degrees inclusive and greater than or equal
+to minlat. If not specified, then this value defaults to <tt class="docutils literal"><span class="pre">90</span></tt>.</li>
+<li><strong>minlon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the western boundary. The minimum longitude must
+be between -180 and 180 degrees inclusive. If not specified, then
+this value defaults to <tt class="docutils literal"><span class="pre">-180</span></tt>. If minlon &gt; maxlon, then the
+boundary will cross the -180/180 meridian</li>
+<li><strong>maxlon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the eastern boundary. The minimum longitude must
+be between -180 and 180 degrees inclusive. If not specified, then
+this value defaults to +180. If maxlon &lt; minlon, then the boundary
+will cross the -180/180 meridian</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Geographic constraints - bounding radius</strong></p>
+<p>The following four parameters work together to specify a boundary using
+a radius around a coordinate. <tt class="docutils literal"><span class="pre">lat</span></tt>, <tt class="docutils literal"><span class="pre">lon</span></tt>, and <tt class="docutils literal"><span class="pre">maxradius</span></tt> are
+all required, and must be used together. These parameters are
+incompatible with the boundary-box parameters described above.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the central latitude point, in degrees. This value
+must be between -90 and 90 degrees. This MUST be used in
+conjunction with the lon and maxradius parameters.</li>
+<li><strong>lon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the central longitude point, in degrees. This MUST
+be used in conjunction with the lat and maxradius parameters.</li>
+<li><strong>maxradius</strong> (<em>float, optional</em>) <span class="dash" /> Specify the maximum radius, in degrees. Only
+earthquakes within maxradius degrees of the lat/lon point will be
+retrieved. This MUST be used in conjunction with the lat and lon
+parameters.</li>
+<li><strong>minradius</strong> (<em>float, optional</em>) <span class="dash" /> This optional parameter allows for the exclusion of
+events that are closer than minradius degrees from the specified
+lat/lon point. This MUST be used in conjunction with the lat, lon,
+and maxradius parameters and is subject to the same restrictions.
+If this parameter isn&#8217;t specified, then it defaults to <tt class="docutils literal"><span class="pre">0.0</span></tt>
+degrees.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Depth constraints</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mindepth</strong> (<em>float, optional</em>) <span class="dash" /> Specify minimum depth (kilometers), values increase
+positively with depth, e.g. <tt class="docutils literal"><span class="pre">-1</span></tt>.</li>
+<li><strong>maxdepth</strong> (<em>float, optional</em>) <span class="dash" /> Specify maximum depth (kilometers), values increase
+positively with depth, e.g. <tt class="docutils literal"><span class="pre">20</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Temporal constraints</strong></p>
+<p>The following two parameters impose time constrants on the query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the events occurring after the
+specified start time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the events occurring before the
+specified end time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Magnitude constraints</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>minmag</strong> (<em>float, optional</em>) <span class="dash" /> Specify a minimum magnitude.</li>
+<li><strong>maxmag</strong> (<em>float, optional</em>) <span class="dash" /> Specify a maximum magnitude.</li>
+<li><strong>magtype</strong> (<em>string, optional</em>) <span class="dash" /> Specify magnitude type. Some common types (there are
+many) include <tt class="docutils literal"><span class="pre">&quot;Ml&quot;</span></tt> (local/Richter magnitude), <tt class="docutils literal"><span class="pre">&quot;Ms&quot;</span></tt> (surface
+magnitude), <tt class="docutils literal"><span class="pre">&quot;mb&quot;</span></tt> (body wave magnitude), <tt class="docutils literal"><span class="pre">&quot;Mw&quot;</span></tt> (moment
+magnitude).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subset the data by organization</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>catalog</strong> (<em>string, optional</em>) <span class="dash" /> Specify a catalog
+[<a class="reference external" href="http://www.iris.edu/ws/event/catalogs">available catalogs</a>].
+Results will include any origins which contain the specified
+catalog text, i.e. <tt class="docutils literal"><span class="pre">&quot;PDE&quot;</span></tt> will match <tt class="docutils literal"><span class="pre">&quot;NEIC</span> <span class="pre">PDE&quot;</span></tt></li>
+<li><strong>contributor</strong> (<em>string, optional</em>) <span class="dash" /> Specify a contributor [<a class="reference external" href="http://www.iris.edu/ws/event/contributors">available
+contributors</a>]. When
+selecting a contributor, the result includes a preferred origin as
+specified by the contributor. Results will include any origins
+which contain the specified contributor text, i.e. <tt class="docutils literal"><span class="pre">&quot;NEIC&quot;</span></tt> will
+match <tt class="docutils literal"><span class="pre">&quot;NEIC</span> <span class="pre">PDE-Q&quot;</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Specifying an event using an IRIS ID number</strong></p>
+<p>Individual events can be retrieved using ID numbers assigned by IRIS.
+When these parameters are used, then only the <tt class="docutils literal"><span class="pre">includeallmagnitudes</span></tt>
+and <tt class="docutils literal"><span class="pre">preferredonly</span></tt> parameters are also allowed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eventid</strong> (<em>int, optional</em>) <span class="dash" /> Retrieve an event based on the unique IRIS event id.</li>
+<li><strong>originid</strong> (<em>int, optional</em>) <span class="dash" /> Retrieve an event based on the unique IRIS origin id.</li>
+<li><strong>magnitudeid</strong> (<em>int, optional</em>) <span class="dash" /> Retrieve an event based on the unique IRIS
+magnitude id.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Miscellaneous parameters</strong></p>
+<p>These parameters affect how the search is conducted, and how the events
+are returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>limit</strong> (<em>int, optional</em>) <span class="dash" /> Limit the results to the specified number of events. This
+value must be 10 or greater. By default, the results are not
+limited.</li>
+<li><strong>orderby</strong> (<tt class="docutils literal"><span class="pre">&quot;time&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;magnitude&quot;</span></tt>, optional) <span class="dash" /> Sort the resulting events in order of descending time
+or magnitude. By default, results are sorted in descending time
+order.</li>
+<li><strong>updatedafter</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>,
+optional) <span class="dash" /> Select origins updated after a certain date. This
+is most useful for synchronization purposes.</li>
+<li><strong>includeallmagnitudes</strong> (<em>bool, optional</em>) <span class="dash" /> This will include all the magnitudes in
+search and print criteria. If magnitudes do not exist for a certain
+origin, the search algorithm will consider it a miss and therefore
+will not include the event. Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>includearrivals</strong> (<em>bool, optional</em>) <span class="dash" /> If this event has associated phase arrival
+information, then it will be included in the results. Defaults to
+<tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>preferredonly</strong> (<em>bool, optional</em>) <span class="dash" /> Include preferred estimates only. When catalog is
+selected, the result returned will include the preferred origin as
+specified by the catalog. Defaults to <tt class="docutils literal"><span class="pre">True</span></tt>.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) <span class="dash" /> Name of a output file. If this parameter is given
+nothing will be returned. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">str or <tt class="docutils literal"><span class="pre">None</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">QuakeML formated string if no <tt class="docutils literal"><span class="pre">filename</span></tt> is given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">minmag</span><span class="o">=</span><span class="mf">9.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>  
+<span class="go">&lt;q:quakeml xmlns:q=&quot;http://quakeml.org/xmlns/quakeml/1.2&quot; ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.event.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.flinnengdahl.html" title="obspy.iris.client.Client.flinnengdahl"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.evalresp.html" title="obspy.iris.client.Client.evalresp"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.imaging.beachball.Beachball
+=================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: Beachball

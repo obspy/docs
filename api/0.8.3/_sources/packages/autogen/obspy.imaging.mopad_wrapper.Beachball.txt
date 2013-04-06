@@ -1,0 +1,6 @@
+obspy.imaging.mopad_wrapper.Beachball
+=====================================
+
+.. currentmodule:: obspy.imaging.mopad_wrapper
+
+.. autofunction:: Beachball

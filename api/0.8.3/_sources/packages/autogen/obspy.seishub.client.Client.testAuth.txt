@@ -1,0 +1,6 @@
+obspy.seishub.client.Client.testAuth
+====================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client.testAuth

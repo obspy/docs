@@ -1,0 +1,6 @@
+obspy.db.indexer.worker
+=======================
+
+.. currentmodule:: obspy.db.indexer
+
+.. autofunction:: worker

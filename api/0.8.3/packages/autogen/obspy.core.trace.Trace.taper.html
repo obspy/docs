@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.trace.Trace.taper &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.trace.Trace" href="obspy.core.trace.Trace.html" />
+    <link rel="next" title="obspy.core.trace.Trace.times" href="obspy.core.trace.Trace.times.html" />
+    <link rel="prev" title="obspy.core.trace.Trace.std" href="obspy.core.trace.Trace.std.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.times.html" title="obspy.core.trace.Trace.times"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.std.html" title="obspy.core.trace.Trace.std"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" accesskey="U">obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-trace-trace-taper">
+<h1>obspy.core.trace.Trace.taper<a class="headerlink" href="#obspy-core-trace-trace-taper" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.trace.Trace.taper">
+<tt class="descclassname">Trace.</tt><tt class="descname">taper</tt><big>(</big><em>type='cosine'</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/trace.html#Trace.taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.trace.Trace.taper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to taper the trace.</p>
+<p>Optional (and sometimes necessary) options to the tapering function can
+be provided as args and kwargs. See respective function definitions in
+<a class="reference internal" href="#supported-methods">Supported Methods</a> section below.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>type</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Type of taper to use for detrending. Defaults to
+<tt class="docutils literal"><span class="pre">'cosine'</span></tt>.  See the <a class="reference internal" href="#supported-methods">Supported Methods</a> section below for
+further details.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operation is performed in place on the actual data arrays. The
+raw data is not accessible anymore afterwards. To keep your
+original data, use <a class="reference internal" href="obspy.core.trace.Trace.copy.html#obspy.core.trace.Trace.copy" title="obspy.core.trace.Trace.copy"><tt class="xref py py-meth docutils literal"><span class="pre">copy()</span></tt></a> to create
+a copy of your trace object.
+This also makes an entry with information on the applied processing
+in <tt class="docutils literal"><span class="pre">stats.processing</span></tt> of this trace.</p>
+</div>
+<p class="rubric"><span class="target" id="supported-methods">Supported Methods</span></p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">'cosine'</span></tt></dt>
+<dd>Cosine taper, for additional options like taper percentage see:
+<a class="reference internal" href="obspy.signal.invsim.cosTaper.html#obspy.signal.invsim.cosTaper" title="obspy.signal.invsim.cosTaper"><tt class="xref py py-func docutils literal"><span class="pre">obspy.signal.invsim.cosTaper()</span></tt></a>.</dd>
+<dt><tt class="docutils literal"><span class="pre">'barthann'</span></tt></dt>
+<dd>Modified Bartlett-Hann window. (uses:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.barthann.html#scipy.signal.barthann" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.barthann()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'bartlett'</span></tt></dt>
+<dd>Bartlett window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.bartlett.html#scipy.signal.bartlett" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.bartlett()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'blackman'</span></tt></dt>
+<dd>Blackman window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.blackman.html#scipy.signal.blackman" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.blackman()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'blackmanharris'</span></tt></dt>
+<dd>Minimum 4-term Blackman-Harris window. (uses:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.blackmanharris.html#scipy.signal.blackmanharris" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.blackmanharris()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'bohman'</span></tt></dt>
+<dd>Bohman window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.bohman.html#scipy.signal.bohman" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.bohman()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'boxcar'</span></tt></dt>
+<dd>Boxcar window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.boxcar.html#scipy.signal.boxcar" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.boxcar()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'chebwin'</span></tt></dt>
+<dd>Dolph-Chebyshev window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.chebwin.html#scipy.signal.chebwin" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.chebwin()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'flattop'</span></tt></dt>
+<dd>Flat top window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.flattop.html#scipy.signal.flattop" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.flattop()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'gaussian'</span></tt></dt>
+<dd>Gaussian window with standard-deviation std. (uses:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.gaussian.html#scipy.signal.gaussian" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.gaussian()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'general_gaussian'</span></tt></dt>
+<dd>Generalized Gaussian window. (uses:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.general_gaussian.html#scipy.signal.general_gaussian" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.general_gaussian()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'hamming'</span></tt></dt>
+<dd>Hamming window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.hamming.html#scipy.signal.hamming" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.hamming()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'hann'</span></tt></dt>
+<dd>Hann window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.hann.html#scipy.signal.hann" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.hann()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'kaiser'</span></tt></dt>
+<dd>Kaiser window with shape parameter beta. (uses:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.kaiser.html#scipy.signal.kaiser" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.kaiser()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'nuttall'</span></tt></dt>
+<dd>Minimum 4-term Blackman-Harris window according to Nuttall.
+(uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.nuttall.html#scipy.signal.nuttall" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.nuttall()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'parzen'</span></tt></dt>
+<dd>Parzen window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.parzen.html#scipy.signal.parzen" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.parzen()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'slepian'</span></tt></dt>
+<dd>Slepian window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.slepian.html#scipy.signal.slepian" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.slepian()</span></tt></a>)</dd>
+<dt><tt class="docutils literal"><span class="pre">'triang'</span></tt></dt>
+<dd>Triangular window. (uses: <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.triang.html#scipy.signal.triang" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.triang()</span></tt></a>)</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.trace.Trace.taper.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.times.html" title="obspy.core.trace.Trace.times"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.trace.Trace.std.html" title="obspy.core.trace.Trace.std"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.trace.html" >obspy.core.trace</a> &raquo;</li>
+          <li><a href="obspy.core.trace.Trace.html" >obspy.core.trace.Trace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+obspy.db.indexer.WaveformFileCrawler
+====================================
+
+.. currentmodule:: obspy.db.indexer
+.. autoclass:: WaveformFileCrawler
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~WaveformFileCrawler.__dict__
+     ~WaveformFileCrawler.__doc__
+     ~WaveformFileCrawler.__module__
+     ~WaveformFileCrawler.__weakref__
+     ~WaveformFileCrawler.features
+     ~WaveformFileCrawler.patterns
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformFileCrawler.getFeatures
+     ~WaveformFileCrawler.getPatterns
+     ~WaveformFileCrawler.hasPattern
+     ~WaveformFileCrawler.iterate
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformFileCrawler._delete
+     ~WaveformFileCrawler._preparePaths
+     ~WaveformFileCrawler._processLogQueue
+     ~WaveformFileCrawler._processOutputQueue
+     ~WaveformFileCrawler._resetWalker
+     ~WaveformFileCrawler._select
+     ~WaveformFileCrawler._stepWalker
+     ~WaveformFileCrawler._update_or_insert
+  
+
+  
+
+  
+  

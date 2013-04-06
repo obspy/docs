@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.cpxtrace &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.cpxtrace</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#--------------------------------------------------------------------</span>
+<span class="c"># Filename: cpxtrace.py</span>
+<span class="c">#   Author: Conny Hammer</span>
+<span class="c">#    Email: conny.hammer@geo.uni-potsdam.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Conny Hammer</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Complex Trace Analysis</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">size</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">util</span>
+
+
+<div class="viewcode-block" id="envelope"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.cpxtrace.envelope.html#obspy.signal.cpxtrace.envelope">[docs]</a><span class="k">def</span> <span class="nf">envelope</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Envelope of a signal.</span>
+
+<span class="sd">    Computes the envelope of the given data which can be windowed or</span>
+<span class="sd">    not. The envelope is determined by the absolute value of the analytic</span>
+<span class="sd">    signal of the given data.</span>
+
+<span class="sd">    If data are windowed the analytic signal and the envelope of each</span>
+<span class="sd">    window is returned.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to make envelope of.</span>
+<span class="sd">    :return: **A_cpx, A_abs** - Analytic signal of input data, Envelope of</span>
+<span class="sd">        input data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nfft</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">nextpow2</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">A_cpx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;complex64&#39;</span><span class="p">)</span>
+    <span class="n">A_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">A_cpx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">nfft</span><span class="p">)</span>
+            <span class="n">A_abs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">nfft</span><span class="p">))</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">A_cpx</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nfft</span><span class="p">)</span>
+        <span class="n">A_abs</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">hilbert</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nfft</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">A_cpx</span><span class="p">,</span> <span class="n">A_abs</span>
+
+</div>
+<div class="viewcode-block" id="normEnvelope"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.cpxtrace.normEnvelope.html#obspy.signal.cpxtrace.normEnvelope">[docs]</a><span class="k">def</span> <span class="nf">normEnvelope</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">smoothie</span><span class="p">,</span> <span class="n">fk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalized envelope of a signal.</span>
+
+<span class="sd">    Computes the normalized envelope of the given data which can be windowed</span>
+<span class="sd">    or not. In order to obtain a normalized measure of the signal envelope</span>
+<span class="sd">    the instantaneous bandwidth of the smoothed envelope is normalized by the</span>
+<span class="sd">    Nyquist frequency and is integrated afterwards.</span>
+
+<span class="sd">    The time derivative of the normalized envelope is returned if input data</span>
+<span class="sd">    are windowed only.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to make normalized envelope of.</span>
+<span class="sd">    :param fs: Sampling frequency.</span>
+<span class="sd">    :param smoothie: Window length for moving average.</span>
+<span class="sd">    :param fk: Coefficients for calculating time derivatives</span>
+<span class="sd">        (calculated via central difference).</span>
+<span class="sd">    :return: **Anorm[, dAnorm]** - Normalized envelope of input data, Time</span>
+<span class="sd">        derivative of normalized envelope (windowed only).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">envelope</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Anorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">A_win_smooth</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)))</span>
+            <span class="c"># Differentiation of original signal, dA/dt</span>
+            <span class="c">#A_win_add = append(append([row[0]]*(size(fk)/2),row),</span>
+            <span class="c">#                      [row[size(row)-1]]*(size(fk)/2))</span>
+            <span class="c"># Better, because faster, calculation of A_win_add</span>
+            <span class="n">A_win_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">A_win_smooth</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+                                   <span class="n">A_win_smooth</span><span class="p">,</span>
+                                   <span class="p">[</span><span class="n">A_win_smooth</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">A_win_smooth</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> \
+                                   <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">A_win_add</span><span class="p">)</span>
+            <span class="c">#t = t[size(fk) // 2:(size(t) - size(fk) // 2)]</span>
+            <span class="c"># correct start and end values of time derivative</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
+            <span class="n">A_win_smooth</span><span class="p">[</span><span class="n">A_win_smooth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="c"># (dA/dt) / 2*PI*smooth(A)*fs/2</span>
+            <span class="n">t_</span> <span class="o">=</span> <span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">A_win_smooth</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">fs</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">))</span>
+            <span class="c"># Integral within window</span>
+            <span class="n">t_</span> <span class="o">=</span> <span class="n">cumtrapz</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">fs</span><span class="p">))</span>
+            <span class="n">t_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">t_</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">t_</span><span class="p">))</span>
+            <span class="n">Anorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t_</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c">#Anorm = util.smooth(Anorm,smoothie)</span>
+        <span class="c">#Anorm_add = np.append(np.append([Anorm[0]] * (size(fk) // 2), Anorm),</span>
+        <span class="c">#                      [Anorm[size(Anorm) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate Anorm_add</span>
+        <span class="n">Anorm_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">Anorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Anorm</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">Anorm</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">Anorm</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">dAnorm</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Anorm_add</span><span class="p">)</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">dAnorm</span> <span class="o">=</span> <span class="n">dAnorm</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">dAnorm</span><span class="p">)]</span>
+        <span class="c">#dAnorm = dAnorm[size(fk) // 2:(size(dAnorm) - size(fk) // 2)]</span>
+        <span class="k">return</span> <span class="n">Anorm</span><span class="p">,</span> <span class="n">dAnorm</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Anorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="n">A_win_smooth</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">smoothie</span><span class="p">)</span>
+        <span class="c"># Differentiation of original signal, dA/dt</span>
+        <span class="c">#A_win_add = np.append(np.append([x[1][0]] * (size(fk) // 2), x[1]),</span>
+        <span class="c">#                      [x[1][size(x[1]) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># Better, because faster, calculation of A_win_add</span>
+        <span class="n">A_win_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">A_win_smooth</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> \
+                  <span class="n">A_win_smooth</span><span class="p">,</span> <span class="p">[</span><span class="n">A_win_smooth</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">A_win_smooth</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> \
+                  <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">A_win_add</span><span class="p">)</span>
+        <span class="c">#t = t[size(fk) // 2:(size(t) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
+        <span class="n">A_win_smooth</span><span class="p">[</span><span class="n">A_win_smooth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># (dA/dt) / 2*PI*smooth(A)*fs/2</span>
+        <span class="n">t_</span> <span class="o">=</span> <span class="n">t</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">A_win_smooth</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">fs</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">))</span>
+        <span class="c"># Integral within window</span>
+        <span class="n">t_</span> <span class="o">=</span> <span class="n">cumtrapz</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">fs</span><span class="p">))</span>
+        <span class="n">t_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">t_</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">t_</span><span class="p">))</span>
+        <span class="n">Anorm</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t_</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">return</span> <span class="n">Anorm</span>
+
+</div>
+<div class="viewcode-block" id="centroid"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.cpxtrace.centroid.html#obspy.signal.cpxtrace.centroid">[docs]</a><span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Centroid time of a signal.</span>
+
+<span class="sd">    Computes the centroid time of the given data which can be windowed or</span>
+<span class="sd">    not. The centroid time is determined as the time in the processed</span>
+<span class="sd">    window where 50 per cent of the area below the envelope is reached.</span>
+
+<span class="sd">    The time derivative of the centroid time is returned if input data are</span>
+<span class="sd">    windowed only.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to determine centroid time of.</span>
+<span class="sd">    :param fk: Coefficients for calculating time derivatives</span>
+<span class="sd">        (calculated via central difference).</span>
+<span class="sd">    :return: **centroid[, dcentroid]** - Centroid time input data, Time</span>
+<span class="sd">        derivative of centroid time (windowed only).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">envelope</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c"># Integral within window</span>
+            <span class="n">half</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c"># Estimate energy centroid</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span><span class="p">])</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="n">half</span><span class="p">):</span>
+                    <span class="n">frac</span> <span class="o">=</span> <span class="p">(</span><span class="n">half</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span> <span class="o">/</span> \
+                        <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
+                    <span class="n">centroid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">frac</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+                    <span class="k">break</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c">#centroid_add = np.append(np.append([centroid[0]] * (size(fk) // 2), \</span>
+        <span class="c">#    centroid), [centroid[size(centroid) - 1]] * (size(fk) // 2))</span>
+        <span class="n">centroid_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> \
+                  <span class="n">centroid</span><span class="p">,</span> <span class="p">[</span><span class="n">centroid</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">centroid</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> \
+                  <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">dcentroid</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">centroid_add</span><span class="p">)</span>
+        <span class="c">#dcentroid = dcentroid[size(fk) // 2:(size(dcentroid) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">dcentroid</span> <span class="o">=</span> <span class="n">dcentroid</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">dcentroid</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">dcentroid</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="c"># Integral within window</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c"># Estimate energy centroid</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="n">half</span><span class="p">):</span>
+                <span class="n">frac</span> <span class="o">=</span> <span class="p">(</span><span class="n">half</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span> <span class="o">/</span> \
+                    <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">frac</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">centroid</span>
+
+</div>
+<div class="viewcode-block" id="instFreq"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.cpxtrace.instFreq.html#obspy.signal.cpxtrace.instFreq">[docs]</a><span class="k">def</span> <span class="nf">instFreq</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">fk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Instantaneous frequency of a signal.</span>
+
+<span class="sd">    Computes the instantaneous frequency of the given data which can be</span>
+<span class="sd">    windowed or not. The instantaneous frequency is determined by the time</span>
+<span class="sd">    derivative of the analytic signal of the input data.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to determine instantaneous frequency of.</span>
+<span class="sd">    :param fs: Sampling frequency.</span>
+<span class="sd">    :param fk: Coefficients for calculating time derivatives</span>
+<span class="sd">        (calculated via central difference).</span>
+<span class="sd">    :return: **omega[, domega]** - Instantaneous frequency of input data, Time</span>
+<span class="sd">        derivative of instantaneous frequency (windowed only).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">envelope</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">omega</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="c">#f_add = np.append(np.append([f[0]] * (size(fk) // 2), f),</span>
+            <span class="c">#                      [f[size(f) - 1]] * (size(fk) // 2))</span>
+            <span class="c"># faster alternative to calculate f_add</span>
+            <span class="n">f_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">f</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">f_add</span><span class="p">)</span>
+            <span class="c">#fd = fd[size(fk) // 2:(size(fd) - size(fk) // 2)]</span>
+            <span class="c"># correct start and end values of time derivative</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">fd</span><span class="p">)]</span>
+            <span class="c">#h_add = np.append(np.append([h[0]] * (size(fk) // 2), h),</span>
+            <span class="c">#                      [h[size(h) - 1]] * (size(fk) // 2))</span>
+            <span class="c"># faster alternative to calculate h_add</span>
+            <span class="n">h_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">h</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+            <span class="n">hd</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">h_add</span><span class="p">)</span>
+            <span class="c">#hd = hd[size(fk) // 2:(size(hd) - size(fk) // 2)]</span>
+            <span class="c"># correct start and end values of time derivative</span>
+            <span class="n">hd</span> <span class="o">=</span> <span class="n">hd</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">hd</span><span class="p">)]</span>
+            <span class="n">omega_win</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(((</span><span class="n">f</span> <span class="o">*</span> <span class="n">hd</span> <span class="o">-</span> <span class="n">fd</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span> <span class="o">*</span> \
+                             <span class="n">fs</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+            <span class="n">omega</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">omega_win</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c">#omega_add = np.append(np.append([omega[0]] * (size(fk) // 2), omega),</span>
+        <span class="c">#                      [omega[size(omega) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate omega_add</span>
+        <span class="n">omega_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">omega</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">omega</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">omega</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">domega</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">omega_add</span><span class="p">)</span>
+        <span class="c">#domega = domega[size(fk) // 2:(size(domega) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">domega</span> <span class="o">=</span> <span class="n">domega</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">domega</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">omega</span><span class="p">,</span> <span class="n">domega</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">omega</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c">#f_add = np.append(np.append([f[0]] * (size(fk) // 2), f),</span>
+        <span class="c">#                      [f[size(f) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate f_add</span>
+        <span class="n">f_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">f</span><span class="p">,</span> \
+                <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">f_add</span><span class="p">)</span>
+        <span class="c">#fd = fd[size(fk) // 2:(size(fd) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">fd</span><span class="p">)]</span>
+        <span class="c">#h_add = np.append(np.append([h[0]] * (size(fk) // 2), h),</span>
+        <span class="c">#                      [h[size(h) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate h_add</span>
+        <span class="n">h_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">h</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">hd</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">h_add</span><span class="p">)</span>
+        <span class="c">#hd = hd[size(fk) // 2:(size(hd) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values of time derivative</span>
+        <span class="n">hd</span> <span class="o">=</span> <span class="n">hd</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">hd</span><span class="p">)]</span>
+        <span class="n">omega</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(((</span><span class="n">f</span> <span class="o">*</span> <span class="n">hd</span> <span class="o">-</span> <span class="n">fd</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">f</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">omega</span>
+
+</div>
+<div class="viewcode-block" id="instBwith"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.cpxtrace.instBwith.html#obspy.signal.cpxtrace.instBwith">[docs]</a><span class="k">def</span> <span class="nf">instBwith</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">fk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Instantaneous bandwidth of a signal.</span>
+
+<span class="sd">    Computes the instantaneous bandwidth of the given data which can be</span>
+<span class="sd">    windowed or not. The instantaneous bandwidth is determined by the time</span>
+<span class="sd">    derivative of the envelope normalized by the envelope of the input data.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to determine instantaneous bandwidth of.</span>
+<span class="sd">    :param fs: Sampling frequency.</span>
+<span class="sd">    :param fk: Filter coefficients for computing time derivative.</span>
+<span class="sd">    :return: **sigma[, dsigma]** - Instantaneous bandwidth of input data, Time</span>
+<span class="sd">        derivative of instantaneous bandwidth (windowed only).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">envelope</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c">#A_win_add = np.append(np.append([row[0]] * (size(fk) // 2), row),</span>
+            <span class="c">#                      [row[size(row) - 1]] * (size(fk) // 2))</span>
+            <span class="c"># faster alternative to calculate A_win_add</span>
+            <span class="n">A_win_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">A_win_add</span><span class="p">)</span>
+            <span class="c">#t = t[size(fk) // 2:(size(t) - size(fk) // 2)]</span>
+            <span class="c"># correct start and end values</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
+            <span class="n">sigma_win</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">t</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">row</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">))</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sigma_win</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c">#sigma_add = np.append(np.append([sigma[0]] * (size(fk) // 2), sigma),</span>
+        <span class="c">#                  [sigma[size(sigma) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate sigma_add</span>
+        <span class="n">sigma_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">sigma</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">sigma</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">dsigma</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sigma_add</span><span class="p">)</span>
+        <span class="c">#dsigma = dsigma[size(fk) // 2:(size(dsigma) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values</span>
+        <span class="n">dsigma</span> <span class="o">=</span> <span class="n">dsigma</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">dsigma</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dsigma</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+        <span class="c">#A_win_add = np.append(np.append([x[1][0]] * (size(fk) // 2), x[1]),</span>
+        <span class="c">#                      [x[1][size(x[1]) - 1]] * (size(fk) // 2))</span>
+        <span class="c"># faster alternative to calculate A_win_add</span>
+        <span class="n">A_win_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> \
+                  <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">A_win_add</span><span class="p">)</span>
+        <span class="c">#t = t[size(fk) // 2:(size(t) - size(fk) // 2)]</span>
+        <span class="c"># correct start and end values</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">t</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">sigma</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

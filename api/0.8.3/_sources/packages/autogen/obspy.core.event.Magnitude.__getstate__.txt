@@ -1,0 +1,6 @@
+obspy.core.event.Magnitude.__getstate__
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Magnitude.__getstate__

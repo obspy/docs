@@ -1,0 +1,6 @@
+obspy.imaging.beachball.NodalPlane.__init__
+===========================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. automethod:: NodalPlane.__init__

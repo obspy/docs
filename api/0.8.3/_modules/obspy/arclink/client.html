@@ -1,0 +1,1423 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.arclink.client &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.arclink.client</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ArcLink/WebDC client for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">fnmatch</span> <span class="kn">import</span> <span class="n">fnmatch</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">objectify</span><span class="p">,</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span><span class="p">,</span> <span class="n">AttribDict</span><span class="p">,</span> <span class="n">complexifyString</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.decorator</span> <span class="kn">import</span> <span class="n">deprecated_keywords</span>
+<span class="kn">from</span> <span class="nn">telnetlib</span> <span class="kn">import</span> <span class="n">Telnet</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="n">DCID_KEY_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&#39;HOME&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;dcidpasswords.txt&#39;</span><span class="p">)</span>
+<span class="n">MAX_REQUESTS</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="n">_ROUTING_NS_1_0</span> <span class="o">=</span> <span class="s">&quot;http://geofon.gfz-potsdam.de/ns/Routing/1.0/&quot;</span>
+<span class="n">_ROUTING_NS_0_1</span> <span class="o">=</span> <span class="s">&quot;http://geofon.gfz-potsdam.de/ns/routing/0.1/&quot;</span>
+<span class="n">_INVENTORY_NS_1_0</span> <span class="o">=</span> <span class="s">&quot;http://geofon.gfz-potsdam.de/ns/Inventory/1.0/&quot;</span>
+<span class="n">_INVENTORY_NS_0_2</span> <span class="o">=</span> <span class="s">&quot;http://geofon.gfz-potsdam.de/ns/inventory/0.2/&quot;</span>
+
+<span class="n">MSG_NOPAZ</span> <span class="o">=</span> <span class="s">&quot;No Poles and Zeros information returned by server.&quot;</span>
+
+
+<div class="viewcode-block" id="ArcLinkException"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.ArcLinkException.html#obspy.arclink.client.ArcLinkException">[docs]</a><span class="k">class</span> <span class="nc">ArcLinkException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised by the ArcLink client for known exceptions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.html#obspy.arclink.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ArcLink/WebDC client.</span>
+
+<span class="sd">    :type host: str, optional</span>
+<span class="sd">    :param host: Host name of the remote ArcLink server (default host is</span>
+<span class="sd">        ``&#39;webdc.eu&#39;``).</span>
+<span class="sd">    :type port: int, optional</span>
+<span class="sd">    :param port: Port of the remote ArcLink server (default port is ``18002``).</span>
+<span class="sd">    :type timeout: int, optional</span>
+<span class="sd">    :param timeout: Seconds before a connection timeout is raised (default is</span>
+<span class="sd">        ``20`` seconds).</span>
+<span class="sd">    :type user: str, optional</span>
+<span class="sd">    :param user: The user name is used for identification with the ArcLink</span>
+<span class="sd">        server. This entry is also used for usage statistics within the data</span>
+<span class="sd">        centers, so please provide a meaningful user id (default is</span>
+<span class="sd">        ``&#39;ObsPy client&#39;``).</span>
+<span class="sd">    :type password: str, optional</span>
+<span class="sd">    :param password: A password used for authentication with the ArcLink server</span>
+<span class="sd">        (default is an empty string).</span>
+<span class="sd">    :type institution: str, optional</span>
+<span class="sd">    :param institution: A string containing the name of the institution of the</span>
+<span class="sd">        requesting person (default is an ``&#39;Anonymous&#39;``).</span>
+<span class="sd">    :type dcid_keys: dict, optional</span>
+<span class="sd">    :param dcid_keys: Dictionary of datacenter ids (DCID) and passwords used</span>
+<span class="sd">        for decoding encrypted waveform requests.</span>
+<span class="sd">    :type dcid_key_file: str, optional</span>
+<span class="sd">    :param dcid_key_file: Simple text configuration file containing lines of</span>
+<span class="sd">        data center ids (DCIDs) and password pairs separated by a equal sign,</span>
+<span class="sd">        e.g. for DCID ``BIA`` and password ``OfH9ekhi`` use ``&quot;BIA=OfH9ekhi&quot;``.</span>
+<span class="sd">        If not set, passwords found in a file called `$HOME/dcidpasswords.txt`</span>
+<span class="sd">        will be used automatically.</span>
+<span class="sd">    :type debug: bool, optional</span>
+<span class="sd">    :param debug: Enables verbose output of the connection handling (default is</span>
+<span class="sd">        ``False``).</span>
+<span class="sd">    :type command_delay: float, optional</span>
+<span class="sd">    :param command_delay: Delay between each command send to the ArcLink server</span>
+<span class="sd">        (default is ``0``).</span>
+
+<span class="sd">    .. rubric:: Notes</span>
+
+<span class="sd">    The following ArcLink servers may be accessed via ObsPy (partly restricted</span>
+<span class="sd">    access only):</span>
+
+<span class="sd">    * WebDC servers: webdc.eu:18001, webdc.eu:18002</span>
+<span class="sd">    * ODC Server:  bhlsa03.knmi.nl:18001</span>
+<span class="sd">    * INGV Server: eida.rm.ingv.it:18001</span>
+<span class="sd">    * IPGP Server: geosrt2.ipgp.fr:18001</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#: Delay in seconds between each status request</span>
+    <span class="n">status_delay</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<div class="viewcode-block" id="Client.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.__init__.html#obspy.arclink.client.Client.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s">&quot;webdc.eu&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">18002</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">&quot;ObsPy client&quot;</span><span class="p">,</span>
+                 <span class="n">password</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">institution</span><span class="o">=</span><span class="s">&quot;Anonymous&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">dcid_keys</span><span class="o">=</span><span class="p">{},</span> <span class="n">dcid_key_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">command_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes an ArcLink client.</span>
+
+<span class="sd">        See :class:`obspy.arclink.client.Client` for all parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">institution</span> <span class="o">=</span> <span class="n">institution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_delay</span> <span class="o">=</span> <span class="n">command_delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dcid_keys</span> <span class="o">=</span> <span class="n">dcid_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">Telnet</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="c"># silent connection check</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hello</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">Connected to </span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="c"># check for dcid_key_file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dcid_key_file</span><span class="p">:</span>
+            <span class="c"># check in user directory</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">DCID_KEY_FILE</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="n">dcid_key_file</span> <span class="o">=</span> <span class="n">DCID_KEY_FILE</span>
+        <span class="c"># parse dcid_key_file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dcid_key_file</span><span class="p">,</span> <span class="s">&#39;rt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="c"># ensure that dcid_keys set via parameters are not overwritten</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcid_keys</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dcid_keys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Client._reconnect"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._reconnect.html#obspy.arclink.client.Client._reconnect">[docs]</a>    <span class="k">def</span> <span class="nf">_reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client._writeln"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._writeln.html#obspy.arclink.client.Client._writeln">[docs]</a>    <span class="k">def</span> <span class="nf">_writeln</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">buffer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_delay</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_delay</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">buffer</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\r\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;&gt;&gt;&gt; &#39;</span> <span class="o">+</span> <span class="nb">buffer</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client._readln"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._readln.html#obspy.arclink.client.Client._readln">[docs]</a>    <span class="k">def</span> <span class="nf">_readln</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read_until</span><span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\r\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Timeout waiting for expected </span><span class="si">%s</span><span class="s">, got </span><span class="si">%s</span><span class="s">&quot;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;... &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span>
+</div>
+<div class="viewcode-block" id="Client._hello"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._hello.html#obspy.arclink.client.Client._hello">[docs]</a>    <span class="k">def</span> <span class="nf">_hello</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;HELLO&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;USER </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;USER </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">(</span><span class="s">&#39;OK&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;INSTITUTION </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">institution</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">(</span><span class="s">&#39;OK&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client._bye"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._bye.html#obspy.arclink.client.Client._bye">[docs]</a>    <span class="k">def</span> <span class="nf">_bye</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;BYE&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Client._fetch"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._fetch.html#obspy.arclink.client.Client._fetch">[docs]</a>    <span class="k">def</span> <span class="nf">_fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="c"># skip routing on request</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">route</span><span class="p">:</span>
+            <span class="c"># always use initial node if routing is disabled</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_host</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_port</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">)</span>
+        <span class="c"># request routing table for given network/station/times combination</span>
+        <span class="c"># location and channel information are ignored by ArcLink</span>
+        <span class="n">routes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRouting</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">request_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                 <span class="n">station</span><span class="o">=</span><span class="n">request_data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                 <span class="n">starttime</span><span class="o">=</span><span class="n">request_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="n">endtime</span><span class="o">=</span><span class="n">request_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c"># search routes for network/station/location/channel</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findRoute</span><span class="p">(</span><span class="n">routes</span><span class="p">,</span> <span class="n">request_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+            <span class="c"># retry first ArcLink node if host or port has been changed</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_host</span> <span class="ow">or</span> \
+               <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_port</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_host</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_port</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">Requesting </span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not find route to </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">request_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">request_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="c"># we got a routing table</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="p">{}:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">)</span>
+            <span class="c"># check if current connection is enough</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span> <span class="ow">and</span> \
+               <span class="n">item</span><span class="p">[</span><span class="s">&#39;port&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;port&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">Requesting </span><span class="si">%s</span><span class="s">:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reconnect</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ArcLinkException</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not find route to </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span>
+        <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">request_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">request_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+</div>
+<div class="viewcode-block" id="Client._request"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._request.html#obspy.arclink.client.Client._request">[docs]</a>    <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_type</span><span class="p">,</span> <span class="n">request_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hello</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="n">request_type</span><span class="p">)</span>
+        <span class="c"># create request string</span>
+        <span class="c"># adding one second to start and end time to ensure right date times</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">request_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">formatArcLink</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39; &#39;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="p">(</span><span class="n">request_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">formatArcLink</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39; &#39;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">request_data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;END&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">(</span><span class="s">&#39;OK&#39;</span><span class="p">)</span>
+        <span class="c"># get status id</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">req_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&#39;ERROR&#39;</span> <span class="ow">in</span> <span class="n">status</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+                    <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="s">&#39;Error requesting status id&#39;</span><span class="p">)</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="c"># loop until we hit ready=&quot;true&quot; in the status message</span>
+        <span class="n">_loops</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_old_xml_doc</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;STATUS </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+            <span class="n">xml_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readln</span><span class="p">(</span><span class="s">&#39;END&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;ready=&quot;true&quot;&#39;</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="c"># check if status messages changes over time</span>
+            <span class="k">if</span> <span class="n">_old_xml_doc</span> <span class="o">==</span> <span class="n">xml_doc</span><span class="p">:</span>
+                <span class="n">_loops</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_loops</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">_old_xml_doc</span> <span class="o">=</span> <span class="n">xml_doc</span>
+            <span class="c"># if we hit MAX_REQUESTS equal status break the loop</span>
+            <span class="k">if</span> <span class="n">_loops</span> <span class="o">&gt;</span> <span class="n">MAX_REQUESTS</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;MAX_REQUESTS exceeded - breaking current request loop&#39;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="c"># wait a bit</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_delay</span><span class="p">)</span>
+        <span class="c"># check for errors</span>
+        <span class="k">for</span> <span class="n">err_code</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;DENIED&#39;</span><span class="p">,</span> <span class="s">&#39;CANCELLED&#39;</span><span class="p">,</span> <span class="s">&#39;CANCEL&#39;</span><span class="p">,</span> <span class="s">&#39;ERROR&#39;</span><span class="p">,</span> <span class="s">&#39;RETRY&#39;</span><span class="p">,</span>
+                         <span class="s">&#39;WARN&#39;</span><span class="p">,</span> <span class="s">&#39;UNSET&#39;</span><span class="p">]:</span>
+            <span class="n">err_str</span> <span class="o">=</span> <span class="s">&#39;status=&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">err_str</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+                <span class="c"># cleanup</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;PURGE </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+                <span class="c"># parse XML for reason</span>
+                <span class="n">xml_doc</span> <span class="o">=</span> <span class="n">objectify</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_doc</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">err_code</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s">&#39;status=&quot;NODATA&quot;&#39;</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+            <span class="c"># cleanup</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;PURGE </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="s">&#39;No data available&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s">&#39;id=&quot;NODATA&quot;&#39;</span> <span class="ow">in</span> <span class="n">xml_doc</span> <span class="ow">or</span> <span class="s">&#39;id=&quot;ERROR&quot;&#39;</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+            <span class="c"># cleanup</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;PURGE </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+            <span class="c"># parse XML for error message</span>
+            <span class="n">xml_doc</span> <span class="o">=</span> <span class="n">objectify</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_doc</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="s">&#39;&lt;line content&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+            <span class="c"># safeguard for not covered status messages</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;PURGE </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Uncovered status message - contact a developer to fix this&quot;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;DOWNLOAD </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_socket</span><span class="p">()</span><span class="o">.</span><span class="n">makefile</span><span class="p">(</span><span class="s">&#39;rb+&#39;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fd</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">4096</span><span class="p">,</span> <span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)))</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="n">buf</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">fd</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">buf</span> <span class="o">!=</span> <span class="s">&quot;END&quot;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">length</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Wrong length!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;&lt;?xml&#39;</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s"> bytes of data read&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeln</span><span class="p">(</span><span class="s">&#39;PURGE </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">req_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bye</span><span class="p">()</span>
+        <span class="c"># check for encryption</span>
+        <span class="k">if</span> <span class="s">&#39;encrypted=&quot;true&quot;&#39;</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="p">:</span>
+            <span class="c"># extract dcid</span>
+            <span class="n">xml_doc</span> <span class="o">=</span> <span class="n">objectify</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_doc</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">dcid</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dcid&#39;</span><span class="p">)</span>
+            <span class="c"># check if given in known list of keys</span>
+            <span class="k">if</span> <span class="n">dcid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcid_keys</span><span class="p">:</span>
+                <span class="c"># call decrypt routine</span>
+                <span class="kn">from</span> <span class="nn">obspy.arclink.decrypt</span> <span class="kn">import</span> <span class="n">SSLWrapper</span>
+                <span class="n">decryptor</span> <span class="o">=</span> <span class="n">SSLWrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcid_keys</span><span class="p">[</span><span class="n">dcid</span><span class="p">])</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">decryptor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="n">decryptor</span><span class="o">.</span><span class="n">final</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Could not decrypt waveform data for dcid </span><span class="si">%s</span><span class="s">.&quot;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">dcid</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="Client.getWaveform"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getWaveform.html#obspy.arclink.client.Client.getWaveform">[docs]</a>    <span class="k">def</span> <span class="nf">getWaveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span>
+                    <span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;MSEED&quot;</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="n">route</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves waveform data via ArcLink and returns an ObsPy Stream object.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``. Location code may</span>
+<span class="sd">            contain wild cards.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``. Channel code may</span>
+<span class="sd">            contain wild cards.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type format: ``&#39;FSEED&#39;`` or ``&#39;MSEED&#39;``, optional</span>
+<span class="sd">        :param format: Output format. Either as full SEED (``&#39;FSEED&#39;``) or</span>
+<span class="sd">            Mini-SEED (``&#39;MSEED&#39;``) volume. Defaults to ``&#39;MSEED&#39;``.</span>
+<span class="sd">        :type compressed: bool, optional</span>
+<span class="sd">        :param compressed: Request compressed files from ArcLink server.</span>
+<span class="sd">            Defaults to ``True``.</span>
+<span class="sd">        :type metadata: bool, optional</span>
+<span class="sd">        :param metadata: Fetch PAZ and coordinate information and append to</span>
+<span class="sd">            :class:`~obspy.core.trace.Stats` of all fetched traces. Defaults</span>
+<span class="sd">            to ``False``.</span>
+<span class="sd">        :type route: bool, optional</span>
+<span class="sd">        :param route: Enables ArcLink routing. Defaults to ``True``.</span>
+<span class="sd">        :return: ObsPy :class:`~obspy.core.stream.Stream` object.</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime(&quot;2009-08-20 04:03:12&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; st = client.getWaveform(&quot;BW&quot;, &quot;RJOB&quot;, &quot;&quot;, &quot;EH*&quot;, t - 3, t + 15)</span>
+<span class="sd">        &gt;&gt;&gt; st.plot() #doctest: +SKIP</span>
+
+<span class="sd">        .. plot::</span>
+
+<span class="sd">            from obspy import UTCDateTime</span>
+<span class="sd">            from obspy.arclink.client import Client</span>
+<span class="sd">            client = Client(&quot;webdc.eu&quot;, 18001, &#39;test@obspy.org&#39;)</span>
+<span class="sd">            t = UTCDateTime(&quot;2009-08-20 04:03:12&quot;)</span>
+<span class="sd">            st = client.getWaveform(&quot;BW&quot;, &quot;RJOB&quot;, &quot;&quot;, &quot;EH*&quot;, t - 3, t + 15)</span>
+<span class="sd">            st.plot()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;getPAZ&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;getCoordinates&#39;</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Keywords getPAZ and getCoordinates are deprecated. &quot;</span> <span class="o">+</span> \
+                  <span class="s">&quot;Please use keyword metadata instead.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="c"># handle deprecated keywords - one must be True to enable metadata</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;getPAZ&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span> <span class="ow">or</span> \
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;getCoordinates&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveWaveform</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">_fileobj</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span>
+                          <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span>
+                          <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="p">)</span>
+        <span class="c"># read stream using obspy.mseed</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;MSEED&#39;</span><span class="p">)</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># remove temporary file:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c"># trim stream</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">)</span>
+        <span class="c"># fetching PAZ and coordinates</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="c"># fetch metadata only once</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
+                                    <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                                    <span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">,</span>
+                                    <span class="n">instruments</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">netsta</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">])</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;latitude&#39;</span><span class="p">,</span> <span class="s">&#39;longitude&#39;</span><span class="p">,</span> <span class="s">&#39;elevation&#39;</span><span class="p">]:</span>
+                <span class="n">coordinates</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">inv</span><span class="p">[</span><span class="n">netsta</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="c"># add coordinates</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinates</span>
+                <span class="c"># add PAZ</span>
+                <span class="n">entries</span> <span class="o">=</span> <span class="n">inv</span><span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c"># multiple entries found</span>
+                    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">:</span>
+                        <span class="c"># trim current trace to timespan of current entry</span>
+                        <span class="n">temp</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span>
+                                        <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;endtime&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                        <span class="c"># append valid paz</span>
+                        <span class="k">if</span> <span class="s">&#39;paz&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">MSG_NOPAZ</span><span class="p">)</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">&#39;paz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">paz</span>
+                        <span class="c"># add to end of stream</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+                    <span class="c"># remove split trace</span>
+                    <span class="n">stream</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># single entry found - apply direct</span>
+                    <span class="n">entry</span> <span class="o">=</span> <span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="s">&#39;paz&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">MSG_NOPAZ</span><span class="p">)</span>
+                    <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="s">&#39;paz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">paz</span>
+        <span class="k">return</span> <span class="n">stream</span>
+</div>
+<div class="viewcode-block" id="Client.saveWaveform"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.saveWaveform.html#obspy.arclink.client.Client.saveWaveform">[docs]</a>    <span class="k">def</span> <span class="nf">saveWaveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span>
+                     <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;MSEED&quot;</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                     <span class="n">route</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a retrieved waveform directly into a file.</span>
+
+<span class="sd">        This method ensures the storage of the unmodified waveform data</span>
+<span class="sd">        delivered by the ArcLink server, e.g. preserving the record based</span>
+<span class="sd">        quality flags of MiniSEED files which would be neglected reading it</span>
+<span class="sd">        with :mod:`obspy.mseed`.</span>
+
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param filename: Name of the output file.</span>
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``. Location code may</span>
+<span class="sd">            contain wild cards.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``. Channel code may</span>
+<span class="sd">            contain wild cards.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type format: ``&#39;FSEED&#39;`` or ``&#39;MSEED&#39;``, optional</span>
+<span class="sd">        :param format: Output format. Either as full SEED (``&#39;FSEED&#39;``) or</span>
+<span class="sd">            Mini-SEED (``&#39;MSEED&#39;``) volume. Defaults to ``&#39;MSEED&#39;``.</span>
+
+<span class="sd">            .. note::</span>
+<span class="sd">                A format ``&#39;XSEED&#39;`` is documented, but not yet implemented in</span>
+<span class="sd">                ArcLink.</span>
+<span class="sd">        :type compressed: bool, optional</span>
+<span class="sd">        :param compressed: Request compressed files from ArcLink server.</span>
+<span class="sd">            Default is ``True``.</span>
+<span class="sd">        :type route: bool, optional</span>
+<span class="sd">        :param route: Enables ArcLink routing. Default is ``True``.</span>
+<span class="sd">        :type unpack: bool, optional</span>
+<span class="sd">        :param unpack: Unpack compressed waveform files before storing to disk.</span>
+<span class="sd">            Default is ``True``.</span>
+<span class="sd">        :return: None</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime(2009, 1, 1, 12, 0)</span>
+<span class="sd">        &gt;&gt;&gt; client.saveWaveform(&#39;BW.MANZ.fullseed&#39;, &#39;BW&#39;, &#39;MANZ&#39;, &#39;&#39;, &#39;*&#39;,</span>
+<span class="sd">        ...                     t, t + 20, format=&#39;FSEED&#39;)  # doctest: +SKIP</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check parameters</span>
+        <span class="n">is_name</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Parameter filename must be either string or file handler.&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># request type</span>
+        <span class="n">rtype</span> <span class="o">=</span> <span class="s">&#39;REQUEST WAVEFORM format=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">format</span>
+        <span class="k">if</span> <span class="n">compressed</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">bz2</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">compressed</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&quot; compression=bzip2&quot;</span>
+        <span class="c"># request data</span>
+        <span class="n">rdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">location</span><span class="p">]</span>
+        <span class="c"># fetch waveform</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="p">)</span>
+        <span class="c"># check if data is still encrypted</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Salted__&#39;</span><span class="p">):</span>
+            <span class="c"># set &quot;good&quot; filenames</span>
+            <span class="k">if</span> <span class="n">is_name</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">compressed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.bz2.openssl&#39;</span><span class="p">):</span>
+                    <span class="n">filename</span> <span class="o">+=</span> <span class="s">&#39;.bz2.openssl&#39;</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">compressed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.openssl&#39;</span><span class="p">):</span>
+                    <span class="n">filename</span> <span class="o">+=</span> <span class="s">&#39;.openssl&#39;</span>
+            <span class="c"># warn user that encoded files will not be unpacked</span>
+            <span class="k">if</span> <span class="n">unpack</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Cannot unpack encrypted waveforms.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># not encoded - handle as usual</span>
+            <span class="k">if</span> <span class="n">compressed</span><span class="p">:</span>
+                <span class="c"># unpack compressed data if option unpack is set</span>
+                <span class="k">if</span> <span class="n">unpack</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">is_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.bz2&#39;</span><span class="p">):</span>
+                    <span class="c"># set &quot;good&quot; filenames</span>
+                    <span class="n">filename</span> <span class="o">+=</span> <span class="s">&#39;.bz2&#39;</span>
+        <span class="c"># create file handler if a file name is given</span>
+        <span class="k">if</span> <span class="n">is_name</span><span class="p">:</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_name</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Client.getRouting"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getRouting.html#obspy.arclink.client.Client.getRouting">[docs]</a>    <span class="k">def</span> <span class="nf">getRouting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span>
+                   <span class="n">modified_after</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get primary ArcLink host for given network/stations/time combination.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type modified_after: :class:`~obspy.core.utcdatetime.UTCDateTime`,</span>
+<span class="sd">            optional</span>
+<span class="sd">        :param modified_after: Returns only data modified after given date.</span>
+<span class="sd">            Default is ``None``, returning all available data.</span>
+<span class="sd">        :return: Dictionary of host names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># request type</span>
+        <span class="n">rtype</span> <span class="o">=</span> <span class="s">&#39;REQUEST ROUTING &#39;</span>
+        <span class="k">if</span> <span class="n">modified_after</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39;modified_after=</span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">modified_after</span><span class="o">.</span><span class="n">formatArcLink</span><span class="p">()</span>
+        <span class="c"># request data</span>
+        <span class="n">rdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">]</span>
+        <span class="c"># fetch plain XML document</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># parse XML document</span>
+        <span class="n">xml_doc</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="c"># get routing version</span>
+        <span class="k">if</span> <span class="n">_ROUTING_NS_1_0</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">xml_ns</span> <span class="o">=</span> <span class="n">_ROUTING_NS_1_0</span>
+        <span class="k">elif</span> <span class="n">_ROUTING_NS_0_1</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">xml_ns</span> <span class="o">=</span> <span class="n">_ROUTING_NS_0_1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unknown routing namespace </span><span class="si">%s</span><span class="s">&quot;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="p">)</span>
+        <span class="c"># convert into dictionary</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">route</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns0:route&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns0&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+            <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_ROUTING_NS_0_1</span><span class="p">:</span>
+                <span class="c"># no location/stream codes in 0.1</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;net_code&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;sta_code&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;..&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;networkCode&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> \
+                    <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;stationCode&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> \
+                    <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;locationCode&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> \
+                    <span class="n">route</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;streamCode&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">route</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns0:arclink&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns0&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="p">[</span><span class="s">&#39;priority&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;priority&#39;</span><span class="p">))</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="p">[</span><span class="s">&#39;priority&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">temp</span><span class="p">[</span><span class="s">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">):</span>
+                    <span class="n">temp</span><span class="p">[</span><span class="s">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">temp</span><span class="p">[</span><span class="s">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="c"># address field may contain multiple addresses (?)</span>
+                <span class="n">address</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;address&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">temp</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">temp</span><span class="p">[</span><span class="s">&#39;port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="Client._findRoute"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client._findRoute.html#obspy.arclink.client.Client._findRoute">[docs]</a>    <span class="k">def</span> <span class="nf">_findRoute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="p">,</span> <span class="n">request_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Searches routing table for requested stream id and date/times.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Note: Filtering by date/times is not really supported by ArcLink yet,</span>
+        <span class="c"># therefore not included here</span>
+        <span class="c"># Multiple fitting entries are sorted by priority only</span>
+        <span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">cha</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="p">(</span><span class="n">request_data</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">])[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">routes</span><span class="p">:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">net</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span>  <span class="ow">and</span> <span class="ow">not</span> <span class="n">fnmatch</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">net</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">sta</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span>  <span class="ow">and</span> <span class="ow">not</span> <span class="n">fnmatch</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sta</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> <span class="n">loc</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span>  <span class="ow">and</span> <span class="ow">not</span> <span class="n">fnmatch</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">loc</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">cha</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fnmatch</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">cha</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="c"># no route found</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c"># merge all</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">routes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="p">[]:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="c"># sort by priority</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;priority&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+                                  <span class="n">y</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;priority&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">out</span>
+</div>
+<div class="viewcode-block" id="Client.getQC"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getQC.html#obspy.arclink.client.Client.getQC">[docs]</a>    <span class="k">def</span> <span class="nf">getQC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span>
+              <span class="n">endtime</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">outages</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve QC information of ArcLink streams.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Requesting QC is documented but seems not to work at the moment.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type parameters: str, optional</span>
+<span class="sd">        :param parameters: Comma-separated list of QC parameters. The following</span>
+<span class="sd">            QC parameters are implemented in the present version:</span>
+<span class="sd">            ``&#39;availability&#39;``, ``&#39;delay&#39;``, ``&#39;gaps count&#39;``,</span>
+<span class="sd">            ``&#39;gaps interval&#39;``, ``&#39;gaps length&#39;``, ``&#39;latency&#39;``,</span>
+<span class="sd">            ``&#39;offset&#39;``, ``&#39;overlaps count&#39;``, ``&#39;overlaps interval&#39;``,</span>
+<span class="sd">            ``&#39;overlaps length&#39;``, ``&#39;rms&#39;``, ``&#39;spikes amplitude&#39;``,</span>
+<span class="sd">            ``&#39;spikes count&#39;``, ``&#39;spikes interval&#39;``, ``&#39;timing quality&#39;``</span>
+<span class="sd">            (default is ``&#39;*&#39;`` for requesting all parameters).</span>
+<span class="sd">        :type outages: bool, optional</span>
+<span class="sd">        :param outages: Include list of outages (default is ``True``).</span>
+<span class="sd">        :type logs: bool, optional</span>
+<span class="sd">        :param logs: Include log messages (default is ``True``).</span>
+<span class="sd">        :return: XML document as string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># request type</span>
+        <span class="n">rtype</span> <span class="o">=</span> <span class="s">&#39;REQUEST QC&#39;</span>
+        <span class="k">if</span> <span class="n">outages</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39; outages=true&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39; outages=false&#39;</span>
+        <span class="k">if</span> <span class="n">logs</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39; logs=false&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39; logs=false&#39;</span>
+        <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39; parameters=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c"># request data</span>
+        <span class="n">rdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">location</span><span class="p">]</span>
+        <span class="c"># fetch plain XML document</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+    <span class="nd">@deprecated_keywords</span><span class="p">({</span><span class="s">&#39;getPAZ&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;getCoordinates&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+<div class="viewcode-block" id="Client.getMetadata"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getMetadata.html#obspy.arclink.client.Client.getMetadata">[docs]</a>    <span class="k">def</span> <span class="nf">getMetadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">endtime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns poles, zeros, normalization factor and sensitivity and station</span>
+<span class="sd">        coordinates for a single channel at a given time.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``.</span>
+<span class="sd">        :type time: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param time: Date and time.</span>
+<span class="sd">        :type route: bool, optional</span>
+<span class="sd">        :param route: Enables ArcLink routing (default is ``True``).</span>
+<span class="sd">        :return: Dictionary containing keys &#39;paz&#39; and &#39;coordinates&#39;.</span>
+
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime(2009, 1, 1)</span>
+<span class="sd">        &gt;&gt;&gt; data = client.getMetadata(&#39;BW&#39;, &#39;MANZ&#39;, &#39;&#39;, &#39;EHZ&#39;, t)</span>
+<span class="sd">        &gt;&gt;&gt; data  # doctest: +NORMALIZE_WHITESPACE +SKIP</span>
+<span class="sd">        {&#39;paz&#39;: AttribDict({&#39;poles&#39;: [(-0.037004+0.037016j),</span>
+<span class="sd">                                      (-0.037004-0.037016j), (-251.33+0j),</span>
+<span class="sd">                                      (-131.04-467.29j), (-131.04+467.29j)],</span>
+<span class="sd">                            &#39;sensitivity&#39;: 2516778600.0, &#39;zeros&#39;: [0j, 0j],</span>
+<span class="sd">                            &#39;name&#39;: &#39;LMU:STS-2/N/g=1500&#39;,</span>
+<span class="sd">                            &#39;normalization_factor&#39;: 60077000.0}),</span>
+<span class="sd">        &#39;coordinates&#39;: AttribDict({&#39;latitude&#39;: 49.9862, &#39;elevation&#39;: 635.0,</span>
+<span class="sd">                                   &#39;longitude&#39;: 12.1083})}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># XXX: deprecation handling</span>
+        <span class="k">if</span> <span class="n">starttime</span> <span class="ow">and</span> <span class="n">endtime</span><span class="p">:</span>
+            <span class="c"># warn if old scheme</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;The &#39;starttime&#39; and &#39;endtime&#39; keywords will be &quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;deprecated. Please use &#39;time&#39; instead.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">starttime</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">endtime</span><span class="p">:</span>
+            <span class="c"># use a single starttime as time keyword</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">starttime</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.00001</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">time</span><span class="p">:</span>
+            <span class="c"># if not temporal keyword is given raise an exception</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;keyword &#39;time&#39; is required&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># time is given</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.000001</span>
+        <span class="c"># check if single trace</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;getMetadata supports only a single channel, use &#39;</span> <span class="o">+</span> \
+                  <span class="s">&#39;getInventory instead&#39;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># fetch inventory</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
+                                   <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                                   <span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">,</span>
+                                   <span class="n">instruments</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c"># paz</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">])</span>
+        <span class="c"># HACK: returning first PAZ only for now - should happen only for a</span>
+        <span class="c"># timespan and not a single time</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Multiple PAZ found for </span><span class="si">%s</span><span class="s">. Applying first PAZ.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&#39;paz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">paz</span>
+        <span class="c"># coordinates</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;latitude&#39;</span><span class="p">,</span> <span class="s">&#39;longitude&#39;</span><span class="p">,</span> <span class="s">&#39;elevation&#39;</span><span class="p">]:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+    <span class="k">def</span> <span class="nf">__parsePAZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_doc</span><span class="p">,</span> <span class="n">xml_ns</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="c"># instrument name</span>
+        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="c"># normalization factor</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_1_0</span><span class="p">:</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_factor&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;normalizationFactor&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;norm_fac&#39;</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_1_0</span><span class="p">:</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;normalizationFrequency&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;norm_freq&#39;</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># for backwards compatibility (but this is wrong naming!)</span>
+        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paz</span><span class="p">[</span><span class="s">&#39;normalization_factor&#39;</span><span class="p">]</span>
+
+        <span class="c"># zeros</span>
+        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;zeros&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_1_0</span><span class="p">:</span>
+            <span class="n">nzeros</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;numberOfZeros&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nzeros</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;nzeros&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">zeros</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:zeros/text()&#39;</span><span class="p">,</span>
+                                  <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">zeros</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;)(&#39;</span><span class="p">,</span> <span class="s">&#39;) (&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">zeros</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;zeros&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">complexifyString</span><span class="p">(</span><span class="n">zeros</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c"># check number of zeros</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paz</span><span class="p">[</span><span class="s">&#39;zeros&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">nzeros</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="s">&#39;Could not parse all zeros&#39;</span><span class="p">)</span>
+        <span class="c"># poles</span>
+        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;poles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_1_0</span><span class="p">:</span>
+            <span class="n">npoles</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;numberOfPoles&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">npoles</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xml_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;npoles&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">poles</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:poles/text()&#39;</span><span class="p">,</span>
+                                  <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">poles</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;)(&#39;</span><span class="p">,</span> <span class="s">&#39;) (&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">poles</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="n">paz</span><span class="p">[</span><span class="s">&#39;poles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">complexifyString</span><span class="p">(</span><span class="n">poles</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c"># check number of poles</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paz</span><span class="p">[</span><span class="s">&#39;poles&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">npoles</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="s">&#39;Could not parse all poles&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">paz</span>
+
+<div class="viewcode-block" id="Client.getPAZ"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getPAZ.html#obspy.arclink.client.Client.getPAZ">[docs]</a>    <span class="k">def</span> <span class="nf">getPAZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">endtime</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns poles, zeros, normalization factor and sensitivity for a</span>
+<span class="sd">        single channel at a given time.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``.</span>
+<span class="sd">        :type time: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param time: Date and time.</span>
+<span class="sd">        :type route: bool, optional</span>
+<span class="sd">        :param route: Enables ArcLink routing. Defaults to ``True``.</span>
+<span class="sd">        :return: Dictionary containing PAZ information.</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime(2009, 1, 1)</span>
+<span class="sd">        &gt;&gt;&gt; paz = client.getPAZ(&#39;BW&#39;, &#39;MANZ&#39;, &#39;&#39;, &#39;EHZ&#39;, t)</span>
+<span class="sd">        &gt;&gt;&gt; paz  # doctest: +NORMALIZE_WHITESPACE +SKIP</span>
+<span class="sd">        AttribDict({&#39;poles&#39;: [(-0.037004+0.037016j), (-0.037004-0.037016j),</span>
+<span class="sd">                              (-251.33+0j), (-131.04-467.29j),</span>
+<span class="sd">                              (-131.04+467.29j)],</span>
+<span class="sd">                    &#39;sensitivity&#39;: 2516778600.0,</span>
+<span class="sd">                    &#39;zeros&#39;: [0j, 0j],</span>
+<span class="sd">                    &#39;name&#39;: &#39;LMU:STS-2/N/g=1500&#39;,</span>
+<span class="sd">                    &#39;normalization_factor&#39;: 60077000.0})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># XXX: deprecation handling</span>
+        <span class="k">if</span> <span class="n">starttime</span> <span class="ow">and</span> <span class="n">endtime</span><span class="p">:</span>
+            <span class="c"># warn if old scheme</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;The &#39;starttime&#39; and &#39;endtime&#39; keywords will be &quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;deprecated. Please use &#39;time&#39; instead. Be aware that the&quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;result of getPAZ() will differ using the &#39;time&#39; keyword.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">starttime</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">endtime</span><span class="p">:</span>
+            <span class="c"># use a single starttime as time keyword</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">starttime</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.00001</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">time</span><span class="p">:</span>
+            <span class="c"># if not temporal keyword is given raise an exception</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;keyword &#39;time&#39; is required&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># time is given</span>
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="mf">0.000001</span>
+        <span class="c"># check if single trace</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;getPAZ supports only a single channel, use getInventory&#39;</span> <span class="o">+</span> \
+                  <span class="s">&#39; instead&#39;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># fetch inventory</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
+                                   <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                                   <span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">,</span>
+                                   <span class="n">instruments</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># old deprecated schema (ARGS!!!!)</span>
+                <span class="c"># HACK: returning first PAZ only for now</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Multiple PAZ found for </span><span class="si">%s</span><span class="s">. Applying first PAZ.&quot;</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="n">paz</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">paz</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">paz</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">paz</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># new schema</span>
+                <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">paz</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not find PAZ for channel </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">id</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.saveResponse"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.saveResponse.html#obspy.arclink.client.Client.saveResponse">[docs]</a>    <span class="k">def</span> <span class="nf">saveResponse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span>
+                     <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;SEED&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes response information into a file.</span>
+
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param filename: Name of the output file.</span>
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type format: ``&#39;SEED&#39;``, optional</span>
+<span class="sd">        :param format: Output format. Currently only Dataless SEED is</span>
+<span class="sd">            supported.</span>
+<span class="sd">        :return: None</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime(2009, 1, 1)</span>
+<span class="sd">        &gt;&gt;&gt; client.saveResponse(&#39;BW.MANZ..EHZ.dataless&#39;, &#39;BW&#39;, &#39;MANZ&#39;, &#39;&#39;, &#39;*&#39;,</span>
+<span class="sd">        ...                     t, t + 1, format=&quot;SEED&quot;)  # doctest: +SKIP</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check format</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&quot;SEED&quot;</span><span class="p">:</span>
+            <span class="c"># request type</span>
+            <span class="n">rtype</span> <span class="o">=</span> <span class="s">&#39;REQUEST RESPONSE format=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">format</span>
+            <span class="c"># request data</span>
+            <span class="n">rdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">location</span><span class="p">]</span>
+            <span class="c"># fetch dataless</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unsupported format </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">format</span><span class="p">)</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Client.getInventory"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getInventory.html#obspy.arclink.client.Client.getInventory">[docs]</a>    <span class="k">def</span> <span class="nf">getInventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span>
+                     <span class="n">starttime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(),</span> <span class="n">endtime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(),</span>
+                     <span class="n">instruments</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">sensortype</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                     <span class="n">min_latitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_latitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                     <span class="n">min_longitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_longitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                     <span class="n">restricted</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">permanent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">modified_after</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns information about the available networks and stations in that</span>
+<span class="sd">        particular space/time region.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;MANZ&#39;``. Station code may contain</span>
+<span class="sd">            wild cards.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;01&#39;``. Location code may</span>
+<span class="sd">            contain wild cards.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;EHE&#39;``. Channel code may contain</span>
+<span class="sd">            wild cards.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type instruments: bool, optional</span>
+<span class="sd">        :param instruments: Include instrument data (default is ``False``).</span>
+<span class="sd">        :type route: bool, optional</span>
+<span class="sd">        :param route: Enables ArcLink routing (default is ``True``).</span>
+<span class="sd">        :type sensortype: str, optional</span>
+<span class="sd">        :param sensortype: Limit streams to those using specific sensor types:</span>
+<span class="sd">            ``&quot;VBB&quot;``, ``&quot;BB&quot;``, ``&quot;SM&quot;``, ``&quot;OBS&quot;``, etc. Can be also a</span>
+<span class="sd">            combination like ``&quot;VBB+BB+SM&quot;``.</span>
+<span class="sd">        :type min_latitude: float, optional</span>
+<span class="sd">        :param min_latitude: Minimum latitude.</span>
+<span class="sd">        :type max_latitude: float, optional</span>
+<span class="sd">        :param max_latitude: Maximum latitude.</span>
+<span class="sd">        :type min_longitude: float, optional</span>
+<span class="sd">        :param min_longitude: Minimum longitude.</span>
+<span class="sd">        :type max_longitude: float, optional</span>
+<span class="sd">        :param max_longitude: Maximum longitude</span>
+<span class="sd">        :type permanent: bool, optional</span>
+<span class="sd">        :param permanent: Requesting only permanent or temporary networks</span>
+<span class="sd">            respectively. Default is ``None``, therefore requesting all data.</span>
+<span class="sd">        :type restricted: bool, optional</span>
+<span class="sd">        :param restricted: Requesting only networks/stations/streams that have</span>
+<span class="sd">            restricted or open data respectively. Default is ``None``.</span>
+<span class="sd">        :type modified_after: :class:`~obspy.core.utcdatetime.UTCDateTime`,</span>
+<span class="sd">            optional</span>
+<span class="sd">        :param modified_after: Returns only data modified after given date.</span>
+<span class="sd">            Default is ``None``, returning all available data.</span>
+<span class="sd">        :return: Dictionary of inventory information.</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.arclink import Client</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;webdc.eu&quot;, 18001, user=&#39;test@obspy.org&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; inv = client.getInventory(&#39;BW&#39;, &#39;M*&#39;, &#39;*&#39;, &#39;EHZ&#39;, restricted=False,</span>
+<span class="sd">        ...                           permanent=True, min_longitude=12,</span>
+<span class="sd">        ...                           max_longitude=12.2) #doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; inv.keys()  # doctest: +SKIP</span>
+<span class="sd">        [&#39;BW.MROB&#39;, &#39;BW.MANZ..EHZ&#39;, &#39;BW&#39;, &#39;BW.MANZ&#39;, &#39;BW.MROB..EHZ&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; inv[&#39;BW&#39;]  # doctest: +SKIP</span>
+<span class="sd">        AttribDict({&#39;description&#39;: &#39;BayernNetz&#39;, &#39;region&#39;: &#39;Germany&#39;, ...</span>
+<span class="sd">        &gt;&gt;&gt; inv[&#39;BW.MROB&#39;]  # doctest: +SKIP</span>
+<span class="sd">        AttribDict({&#39;code&#39;: &#39;MROB&#39;, &#39;description&#39;: &#39;Rosenbuehl, Bavaria&#39;, ...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># request type</span>
+        <span class="n">rtype</span> <span class="o">=</span> <span class="s">&#39;REQUEST INVENTORY &#39;</span>
+        <span class="k">if</span> <span class="n">instruments</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39;instruments=true &#39;</span>
+        <span class="k">if</span> <span class="n">modified_after</span><span class="p">:</span>
+            <span class="n">rtype</span> <span class="o">+=</span> <span class="s">&#39;modified_after=</span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">modified_after</span><span class="o">.</span><span class="n">formatArcLink</span><span class="p">()</span>
+        <span class="c"># request data</span>
+        <span class="n">rdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">restricted</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;restricted=true&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">restricted</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;restricted=false&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">permanent</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;permanent=true&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">permanent</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;permanent=false&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sensortype</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;sensortype=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">sensortype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_latitude</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;latmin=</span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">min_latitude</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_latitude</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;latmax=</span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">max_latitude</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_longitude</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;lonmin=</span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">min_longitude</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_longitude</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;lonmax=</span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">max_longitude</span><span class="p">)</span>
+        <span class="c"># fetch plain XML document</span>
+        <span class="k">if</span> <span class="n">network</span> <span class="o">==</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+            <span class="c"># set route to False if not network id is given</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="n">rtype</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="p">)</span>
+        <span class="c"># parse XML document</span>
+        <span class="n">xml_doc</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="c"># get routing version</span>
+        <span class="k">if</span> <span class="n">_INVENTORY_NS_1_0</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">xml_ns</span> <span class="o">=</span> <span class="n">_INVENTORY_NS_1_0</span>
+            <span class="n">stream_ns</span> <span class="o">=</span> <span class="s">&#39;sensorLocation&#39;</span>
+            <span class="n">component_ns</span> <span class="o">=</span> <span class="s">&#39;stream&#39;</span>
+            <span class="n">seismometer_ns</span> <span class="o">=</span> <span class="s">&#39;sensor&#39;</span>
+            <span class="n">name_ns</span> <span class="o">=</span> <span class="s">&#39;publicID&#39;</span>
+            <span class="n">resp_paz_ns</span> <span class="o">=</span> <span class="s">&#39;responsePAZ&#39;</span>
+        <span class="k">elif</span> <span class="n">_INVENTORY_NS_0_2</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">xml_ns</span> <span class="o">=</span> <span class="n">_INVENTORY_NS_0_2</span>
+            <span class="n">stream_ns</span> <span class="o">=</span> <span class="s">&#39;seis_stream&#39;</span>
+            <span class="n">component_ns</span> <span class="o">=</span> <span class="s">&#39;component&#39;</span>
+            <span class="n">seismometer_ns</span> <span class="o">=</span> <span class="s">&#39;seismometer&#39;</span>
+            <span class="n">name_ns</span> <span class="o">=</span> <span class="s">&#39;name&#39;</span>
+            <span class="n">resp_paz_ns</span> <span class="o">=</span> <span class="s">&#39;resp_paz&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unknown inventory namespace </span><span class="si">%s</span><span class="s">&quot;</span>
+            <span class="k">raise</span> <span class="n">ArcLinkException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">nsmap</span><span class="p">)</span>
+
+        <span class="n">sensors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:sensor&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">,</span> <span class="s">&#39;manufacturer&#39;</span><span class="p">,</span> <span class="s">&#39;model&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;unit&#39;</span><span class="p">,</span> <span class="s">&#39;response&#39;</span><span class="p">]:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">sensors</span><span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s">&#39;response&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">entry</span>
+
+        <span class="c"># convert into dictionary</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:network&#39;</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+            <span class="c"># strings</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;archive&#39;</span><span class="p">,</span> <span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39;description&#39;</span><span class="p">,</span> <span class="s">&#39;institutions&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;net_class&#39;</span><span class="p">,</span> <span class="s">&#39;region&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">]:</span>
+                <span class="n">net</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="c"># restricted</span>
+            <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;restricted&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;false&#39;</span><span class="p">:</span>
+                <span class="n">net</span><span class="p">[</span><span class="s">&#39;restricted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">net</span><span class="p">[</span><span class="s">&#39;restricted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="c"># date / times</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="c"># remark</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:remark&#39;</span><span class="p">,</span>
+                    <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">net</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="c"># write network entries</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">net</span><span class="o">.</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="n">net</span>
+            <span class="c"># stations</span>
+            <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns0:station&#39;</span><span class="p">,</span>
+                                         <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns0&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+                <span class="n">sta</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+                <span class="c"># strings</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39;description&#39;</span><span class="p">,</span> <span class="s">&#39;affiliation&#39;</span><span class="p">,</span> <span class="s">&#39;country&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;place&#39;</span><span class="p">,</span> <span class="s">&#39;restricted&#39;</span><span class="p">,</span> <span class="s">&#39;archive_net&#39;</span><span class="p">]:</span>
+                    <span class="n">sta</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="c"># floats</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;elevation&#39;</span><span class="p">,</span> <span class="s">&#39;longitude&#39;</span><span class="p">,</span> <span class="s">&#39;depth&#39;</span><span class="p">,</span> <span class="s">&#39;latitude&#39;</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sta</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">sta</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="c"># restricted</span>
+                <span class="k">if</span> <span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;restricted&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;false&#39;</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="p">[</span><span class="s">&#39;restricted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="p">[</span><span class="s">&#39;restricted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="c"># date / times</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">))</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">))</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="c"># remark</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:remark&#39;</span><span class="p">,</span>
+                        <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">sta</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+                <span class="c"># write station entry</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">net</span><span class="o">.</span><span class="n">code</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">sta</span><span class="o">.</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="n">sta</span>
+                <span class="c"># instruments</span>
+                <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">station</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:&#39;</span> <span class="o">+</span> <span class="n">stream_ns</span><span class="p">,</span>
+                                            <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+                    <span class="c"># date / times</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">end</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">end</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="c"># check date/time boundaries</span>
+                    <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">endtime</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">starttime</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="c"># fetch component</span>
+                    <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:&#39;</span> <span class="o">+</span> <span class="n">component_ns</span><span class="p">,</span>
+                                             <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">}):</span>
+                        <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_0_2</span><span class="p">:</span>
+                            <span class="n">seismometer_id</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">seismometer_ns</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">seismometer_id</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">seismometer_ns</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                        <span class="c"># channel id</span>
+                        <span class="k">if</span> <span class="n">xml_ns</span> <span class="o">==</span> <span class="n">_INVENTORY_NS_0_2</span><span class="p">:</span>
+                            <span class="c"># channel code is split into two attributes</span>
+                            <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">net</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                                           <span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;loc_code&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">),</span>
+                                           <span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39;  &#39;</span><span class="p">)</span> <span class="o">+</span> \
+                                           <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">)])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">id</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">net</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                                           <span class="n">stream</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">),</span>
+                                           <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;code&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)])</span>
+                        <span class="c"># write channel entry</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">temp</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+                        <span class="n">data</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+
+                        <span class="c"># fetch sensitivity etc</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;gain&#39;</span><span class="p">))</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="c"># again keep it backwards compatible</span>
+                        <span class="n">temp</span><span class="p">[</span><span class="s">&#39;gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                <span class="nb">float</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;gainFrequency&#39;</span><span class="p">))</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;gainUnit&#39;</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+                        <span class="c"># date / times</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">))</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;endtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">))</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;endtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">instruments</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">seismometer_id</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="c"># PAZ</span>
+                        <span class="n">paz_id</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:&#39;</span> <span class="o">+</span> <span class="n">seismometer_ns</span> <span class="o">+</span> \
+                                               <span class="s">&#39;[@&#39;</span> <span class="o">+</span> <span class="n">name_ns</span> <span class="o">+</span> <span class="s">&#39;=&quot;&#39;</span> <span class="o">+</span> \
+                                               <span class="n">seismometer_id</span> <span class="o">+</span> <span class="s">&#39;&quot;]/@response&#39;</span><span class="p">,</span>
+                                               <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">paz_id</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">paz_id</span> <span class="o">=</span> <span class="n">paz_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="c"># hack for 0.2 schema</span>
+                        <span class="k">if</span> <span class="n">paz_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;paz:&#39;</span><span class="p">):</span>
+                            <span class="n">paz_id</span> <span class="o">=</span> <span class="n">paz_id</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+                        <span class="n">xml_paz</span> <span class="o">=</span> <span class="n">xml_doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;ns:&#39;</span> <span class="o">+</span> <span class="n">resp_paz_ns</span> <span class="o">+</span> <span class="s">&#39;[@&#39;</span> <span class="o">+</span> \
+                                                <span class="n">name_ns</span> <span class="o">+</span> <span class="s">&#39;=&quot;&#39;</span> <span class="o">+</span> <span class="n">paz_id</span> <span class="o">+</span> <span class="s">&#39;&quot;]&#39;</span><span class="p">,</span>
+                                                <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;ns&#39;</span><span class="p">:</span> <span class="n">xml_ns</span><span class="p">})</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">xml_paz</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="c"># parse PAZ</span>
+                        <span class="n">paz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsePAZ</span><span class="p">(</span><span class="n">xml_paz</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xml_ns</span><span class="p">)</span>
+                        <span class="c"># sensitivity</span>
+                        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span>
+                        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensitivity_frequency&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                            <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_frequency&#39;</span><span class="p">]</span>
+                        <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensitivity_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s">&#39;sensitivity_unit&#39;</span><span class="p">]</span>
+                        <span class="n">temp</span><span class="p">[</span><span class="s">&#39;paz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paz</span>
+
+                        <span class="c"># add some seismometer-specific &quot;nice to have&quot; stuff</span>
+                        <span class="n">publicID</span> <span class="o">=</span> <span class="n">xml_paz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;publicID&#39;</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensor_manufacturer&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                <span class="n">sensors</span><span class="p">[</span><span class="n">publicID</span><span class="p">][</span><span class="s">&#39;manufacturer&#39;</span><span class="p">]</span>
+                            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensor_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensors</span><span class="p">[</span><span class="n">publicID</span><span class="p">][</span><span class="s">&#39;model&#39;</span><span class="p">]</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensor_manufacturer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                            <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensor_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="Client.getNetworks"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getNetworks.html#obspy.arclink.client.Client.getNetworks">[docs]</a>    <span class="k">def</span> <span class="nf">getNetworks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of available networks within the given time span.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Currently the time span seems to be ignored by the ArcLink servers,</span>
+<span class="sd">            therefore all possible networks are returned.</span>
+
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :return: Dictionary of network data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span>
+                                 <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">,</span> <span class="n">route</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.getStations"><a class="viewcode-back" href="../../../packages/autogen/obspy.arclink.client.Client.getStations.html#obspy.arclink.client.Client.getStations">[docs]</a>    <span class="k">def</span> <span class="nf">getStations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of available stations in the given network(s).</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Currently the time span seems to be ignored by the ArcLink servers,</span>
+<span class="sd">            therefore all possible stations are returned.</span>
+
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;BW&#39;``.</span>
+<span class="sd">        :return: Dictionary of station data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">starttime</span><span class="o">=</span><span class="n">starttime</span><span class="p">,</span>
+                                 <span class="n">endtime</span><span class="o">=</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> \
+                    <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">network</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span><span class="p">)</span> \
+                    <span class="ow">and</span> <span class="s">&quot;code&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">stations</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

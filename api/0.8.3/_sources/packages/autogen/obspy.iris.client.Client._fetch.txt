@@ -1,0 +1,6 @@
+obspy.iris.client.Client._fetch
+===============================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client._fetch

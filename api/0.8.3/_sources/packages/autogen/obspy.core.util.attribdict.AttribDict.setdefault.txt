@@ -1,0 +1,6 @@
+obspy.core.util.attribdict.AttribDict.setdefault
+================================================
+
+.. currentmodule:: obspy.core.util.attribdict
+
+.. automethod:: AttribDict.setdefault

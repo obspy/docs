@@ -1,0 +1,6 @@
+obspy.signal.tf_misfit.pm
+=========================
+
+.. currentmodule:: obspy.signal.tf_misfit
+
+.. autofunction:: pm

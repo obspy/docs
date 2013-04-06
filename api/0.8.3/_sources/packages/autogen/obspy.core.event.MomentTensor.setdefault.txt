@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.setdefault
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.setdefault

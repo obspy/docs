@@ -1,0 +1,6 @@
+obspy.segy.pack.pack_2byte_Integer
+==================================
+
+.. currentmodule:: obspy.segy.pack
+
+.. autofunction:: pack_2byte_Integer

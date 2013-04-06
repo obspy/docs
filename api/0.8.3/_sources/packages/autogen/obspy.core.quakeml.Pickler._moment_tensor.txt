@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._moment_tensor
+=========================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._moment_tensor

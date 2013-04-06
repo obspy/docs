@@ -1,0 +1,6 @@
+obspy.signal.tf_misfit.fem
+==========================
+
+.. currentmodule:: obspy.signal.tf_misfit
+
+.. autofunction:: fem

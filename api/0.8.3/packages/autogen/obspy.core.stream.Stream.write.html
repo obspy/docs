@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.stream.Stream.write &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.stream.Stream" href="obspy.core.stream.Stream.html" />
+    <link rel="next" title="obspy.core.stream.Stream._cleanup" href="obspy.core.stream.Stream._cleanup.html" />
+    <link rel="prev" title="obspy.core.stream.Stream.verify" href="obspy.core.stream.Stream.verify.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream._cleanup.html" title="obspy.core.stream.Stream._cleanup"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.verify.html" title="obspy.core.stream.Stream.verify"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" accesskey="U">obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-stream-stream-write">
+<h1>obspy.core.stream.Stream.write<a class="headerlink" href="#obspy-core-stream-stream-write" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.stream.Stream.write">
+<tt class="descclassname">Stream.</tt><tt class="descname">write</tt><big>(</big><em>filename</em>, <em>format</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/stream.html#Stream.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.stream.Stream.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves stream into a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) <span class="dash" /> The name of the file to write.</li>
+<li><strong>format</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/string.html#string" title="(in Python v2.7)"><em>string</em></a>) <span class="dash" /> The format to write must be specified. One of
+<tt class="docutils literal"><span class="pre">&quot;MSEED&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;GSE2&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SAC&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SACXY&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;Q&quot;</span></tt>,
+<tt class="docutils literal"><span class="pre">&quot;SH_ASC&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SEGY&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SU&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;WAV&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;PICKLE&quot;</span></tt>. See
+the <a class="reference internal" href="#supported-formats">Supported Formats</a> section below for a full list of supported
+formats.</li>
+<li><strong>kwargs</strong> <span class="dash" /> Additional keyword arguments passed to the underlying
+waveform writer method.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;example.mseed&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;MSEED&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>Writing single traces into files with meaningful filenames can be done
+e.g. using trace.id</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="p">:</span> 
+<span class="gp">... </span>    <span class="n">tr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">.MSEED&quot;</span> <span class="o">%</span> <span class="n">tr</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;MSEED&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p class="rubric"><span class="target" id="supported-formats">Supported Formats</span></p>
+<p>Additional ObsPy modules extend the parameters of the
+<a class="reference internal" href="#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method. The following
+table summarizes all known formats currently available for ObsPy.</p>
+<p>Please refer to the <em>Linked Function Call</em> of each module for any extra
+options available.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="31%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Format</th>
+<th class="head">Required Module</th>
+<th class="head">Linked Function Call</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MSEED</td>
+<td><a class="reference internal" href="../obspy.mseed.html#module-obspy.mseed" title="obspy.mseed"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.mseed</span></tt></a></td>
+<td><a class="reference internal" href="obspy.mseed.core.writeMSEED.html#obspy.mseed.core.writeMSEED" title="obspy.mseed.core.writeMSEED"><tt class="xref py py-func docutils literal"><span class="pre">obspy.mseed.core.writeMSEED()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>GSE2</td>
+<td><a class="reference internal" href="../obspy.gse2.html#module-obspy.gse2" title="obspy.gse2"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.gse2</span></tt></a></td>
+<td><a class="reference internal" href="obspy.gse2.core.writeGSE2.html#obspy.gse2.core.writeGSE2" title="obspy.gse2.core.writeGSE2"><tt class="xref py py-func docutils literal"><span class="pre">obspy.gse2.core.writeGSE2()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SAC</td>
+<td><a class="reference internal" href="../obspy.sac.html#module-obspy.sac" title="obspy.sac"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sac</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sac.core.writeSAC.html#obspy.sac.core.writeSAC" title="obspy.sac.core.writeSAC"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sac.core.writeSAC()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SACXY</td>
+<td><a class="reference internal" href="../obspy.sac.html#module-obspy.sac" title="obspy.sac"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sac</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sac.core.writeSACXY.html#obspy.sac.core.writeSACXY" title="obspy.sac.core.writeSACXY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sac.core.writeSACXY()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>Q</td>
+<td><a class="reference internal" href="../obspy.sh.html#module-obspy.sh" title="obspy.sh"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sh</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sh.core.writeQ.html#obspy.sh.core.writeQ" title="obspy.sh.core.writeQ"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sh.core.writeQ()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SH_ASC</td>
+<td><a class="reference internal" href="../obspy.sh.html#module-obspy.sh" title="obspy.sh"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sh</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sh.core.writeASC.html#obspy.sh.core.writeASC" title="obspy.sh.core.writeASC"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sh.core.writeASC()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SEGY</td>
+<td><a class="reference internal" href="../obspy.segy.html#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.segy</span></tt></a></td>
+<td><a class="reference internal" href="obspy.segy.core.writeSEGY.html#obspy.segy.core.writeSEGY" title="obspy.segy.core.writeSEGY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.core.writeSEGY()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SLIST</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><a class="reference internal" href="obspy.core.ascii.writeSLIST.html#obspy.core.ascii.writeSLIST" title="obspy.core.ascii.writeSLIST"><tt class="xref py py-func docutils literal"><span class="pre">obspy.core.ascii.writeSLIST()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SU</td>
+<td><a class="reference internal" href="../obspy.segy.html#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.segy</span></tt></a></td>
+<td><a class="reference internal" href="obspy.segy.core.writeSU.html#obspy.segy.core.writeSU" title="obspy.segy.core.writeSU"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.core.writeSU()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>TSPAIR</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><a class="reference internal" href="obspy.core.ascii.writeTSPAIR.html#obspy.core.ascii.writeTSPAIR" title="obspy.core.ascii.writeTSPAIR"><tt class="xref py py-func docutils literal"><span class="pre">obspy.core.ascii.writeTSPAIR()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>WAV</td>
+<td><a class="reference internal" href="../obspy.wav.html#module-obspy.wav" title="obspy.wav"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.wav</span></tt></a></td>
+<td><a class="reference internal" href="obspy.wav.core.writeWAV.html#obspy.wav.core.writeWAV" title="obspy.wav.core.writeWAV"><tt class="xref py py-func docutils literal"><span class="pre">obspy.wav.core.writeWAV()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>PICKLE</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><a class="reference internal" href="obspy.core.stream.readPickle.html#obspy.core.stream.readPickle" title="obspy.core.stream.readPickle"><tt class="xref py py-func docutils literal"><span class="pre">obspy.core.stream.readPickle()</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.stream.Stream.write.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream._cleanup.html" title="obspy.core.stream.Stream._cleanup"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.verify.html" title="obspy.core.stream.Stream.verify"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" >obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

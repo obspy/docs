@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.pop
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.pop

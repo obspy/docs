@@ -1,0 +1,162 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11.2.7. obspy.signal.trigger.arPick &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.trigger" href="obspy.signal.trigger.html" />
+    <link rel="next" title="11.2.2. obspy.signal.trigger.carlSTATrig" href="obspy.signal.trigger.carlSTATrig.html" />
+    <link rel="prev" title="11.2.5. obspy.signal.trigger.zDetect" href="obspy.signal.trigger.zDetect.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.carlSTATrig.html" title="11.2.2. obspy.signal.trigger.carlSTATrig"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.zDetect.html" title="11.2.5. obspy.signal.trigger.zDetect"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.trigger.html" accesskey="U">obspy.signal.trigger</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-trigger-arpick">
+<h1>11.2.7. obspy.signal.trigger.arPick<a class="headerlink" href="#obspy-signal-trigger-arpick" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.trigger.arPick">
+<tt class="descname">arPick</tt><big>(</big><em>a</em>, <em>b</em>, <em>c</em>, <em>samp_rate</em>, <em>f1</em>, <em>f2</em>, <em>lta_p</em>, <em>sta_p</em>, <em>lta_s</em>, <em>sta_s</em>, <em>m_p</em>, <em>m_s</em>, <em>l_p</em>, <em>l_s</em>, <em>s_pick=True</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/trigger.html#arPick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.trigger.arPick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return corresponding picks of the AR picker</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> <span class="dash" /> Z signal of numpy.ndarray float32 point data</li>
+<li><strong>b</strong> <span class="dash" /> N signal of numpy.ndarray float32 point data</li>
+<li><strong>c</strong> <span class="dash" /> E signal of numpy.ndarray float32 point data</li>
+<li><strong>samp_rate</strong> <span class="dash" /> no of samples per second</li>
+<li><strong>f1</strong> <span class="dash" /> frequency of lower Bandpass window</li>
+<li><strong>f2</strong> <span class="dash" /> frequency of upper Bandpass window</li>
+<li><strong>lta_p</strong> <span class="dash" /> length of LTA for parrival in seconds</li>
+<li><strong>sta_p</strong> <span class="dash" /> length of STA for parrival in seconds</li>
+<li><strong>lta_s</strong> <span class="dash" /> length of LTA for sarrival in seconds</li>
+<li><strong>sta_s</strong> <span class="dash" /> length of STA for sarrival in seconds</li>
+<li><strong>m_p</strong> <span class="dash" /> number of AR coefficients for parrival</li>
+<li><strong>m_s</strong> <span class="dash" /> number of AR coefficients for sarrival</li>
+<li><strong>l_p</strong> <span class="dash" /> length of variance window for parrival in seconds</li>
+<li><strong>l_s</strong> <span class="dash" /> length of variance window for sarrival in seconds</li>
+<li><strong>s_pick</strong> <span class="dash" /> if true pick also S phase, elso only P</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(ptime, stime) parrival and sarrival</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.trigger.arPick.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.carlSTATrig.html" title="11.2.2. obspy.signal.trigger.carlSTATrig"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.trigger.zDetect.html" title="11.2.5. obspy.signal.trigger.zDetect"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.trigger.html" >obspy.signal.trigger</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

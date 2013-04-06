@@ -1,0 +1,6 @@
+obspy.sac.core.writeSACXY
+=========================
+
+.. currentmodule:: obspy.sac.core
+
+.. autofunction:: writeSACXY

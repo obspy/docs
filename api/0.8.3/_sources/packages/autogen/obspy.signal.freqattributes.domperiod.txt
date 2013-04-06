@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.domperiod
+=====================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: domperiod

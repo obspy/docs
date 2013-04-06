@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core - Core classes of ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.core.stream.read" href="autogen/obspy.core.stream.read.html" />
+    <link rel="prev" title="obspy.seishub.client.Client.__init__" href="autogen/obspy.seishub.client.Client.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.core.stream.read.html" title="obspy.core.stream.read"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seishub.client.Client.__init__.html" title="obspy.seishub.client.Client.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.core"></span><div class="section" id="obspy-core-core-classes-of-obspy">
+<h1>obspy.core - Core classes of ObsPy<a class="headerlink" href="#obspy-core-core-classes-of-obspy" title="Permalink to this headline">¶</a></h1>
+<p>This package contains common methods and classes for ObsPy. It includes the
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>, <a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>,
+<a class="reference internal" href="autogen/obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, <a class="reference internal" href="autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a>
+classes and methods for <a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">reading</span></tt></a> seismogram
+files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Seismograms of various formats (e.g. SAC, MiniSEED, GSE2, SEISAN, Q, etc.) can
+be imported into a <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object using the
+<a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function.</p>
+<p>Streams are list-like objects which contain multiple
+<a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, i.e. gap-less continuous time series
+and related header/meta information.</p>
+<p>Each Trace object has the attribute <tt class="docutils literal"><span class="pre">data</span></tt> pointing to a <a class="reference external" href="http://docs.scipy.org">NumPy</a>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a> of the actual time series and the attribute <tt class="docutils literal"><span class="pre">stats</span></tt>
+which contains all meta information in a dict-like
+<a class="reference internal" href="autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-class docutils literal"><span class="pre">Stats</span></tt></a> object. Both attributes <tt class="docutils literal"><span class="pre">starttime</span></tt> and
+<tt class="docutils literal"><span class="pre">endtime</span></tt> of the Stats object are
+<a class="reference internal" href="autogen/obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> objects.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> with an example seismogram can be created
+by calling <a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> without any arguments.
+Local files can be read by specifying the filename, files stored on http
+servers (e.g. at <a class="reference external" href="http://examples.obspy.org">http://examples.obspy.org</a>) can be read by specifying their
+URL. For details see the documentation of <a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">3 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHN | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHE | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>  
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([ 0.        ,  0.00694644,  0.07597424, ...,  1.93449584,</span>
+<span class="go">        0.98196204,  0.44196924])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span>  
+<span class="go">         network: BW</span>
+<span class="go">         station: RJOB</span>
+<span class="go">        location:</span>
+<span class="go">         channel: EHZ</span>
+<span class="go">       starttime: 2009-08-24T00:20:03.000000Z</span>
+<span class="go">         endtime: 2009-08-24T00:20:32.990000Z</span>
+<span class="go">   sampling_rate: 100.0</span>
+<span class="go">           delta: 0.01</span>
+<span class="go">            npts: 3000</span>
+<span class="go">           calib: 1.0</span>
+<span class="go">           ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+<span class="go">UTCDateTime(2009, 8, 24, 0, 20, 3)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.stream.read.html#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-obj docutils literal"><span class="pre">read</span></tt></a></td>
+<td>Read waveform files into an ObsPy Stream object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-obj docutils literal"><span class="pre">Trace</span></tt></a></td>
+<td>An object containing data of a continuous series, such as a seismic trace.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.trace.Stats.html#obspy.core.trace.Stats" title="obspy.core.trace.Stats"><tt class="xref py py-obj docutils literal"><span class="pre">Stats</span></tt></a></td>
+<td>A container for additional header information of a ObsPy Trace object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-obj docutils literal"><span class="pre">Stream</span></tt></a></td>
+<td>List like object of multiple ObsPy Trace objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-obj docutils literal"><span class="pre">UTCDateTime</span></tt></a></td>
+<td>A UTC-based datetime object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.trace.html#module-obspy.core.trace" title="obspy.core.trace"><tt class="xref py py-obj docutils literal"><span class="pre">trace</span></tt></a></td>
+<td>Module for handling ObsPy Trace objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.stream.html#module-obspy.core.stream" title="obspy.core.stream"><tt class="xref py py-obj docutils literal"><span class="pre">stream</span></tt></a></td>
+<td>Module for handling ObsPy Stream objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.utcdatetime.html#module-obspy.core.utcdatetime" title="obspy.core.utcdatetime"><tt class="xref py py-obj docutils literal"><span class="pre">utcdatetime</span></tt></a></td>
+<td>Module containing a UTC-based datetime class.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.event.html#module-obspy.core.event" title="obspy.core.event"><tt class="xref py py-obj docutils literal"><span class="pre">event</span></tt></a></td>
+<td>Module for handling ObsPy Catalog and Event objects.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.ascii.html#module-obspy.core.ascii" title="obspy.core.ascii"><tt class="xref py py-obj docutils literal"><span class="pre">ascii</span></tt></a></td>
+<td>Simple ASCII time series formats</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.quakeml.html#module-obspy.core.quakeml" title="obspy.core.quakeml"><tt class="xref py py-obj docutils literal"><span class="pre">quakeml</span></tt></a></td>
+<td>QuakeML read and write support.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.util.html#module-obspy.core.util" title="obspy.core.util"><tt class="xref py py-obj docutils literal"><span class="pre">util</span></tt></a></td>
+<td>obspy.core.util - Various utilities for ObsPy</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.preview.html#module-obspy.core.preview" title="obspy.core.preview"><tt class="xref py py-obj docutils literal"><span class="pre">preview</span></tt></a></td>
+<td>Tools for creating and merging previews.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scripts">
+<h2>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.core.scripts.runtests.html#module-obspy.core.scripts.runtests" title="obspy.core.scripts.runtests"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.runtests</span></tt></a></td>
+<td>A command-line program that runs all ObsPy tests.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.core.scripts.reftekrescue.html#module-obspy.core.scripts.reftekrescue" title="obspy.core.scripts.reftekrescue"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.reftekrescue</span></tt></a></td>
+<td>Restore REFTEK data from raw binary data dumps.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.core - Core classes of ObsPy</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts">Scripts</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.core.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.core.stream.read.html" title="obspy.core.stream.read"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.seishub.client.Client.__init__.html" title="obspy.seishub.client.Client.__init__"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

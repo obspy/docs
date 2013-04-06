@@ -1,0 +1,6 @@
+obspy.core.util.base.add_unittests
+==================================
+
+.. currentmodule:: obspy.core.util.base
+
+.. autofunction:: add_unittests

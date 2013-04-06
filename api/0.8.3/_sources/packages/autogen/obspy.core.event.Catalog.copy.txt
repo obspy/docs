@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.copy
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.copy

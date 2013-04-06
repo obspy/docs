@@ -1,0 +1,6 @@
+obspy.core.event.validate
+=========================
+
+.. currentmodule:: obspy.core.event
+
+.. autofunction:: validate

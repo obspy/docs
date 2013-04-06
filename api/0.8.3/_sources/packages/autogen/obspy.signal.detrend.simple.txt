@@ -1,0 +1,6 @@
+obspy.signal.detrend.simple
+===========================
+
+.. currentmodule:: obspy.signal.detrend
+
+.. autofunction:: simple

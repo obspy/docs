@@ -1,0 +1,6 @@
+obspy.core.event.Pick.__getitem__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.__getitem__

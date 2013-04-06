@@ -1,0 +1,6 @@
+obspy.core.event.Pick.pop
+=========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.pop

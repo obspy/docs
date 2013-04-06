@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.__getattr__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.__getattr__

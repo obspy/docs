@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._station_magnitude
+=============================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._station_magnitude

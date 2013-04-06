@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.iterkeys
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.iterkeys

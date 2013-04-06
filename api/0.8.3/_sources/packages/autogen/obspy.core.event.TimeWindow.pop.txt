@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.pop
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.pop

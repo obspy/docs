@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.copy
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.copy

@@ -1,0 +1,6 @@
+obspy.seg2.seg2.SEG2.readFile
+=============================
+
+.. currentmodule:: obspy.seg2.seg2
+
+.. automethod:: SEG2.readFile

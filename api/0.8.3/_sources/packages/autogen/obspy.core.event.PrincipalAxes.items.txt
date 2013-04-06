@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.items
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.items

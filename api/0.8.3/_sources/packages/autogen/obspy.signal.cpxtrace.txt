@@ -1,0 +1,32 @@
+obspy.signal.cpxtrace
+=====================
+
+.. currentmodule:: obspy.signal.cpxtrace
+.. automodule:: obspy.signal.cpxtrace
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      centroid
+      envelope
+      instBwith
+      instFreq
+      normEnvelope
+   
+   
+
+   
+   
+   
+
+   
+   
+   

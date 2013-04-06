@@ -1,0 +1,6 @@
+obspy.signal.cpxtrace.normEnvelope
+==================================
+
+.. currentmodule:: obspy.signal.cpxtrace
+
+.. autofunction:: normEnvelope

@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16. Export Seismograms to ASCII &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="17. Anything to MiniSEED" href="anything_to_miniseed.html" />
+    <link rel="prev" title="15. Export Seismograms to MATLAB" href="export_seismograms_to_matlab.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="anything_to_miniseed.html" title="17. Anything to MiniSEED"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="export_seismograms_to_matlab.html" title="15. Export Seismograms to MATLAB"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="export-seismograms-to-ascii">
+<h1>16. Export Seismograms to ASCII<a class="headerlink" href="#export-seismograms-to-ascii" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="built-in-formats">
+<h2>16.1. Built-in Formats<a class="headerlink" href="#built-in-formats" title="Permalink to this headline">¶</a></h2>
+<p>You may directly export waveform data to any ASCII format available by ObsPy
+using the <a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method on the generated
+<a class="reference internal" href="../../packages/autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;http://examples.obspy.org/RJOB20090824.ehz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;outfile.ascii&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;SLIST&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following ASCII formats are currently supported:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">SLIST</span></tt>, a ASCII time series format represented with a header line
+followed by a sample lists (see also
+<a class="reference internal" href="../../packages/autogen/obspy.core.ascii.writeSLIST.html#obspy.core.ascii.writeSLIST" title="obspy.core.ascii.writeSLIST"><tt class="xref py py-func docutils literal"><span class="pre">SLIST</span> <span class="pre">format</span> <span class="pre">description</span></tt></a>):</p>
+<div class="highlight-python"><pre>TIMESERIES BW_RJOB__EHZ_D, 6001 samples, 200 sps, 2009-08-24T00:20:03.000000, SLIST, INTEGER,
+288 300 292 285 265 287
+279 250 278 278 268 258
+...</pre>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">TSPAIR</span></tt>, a ASCII format where data is written in time-sample pairs
+(see also <a class="reference internal" href="../../packages/autogen/obspy.core.ascii.writeTSPAIR.html#obspy.core.ascii.writeTSPAIR" title="obspy.core.ascii.writeTSPAIR"><tt class="xref py py-func docutils literal"><span class="pre">TSPAIR</span> <span class="pre">format</span> <span class="pre">description</span></tt></a>):</p>
+<div class="highlight-python"><pre>TIMESERIES BW_RJOB__EHZ_D, 6001 samples, 200 sps, 2009-08-24T00:20:03.000000, TSPAIR, INTEGER,
+2009-08-24T00:20:03.000000  288
+2009-08-24T00:20:03.005000  300
+2009-08-24T00:20:03.010000  292
+2009-08-24T00:20:03.015000  285
+2009-08-24T00:20:03.020000  265
+2009-08-24T00:20:03.025000  287
+...</pre>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">SH_ASC</span></tt>, ASCII format supported by <a class="reference external" href="http://www.seismic-handler.org">Seismic Handler</a>:</p>
+<div class="highlight-python"><pre>DELTA: 5.000000e-03
+LENGTH: 6001
+START: 24-AUG-2009_00:20:03.000
+COMP: Z
+CHAN1: E
+CHAN2: H
+STATION: RJOB
+CALIB: 1.000000e+00
+2.880000e+02 3.000000e+02 2.920000e+02 2.850000e+02
+2.650000e+02 2.870000e+02 2.790000e+02 2.500000e+02
+...</pre>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="custom-format">
+<h2>16.2. Custom Format<a class="headerlink" href="#custom-format" title="Permalink to this headline">¶</a></h2>
+<p>In the following, a small Python script is shown which converts each
+<a class="reference internal" href="../../packages/autogen/obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> of a seismogram file to an ASCII file with
+a custom header. Waveform data will be multiplied by a given <tt class="docutils literal"><span class="pre">calibration</span></tt>
+factor and written using <a class="reference external" href="http://numpy.scipy.org/">NumPy</a>&#8216;s <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">savetxt()</span></tt></a> function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">USAGE: export_seismograms_to_ascii.py in_file out_file calibration</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">in_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">calibration</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">__doc__</span>
+    <span class="k">raise</span>
+
+<span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">_</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;# STATION </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;# CHANNEL </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">channel</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;# START_TIME </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;# SAMP_FREQ </span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;# NDAT </span><span class="si">%d</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">calibration</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%f</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">16. Export Seismograms to ASCII</a><ul>
+<li><a class="reference internal" href="#built-in-formats">16.1. Built-in Formats</a></li>
+<li><a class="reference internal" href="#custom-format">16.2. Custom Format</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/export_seismograms_to_ascii.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="anything_to_miniseed.html" title="17. Anything to MiniSEED"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="export_seismograms_to_matlab.html" title="15. Export Seismograms to MATLAB"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

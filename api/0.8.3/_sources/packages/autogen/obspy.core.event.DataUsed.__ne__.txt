@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.__ne__
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.__ne__

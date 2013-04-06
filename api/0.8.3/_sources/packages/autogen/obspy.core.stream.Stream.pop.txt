@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.pop
+============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.pop

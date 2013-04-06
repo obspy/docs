@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.seishub.client.Client &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.seishub.client" href="obspy.seishub.client.html" />
+    <link rel="next" title="obspy.seishub.client.Client.ping" href="obspy.seishub.client.Client.ping.html" />
+    <link rel="prev" title="obspy.seishub.client.Client.__init__" href="obspy.seishub.client.Client.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client.Client.ping.html" title="obspy.seishub.client.Client.ping"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client.Client.__init__.html" title="obspy.seishub.client.Client.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seishub.html" >obspy.seishub - SeisHub database client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.seishub.client.html" accesskey="U">obspy.seishub.client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-seishub-client-client">
+<h1>obspy.seishub.client.Client<a class="headerlink" href="#obspy-seishub-client-client" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.seishub.client.Client">
+<em class="property">class </em><tt class="descname">Client</tt><big>(</big><em>base_url='http://teide.geophysik.uni-muenchen.de:8080'</em>, <em>user='admin'</em>, <em>password='admin'</em>, <em>timeout=10</em>, <em>debug=False</em>, <em>retries=3</em><big>)</big><a class="reference internal" href="../../_modules/obspy/seishub/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.seishub.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>SeisHub database request Client class.</p>
+<p>The following classes are automatically linked with initialization.
+Follow the links in &#8220;Linked Class&#8221; for more information. They register
+via the name listed in &#8220;Entry Point&#8221;.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Entry Point</th>
+<th class="head">Linked Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Client.waveform</span></tt></td>
+<td><a class="reference internal" href="obspy.seishub.client._WaveformMapperClient.html#obspy.seishub.client._WaveformMapperClient" title="obspy.seishub.client._WaveformMapperClient"><tt class="xref py py-class docutils literal"><span class="pre">_WaveformMapperClient</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">Client.station</span></tt></td>
+<td><a class="reference internal" href="obspy.seishub.client._StationMapperClient.html#obspy.seishub.client._StationMapperClient" title="obspy.seishub.client._StationMapperClient"><tt class="xref py py-class docutils literal"><span class="pre">_StationMapperClient</span></tt></a></td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">Client.event</span></tt></td>
+<td><a class="reference internal" href="obspy.seishub.client._EventMapperClient.html#obspy.seishub.client._EventMapperClient" title="obspy.seishub.client._EventMapperClient"><tt class="xref py py-class docutils literal"><span class="pre">_EventMapperClient</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.seishub</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-09-03 00:00:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">waveform</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;BW&quot;</span><span class="p">,</span> <span class="s">&quot;RTPI&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;EHZ&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">BW.RTPI..EHZ | 2009-09-03T00:00:00.000000Z - ... | 250.0 Hz, 5001 samples</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client.Client.ping.html#obspy.seishub.client.Client.ping" title="obspy.seishub.client.Client.ping"><tt class="xref py py-obj docutils literal"><span class="pre">ping</span></tt></a></td>
+<td>Ping the SeisHub server.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seishub.client.Client.testAuth.html#obspy.seishub.client.Client.testAuth" title="obspy.seishub.client.Client.testAuth"><tt class="xref py py-obj docutils literal"><span class="pre">testAuth</span></tt></a></td>
+<td>Test if authentication information is valid.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client.Client._HTTP_request.html#obspy.seishub.client.Client._HTTP_request" title="obspy.seishub.client.Client._HTTP_request"><tt class="xref py py-obj docutils literal"><span class="pre">_HTTP_request</span></tt></a></td>
+<td>Send a HTTP request via urllib2.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.seishub.client.Client._fetch.html#obspy.seishub.client.Client._fetch" title="obspy.seishub.client.Client._fetch"><tt class="xref py py-obj docutils literal"><span class="pre">_fetch</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client.Client._objectify.html#obspy.seishub.client.Client._objectify" title="obspy.seishub.client.Client._objectify"><tt class="xref py py-obj docutils literal"><span class="pre">_objectify</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.seishub.client.Client.__init__.html#obspy.seishub.client.Client.__init__" title="obspy.seishub.client.Client.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Initializes the SeisHub Web service client.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.seishub.client.Client.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client.Client.ping.html" title="obspy.seishub.client.Client.ping"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.seishub.client.Client.__init__.html" title="obspy.seishub.client.Client.__init__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.seishub.html" >obspy.seishub - SeisHub database client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.seishub.client.html" >obspy.seishub.client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

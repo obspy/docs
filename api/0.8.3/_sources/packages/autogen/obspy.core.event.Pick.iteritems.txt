@@ -1,0 +1,6 @@
+obspy.core.event.Pick.iteritems
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.iteritems

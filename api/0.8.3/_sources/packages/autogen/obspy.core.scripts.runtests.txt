@@ -1,0 +1,11 @@
+obspy.core.scripts.runtests
+===========================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-runtests``. For more info on the command line options,
+    please run ``$ obspy-runtests --help``.
+    Alternatively you can also execute ``$ python -m obspy.core.scripts.runtests``.
+
+.. currentmodule:: obspy.core.scripts.runtests
+.. automodule:: obspy.core.scripts.runtests

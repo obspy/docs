@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.core.LazyTraceHeaderAttribDict &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.segy.core" href="obspy.segy.core.html" />
+    <link rel="next" title="obspy.segy.core.LazyTraceHeaderAttribDict.clear" href="obspy.segy.core.LazyTraceHeaderAttribDict.clear.html" />
+    <link rel="prev" title="obspy.segy.core.writeSU" href="obspy.segy.core.writeSU.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.LazyTraceHeaderAttribDict.clear.html" title="obspy.segy.core.LazyTraceHeaderAttribDict.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.writeSU.html" title="obspy.segy.core.writeSU"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.core.html" accesskey="U">obspy.segy.core</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-segy-core-lazytraceheaderattribdict">
+<h1>obspy.segy.core.LazyTraceHeaderAttribDict<a class="headerlink" href="#obspy-segy-core-lazytraceheaderattribdict" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.segy.core.LazyTraceHeaderAttribDict">
+<em class="property">class </em><tt class="descname">LazyTraceHeaderAttribDict</tt><big>(</big><em>unpacked_header</em>, <em>unpacked_header_endian</em>, <em>data={}</em><big>)</big><a class="reference internal" href="../../_modules/obspy/segy/core.html#LazyTraceHeaderAttribDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.segy.core.LazyTraceHeaderAttribDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="obspy.core.util.attribdict.AttribDict.html#obspy.core.util.attribdict.AttribDict" title="obspy.core.util.attribdict.AttribDict"><tt class="xref py py-class docutils literal"><span class="pre">obspy.core.util.attribdict.AttribDict</span></tt></a></p>
+<p>This version of AttribDict will unpack header values only if needed.</p>
+<p>This saves a huge amount of memory. The disadvantage is that it is no more
+possible to use tab completion in e.g. ipython.</p>
+<p>This version is used for the SEGY/SU trace headers.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.clear.html#obspy.segy.core.LazyTraceHeaderAttribDict.clear" title="obspy.segy.core.LazyTraceHeaderAttribDict.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.copy.html#obspy.segy.core.LazyTraceHeaderAttribDict.copy" title="obspy.segy.core.LazyTraceHeaderAttribDict.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.get.html#obspy.segy.core.LazyTraceHeaderAttribDict.get" title="obspy.segy.core.LazyTraceHeaderAttribDict.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.items.html#obspy.segy.core.LazyTraceHeaderAttribDict.items" title="obspy.segy.core.LazyTraceHeaderAttribDict.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.iteritems.html#obspy.segy.core.LazyTraceHeaderAttribDict.iteritems" title="obspy.segy.core.LazyTraceHeaderAttribDict.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.iterkeys.html#obspy.segy.core.LazyTraceHeaderAttribDict.iterkeys" title="obspy.segy.core.LazyTraceHeaderAttribDict.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.itervalues.html#obspy.segy.core.LazyTraceHeaderAttribDict.itervalues" title="obspy.segy.core.LazyTraceHeaderAttribDict.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.keys.html#obspy.segy.core.LazyTraceHeaderAttribDict.keys" title="obspy.segy.core.LazyTraceHeaderAttribDict.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.pop.html#obspy.segy.core.LazyTraceHeaderAttribDict.pop" title="obspy.segy.core.LazyTraceHeaderAttribDict.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.popitem.html#obspy.segy.core.LazyTraceHeaderAttribDict.popitem" title="obspy.segy.core.LazyTraceHeaderAttribDict.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.setdefault.html#obspy.segy.core.LazyTraceHeaderAttribDict.setdefault" title="obspy.segy.core.LazyTraceHeaderAttribDict.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.update.html#obspy.segy.core.LazyTraceHeaderAttribDict.update" title="obspy.segy.core.LazyTraceHeaderAttribDict.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.values.html#obspy.segy.core.LazyTraceHeaderAttribDict.values" title="obspy.segy.core.LazyTraceHeaderAttribDict.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict._pretty_str.html#obspy.segy.core.LazyTraceHeaderAttribDict._pretty_str" title="obspy.segy.core.LazyTraceHeaderAttribDict._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__contains__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__contains__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__deepcopy__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__deepcopy__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__delattr__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__delattr__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__delitem__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__delitem__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__eq__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__eq__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__getattr__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__getattr__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__getitem__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__getitem__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__getstate__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__getstate__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__init__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__init__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__iter__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__iter__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__len__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__len__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__ne__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__ne__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__repr__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__repr__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__setattr__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__setattr__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__setitem__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__setitem__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__setstate__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__setstate__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.core.LazyTraceHeaderAttribDict.__subclasshook__.html#obspy.segy.core.LazyTraceHeaderAttribDict.__subclasshook__" title="obspy.segy.core.LazyTraceHeaderAttribDict.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.segy.core.LazyTraceHeaderAttribDict.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.LazyTraceHeaderAttribDict.clear.html" title="obspy.segy.core.LazyTraceHeaderAttribDict.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.writeSU.html" title="obspy.segy.core.writeSU"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.core.html" >obspy.segy.core</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

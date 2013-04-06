@@ -1,0 +1,6 @@
+obspy.mseed.core.isMSEED
+========================
+
+.. currentmodule:: obspy.mseed.core
+
+.. autofunction:: isMSEED

@@ -1,0 +1,6 @@
+obspy.signal.filter.lowpassFIR
+==============================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: lowpassFIR

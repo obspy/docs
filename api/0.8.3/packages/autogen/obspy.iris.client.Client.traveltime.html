@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.traveltime &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client._fetch" href="obspy.iris.client.Client._fetch.html" />
+    <link rel="prev" title="obspy.iris.client.Client.timeseries" href="obspy.iris.client.Client.timeseries.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client._fetch.html" title="obspy.iris.client.Client._fetch"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.timeseries.html" title="obspy.iris.client.Client.timeseries"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-traveltime">
+<h1>obspy.iris.client.Client.traveltime<a class="headerlink" href="#obspy-iris-client-client-traveltime" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.traveltime">
+<tt class="descclassname">Client.</tt><tt class="descname">traveltime</tt><big>(</big><em>model='iasp91', phases=['p', 's', 'P', 'S', 'Pn', 'Sn', 'PcP', 'ScS', 'Pdiff', 'Sdiff', 'PKP', 'SKS', 'PKiKP', 'SKiKS', 'PKIKP', 'SKIKS'], evdepth=0.0, distdeg=None, distkm=None, evloc=None, staloc=None, noheader=False, traveltimeonly=False, rayparamonly=False, mintimeonly=False, filename=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.traveltime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.traveltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low-level interface for <cite>traveltime</cite> Web service of IRIS
+(<a class="reference external" href="http://www.iris.edu/ws/traveltime/">http://www.iris.edu/ws/traveltime/</a>) - release 1.1.1 (2012-05-15).</p>
+<p>This method will calculates travel-times for seismic phases using a 1-D
+spherical earth model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>str, optional</em>) <span class="dash" /> <p>Name of 1-D earth velocity model to be used. Available
+models include:</p>
+<blockquote>
+<div><ul>
+<li><tt class="docutils literal"><span class="pre">'iasp91'</span></tt> (default) - by Int&#8217;l Assoc of Seismology and
+Physics of the Earth&#8217;s Interior</li>
+<li><tt class="docutils literal"><span class="pre">'prem'</span></tt> - Preliminary Reference Earth Model</li>
+<li><tt class="docutils literal"><span class="pre">'ak135'</span></tt></li>
+</ul>
+</div></blockquote>
+</li>
+<li><strong>phases</strong> (<em>list of str, optional</em>) <span class="dash" /> <p>Comma separated list of phases. The default is as
+follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="s">&#39;P&#39;</span><span class="p">,</span><span class="s">&#39;S&#39;</span><span class="p">,</span><span class="s">&#39;Pn&#39;</span><span class="p">,</span><span class="s">&#39;Sn&#39;</span><span class="p">,</span><span class="s">&#39;PcP&#39;</span><span class="p">,</span><span class="s">&#39;ScS&#39;</span><span class="p">,</span><span class="s">&#39;Pdiff&#39;</span><span class="p">,</span><span class="s">&#39;Sdiff&#39;</span><span class="p">,</span>
+ <span class="s">&#39;PKP&#39;</span><span class="p">,</span><span class="s">&#39;SKS&#39;</span><span class="p">,</span><span class="s">&#39;PKiKP&#39;</span><span class="p">,</span><span class="s">&#39;SKiKS&#39;</span><span class="p">,</span><span class="s">&#39;PKIKP&#39;</span><span class="p">,</span><span class="s">&#39;SKIKS&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Invalid phases will be ignored. Valid arbitrary phases can be made
+up e.g. sSKJKP. See
+<a class="reference external" href="http://www.seis.sc.edu/TauP/">TauP documentation</a> for more
+information.</p>
+</li>
+<li><strong>evdepth</strong> (<em>float, optional</em>) <span class="dash" /> The depth of the event, in kilometers. Default is <tt class="docutils literal"><span class="pre">0</span></tt>
+km.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Geographical Parameters - required</strong></p>
+<p>The travel time web service requires a great-circle distance between an
+event and station be specified. There are three methods of specifying
+this distance:</p>
+<ul class="simple">
+<li>Specify a great-circle distance in degrees, using <tt class="docutils literal"><span class="pre">distdeg</span></tt></li>
+<li>Specify a great-circle distance in kilometers, using <tt class="docutils literal"><span class="pre">distkm</span></tt></li>
+<li>Specify an event location and one or more station locations,
+using <tt class="docutils literal"><span class="pre">evloc</span></tt> and <tt class="docutils literal"><span class="pre">staloc</span></tt></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>evtlon</strong> <span class="dash" /> Great-circle distance from source to station, in decimal
+degrees. Multiple distances may be specified as a list.</li>
+<li><strong>distkm</strong> (<em>float or list of float, optional</em>) <span class="dash" /> Distance between the source and station, in kilometers.
+Multiple distances may be specified as a list.</li>
+<li><strong>evloc</strong> (<em>tuple of two floats, optional</em>) <span class="dash" /> The Event location (lat,lon) using decimal degrees.</li>
+<li><strong>staloc</strong> (<em>tuple of two floats or list of tuples, optional</em>) <span class="dash" /> Station locations for which the phases will be listed.
+The general format is (lat,lon). Specify multiple station locations
+with a list, e.g. <tt class="docutils literal"><span class="pre">[(lat1,lon1),(lat2,lon2),...,(latn,lonn)]</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output Parameters</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>noheader</strong> (<em>bool, optional</em>) <span class="dash" /> Specifying noheader will strip the header from the
+resulting table. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>traveltimeonly</strong> (<em>bool, optional</em>) <span class="dash" /> <p>Returns a space-separated list of travel
+times, in seconds. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Travel times are produced in ascending order regardless
+of the order in which the phases are specified</p>
+</div>
+</li>
+<li><strong>rayparamonly</strong> (<em>bool, optional</em>) <span class="dash" /> Returns a space-separated list of ray parameters,
+in sec/deg.. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>mintimeonly</strong> (<em>bool, optional</em>) <span class="dash" /> Returns only the first arrival of each phase for
+each distance. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) <span class="dash" /> Name of a output file. If this parameter is given
+nothing will be returned. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">str or <tt class="docutils literal"><span class="pre">None</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ASCII travel time table if no <tt class="docutils literal"><span class="pre">filename</span></tt> is given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">traveltime</span><span class="p">(</span><span class="n">evloc</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">36.122</span><span class="p">,</span><span class="o">-</span><span class="mf">72.898</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">staloc</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mf">33.45</span><span class="p">,</span><span class="o">-</span><span class="mf">70.67</span><span class="p">),(</span><span class="mf">47.61</span><span class="p">,</span><span class="o">-</span><span class="mf">122.33</span><span class="p">),(</span><span class="mf">35.69</span><span class="p">,</span><span class="mf">139.69</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="n">evdepth</span><span class="o">=</span><span class="mf">22.9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  
+<span class="go">Model: iasp91</span>
+<span class="go">Distance   Depth   Phase   Travel    Ray Param  Takeoff  Incident ...</span>
+<span class="go">  (deg)     (km)   Name    Time (s)  p (s/deg)   (deg)    (deg)   ...</span>
+<span class="go">------------------------------------------------------------------...</span>
+<span class="go">    3.24    22.9   P         49.39    13.749     53.77    45.82   ...</span>
+<span class="go">    3.24    22.9   Pn        49.40    13.754     53.80    45.84   ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.traveltime.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client._fetch.html" title="obspy.iris.client.Client._fetch"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.timeseries.html" title="obspy.iris.client.Client.timeseries"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

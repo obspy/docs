@@ -1,0 +1,6 @@
+obspy.taup.taup.getTravelTimes
+==============================
+
+.. currentmodule:: obspy.taup.taup
+
+.. autofunction:: getTravelTimes

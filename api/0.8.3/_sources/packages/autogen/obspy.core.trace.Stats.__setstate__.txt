@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.__setstate__
+===================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.__setstate__

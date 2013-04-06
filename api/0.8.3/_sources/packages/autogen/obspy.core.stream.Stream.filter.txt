@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.filter
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.filter

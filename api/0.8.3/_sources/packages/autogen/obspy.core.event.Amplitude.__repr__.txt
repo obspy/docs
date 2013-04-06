@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.__repr__
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.__repr__

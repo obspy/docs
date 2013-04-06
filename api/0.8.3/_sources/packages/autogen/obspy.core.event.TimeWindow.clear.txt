@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.clear
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.clear

@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.__ne__
+=============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.__ne__

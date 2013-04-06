@@ -1,0 +1,6 @@
+obspy.segy.segy.readSU
+======================
+
+.. currentmodule:: obspy.segy.segy
+
+.. autofunction:: readSU

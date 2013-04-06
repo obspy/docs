@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.items
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.items

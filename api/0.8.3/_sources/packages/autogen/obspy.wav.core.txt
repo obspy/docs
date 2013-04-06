@@ -1,0 +1,30 @@
+obspy.wav.core
+==============
+
+.. currentmodule:: obspy.wav.core
+.. automodule:: obspy.wav.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isWAV
+      readWAV
+      writeWAV
+   
+   
+
+   
+   
+   
+
+   
+   
+   

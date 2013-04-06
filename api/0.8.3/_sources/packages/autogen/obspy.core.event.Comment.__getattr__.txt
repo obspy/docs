@@ -1,0 +1,6 @@
+obspy.core.event.Comment.__getattr__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.__getattr__

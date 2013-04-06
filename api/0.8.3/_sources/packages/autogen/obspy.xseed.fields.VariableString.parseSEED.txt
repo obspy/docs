@@ -1,0 +1,6 @@
+obspy.xseed.fields.VariableString.parseSEED
+===========================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: VariableString.parseSEED

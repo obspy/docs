@@ -1,0 +1,6 @@
+obspy.core.util.types.Enum.__setattr__
+======================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: Enum.__setattr__

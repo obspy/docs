@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__eq__
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__eq__

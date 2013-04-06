@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.segy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.segy - SEG Y and SU read and write support for ObsPy" href="../obspy.segy.html" />
+    <link rel="next" title="obspy.segy.segy.autodetectEndianAndSanityCheckSU" href="obspy.segy.segy.autodetectEndianAndSanityCheckSU.html" />
+    <link rel="prev" title="obspy.segy.core.SEGYSampleIntervalError" href="obspy.segy.core.SEGYSampleIntervalError.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.autodetectEndianAndSanityCheckSU.html" title="obspy.segy.segy.autodetectEndianAndSanityCheckSU"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.SEGYSampleIntervalError.html" title="obspy.segy.core.SEGYSampleIntervalError"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" accesskey="U">obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.segy.segy">
+<span id="obspy-segy-segy"></span><h1>obspy.segy.segy<a class="headerlink" href="#module-obspy.segy.segy" title="Permalink to this headline">¶</a></h1>
+<p>Routines to read and write SEG Y rev 1 encoded seismic data files.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.autodetectEndianAndSanityCheckSU.html#obspy.segy.segy.autodetectEndianAndSanityCheckSU" title="obspy.segy.segy.autodetectEndianAndSanityCheckSU"><tt class="xref py py-obj docutils literal"><span class="pre">autodetectEndianAndSanityCheckSU</span></tt></a></td>
+<td>Takes an open file and tries to determine the endianness of a Seismic</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.readSEGY.html#obspy.segy.segy.readSEGY" title="obspy.segy.segy.readSEGY"><tt class="xref py py-obj docutils literal"><span class="pre">readSEGY</span></tt></a></td>
+<td>Reads a SEG Y file and returns a SEGYFile object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.readSU.html#obspy.segy.segy.readSU" title="obspy.segy.segy.readSU"><tt class="xref py py-obj docutils literal"><span class="pre">readSU</span></tt></a></td>
+<td>Reads a Seismic Unix (SU) file and returns a SUFile object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYBinaryFileHeader.html#obspy.segy.segy.SEGYBinaryFileHeader" title="obspy.segy.segy.SEGYBinaryFileHeader"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYBinaryFileHeader</span></tt></a></td>
+<td>Parses the binary file header at the given starting position.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYFile.html#obspy.segy.segy.SEGYFile" title="obspy.segy.segy.SEGYFile"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYFile</span></tt></a></td>
+<td>Class that internally handles SEG Y files.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTrace.html#obspy.segy.segy.SEGYTrace" title="obspy.segy.segy.SEGYTrace"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYTrace</span></tt></a></td>
+<td>Convenience class that internally handles a single SEG Y trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader.html#obspy.segy.segy.SEGYTraceHeader" title="obspy.segy.segy.SEGYTraceHeader"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYTraceHeader</span></tt></a></td>
+<td>Convenience class that handles reading and writing of the trace headers.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SUFile.html#obspy.segy.segy.SUFile" title="obspy.segy.segy.SUFile"><tt class="xref py py-obj docutils literal"><span class="pre">SUFile</span></tt></a></td>
+<td>Convenience class that internally handles Seismic Unix data files. It</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Exceptions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYError.html#obspy.segy.segy.SEGYError" title="obspy.segy.segy.SEGYError"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYError</span></tt></a></td>
+<td>Base SEGY exception class.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeaderTooSmallError.html#obspy.segy.segy.SEGYTraceHeaderTooSmallError" title="obspy.segy.segy.SEGYTraceHeaderTooSmallError"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYTraceHeaderTooSmallError</span></tt></a></td>
+<td>Raised if the trace header is not the required 240 byte long.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceOnTheFlyDataUnpackingError.html#obspy.segy.segy.SEGYTraceOnTheFlyDataUnpackingError" title="obspy.segy.segy.SEGYTraceOnTheFlyDataUnpackingError"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYTraceOnTheFlyDataUnpackingError</span></tt></a></td>
+<td>Raised if attempting to unpack trace data but no <tt class="docutils literal"><span class="pre">unpack_data()</span></tt> function</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceReadingError.html#obspy.segy.segy.SEGYTraceReadingError" title="obspy.segy.segy.SEGYTraceReadingError"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYTraceReadingError</span></tt></a></td>
+<td>Raised if there is not enough data left in the file to unpack the data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYWritingError.html#obspy.segy.segy.SEGYWritingError" title="obspy.segy.segy.SEGYWritingError"><tt class="xref py py-obj docutils literal"><span class="pre">SEGYWritingError</span></tt></a></td>
+<td>Raised if the trace header is not the required 240 byte long.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.segy.segy.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.autodetectEndianAndSanityCheckSU.html" title="obspy.segy.segy.autodetectEndianAndSanityCheckSU"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.SEGYSampleIntervalError.html" title="obspy.segy.core.SEGYSampleIntervalError"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

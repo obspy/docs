@@ -1,0 +1,85 @@
+obspy.segy.segy.SUFile
+======================
+
+.. currentmodule:: obspy.segy.segy
+.. autoclass:: SUFile
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SUFile.__dict__
+     ~SUFile.__doc__
+     ~SUFile.__module__
+     ~SUFile.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SUFile.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SUFile._autodetectEndianness
+     ~SUFile._createEmptySUFileObject
+     ~SUFile._readTraces
+     ~SUFile._write
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SUFile.__init__
+     ~SUFile.__str__
+  
+
+  
+  

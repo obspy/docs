@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict._OrderedDict__update
+======================================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict._OrderedDict__update

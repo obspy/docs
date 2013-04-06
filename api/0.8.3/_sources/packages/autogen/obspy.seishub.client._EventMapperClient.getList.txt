@@ -1,0 +1,6 @@
+obspy.seishub.client._EventMapperClient.getList
+===============================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _EventMapperClient.getList

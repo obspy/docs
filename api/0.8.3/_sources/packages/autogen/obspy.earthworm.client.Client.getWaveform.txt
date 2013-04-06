@@ -1,0 +1,6 @@
+obspy.earthworm.client.Client.getWaveform
+=========================================
+
+.. currentmodule:: obspy.earthworm.client
+
+.. automethod:: Client.getWaveform

@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.__ne__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.__ne__

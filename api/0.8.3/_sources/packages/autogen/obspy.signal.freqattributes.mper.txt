@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.mper
+================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: mper

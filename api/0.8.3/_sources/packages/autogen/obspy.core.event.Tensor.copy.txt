@@ -1,0 +1,6 @@
+obspy.core.event.Tensor.copy
+============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Tensor.copy

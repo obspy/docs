@@ -1,0 +1,6 @@
+obspy.signal.invsim.specInv
+===========================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: specInv

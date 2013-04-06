@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.get
+==========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.get

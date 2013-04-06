@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict.__delitem__
+=============================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict.__delitem__

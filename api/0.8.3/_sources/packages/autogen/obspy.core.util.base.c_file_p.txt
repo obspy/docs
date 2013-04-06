@@ -1,0 +1,24 @@
+obspy.core.util.base.c_file_p
+=============================
+
+.. currentmodule:: obspy.core.util.base
+.. autoclass:: c_file_p
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~c_file_p.__dict__
+     ~c_file_p.__doc__
+     ~c_file_p.__module__
+     ~c_file_p.__weakref__
+     ~c_file_p.contents
+  
+  
+
+  
+  
+  

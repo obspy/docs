@@ -1,0 +1,19 @@
+obspy.core.util
+===============
+
+.. currentmodule:: obspy.core.util
+.. automodule:: obspy.core.util
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

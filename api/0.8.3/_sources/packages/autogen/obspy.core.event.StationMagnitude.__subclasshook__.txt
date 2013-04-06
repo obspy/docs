@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.__subclasshook__
+==================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.__subclasshook__

@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Retrieving Data from Data Centers &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="5. Filtering Seismograms" href="filtering_seismograms.html" />
+    <link rel="prev" title="3. Waveform Plotting Tutorial" href="waveform_plotting_tutorial.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filtering_seismograms.html" title="5. Filtering Seismograms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="waveform_plotting_tutorial.html" title="3. Waveform Plotting Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="retrieving-data-from-data-centers">
+<h1>4. Retrieving Data from Data Centers<a class="headerlink" href="#retrieving-data-from-data-centers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="arclink-protocol">
+<h2>4.1. ArcLink Protocol<a class="headerlink" href="#arclink-protocol" title="Permalink to this headline">¶</a></h2>
+<p>In the following example uses the <a class="reference internal" href="../../packages/obspy.arclink.html#module-obspy.arclink" title="obspy.arclink"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.arclink</span></tt></a> module in order to
+retrieve waveforms data as well as poles and zeros from a remote server
+via the <a class="reference external" href="http://www.seiscomp3.org/wiki/doc/applications/arclink">ArcLink</a>
+protocol. The retrieved poles and zeros are then used to correct for the
+instrument response and to simulate a 1Hz instrument with damping 0.707.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The default client needs to open port 18002 to the host webdc.eu via TCP/IP
+in order to download the requested data. Please make sure that no firewall
+is blocking access to this server/port combination.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">user</span></tt> keyword in the following example is used for identification
+with the ArcLink server as well as for usage statistics within the data
+center, so please provide a meaningful user id such as your email address.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.arclink</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cornFreq2Paz</span><span class="p">,</span> <span class="n">seisSim</span>
+
+<span class="c"># Retrieve data via ArcLink</span>
+<span class="c"># please provide a valid email address for the keyword user</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&quot;test@obspy.de&quot;</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-08-24 00:20:03&quot;</span><span class="p">)</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;RJOB&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">paz</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getPAZ</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;RJOB&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="c"># 1Hz instrument</span>
+<span class="n">one_hertz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="c"># Correct for frequency response of the instrument</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">seisSim</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float32&#39;</span><span class="p">),</span>
+              <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
+              <span class="n">paz</span><span class="p">,</span>
+              <span class="n">inst_sim</span><span class="o">=</span><span class="n">one_hertz</span><span class="p">)</span>
+<span class="c"># Correct for overall sensitivity</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">res</span> <span class="o">/</span> <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span>
+
+<span class="c"># Plot the seismograms</span>
+<span class="n">sec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">))</span> <span class="o">/</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;STS-2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Time [s]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;1Hz CornerFrequency&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/retrieving_data_from_datacenters_1.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/retrieving_data_from_datacenters_1.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/retrieving_data_from_datacenters_1.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/retrieving_data_from_datacenters_1.png" src="../../_images/retrieving_data_from_datacenters_1.png" />
+</div>
+</div>
+<div class="section" id="iris-web-services">
+<h2>4.2. IRIS Web Services<a class="headerlink" href="#iris-web-services" title="Permalink to this headline">¶</a></h2>
+<p>TODO - for now see <a class="reference internal" href="../../packages/obspy.iris.html#module-obspy.iris" title="obspy.iris"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.iris</span></tt></a></p>
+</div>
+<div class="section" id="earthworm-wave-server">
+<h2>4.3. Earthworm Wave Server<a class="headerlink" href="#earthworm-wave-server" title="Permalink to this headline">¶</a></h2>
+<p>TODO - for now see <a class="reference internal" href="../../packages/obspy.earthworm.html#module-obspy.earthworm" title="obspy.earthworm"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.earthworm</span></tt></a></p>
+</div>
+<div class="section" id="neries-web-services">
+<h2>4.4. NERIES Web Services<a class="headerlink" href="#neries-web-services" title="Permalink to this headline">¶</a></h2>
+<p>TODO - for now see <a class="reference internal" href="../../packages/obspy.neries.html#module-obspy.neries" title="obspy.neries"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.neries</span></tt></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4. Retrieving Data from Data Centers</a><ul>
+<li><a class="reference internal" href="#arclink-protocol">4.1. ArcLink Protocol</a></li>
+<li><a class="reference internal" href="#iris-web-services">4.2. IRIS Web Services</a></li>
+<li><a class="reference internal" href="#earthworm-wave-server">4.3. Earthworm Wave Server</a></li>
+<li><a class="reference internal" href="#neries-web-services">4.4. NERIES Web Services</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/retrieving_data_from_datacenters.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filtering_seismograms.html" title="5. Filtering Seismograms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="waveform_plotting_tutorial.html" title="3. Waveform Plotting Tutorial"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

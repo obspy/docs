@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.append
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.append

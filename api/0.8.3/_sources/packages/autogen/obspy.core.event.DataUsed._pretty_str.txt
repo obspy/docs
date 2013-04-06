@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed._pretty_str
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed._pretty_str

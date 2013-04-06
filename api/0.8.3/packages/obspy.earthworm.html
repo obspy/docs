@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.earthworm - Earthworm Wave Server client for ObsPy. &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.earthworm.client.Client" href="autogen/obspy.earthworm.client.Client.html" />
+    <link rel="prev" title="obspy.db.scripts.indexer" href="autogen/obspy.db.scripts.indexer.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.earthworm.client.Client.html" title="obspy.earthworm.client.Client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.db.scripts.indexer.html" title="obspy.db.scripts.indexer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.earthworm"></span><div class="section" id="obspy-earthworm-earthworm-wave-server-client-for-obspy">
+<h1>obspy.earthworm - Earthworm Wave Server client for ObsPy.<a class="headerlink" href="#obspy-earthworm-earthworm-wave-server-client-for-obspy" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>) &amp; Victor Kress</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU General Public License (GPLv2)
+(<a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first"><a class="reference internal" href="autogen/obspy.earthworm.client.Client.getWaveform.html#obspy.earthworm.client.Client.getWaveform" title="obspy.earthworm.client.Client.getWaveform"><tt class="xref py py-meth docutils literal"><span class="pre">getWaveform()</span></tt></a>: The following example
+illustrates how to request and plot 30 seconds of all three broadband
+channels (<tt class="docutils literal"><span class="pre">&quot;BH*&quot;</span></tt>) of station <tt class="docutils literal"><span class="pre">&quot;TUCA&quot;</span></tt> of the <a class="reference external" href="http://www.pnsn.org/">Pacific Northwest
+Seismic Network</a> (<tt class="docutils literal"><span class="pre">&quot;UW&quot;</span></tt>).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.earthworm</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&quot;pele.ess.washington.edu&quot;</span><span class="p">,</span> <span class="mi">16017</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">availability</span><span class="p">(</span><span class="s">&quot;UW&quot;</span><span class="p">,</span> <span class="s">&quot;TUCA&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s">&quot;BHZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">response</span>  
+<span class="go">[(&#39;UW&#39;,</span>
+<span class="go">  &#39;TUCA&#39;,</span>
+<span class="go">  &#39;--&#39;,</span>
+<span class="go">  &#39;BHZ&#39;,</span>
+<span class="go">  UTCDateTime(2011, 11, 27, 0, 0, 0, 525000),</span>
+<span class="go">  UTCDateTime(2011, 12, 29, 20, 50, 31, 525000))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&#39;UW&#39;</span><span class="p">,</span> <span class="s">&#39;TUCA&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;BH*&#39;</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">130</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../plot_directive/inline/91d10cd4a0.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/91d10cd4a0.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/91d10cd4a0.png" src="../_images/91d10cd4a0.png" />
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.earthworm.client.Client.html#obspy.earthworm.client.Client" title="obspy.earthworm.client.Client"><tt class="xref py py-obj docutils literal"><span class="pre">client.Client</span></tt></a></td>
+<td>A Earthworm Wave Server client.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.earthworm.client.html#module-obspy.earthworm.client" title="obspy.earthworm.client"><tt class="xref py py-obj docutils literal"><span class="pre">client</span></tt></a></td>
+<td>Earthworm Wave Server client for ObsPy.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.earthworm - Earthworm Wave Server client for ObsPy.</a><ul>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.earthworm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.earthworm.client.Client.html" title="obspy.earthworm.client.Client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.db.scripts.indexer.html" title="obspy.db.scripts.indexer"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

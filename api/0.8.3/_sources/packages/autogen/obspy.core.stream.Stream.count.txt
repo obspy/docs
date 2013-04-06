@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.count
+==============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.count

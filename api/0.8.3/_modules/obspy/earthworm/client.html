@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.earthworm.client &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.earthworm.client</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Earthworm Wave Server client for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org) &amp; Victor Kress</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU General Public License (GPLv2)</span>
+<span class="sd">    (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)</span>
+
+<span class="sd">.. seealso:: http://www.isti2.com/ew/PROGRAMMER/wsv_protocol.html</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">fnmatch</span> <span class="kn">import</span> <span class="n">fnmatch</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.earthworm.waveserver</span> <span class="kn">import</span> <span class="n">readWaveServerV</span><span class="p">,</span> <span class="n">getMenu</span>
+
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../../packages/autogen/obspy.earthworm.client.Client.html#obspy.earthworm.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Earthworm Wave Server client.</span>
+
+<span class="sd">    :type host: str</span>
+<span class="sd">    :param host: Host name of the remote Earthworm Wave Server server.</span>
+<span class="sd">    :type port: int</span>
+<span class="sd">    :param port: Port of the remote Earthworm Wave Server server.</span>
+<span class="sd">    :type timeout: int, optional</span>
+<span class="sd">    :param timeout: Seconds before a connection timeout is raised (default is</span>
+<span class="sd">        ``None``).</span>
+<span class="sd">    :type debug: bool, optional</span>
+<span class="sd">    :param debug: Enables verbose output of the connection handling (default is</span>
+<span class="sd">        ``False``).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Client.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.earthworm.client.Client.__init__.html#obspy.earthworm.client.Client.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a Earthworm Wave Server client.</span>
+
+<span class="sd">        See :class:`obspy.earthworm.client.Client` for all parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+</div>
+<div class="viewcode-block" id="Client.getWaveform"><a class="viewcode-back" href="../../../packages/autogen/obspy.earthworm.client.Client.getWaveform.html#obspy.earthworm.client.Client.getWaveform">[docs]</a>    <span class="k">def</span> <span class="nf">getWaveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span>
+                    <span class="n">endtime</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves waveform data from Earthworm Wave Server and returns an ObsPy</span>
+<span class="sd">        Stream object.</span>
+
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param filename: Name of the output file.</span>
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;UW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;TUCA&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;--&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;BHZ&#39;``. Last character (i.e.</span>
+<span class="sd">            component) can be a wildcard (&#39;?&#39; or &#39;*&#39;) to fetch `Z`, `N` and</span>
+<span class="sd">            `E` component.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :return: ObsPy :class:`~obspy.core.stream.Stream` object.</span>
+<span class="sd">        :type cleanup: bool</span>
+<span class="sd">        :param cleanup: Specifies whether perfectly aligned traces should be</span>
+<span class="sd">            merged or not. See :meth:`obspy.core.stream.Stream.merge` for</span>
+<span class="sd">            ``method=-1``.</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.earthworm import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;pele.ess.washington.edu&quot;, 16017)</span>
+<span class="sd">        &gt;&gt;&gt; dt = UTCDateTime() - 2000  # now - 2000 seconds</span>
+<span class="sd">        &gt;&gt;&gt; st = client.getWaveform(&#39;UW&#39;, &#39;TUCA&#39;, &#39;&#39;, &#39;BHZ&#39;, dt, dt + 10)</span>
+<span class="sd">        &gt;&gt;&gt; st.plot()  # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; st = client.getWaveform(&#39;UW&#39;, &#39;TUCA&#39;, &#39;&#39;, &#39;BH*&#39;, dt, dt + 10)</span>
+<span class="sd">        &gt;&gt;&gt; st.plot()  # doctest: +SKIP</span>
+
+<span class="sd">        .. plot::</span>
+
+<span class="sd">            from obspy.earthworm import Client</span>
+<span class="sd">            from obspy import UTCDateTime</span>
+<span class="sd">            client = Client(&quot;pele.ess.washington.edu&quot;, 16017)</span>
+<span class="sd">            dt = UTCDateTime() - 2000  # now - 2000 seconds</span>
+<span class="sd">            st = client.getWaveform(&#39;UW&#39;, &#39;TUCA&#39;, &#39;&#39;, &#39;BHZ&#39;, dt, dt + 10)</span>
+<span class="sd">            st.plot()</span>
+<span class="sd">            st = client.getWaveform(&#39;UW&#39;, &#39;TUCA&#39;, &#39;&#39;, &#39;BH*&#39;, dt, dt + 10)</span>
+<span class="sd">            st.plot()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># replace wildcards in last char of channel and fetch all 3 components</span>
+        <span class="k">if</span> <span class="n">channel</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="s">&quot;?*&quot;</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;Z&quot;</span><span class="p">,</span> <span class="s">&quot;N&quot;</span><span class="p">,</span> <span class="s">&quot;E&quot;</span><span class="p">):</span>
+                <span class="n">channel_new</span> <span class="o">=</span> <span class="n">channel</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">comp</span>
+                <span class="n">st</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span>
+                                       <span class="n">channel_new</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span>
+                                       <span class="n">cleanup</span><span class="o">=</span><span class="n">cleanup</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">st</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="s">&#39;--&#39;</span>
+        <span class="n">scnl</span> <span class="o">=</span> <span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+        <span class="c"># fetch waveform</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="n">readWaveServerV</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">scnl</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">)</span>
+        <span class="c"># create new stream</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">tb</span> <span class="ow">in</span> <span class="n">tbl</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getObspyTrace</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">cleanup</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">st</span>
+</div>
+<div class="viewcode-block" id="Client.saveWaveform"><a class="viewcode-back" href="../../../packages/autogen/obspy.earthworm.client.Client.saveWaveform.html#obspy.earthworm.client.Client.saveWaveform">[docs]</a>    <span class="k">def</span> <span class="nf">saveWaveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span>
+                     <span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;MSEED&quot;</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a retrieved waveform directly into a file.</span>
+
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param filename: Name of the output file.</span>
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;UW&#39;``.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;TUCA&#39;``.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;&#39;``.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;BHZ&#39;``. Last character (i.e.</span>
+<span class="sd">            component) can be a wildcard (&#39;?&#39; or &#39;*&#39;) to fetch `Z`, `N` and</span>
+<span class="sd">            `E` component.</span>
+<span class="sd">        :type starttime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param starttime: Start date and time.</span>
+<span class="sd">        :type endtime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        :param endtime: End date and time.</span>
+<span class="sd">        :type format: str, optional</span>
+<span class="sd">        :param format: Output format. One of ``&quot;MSEED&quot;``, ``&quot;GSE2&quot;``,</span>
+<span class="sd">            ``&quot;SAC&quot;``, ``&quot;SACXY&quot;``, ``&quot;Q&quot;``, ``&quot;SH_ASC&quot;``, ``&quot;SEGY&quot;``,</span>
+<span class="sd">            ``&quot;SU&quot;``, ``&quot;WAV&quot;``. See the Supported Formats section in method</span>
+<span class="sd">            :meth:`~obspy.core.stream.Stream.write` for a full list of</span>
+<span class="sd">            supported formats. Defaults to ``&#39;MSEED&#39;``.</span>
+<span class="sd">        :type cleanup: bool</span>
+<span class="sd">        :param cleanup: Specifies whether perfectly aligned traces should be</span>
+<span class="sd">            merged or not. See :meth:`~obspy.core.stream.Stream.merge`,</span>
+<span class="sd">            `method` -1 or :meth:`~obspy.core.stream.Stream._cleanup`.</span>
+<span class="sd">        :return: None</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.earthworm import Client</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import UTCDateTime</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;pele.ess.washington.edu&quot;, 16017)</span>
+<span class="sd">        &gt;&gt;&gt; t = UTCDateTime() - 2000  # now - 2000 seconds</span>
+<span class="sd">        &gt;&gt;&gt; client.saveWaveform(&#39;UW.TUCA..BHZ.mseed&#39;, &#39;UW&#39;, &#39;TUCA&#39;, &#39;&#39;, &#39;BHZ&#39;,</span>
+<span class="sd">        ...                     t, t + 10, format=&#39;MSEED&#39;)  # doctest: +SKIP</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">starttime</span><span class="p">,</span>
+                              <span class="n">endtime</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="n">cleanup</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Client.availability"><a class="viewcode-back" href="../../../packages/autogen/obspy.earthworm.client.Client.availability.html#obspy.earthworm.client.Client.availability">[docs]</a>    <span class="k">def</span> <span class="nf">availability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s">&quot;*&quot;</span><span class="p">,</span>
+                     <span class="n">channel</span><span class="o">=</span><span class="s">&quot;*&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a list of data available on the server.</span>
+
+<span class="sd">        This method returns information about what time series data is</span>
+<span class="sd">        available on the server. The query can optionally be restricted to</span>
+<span class="sd">        specific network, station, channel and/or location criteria.</span>
+
+<span class="sd">        :type network: str</span>
+<span class="sd">        :param network: Network code, e.g. ``&#39;UW&#39;``, wildcards allowed.</span>
+<span class="sd">        :type station: str</span>
+<span class="sd">        :param station: Station code, e.g. ``&#39;TUCA&#39;``, wildcards allowed.</span>
+<span class="sd">        :type location: str</span>
+<span class="sd">        :param location: Location code, e.g. ``&#39;--&#39;``, wildcards allowed.</span>
+<span class="sd">            Use ``&#39;--&#39;`` for empty location codes.</span>
+<span class="sd">        :type channel: str</span>
+<span class="sd">        :param channel: Channel code, e.g. ``&#39;BHZ&#39;``, wildcards allowed.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        :return: List of tuples with information on the available data. One</span>
+<span class="sd">            tuple consists of network, station, location, channel</span>
+<span class="sd">            (all strings), starttime and endtime</span>
+<span class="sd">            (both as :class:`~obspy.core.utcdatetime.UTCDateTime`).</span>
+
+<span class="sd">        .. rubric:: Example</span>
+
+<span class="sd">        &gt;&gt;&gt; from obspy.earthworm import Client</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;pele.ess.washington.edu&quot;, 16017)</span>
+<span class="sd">        &gt;&gt;&gt; response = client.availability(network=&quot;UW&quot;, station=&quot;TUCA&quot;,</span>
+<span class="sd">        ...         channel=&quot;BH*&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print response  # doctest: +SKIP</span>
+<span class="sd">        [(&#39;UW&#39;,</span>
+<span class="sd">          &#39;TUCA&#39;,</span>
+<span class="sd">          &#39;--&#39;,</span>
+<span class="sd">          &#39;BHE&#39;,</span>
+<span class="sd">          UTCDateTime(2011, 11, 27, 0, 0, 0, 525000),</span>
+<span class="sd">          UTCDateTime(2011, 12, 29, 20, 50, 31, 525000)),</span>
+<span class="sd">         (&#39;UW&#39;,</span>
+<span class="sd">          &#39;TUCA&#39;,</span>
+<span class="sd">          &#39;--&#39;,</span>
+<span class="sd">          &#39;BHN&#39;,</span>
+<span class="sd">          UTCDateTime(2011, 11, 27, 0, 0, 0, 525000),</span>
+<span class="sd">          UTCDateTime(2011, 12, 29, 20, 50, 31, 525000)),</span>
+<span class="sd">         (&#39;UW&#39;,</span>
+<span class="sd">          &#39;TUCA&#39;,</span>
+<span class="sd">          &#39;--&#39;,</span>
+<span class="sd">          &#39;BHZ&#39;,</span>
+<span class="sd">          UTCDateTime(2011, 11, 27, 0, 0, 0, 525000),</span>
+<span class="sd">          UTCDateTime(2011, 12, 29, 20, 50, 31, 525000))]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># build up possibly wildcarded trace id pattern for query</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">))</span>
+        <span class="c"># get overview of all available data, winston wave servers can not</span>
+        <span class="c"># restrict the query via network, station etc. so we do that manually</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">getMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="c"># reorder items and convert time info to UTCDateTime</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+                     <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">response</span><span class="p">]</span>
+        <span class="c"># restrict results acording to user input</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">response</span> <span class="k">if</span> <span class="n">fnmatch</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">pattern</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

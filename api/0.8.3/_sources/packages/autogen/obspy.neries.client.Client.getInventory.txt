@@ -1,0 +1,6 @@
+obspy.neries.client.Client.getInventory
+=======================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.getInventory

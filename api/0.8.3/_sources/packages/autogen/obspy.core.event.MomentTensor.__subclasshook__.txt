@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__subclasshook__
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__subclasshook__

@@ -1,0 +1,6 @@
+obspy.core.event.Comment.__init__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.__init__

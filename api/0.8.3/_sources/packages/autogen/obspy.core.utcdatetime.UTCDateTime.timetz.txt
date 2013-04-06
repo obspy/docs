@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.timetz
+=========================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.timetz

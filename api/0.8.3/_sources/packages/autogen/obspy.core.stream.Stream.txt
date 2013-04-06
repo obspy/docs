@@ -1,0 +1,281 @@
+obspy.core.stream.Stream
+========================
+
+.. currentmodule:: obspy.core.stream
+.. autoclass:: Stream
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Stream.__dict__
+     ~Stream.__doc__
+     ~Stream.__module__
+     ~Stream.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stream.append
+     ~Stream.clear
+     ~Stream.copy
+     ~Stream.count
+     ~Stream.cutout
+     ~Stream.decimate
+     ~Stream.detrend
+     ~Stream.differentiate
+     ~Stream.extend
+     ~Stream.filter
+     ~Stream.getGaps
+     ~Stream.insert
+     ~Stream.integrate
+     ~Stream.max
+     ~Stream.merge
+     ~Stream.normalize
+     ~Stream.plot
+     ~Stream.pop
+     ~Stream.printGaps
+     ~Stream.remove
+     ~Stream.resample
+     ~Stream.reverse
+     ~Stream.rotate
+     ~Stream.select
+     ~Stream.simulate
+     ~Stream.slice
+     ~Stream.sort
+     ~Stream.spectrogram
+     ~Stream.split
+     ~Stream.std
+     ~Stream.taper
+     ~Stream.trigger
+     ~Stream.trim
+     ~Stream.verify
+     ~Stream.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stream._cleanup
+     ~Stream._ltrim
+     ~Stream._mergeChecks
+     ~Stream._rtrim
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Stream.__add__
+     ~Stream.__delitem__
+     ~Stream.__eq__
+     ~Stream.__ge__
+     ~Stream.__getitem__
+     ~Stream.__getslice__
+     ~Stream.__gt__
+     ~Stream.__iadd__
+     ~Stream.__init__
+     ~Stream.__iter__
+     ~Stream.__le__
+     ~Stream.__len__
+     ~Stream.__lt__
+     ~Stream.__mul__
+     ~Stream.__ne__
+     ~Stream.__setitem__
+     ~Stream.__str__
+  
+
+  
+  

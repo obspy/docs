@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.db.indexer.WaveformFileCrawler &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.db.indexer" href="obspy.db.indexer.html" />
+    <link rel="next" title="obspy.db.indexer.WaveformFileCrawler.getFeatures" href="obspy.db.indexer.WaveformFileCrawler.getFeatures.html" />
+    <link rel="prev" title="obspy.db.indexer.worker" href="obspy.db.indexer.worker.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.db.indexer.WaveformFileCrawler.getFeatures.html" title="obspy.db.indexer.WaveformFileCrawler.getFeatures"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.db.indexer.worker.html" title="obspy.db.indexer.worker"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.db.html" >obspy.db - A seismic waveform indexer and database for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.db.indexer.html" accesskey="U">obspy.db.indexer</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-db-indexer-waveformfilecrawler">
+<h1>obspy.db.indexer.WaveformFileCrawler<a class="headerlink" href="#obspy-db-indexer-waveformfilecrawler" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.db.indexer.WaveformFileCrawler">
+<em class="property">class </em><tt class="descname">WaveformFileCrawler</tt><a class="reference internal" href="../../_modules/obspy/db/indexer.html#WaveformFileCrawler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.db.indexer.WaveformFileCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A waveform file crawler.</p>
+<p>This class scans periodically all given paths for waveform files and
+collects them into a watch list.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">features</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">patterns</span></tt></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler.getFeatures.html#obspy.db.indexer.WaveformFileCrawler.getFeatures" title="obspy.db.indexer.WaveformFileCrawler.getFeatures"><tt class="xref py py-obj docutils literal"><span class="pre">getFeatures</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler.getPatterns.html#obspy.db.indexer.WaveformFileCrawler.getPatterns" title="obspy.db.indexer.WaveformFileCrawler.getPatterns"><tt class="xref py py-obj docutils literal"><span class="pre">getPatterns</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler.hasPattern.html#obspy.db.indexer.WaveformFileCrawler.hasPattern" title="obspy.db.indexer.WaveformFileCrawler.hasPattern"><tt class="xref py py-obj docutils literal"><span class="pre">hasPattern</span></tt></a></td>
+<td>Checks if the file name fits to the preferred file pattern.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler.iterate.html#obspy.db.indexer.WaveformFileCrawler.iterate" title="obspy.db.indexer.WaveformFileCrawler.iterate"><tt class="xref py py-obj docutils literal"><span class="pre">iterate</span></tt></a></td>
+<td>Handles exactly one directory.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._delete.html#obspy.db.indexer.WaveformFileCrawler._delete" title="obspy.db.indexer.WaveformFileCrawler._delete"><tt class="xref py py-obj docutils literal"><span class="pre">_delete</span></tt></a></td>
+<td>Remove a file or all files with a given path from the database.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._preparePaths.html#obspy.db.indexer.WaveformFileCrawler._preparePaths" title="obspy.db.indexer.WaveformFileCrawler._preparePaths"><tt class="xref py py-obj docutils literal"><span class="pre">_preparePaths</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._processLogQueue.html#obspy.db.indexer.WaveformFileCrawler._processLogQueue" title="obspy.db.indexer.WaveformFileCrawler._processLogQueue"><tt class="xref py py-obj docutils literal"><span class="pre">_processLogQueue</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._processOutputQueue.html#obspy.db.indexer.WaveformFileCrawler._processOutputQueue" title="obspy.db.indexer.WaveformFileCrawler._processOutputQueue"><tt class="xref py py-obj docutils literal"><span class="pre">_processOutputQueue</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._resetWalker.html#obspy.db.indexer.WaveformFileCrawler._resetWalker" title="obspy.db.indexer.WaveformFileCrawler._resetWalker"><tt class="xref py py-obj docutils literal"><span class="pre">_resetWalker</span></tt></a></td>
+<td>Resets the crawler parameters.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._select.html#obspy.db.indexer.WaveformFileCrawler._select" title="obspy.db.indexer.WaveformFileCrawler._select"><tt class="xref py py-obj docutils literal"><span class="pre">_select</span></tt></a></td>
+<td>Fetch entry from database.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._stepWalker.html#obspy.db.indexer.WaveformFileCrawler._stepWalker" title="obspy.db.indexer.WaveformFileCrawler._stepWalker"><tt class="xref py py-obj docutils literal"><span class="pre">_stepWalker</span></tt></a></td>
+<td>Steps current walker object to the next directory.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.db.indexer.WaveformFileCrawler._update_or_insert.html#obspy.db.indexer.WaveformFileCrawler._update_or_insert" title="obspy.db.indexer.WaveformFileCrawler._update_or_insert"><tt class="xref py py-obj docutils literal"><span class="pre">_update_or_insert</span></tt></a></td>
+<td>Add a new file into or modifies existing file in database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.db.indexer.WaveformFileCrawler.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.db.indexer.WaveformFileCrawler.getFeatures.html" title="obspy.db.indexer.WaveformFileCrawler.getFeatures"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.db.indexer.worker.html" title="obspy.db.indexer.worker"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.db.html" >obspy.db - A seismic waveform indexer and database for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.db.indexer.html" >obspy.db.indexer</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.trigger
+======================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.trigger

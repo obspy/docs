@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlanes.__delitem__
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlanes.__delitem__

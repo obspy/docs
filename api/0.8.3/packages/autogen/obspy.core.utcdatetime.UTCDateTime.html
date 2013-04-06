@@ -1,0 +1,609 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.utcdatetime.UTCDateTime &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.utcdatetime" href="obspy.core.utcdatetime.html" />
+    <link rel="next" title="obspy.core.utcdatetime.UTCDateTime.ctime" href="obspy.core.utcdatetime.UTCDateTime.ctime.html" />
+    <link rel="prev" title="obspy.core.utcdatetime.UTCDateTime.__unicode__" href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.ctime.html" title="obspy.core.utcdatetime.UTCDateTime.ctime"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" title="obspy.core.utcdatetime.UTCDateTime.__unicode__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.utcdatetime.html" accesskey="U">obspy.core.utcdatetime</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-utcdatetime-utcdatetime">
+<h1>obspy.core.utcdatetime.UTCDateTime<a class="headerlink" href="#obspy-core-utcdatetime-utcdatetime" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.utcdatetime.UTCDateTime">
+<em class="property">class </em><tt class="descname">UTCDateTime</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/utcdatetime.html#UTCDateTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.utcdatetime.UTCDateTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A UTC-based datetime object.</p>
+<p>This datetime class is based on the POSIX time, a system for describing
+instants in time, defined as the number of seconds elapsed since midnight
+Coordinated Universal Time (UTC) of Thursday, January 1, 1970. Using a
+single float timestamp allows higher precision as the default Python
+<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> class. It features the full <a class="reference external" href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601:2004</a>
+specification and some additional string patterns during object
+initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (int, float, string, <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>, optional) <span class="dash" /> The creation of a new <cite>UTCDateTime</cite> object depends from the
+given input parameters. All possible options are summarized in the
+<a class="reference internal" href="#examples">Examples</a> section below.</li>
+<li><strong>iso8601</strong> (<em>boolean, optional</em>) <span class="dash" /> Enforce <a class="reference external" href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601:2004</a> detection. Works only with a string
+as first input argument.</li>
+<li><strong>precision</strong> (<em>int, optional</em>) <span class="dash" /> Sets the precision used by the rich comparison operators.
+Defaults to <tt class="docutils literal"><span class="pre">6</span></tt> digits after the decimal point. See also <a class="reference internal" href="#precision">Precision</a>
+section below.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.5.1: </span>UTCDateTime is no longer based on Python&#8217;s datetime.datetime class
+instead uses timestamp as a single floating point value which allows
+higher precision.</p>
+<p class="rubric">Supported Operations</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">UTCDateTime</span> <span class="pre">=</span> <span class="pre">UTCDateTime</span> <span class="pre">+</span> <span class="pre">delta</span></tt></dt>
+<dd>Adds/removes <tt class="docutils literal"><span class="pre">delta</span></tt> seconds (given as int or float) to/from the
+current <tt class="docutils literal"><span class="pre">UTCDateTime</span></tt> object and returns a new <tt class="docutils literal"><span class="pre">UTCDateTime</span></tt>
+object.
+See also: <a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__add__.html#obspy.core.utcdatetime.UTCDateTime.__add__" title="obspy.core.utcdatetime.UTCDateTime.__add__"><tt class="xref py py-meth docutils literal"><span class="pre">__add__()</span></tt></a>.</dd>
+<dt><tt class="docutils literal"><span class="pre">delta</span> <span class="pre">=</span> <span class="pre">UTCDateTime</span> <span class="pre">-</span> <span class="pre">UTCDateTime</span></tt></dt>
+<dd>Calculates the time difference in seconds between two <tt class="docutils literal"><span class="pre">UTCDateTime</span></tt>
+objects. The time difference is given as float data type and may also
+contain a negative number.
+See also: <a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__sub__.html#obspy.core.utcdatetime.UTCDateTime.__sub__" title="obspy.core.utcdatetime.UTCDateTime.__sub__"><tt class="xref py py-meth docutils literal"><span class="pre">__sub__()</span></tt></a>.</dd>
+</dl>
+<p class="rubric"><span class="target" id="examples">Examples</span></p>
+<ol class="arabic">
+<li><p class="first">Using a timestamp.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 0, 0)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">1240561632</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 4, 24, 8, 27, 12)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mf">1240561632.5</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 4, 24, 8, 27, 12, 500000)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Using a <a class="reference external" href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601:2004</a> string. The detection may be enforced by
+setting the <tt class="docutils literal"><span class="pre">iso8601</span></tt> parameter to True.</p>
+<ul>
+<li><p class="first">Calendar date representation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-12-31T12:23:34.5&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 12, 31, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20091231T122334.5&quot;</span><span class="p">)</span>           <span class="c"># compact</span>
+<span class="go">UTCDateTime(2009, 12, 31, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-12-31T12:23:34.5Z&quot;</span><span class="p">)</span>      <span class="c"># w/o time zone</span>
+<span class="go">UTCDateTime(2009, 12, 31, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-12-31T12:23:34+01:15&quot;</span><span class="p">)</span>   <span class="c"># w/ time zone</span>
+<span class="go">UTCDateTime(2009, 12, 31, 11, 8, 34)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Ordinal date representation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-365T12:23:34.5&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 12, 31, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009365T122334.5&quot;</span><span class="p">)</span>            <span class="c"># compact</span>
+<span class="go">UTCDateTime(2009, 12, 31, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009001&quot;</span><span class="p">,</span> <span class="n">iso8601</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>       <span class="c"># enforce ISO8601</span>
+<span class="go">UTCDateTime(2009, 1, 1, 0, 0)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Week date representation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-W53-7T12:23:34.5&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(2010, 1, 3, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009W537T122334.5&quot;</span><span class="p">)</span>           <span class="c"># compact</span>
+<span class="go">UTCDateTime(2010, 1, 3, 12, 23, 34, 500000)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009W011&quot;</span><span class="p">,</span> <span class="n">iso8601</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>      <span class="c"># enforce ISO8601</span>
+<span class="go">UTCDateTime(2008, 12, 29, 0, 0)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p class="first">Using not ISO8601 compatible strings.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;1970-01-01 12:23:34&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 12, 23, 34)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;1970,01,01,12:23:34&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 12, 23, 34)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;1970,001,12:23:34&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 12, 23, 34)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20090701121212&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 7, 1, 12, 12, 12)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;19700101&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 0, 0)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20110818_03:00:00&quot;</span><span class="p">)</span>
+<span class="go">UTCDateTime(2011, 8, 18, 3, 0)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Using multiple arguments in the following order: <cite>year, month,
+day[, hour[, minute[, second[, microsecond]]]</cite>. The year, month and day
+arguments are required.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 0, 0)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">123456</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 12, 23, 34, 123456)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Using the following keyword arguments: <cite>year, month, day, julday, hour,
+minute, second, microsecond</cite>. Either the combination of year, month and
+day, or year and julday are required.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">1970</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="go">UTCDateTime(1970, 1, 1, 0, 15, 0, 20)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2009</span><span class="p">,</span> <span class="n">julday</span><span class="o">=</span><span class="mi">234</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 8, 22, 14, 13)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Using a Python <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a> object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+<span class="go">UTCDateTime(2009, 5, 24, 8, 28, 12, 5001)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p class="rubric"><span class="target" id="precision">Precision</span></p>
+<p>The <a class="reference internal" href="#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> class works with a default precision of <tt class="docutils literal"><span class="pre">6</span></tt>
+digits which effects the comparison of date/time values, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt3</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mf">0.0000001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">==</span> <span class="n">dt2</span>  <span class="c"># 5th digit is within current precision</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">==</span> <span class="n">dt3</span>  <span class="c"># 7th digit will be neglected</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>You may change that behaviour either by,</p>
+<ol class="arabic">
+<li><p class="first">using the <tt class="docutils literal"><span class="pre">precision</span></tt> keyword during object initialization:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">==</span> <span class="n">dt2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">or set it the class attribute <tt class="docutils literal"><span class="pre">DEFAULT_PRECISION</span></tt> for all new
+<a class="reference internal" href="#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a> objects using a monkey patch:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="o">.</span><span class="n">DEFAULT_PRECISION</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mf">0.00001</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">==</span> <span class="n">dt2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Don&#8217;t forget to reset <tt class="docutils literal"><span class="pre">DEFAULT_PRECISION</span></tt> if not needed anymore!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">UTCDateTime</span><span class="o">.</span><span class="n">DEFAULT_PRECISION</span> <span class="o">=</span> <span class="mi">6</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">DEFAULT_PRECISION</span></tt></td>
+<td>int(x[, base]) -&gt; integer</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">date</span></tt></td>
+<td>Returns a Python date object..</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">datetime</span></tt></td>
+<td>Returns a Python datetime object.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">day</span></tt></td>
+<td>Returns day as an integer.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">hour</span></tt></td>
+<td>Returns hour as an integer.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">julday</span></tt></td>
+<td>Returns Julian day as an integer.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">microsecond</span></tt></td>
+<td>Returns microseconds as an integer.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">minute</span></tt></td>
+<td>Returns minute as an integer.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">month</span></tt></td>
+<td>Returns month as an integer (January is 1, December is 12).</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">precision</span></tt></td>
+<td>Returns precision of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">second</span></tt></td>
+<td>Returns seconds as an integer.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">time</span></tt></td>
+<td>Returns a Python time object.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">timestamp</span></tt></td>
+<td>float(x) -&gt; floating point number</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">weekday</span></tt></td>
+<td>Return the day of the week as an integer (Monday is 0, Sunday is 6).</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">year</span></tt></td>
+<td>Returns year of the current UTCDateTime object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.ctime.html#obspy.core.utcdatetime.UTCDateTime.ctime" title="obspy.core.utcdatetime.UTCDateTime.ctime"><tt class="xref py py-obj docutils literal"><span class="pre">ctime</span></tt></a></td>
+<td>Return a string representing the date and time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.dst.html#obspy.core.utcdatetime.UTCDateTime.dst" title="obspy.core.utcdatetime.UTCDateTime.dst"><tt class="xref py py-obj docutils literal"><span class="pre">dst</span></tt></a></td>
+<td>Returns None (to stay compatible with <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.formatArcLink.html#obspy.core.utcdatetime.UTCDateTime.formatArcLink" title="obspy.core.utcdatetime.UTCDateTime.formatArcLink"><tt class="xref py py-obj docutils literal"><span class="pre">formatArcLink</span></tt></a></td>
+<td>Returns string representation for the ArcLink protocol.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.formatFissures.html#obspy.core.utcdatetime.UTCDateTime.formatFissures" title="obspy.core.utcdatetime.UTCDateTime.formatFissures"><tt class="xref py py-obj docutils literal"><span class="pre">formatFissures</span></tt></a></td>
+<td>Returns string representation for the IRIS Fissures protocol.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.formatIRISWebService.html#obspy.core.utcdatetime.UTCDateTime.formatIRISWebService" title="obspy.core.utcdatetime.UTCDateTime.formatIRISWebService"><tt class="xref py py-obj docutils literal"><span class="pre">formatIRISWebService</span></tt></a></td>
+<td>Returns string representation usable for the IRIS Web services.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.formatSEED.html#obspy.core.utcdatetime.UTCDateTime.formatSEED" title="obspy.core.utcdatetime.UTCDateTime.formatSEED"><tt class="xref py py-obj docutils literal"><span class="pre">formatSEED</span></tt></a></td>
+<td>Returns string representation for a SEED volume.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.formatSeedLink.html#obspy.core.utcdatetime.UTCDateTime.formatSeedLink" title="obspy.core.utcdatetime.UTCDateTime.formatSeedLink"><tt class="xref py py-obj docutils literal"><span class="pre">formatSeedLink</span></tt></a></td>
+<td>Returns string representation for the SeedLink protocol.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.isocalendar.html#obspy.core.utcdatetime.UTCDateTime.isocalendar" title="obspy.core.utcdatetime.UTCDateTime.isocalendar"><tt class="xref py py-obj docutils literal"><span class="pre">isocalendar</span></tt></a></td>
+<td>Returns a tuple containing (ISO year, ISO week number, ISO weekday).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.isoformat.html#obspy.core.utcdatetime.UTCDateTime.isoformat" title="obspy.core.utcdatetime.UTCDateTime.isoformat"><tt class="xref py py-obj docutils literal"><span class="pre">isoformat</span></tt></a></td>
+<td>Return a string representing the date and time in ISO 8601 format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.isoweekday.html#obspy.core.utcdatetime.UTCDateTime.isoweekday" title="obspy.core.utcdatetime.UTCDateTime.isoweekday"><tt class="xref py py-obj docutils literal"><span class="pre">isoweekday</span></tt></a></td>
+<td>Return the day of the week as an integer (Monday is 1, Sunday is 7).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.strftime.html#obspy.core.utcdatetime.UTCDateTime.strftime" title="obspy.core.utcdatetime.UTCDateTime.strftime"><tt class="xref py py-obj docutils literal"><span class="pre">strftime</span></tt></a></td>
+<td>Return a string representing the date and time, controlled by an explicit format string.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.strptime.html#obspy.core.utcdatetime.UTCDateTime.strptime" title="obspy.core.utcdatetime.UTCDateTime.strptime"><tt class="xref py py-obj docutils literal"><span class="pre">strptime</span></tt></a></td>
+<td>Return a UTCDateTime corresponding to date_string, parsed according to</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.timetuple.html#obspy.core.utcdatetime.UTCDateTime.timetuple" title="obspy.core.utcdatetime.UTCDateTime.timetuple"><tt class="xref py py-obj docutils literal"><span class="pre">timetuple</span></tt></a></td>
+<td>Return a time.struct_time such as returned by time.localtime().</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.timetz.html#obspy.core.utcdatetime.UTCDateTime.timetz" title="obspy.core.utcdatetime.UTCDateTime.timetz"><tt class="xref py py-obj docutils literal"><span class="pre">timetz</span></tt></a></td>
+<td>Return time object with same hour, minute, second, microsecond, and tzinfo attributes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.toordinal.html#obspy.core.utcdatetime.UTCDateTime.toordinal" title="obspy.core.utcdatetime.UTCDateTime.toordinal"><tt class="xref py py-obj docutils literal"><span class="pre">toordinal</span></tt></a></td>
+<td>Return proleptic Gregorian ordinal. January 1 of year 1 is day 1.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.tzname.html#obspy.core.utcdatetime.UTCDateTime.tzname" title="obspy.core.utcdatetime.UTCDateTime.tzname"><tt class="xref py py-obj docutils literal"><span class="pre">tzname</span></tt></a></td>
+<td>Returns None (to stay compatible with <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.utcoffset.html#obspy.core.utcdatetime.UTCDateTime.utcoffset" title="obspy.core.utcdatetime.UTCDateTime.utcoffset"><tt class="xref py py-obj docutils literal"><span class="pre">utcoffset</span></tt></a></td>
+<td>Returns None (to stay compatible with <a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt></a>)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.utctimetuple.html#obspy.core.utcdatetime.UTCDateTime.utctimetuple" title="obspy.core.utcdatetime.UTCDateTime.utctimetuple"><tt class="xref py py-obj docutils literal"><span class="pre">utctimetuple</span></tt></a></td>
+<td>Return a time.struct_time of current UTCDateTime object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._fromDateTime.html#obspy.core.utcdatetime.UTCDateTime._fromDateTime" title="obspy.core.utcdatetime.UTCDateTime._fromDateTime"><tt class="xref py py-obj docutils literal"><span class="pre">_fromDateTime</span></tt></a></td>
+<td>Use Python datetime object to set current time.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getDate.html#obspy.core.utcdatetime.UTCDateTime._getDate" title="obspy.core.utcdatetime.UTCDateTime._getDate"><tt class="xref py py-obj docutils literal"><span class="pre">_getDate</span></tt></a></td>
+<td>Returns a Python date object..</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getDateTime.html#obspy.core.utcdatetime.UTCDateTime._getDateTime" title="obspy.core.utcdatetime.UTCDateTime._getDateTime"><tt class="xref py py-obj docutils literal"><span class="pre">_getDateTime</span></tt></a></td>
+<td>Returns a Python datetime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getDay.html#obspy.core.utcdatetime.UTCDateTime._getDay" title="obspy.core.utcdatetime.UTCDateTime._getDay"><tt class="xref py py-obj docutils literal"><span class="pre">_getDay</span></tt></a></td>
+<td>Returns day as an integer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getHour.html#obspy.core.utcdatetime.UTCDateTime._getHour" title="obspy.core.utcdatetime.UTCDateTime._getHour"><tt class="xref py py-obj docutils literal"><span class="pre">_getHour</span></tt></a></td>
+<td>Returns hour as an integer.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getJulday.html#obspy.core.utcdatetime.UTCDateTime._getJulday" title="obspy.core.utcdatetime.UTCDateTime._getJulday"><tt class="xref py py-obj docutils literal"><span class="pre">_getJulday</span></tt></a></td>
+<td>Returns Julian day as an integer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getMicrosecond.html#obspy.core.utcdatetime.UTCDateTime._getMicrosecond" title="obspy.core.utcdatetime.UTCDateTime._getMicrosecond"><tt class="xref py py-obj docutils literal"><span class="pre">_getMicrosecond</span></tt></a></td>
+<td>Returns microseconds as an integer.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getMinute.html#obspy.core.utcdatetime.UTCDateTime._getMinute" title="obspy.core.utcdatetime.UTCDateTime._getMinute"><tt class="xref py py-obj docutils literal"><span class="pre">_getMinute</span></tt></a></td>
+<td>Returns minute as an integer.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getMonth.html#obspy.core.utcdatetime.UTCDateTime._getMonth" title="obspy.core.utcdatetime.UTCDateTime._getMonth"><tt class="xref py py-obj docutils literal"><span class="pre">_getMonth</span></tt></a></td>
+<td>Returns month as an integer (January is 1, December is 12).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getPrecision.html#obspy.core.utcdatetime.UTCDateTime._getPrecision" title="obspy.core.utcdatetime.UTCDateTime._getPrecision"><tt class="xref py py-obj docutils literal"><span class="pre">_getPrecision</span></tt></a></td>
+<td>Returns precision of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getSecond.html#obspy.core.utcdatetime.UTCDateTime._getSecond" title="obspy.core.utcdatetime.UTCDateTime._getSecond"><tt class="xref py py-obj docutils literal"><span class="pre">_getSecond</span></tt></a></td>
+<td>Returns seconds as an integer.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getTime.html#obspy.core.utcdatetime.UTCDateTime._getTime" title="obspy.core.utcdatetime.UTCDateTime._getTime"><tt class="xref py py-obj docutils literal"><span class="pre">_getTime</span></tt></a></td>
+<td>Returns a Python time object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getTimeStamp.html#obspy.core.utcdatetime.UTCDateTime._getTimeStamp" title="obspy.core.utcdatetime.UTCDateTime._getTimeStamp"><tt class="xref py py-obj docutils literal"><span class="pre">_getTimeStamp</span></tt></a></td>
+<td>Returns UTC timestamp in seconds.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getWeekday.html#obspy.core.utcdatetime.UTCDateTime._getWeekday" title="obspy.core.utcdatetime.UTCDateTime._getWeekday"><tt class="xref py py-obj docutils literal"><span class="pre">_getWeekday</span></tt></a></td>
+<td>Return the day of the week as an integer (Monday is 0, Sunday is 6).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._getYear.html#obspy.core.utcdatetime.UTCDateTime._getYear" title="obspy.core.utcdatetime.UTCDateTime._getYear"><tt class="xref py py-obj docutils literal"><span class="pre">_getYear</span></tt></a></td>
+<td>Returns year of the current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._set.html#obspy.core.utcdatetime.UTCDateTime._set" title="obspy.core.utcdatetime.UTCDateTime._set"><tt class="xref py py-obj docutils literal"><span class="pre">_set</span></tt></a></td>
+<td>Sets current timestamp using kwargs.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setDay.html#obspy.core.utcdatetime.UTCDateTime._setDay" title="obspy.core.utcdatetime.UTCDateTime._setDay"><tt class="xref py py-obj docutils literal"><span class="pre">_setDay</span></tt></a></td>
+<td>Sets day of current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setHour.html#obspy.core.utcdatetime.UTCDateTime._setHour" title="obspy.core.utcdatetime.UTCDateTime._setHour"><tt class="xref py py-obj docutils literal"><span class="pre">_setHour</span></tt></a></td>
+<td>Sets hours of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setJulday.html#obspy.core.utcdatetime.UTCDateTime._setJulday" title="obspy.core.utcdatetime.UTCDateTime._setJulday"><tt class="xref py py-obj docutils literal"><span class="pre">_setJulday</span></tt></a></td>
+<td>Sets Julian day of current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setMicrosecond.html#obspy.core.utcdatetime.UTCDateTime._setMicrosecond" title="obspy.core.utcdatetime.UTCDateTime._setMicrosecond"><tt class="xref py py-obj docutils literal"><span class="pre">_setMicrosecond</span></tt></a></td>
+<td>Sets microseconds of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setMinute.html#obspy.core.utcdatetime.UTCDateTime._setMinute" title="obspy.core.utcdatetime.UTCDateTime._setMinute"><tt class="xref py py-obj docutils literal"><span class="pre">_setMinute</span></tt></a></td>
+<td>Sets minutes of current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setMonth.html#obspy.core.utcdatetime.UTCDateTime._setMonth" title="obspy.core.utcdatetime.UTCDateTime._setMonth"><tt class="xref py py-obj docutils literal"><span class="pre">_setMonth</span></tt></a></td>
+<td>Sets month of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setPrecision.html#obspy.core.utcdatetime.UTCDateTime._setPrecision" title="obspy.core.utcdatetime.UTCDateTime._setPrecision"><tt class="xref py py-obj docutils literal"><span class="pre">_setPrecision</span></tt></a></td>
+<td>Set precision of current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setSecond.html#obspy.core.utcdatetime.UTCDateTime._setSecond" title="obspy.core.utcdatetime.UTCDateTime._setSecond"><tt class="xref py py-obj docutils literal"><span class="pre">_setSecond</span></tt></a></td>
+<td>Sets seconds of current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime._setYear.html#obspy.core.utcdatetime.UTCDateTime._setYear" title="obspy.core.utcdatetime.UTCDateTime._setYear"><tt class="xref py py-obj docutils literal"><span class="pre">_setYear</span></tt></a></td>
+<td>Sets year of current UTCDateTime object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__abs__.html#obspy.core.utcdatetime.UTCDateTime.__abs__" title="obspy.core.utcdatetime.UTCDateTime.__abs__"><tt class="xref py py-obj docutils literal"><span class="pre">__abs__</span></tt></a></td>
+<td>Returns absolute timestamp value of the current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__add__.html#obspy.core.utcdatetime.UTCDateTime.__add__" title="obspy.core.utcdatetime.UTCDateTime.__add__"><tt class="xref py py-obj docutils literal"><span class="pre">__add__</span></tt></a></td>
+<td>Adds seconds and microseconds to current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__eq__.html#obspy.core.utcdatetime.UTCDateTime.__eq__" title="obspy.core.utcdatetime.UTCDateTime.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Rich comparison operator &#8216;==&#8217;.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__float__.html#obspy.core.utcdatetime.UTCDateTime.__float__" title="obspy.core.utcdatetime.UTCDateTime.__float__"><tt class="xref py py-obj docutils literal"><span class="pre">__float__</span></tt></a></td>
+<td>Returns UTC timestamp in seconds.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__ge__.html#obspy.core.utcdatetime.UTCDateTime.__ge__" title="obspy.core.utcdatetime.UTCDateTime.__ge__"><tt class="xref py py-obj docutils literal"><span class="pre">__ge__</span></tt></a></td>
+<td>Rich comparison operator &#8216;&gt;=&#8217;.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__gt__.html#obspy.core.utcdatetime.UTCDateTime.__gt__" title="obspy.core.utcdatetime.UTCDateTime.__gt__"><tt class="xref py py-obj docutils literal"><span class="pre">__gt__</span></tt></a></td>
+<td>Rich comparison operator &#8216;&gt;&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__init__.html#obspy.core.utcdatetime.UTCDateTime.__init__" title="obspy.core.utcdatetime.UTCDateTime.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Creates a new UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__le__.html#obspy.core.utcdatetime.UTCDateTime.__le__" title="obspy.core.utcdatetime.UTCDateTime.__le__"><tt class="xref py py-obj docutils literal"><span class="pre">__le__</span></tt></a></td>
+<td>Rich comparison operator &#8216;&lt;=&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__lt__.html#obspy.core.utcdatetime.UTCDateTime.__lt__" title="obspy.core.utcdatetime.UTCDateTime.__lt__"><tt class="xref py py-obj docutils literal"><span class="pre">__lt__</span></tt></a></td>
+<td>Rich comparison operator &#8216;&lt;&#8217;.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__ne__.html#obspy.core.utcdatetime.UTCDateTime.__ne__" title="obspy.core.utcdatetime.UTCDateTime.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td>Rich comparison operator &#8216;!=&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__repr__.html#obspy.core.utcdatetime.UTCDateTime.__repr__" title="obspy.core.utcdatetime.UTCDateTime.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td>Returns a representation of UTCDatetime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__str__.html#obspy.core.utcdatetime.UTCDateTime.__str__" title="obspy.core.utcdatetime.UTCDateTime.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Returns ISO8601 string representation from current UTCDateTime object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__sub__.html#obspy.core.utcdatetime.UTCDateTime.__sub__" title="obspy.core.utcdatetime.UTCDateTime.__sub__"><tt class="xref py py-obj docutils literal"><span class="pre">__sub__</span></tt></a></td>
+<td>Subtracts seconds and microseconds from current UTCDateTime object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html#obspy.core.utcdatetime.UTCDateTime.__unicode__" title="obspy.core.utcdatetime.UTCDateTime.__unicode__"><tt class="xref py py-obj docutils literal"><span class="pre">__unicode__</span></tt></a></td>
+<td>Returns ISO8601 unicode representation from current UTCDateTime object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.utcdatetime.UTCDateTime.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.ctime.html" title="obspy.core.utcdatetime.UTCDateTime.ctime"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.utcdatetime.UTCDateTime.__unicode__.html" title="obspy.core.utcdatetime.UTCDateTime.__unicode__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.utcdatetime.html" >obspy.core.utcdatetime</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

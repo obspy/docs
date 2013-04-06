@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.copy
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.copy

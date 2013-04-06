@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.getXML
+=================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.getXML

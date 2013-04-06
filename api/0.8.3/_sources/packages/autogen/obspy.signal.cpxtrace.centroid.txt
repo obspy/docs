@@ -1,0 +1,6 @@
+obspy.signal.cpxtrace.centroid
+==============================
+
+.. currentmodule:: obspy.signal.cpxtrace
+
+.. autofunction:: centroid

@@ -1,0 +1,89 @@
+obspy.xseed.fields.Field
+========================
+
+.. currentmodule:: obspy.xseed.fields
+.. autoclass:: Field
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Field.__dict__
+     ~Field.__doc__
+     ~Field.__module__
+     ~Field.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Field.convert
+     ~Field.getSEED
+     ~Field.getXML
+     ~Field.parseSEED
+     ~Field.parseXML
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Field._formatString
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Field.__init__
+     ~Field.__str__
+  
+
+  
+  

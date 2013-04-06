@@ -1,0 +1,6 @@
+obspy.core.util.geodetics.kilometer2degrees
+===========================================
+
+.. currentmodule:: obspy.core.util.geodetics
+
+.. autofunction:: kilometer2degrees

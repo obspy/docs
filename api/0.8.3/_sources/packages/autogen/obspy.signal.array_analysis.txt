@@ -1,0 +1,37 @@
+obspy.signal.array_analysis
+===========================
+
+.. currentmodule:: obspy.signal.array_analysis
+.. automodule:: obspy.signal.array_analysis
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      array_processing
+      array_rotation_strain
+      array_transff_freqslowness
+      array_transff_wavenumber
+      dump
+      get_geometry
+      get_spoint
+      get_timeshift
+      nop
+      sonic
+   
+   
+
+   
+   
+   
+
+   
+   
+   

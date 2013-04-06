@@ -1,0 +1,195 @@
+obspy.core.event.Magnitude
+==========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Magnitude
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Magnitude.__abstractmethods__
+     ~Magnitude.__dict__
+     ~Magnitude.__doc__
+     ~Magnitude.__hash__
+     ~Magnitude.__module__
+     ~Magnitude.__weakref__
+     ~Magnitude.defaults
+     ~Magnitude.item
+     ~Magnitude.key
+     ~Magnitude.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Magnitude.clear
+     ~Magnitude.copy
+     ~Magnitude.get
+     ~Magnitude.items
+     ~Magnitude.iteritems
+     ~Magnitude.iterkeys
+     ~Magnitude.itervalues
+     ~Magnitude.keys
+     ~Magnitude.pop
+     ~Magnitude.popitem
+     ~Magnitude.setdefault
+     ~Magnitude.update
+     ~Magnitude.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Magnitude._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Magnitude.__contains__
+     ~Magnitude.__deepcopy__
+     ~Magnitude.__delattr__
+     ~Magnitude.__delitem__
+     ~Magnitude.__eq__
+     ~Magnitude.__getattr__
+     ~Magnitude.__getitem__
+     ~Magnitude.__getstate__
+     ~Magnitude.__init__
+     ~Magnitude.__iter__
+     ~Magnitude.__len__
+     ~Magnitude.__ne__
+     ~Magnitude.__nonzero__
+     ~Magnitude.__repr__
+     ~Magnitude.__setattr__
+     ~Magnitude.__setitem__
+     ~Magnitude.__setstate__
+     ~Magnitude.__str__
+     ~Magnitude.__subclasshook__
+  
+
+  
+  

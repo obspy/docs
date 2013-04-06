@@ -1,0 +1,6 @@
+obspy.core.util.decorator.deprecated
+====================================
+
+.. currentmodule:: obspy.core.util.decorator
+
+.. autofunction:: deprecated

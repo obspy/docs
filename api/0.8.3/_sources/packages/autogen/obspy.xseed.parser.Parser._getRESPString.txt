@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._getRESPString
+========================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._getRESPString

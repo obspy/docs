@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.keys
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.keys

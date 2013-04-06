@@ -1,0 +1,85 @@
+obspy.db.db.WaveformChannel
+===========================
+
+.. currentmodule:: obspy.db.db
+.. autoclass:: WaveformChannel
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~WaveformChannel.__dict__
+     ~WaveformChannel.__doc__
+     ~WaveformChannel.__mapper__
+     ~WaveformChannel.__module__
+     ~WaveformChannel.__table__
+     ~WaveformChannel.__table_args__
+     ~WaveformChannel.__tablename__
+     ~WaveformChannel.__weakref__
+     ~WaveformChannel.calib
+     ~WaveformChannel.channel
+     ~WaveformChannel.endtime
+     ~WaveformChannel.features
+     ~WaveformChannel.file_id
+     ~WaveformChannel.gaps
+     ~WaveformChannel.id
+     ~WaveformChannel.location
+     ~WaveformChannel.metadata
+     ~WaveformChannel.network
+     ~WaveformChannel.npts
+     ~WaveformChannel.preview
+     ~WaveformChannel.sampling_rate
+     ~WaveformChannel.starttime
+     ~WaveformChannel.station
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformChannel.getPreview
+     ~WaveformChannel.update
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformChannel.__init__
+     ~WaveformChannel.__repr__
+  
+
+  
+  

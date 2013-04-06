@@ -1,0 +1,6 @@
+obspy.signal.invsim.seisSim
+===========================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: seisSim

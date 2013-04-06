@@ -1,0 +1,6 @@
+obspy.imaging.waveform.WaveformPlotting.__init__
+================================================
+
+.. currentmodule:: obspy.imaging.waveform
+
+.. automethod:: WaveformPlotting.__init__

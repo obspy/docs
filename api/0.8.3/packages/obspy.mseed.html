@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed - Mini-SEED read and write support &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.mseed.core" href="autogen/obspy.mseed.core.html" />
+    <link rel="prev" title="obspy.gse2.paz.readPaz" href="autogen/obspy.gse2.paz.readPaz.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.mseed.core.html" title="obspy.mseed.core"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.gse2.paz.readPaz.html" title="obspy.gse2.paz.readPaz"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.mseed"></span><div class="section" id="obspy-mseed-mini-seed-read-and-write-support">
+<h1>obspy.mseed - Mini-SEED read and write support<a class="headerlink" href="#obspy-mseed-mini-seed-read-and-write-support" title="Permalink to this headline">¶</a></h1>
+<p>This module provides read and write support for <a class="reference external" href="http://www.iris.edu/manuals/SEED_appG.htm">Mini-SEED</a> waveform data and some other
+convenient methods to handle Mini-SEED files. Most methods are based on
+<a class="reference external" href="http://www.iris.edu/software/libraries/">libmseed</a>, a C library framework
+by Chad Trabant and interfaced via Python <a class="reference external" href="http://docs.python.org/2.7/library/ctypes.html#ctypes" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">ctypes</span></tt></a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://www.iris.edu/manuals/SEEDManual_V2.4.pdf">http://www.iris.edu/manuals/SEEDManual_V2.4.pdf</a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>) &amp; Chad Trabant</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="reading">
+<h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
+<p>Similar to reading any other waveform data format using obspy.core:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/test.mseed&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> 
+<span class="go">&lt;obspy.core.stream.Stream object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">NL.HGN.00.BHZ | 2003-05-29T02:13:22.043400Z - ... | 40.0 Hz, 11947 samples</span>
+</pre></div>
+</div>
+<p>The format will be determined automatically.</p>
+<p>Each trace will have a <tt class="docutils literal"><span class="pre">stats</span></tt> attribute containing the usual information.
+When reading a Mini-SEED file it will have one additional attribute <tt class="docutils literal"><span class="pre">mseed</span></tt>.
+This attribute contains all Mini-SEED specific attributes.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span> 
+<span class="go">         network: NL</span>
+<span class="go">         station: HGN</span>
+<span class="go">        location: 00</span>
+<span class="go">         channel: BHZ</span>
+<span class="go">       starttime: 2003-05-29T02:13:22.043400Z</span>
+<span class="go">         endtime: 2003-05-29T02:18:20.693400Z</span>
+<span class="go">   sampling_rate: 40.0</span>
+<span class="go">           delta: 0.025</span>
+<span class="go">            npts: 11947</span>
+<span class="go">           calib: 1.0</span>
+<span class="go">         _format: MSEED</span>
+<span class="go">           mseed: AttribDict({&#39;record_length&#39;: 4096, &#39;encoding&#39;: &#39;STEIM2&#39;,</span>
+<span class="go">                              &#39;filesize&#39;: 8192L, &#39;dataquality&#39;: &#39;R&#39;,</span>
+<span class="go">                              &#39;number_of_records&#39;: 2L, &#39;byteorder&#39;: &#39;&gt;&#39;})</span>
+</pre></div>
+</div>
+<p>The actual data is stored as <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a> in the <tt class="docutils literal"><span class="pre">data</span></tt> attribute
+of each trace.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="go">[2787 2776 2774 ..., 2850 2853 2853]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing">
+<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<p>You may export the data to the file system using the
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of an existing
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object :</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;Mini-SEED-filename.mseed&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;MSEED&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>You can also specify several keyword arguments that change the resulting
+Mini-SEED file:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">reclen</span></tt> : Record length in bytes of the resulting Mini-SEED file. The
+record length needs to be expressible as 2 to the power of X where X is in
+between and including 8 and 20. If no reclen is given it will default to
+4096 bytes.</li>
+<li><tt class="docutils literal"><span class="pre">encoding</span></tt>: Encoding of the Mini-SEED file. You can either give the a
+string or the corresponding number. Available encodings are <tt class="docutils literal"><span class="pre">ASCII</span></tt>
+(<tt class="docutils literal"><span class="pre">0</span></tt>)*, <tt class="docutils literal"><span class="pre">INT16</span></tt> (<tt class="docutils literal"><span class="pre">1</span></tt>), <tt class="docutils literal"><span class="pre">INT32</span></tt> (<tt class="docutils literal"><span class="pre">3</span></tt>), <tt class="docutils literal"><span class="pre">FLOAT32</span></tt> (<tt class="docutils literal"><span class="pre">4</span></tt>)*,
+<tt class="docutils literal"><span class="pre">FLOAT64</span></tt> (<tt class="docutils literal"><span class="pre">5</span></tt>)*, <tt class="docutils literal"><span class="pre">STEIM1</span></tt> (<tt class="docutils literal"><span class="pre">10</span></tt>) and <tt class="docutils literal"><span class="pre">STEIM2</span></tt> (<tt class="docutils literal"><span class="pre">11</span></tt>)*. Default
+data types a marked with an asterisk. Currently <tt class="docutils literal"><span class="pre">INT24</span></tt> (<tt class="docutils literal"><span class="pre">2</span></tt>) is not
+supported due to lacking NumPy support.</li>
+<li><tt class="docutils literal"><span class="pre">byteorder</span></tt>: Byte order of the Mini-SEED file. <tt class="docutils literal"><span class="pre">0</span></tt> will result in a
+little-endian file and <tt class="docutils literal"><span class="pre">1</span></tt> in a big-endian file. Defaults to big-endian.
+Do not change this if you don&#8217;t know what you are doing because most other
+programs can only read big-endian Mini-SEED files.</li>
+<li><tt class="docutils literal"><span class="pre">flush</span></tt>: If it is not zero all of the data will be packed into records,
+otherwise records will only be packed while there are enough data samples to
+completely fill a record. The default value is <tt class="docutils literal"><span class="pre">-1</span></tt> and thus every data
+value will be packed by default.</li>
+<li><tt class="docutils literal"><span class="pre">verbose</span></tt>: Controls verbosity of the underlying libmseed. A value higher
+than <tt class="docutils literal"><span class="pre">0</span></tt> will give diagnostic output. Defaults to <tt class="docutils literal"><span class="pre">0</span></tt>.</li>
+</ul>
+<p>So in order to write a STEIM1 encoded Mini-SEED file with a record_length of
+512 byte do the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;out.mseed&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;MSEED&#39;</span><span class="p">,</span> <span class="n">reclen</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>  
+<span class="gp">... </span>         <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;STEIM1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.mseed.core.html#module-obspy.mseed.core" title="obspy.mseed.core"><tt class="xref py py-obj docutils literal"><span class="pre">core</span></tt></a></td>
+<td>MSEED bindings to ObsPy core module.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.mseed.util.html#module-obspy.mseed.util" title="obspy.mseed.util"><tt class="xref py py-obj docutils literal"><span class="pre">util</span></tt></a></td>
+<td>Mini-SEED specific utilities.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scripts">
+<h2>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.mseed.scripts.recordanalyzer.html#module-obspy.mseed.scripts.recordanalyzer" title="obspy.mseed.scripts.recordanalyzer"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.recordanalyzer</span></tt></a></td>
+<td>USAGE: obspy-mseed-recordanalyzer filename.mseed</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.mseed - Mini-SEED read and write support</a><ul>
+<li><a class="reference internal" href="#reading">Reading</a></li>
+<li><a class="reference internal" href="#writing">Writing</a></li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts">Scripts</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.mseed.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.mseed.core.html" title="obspy.mseed.core"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.gse2.paz.readPaz.html" title="obspy.gse2.paz.readPaz"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

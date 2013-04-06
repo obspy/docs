@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser.writeRESP
+===================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser.writeRESP

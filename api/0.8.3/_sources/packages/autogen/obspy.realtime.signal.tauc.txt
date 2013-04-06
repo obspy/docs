@@ -1,0 +1,6 @@
+obspy.realtime.signal.tauc
+==========================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: tauc

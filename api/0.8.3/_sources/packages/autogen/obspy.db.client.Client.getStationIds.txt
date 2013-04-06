@@ -1,0 +1,6 @@
+obspy.db.client.Client.getStationIds
+====================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getStationIds

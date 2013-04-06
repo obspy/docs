@@ -1,0 +1,81 @@
+obspy.segy.segy.SEGYTraceHeader
+===============================
+
+.. currentmodule:: obspy.segy.segy
+.. autoclass:: SEGYTraceHeader
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SEGYTraceHeader.__dict__
+     ~SEGYTraceHeader.__doc__
+     ~SEGYTraceHeader.__module__
+     ~SEGYTraceHeader.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTraceHeader.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTraceHeader._createEmptyTraceHeader
+     ~SEGYTraceHeader._readTraceHeader
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SEGYTraceHeader.__getattr__
+     ~SEGYTraceHeader.__init__
+     ~SEGYTraceHeader.__str__
+  
+
+  
+  

@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.saveResponse
+========================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.saveResponse

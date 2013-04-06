@@ -1,0 +1,28 @@
+obspy.core.util.attribdict
+==========================
+
+.. currentmodule:: obspy.core.util.attribdict
+.. automodule:: obspy.core.util.attribdict
+
+   .. comment to end block
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      AttribDict
+   
+   
+
+   
+   
+   

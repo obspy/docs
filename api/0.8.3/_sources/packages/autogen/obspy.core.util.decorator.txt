@@ -1,0 +1,32 @@
+obspy.core.util.decorator
+=========================
+
+.. currentmodule:: obspy.core.util.decorator
+.. automodule:: obspy.core.util.decorator
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      deprecated
+      deprecated_keywords
+      skip
+      skipIf
+      uncompressFile
+   
+   
+
+   
+   
+   
+
+   
+   
+   

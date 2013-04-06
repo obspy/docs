@@ -1,0 +1,6 @@
+obspy.core.event.Comment.__len__
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.__len__

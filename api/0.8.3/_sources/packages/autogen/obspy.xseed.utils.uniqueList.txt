@@ -1,0 +1,6 @@
+obspy.xseed.utils.uniqueList
+============================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: uniqueList

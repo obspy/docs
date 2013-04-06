@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlanes.clear
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlanes.clear

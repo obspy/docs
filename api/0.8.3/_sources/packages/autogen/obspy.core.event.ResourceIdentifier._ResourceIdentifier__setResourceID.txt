@@ -1,0 +1,6 @@
+obspy.core.event.ResourceIdentifier._ResourceIdentifier__setResourceID
+======================================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ResourceIdentifier._ResourceIdentifier__setResourceID

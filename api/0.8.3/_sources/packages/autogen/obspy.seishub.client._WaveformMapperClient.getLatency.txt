@@ -1,0 +1,6 @@
+obspy.seishub.client._WaveformMapperClient.getLatency
+=====================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _WaveformMapperClient.getLatency

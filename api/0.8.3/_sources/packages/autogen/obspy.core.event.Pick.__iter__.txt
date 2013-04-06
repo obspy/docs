@@ -1,0 +1,6 @@
+obspy.core.event.Pick.__iter__
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.__iter__

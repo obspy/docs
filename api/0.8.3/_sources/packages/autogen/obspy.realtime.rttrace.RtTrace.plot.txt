@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.plot
+===================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.plot

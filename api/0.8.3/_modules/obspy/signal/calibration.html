@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.calibration &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.calibration</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: calibration.py</span>
+<span class="c">#  Purpose: Functions for relative calibration (e.g. Huddle test calibration)</span>
+<span class="c">#   Author: Felix Bernauer, Simon Kremers</span>
+<span class="c">#    Email: bernauer@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2011 Felix Bernauer, Simon Kremers</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for relative calibration.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy.core.stream</span> <span class="kn">import</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.core.trace</span> <span class="kn">import</span> <span class="n">Trace</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">konnoOhmachiSmoothing</span><span class="p">,</span> <span class="n">pazToFreqResp</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.util</span> <span class="kn">import</span> <span class="n">nextpow2</span>
+<span class="kn">from</span> <span class="nn">obspy.gse2.paz</span> <span class="kn">import</span> <span class="n">readPaz</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="relcalstack"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.calibration.relcalstack.html#obspy.signal.calibration.relcalstack">[docs]</a><span class="k">def</span> <span class="nf">relcalstack</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">calib_file</span><span class="p">,</span> <span class="n">window_len</span><span class="p">,</span> <span class="n">overlap_frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">save_data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for relative calibration of sensors using a sensor with known</span>
+<span class="sd">    transfer function</span>
+
+<span class="sd">    :param st1: Stream or Trace object, (known)</span>
+<span class="sd">    :param st2: Stream or Trace object, (unknown)</span>
+<span class="sd">    :type calib_file: String</span>
+<span class="sd">    :param calib_file: file name of calibration file containing the PAZ of the</span>
+<span class="sd">        known instrument in GSE2 standard.</span>
+<span class="sd">    :type window_len: Float</span>
+<span class="sd">    :param window_len: length of sliding window in seconds</span>
+<span class="sd">    :type overlap_frac: float</span>
+<span class="sd">    :param overlap_frac: fraction of overlap, defaults to fifty percent (0.5)</span>
+<span class="sd">    :type smooth: Float</span>
+<span class="sd">    :param smooth: variable that defines if the Konno-Ohmachi taper is used or</span>
+<span class="sd">        not. default = 0 -&gt; no taper generally used in geopsy: smooth = 40</span>
+<span class="sd">    :type save_data: Boolean</span>
+<span class="sd">    :param save_data: Whether or not to save the result to a file. If True, two</span>
+<span class="sd">        output files will be created:</span>
+<span class="sd">        * The new response in station_name.window_length.resp</span>
+<span class="sd">        * The ref response in station_name.refResp</span>
+<span class="sd">        Defaults to True</span>
+<span class="sd">    :returns: frequency, amplitude and phase spectrum</span>
+
+<span class="sd">    implemented after relcalstack.c by M.Ohrnberger and J.Wassermann.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># transform given trace objects to streams</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+        <span class="n">st1</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">([</span><span class="n">st1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">st2</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+        <span class="n">st2</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">([</span><span class="n">st2</span><span class="p">])</span>
+    <span class="c"># check if sampling rate and trace length is the same</span>
+    <span class="k">if</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">!=</span> <span class="n">st2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Traces don&#39;t have the same length!&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">!=</span> <span class="n">st2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Traces don&#39;t have the same sampling rate!&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ndat1</span> <span class="o">=</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span>
+        <span class="n">sampfreq</span> <span class="o">=</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+
+    <span class="c"># read waveforms</span>
+    <span class="n">tr1</span> <span class="o">=</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">tr2</span> <span class="o">=</span> <span class="n">st2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c"># get window length, nfft and frequency step</span>
+    <span class="n">ndat</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">window_len</span> <span class="o">*</span> <span class="n">sampfreq</span><span class="p">)</span>
+    <span class="n">nfft</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">ndat</span><span class="p">)</span>
+
+    <span class="c"># read calib file and calculate response function</span>
+    <span class="n">gg</span><span class="p">,</span> <span class="n">_freq</span> <span class="o">=</span> <span class="n">_calcresp</span><span class="p">(</span><span class="n">calib_file</span><span class="p">,</span> <span class="n">nfft</span><span class="p">,</span> <span class="n">sampfreq</span><span class="p">)</span>
+
+    <span class="c"># calculate number of windows and overlap</span>
+    <span class="n">nwin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">ndat1</span> <span class="o">-</span> <span class="n">nfft</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">nfft</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">noverlap</span> <span class="o">=</span> <span class="n">nfft</span> <span class="o">*</span> <span class="n">overlap_frac</span>
+
+    <span class="n">auto</span><span class="p">,</span> <span class="n">_freq</span><span class="p">,</span> <span class="n">_t</span> <span class="o">=</span> \
+        <span class="n">spectral_helper</span><span class="p">(</span><span class="n">tr1</span><span class="p">,</span> <span class="n">tr1</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sampfreq</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="n">noverlap</span><span class="p">)</span>
+    <span class="n">cross</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">_t</span> <span class="o">=</span> \
+        <span class="n">spectral_helper</span><span class="p">(</span><span class="n">tr1</span><span class="p">,</span> <span class="n">tr2</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="n">nfft</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="n">sampfreq</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="n">noverlap</span><span class="p">)</span>
+
+    <span class="c"># 180 Grad Phasenverschiebung</span>
+    <span class="n">cross</span><span class="o">.</span><span class="n">imag</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+
+    <span class="c"># Replaces the following in compact form:</span>
+    <span class="c"># res = np.zeros(nfft / 2 + 1, dtype=&#39;complex128&#39;)</span>
+    <span class="c"># for i in range(nwin):</span>
+    <span class="c">#     res += (cross[:, i] / auto[:, i]) * gg</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">cross</span> <span class="o">/</span> <span class="n">auto</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">gg</span>
+
+    <span class="c"># The first item might be zero. Problems with phase calculations.</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">gg</span> <span class="o">=</span> <span class="n">gg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">res</span> <span class="o">/=</span> <span class="n">nwin</span>
+    <span class="c"># apply Konno-Ohmachi smoothing taper if chosen</span>
+    <span class="k">if</span> <span class="n">smooth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c"># Write in one matrix for performance reasons.</span>
+        <span class="n">spectra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">real</span><span class="p">)))</span>
+        <span class="n">spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">spectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">imag</span>
+        <span class="n">new_spectra</span> <span class="o">=</span> <span class="n">konnoOhmachiSmoothing</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">smooth</span><span class="p">,</span>
+                <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_memory_usage</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="n">new_spectra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="n">new_spectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">imag</span> <span class="o">/</span> <span class="n">res</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gg</span><span class="p">)</span>
+    <span class="n">rpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">gg</span><span class="o">.</span><span class="n">imag</span> <span class="o">/</span> <span class="n">gg</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save_data</span><span class="p">:</span>
+        <span class="n">trans_new</span> <span class="o">=</span> <span class="n">st2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;.resp&quot;</span>
+        <span class="n">trans_ref</span> <span class="o">=</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">station</span> <span class="o">+</span> <span class="s">&quot;.refResp&quot;</span>
+        <span class="c"># Create empty array for easy saving</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">temp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq</span>
+        <span class="n">temp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">amp</span>
+        <span class="n">temp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">trans_new</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%.10f</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">temp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra</span>
+        <span class="n">temp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rpha</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">trans_ref</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%.10f</span><span class="s">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">freq</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">phase</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_calcresp</span><span class="p">(</span><span class="n">calfile</span><span class="p">,</span> <span class="n">nfft</span><span class="p">,</span> <span class="n">sampfreq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate transfer function of known system.</span>
+
+<span class="sd">    :type calfile: String</span>
+<span class="sd">    :param calfile: file containing poles, zeros and scale factor for known</span>
+<span class="sd">        system</span>
+<span class="sd">    :returns: complex transfer function, array of frequencies</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># calculate transfer function</span>
+    <span class="n">poles</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">scale_fac</span> <span class="o">=</span> <span class="n">readPaz</span><span class="p">(</span><span class="n">calfile</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">pazToFreqResp</span><span class="p">(</span><span class="n">poles</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">scale_fac</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">sampfreq</span><span class="p">,</span>
+                         <span class="n">nfft</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">f</span>
+
+
+<span class="c"># A modified copy of the Matplotlib 0.99.1.1 method spectral_helper found in</span>
+<span class="c"># .../matlab/mlab.py.</span>
+<span class="c"># Some function were changed to avoid additional dependencies. Included here as</span>
+<span class="c"># it is essential for the above relcalstack function and only present in recent</span>
+<span class="c"># matplotlib versions.</span>
+
+<span class="c">#This is a helper function that implements the commonality between the</span>
+<span class="c">#psd, csd, and spectrogram.  It is *NOT* meant to be used outside of mlab</span>
+<div class="viewcode-block" id="spectral_helper"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.calibration.spectral_helper.html#obspy.signal.calibration.spectral_helper">[docs]</a><span class="k">def</span> <span class="nf">spectral_helper</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pad_to</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">sides</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="n">scale_by_freq</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c">#The checks for if y is x are so that we can use the same function to</span>
+    <span class="c">#implement the core of psd(), csd(), and spectrogram() without doing</span>
+    <span class="c">#extra calculations.  We return the unaveraged Pxy, freqs, and t.</span>
+    <span class="n">same_data</span> <span class="o">=</span> <span class="n">y</span> <span class="ow">is</span> <span class="n">x</span>
+
+    <span class="c">#Make sure we&#39;re dealing with a numpy array. If y and x were the same</span>
+    <span class="c">#object to start with, keep them that way</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">same_data</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c"># zero pad x and y up to NFFT if they are shorter than NFFT</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">NFFT</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">NFFT</span><span class="p">,))</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">same_data</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">NFFT</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">NFFT</span><span class="p">,))</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">pad_to</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">pad_to</span> <span class="o">=</span> <span class="n">NFFT</span>
+
+    <span class="k">if</span> <span class="n">scale_by_freq</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">scale_by_freq</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="c"># For real x, ignore the negative frequencies unless told otherwise</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sides</span> <span class="o">==</span> <span class="s">&#39;default&#39;</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="ow">or</span> <span class="n">sides</span> <span class="o">==</span> <span class="s">&#39;twosided&#39;</span><span class="p">:</span>
+        <span class="n">numFreqs</span> <span class="o">=</span> <span class="n">pad_to</span>
+        <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mf">1.</span>
+    <span class="k">elif</span> <span class="n">sides</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;default&#39;</span><span class="p">,</span> <span class="s">&#39;onesided&#39;</span><span class="p">):</span>
+        <span class="n">numFreqs</span> <span class="o">=</span> <span class="n">pad_to</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">scaling_factor</span> <span class="o">=</span> <span class="mf">2.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;sides must be one of: &#39;default&#39;, &#39;onesided&#39;, or &quot;</span>
+            <span class="s">&quot;&#39;twosided&#39;&quot;</span><span class="p">)</span>
+
+    <span class="c"># Matlab divides by the sampling frequency so that density function</span>
+    <span class="c"># has units of dB/Hz and can be integrated by the plotted frequency</span>
+    <span class="c"># values. Perform the same scaling here.</span>
+    <span class="k">if</span> <span class="n">scale_by_freq</span><span class="p">:</span>
+        <span class="n">scaling_factor</span> <span class="o">/=</span> <span class="n">Fs</span>
+
+    <span class="n">windowVals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">NFFT</span><span class="p">)</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="n">NFFT</span> <span class="o">-</span> <span class="n">noverlap</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">NFFT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+    <span class="n">Pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">numFreqs</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+
+    <span class="c"># do the ffts of the slices</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">thisX</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">NFFT</span><span class="p">]</span>
+        <span class="n">thisX</span> <span class="o">=</span> <span class="n">windowVals</span> <span class="o">*</span> <span class="n">thisX</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">thisX</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">pad_to</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">same_data</span><span class="p">:</span>
+            <span class="n">fy</span> <span class="o">=</span> <span class="n">fx</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">thisY</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">NFFT</span><span class="p">]</span>
+            <span class="n">thisY</span> <span class="o">=</span> <span class="n">windowVals</span> <span class="o">*</span> <span class="n">thisY</span>
+            <span class="n">fy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">thisY</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">pad_to</span><span class="p">)</span>
+        <span class="n">Pxy</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">fx</span><span class="p">[:</span><span class="n">numFreqs</span><span class="p">])</span> <span class="o">*</span> <span class="n">fy</span><span class="p">[:</span><span class="n">numFreqs</span><span class="p">]</span>
+
+    <span class="c"># Scale the spectrum by the norm of the window to compensate for</span>
+    <span class="c"># windowing loss; see Bendat &amp; Piersol Sec 11.5.2.  Also include</span>
+    <span class="c"># scaling factors for one-sided densities and dividing by the sampling</span>
+    <span class="c"># frequency, if desired.</span>
+    <span class="n">Pxy</span> <span class="o">*=</span> <span class="n">scaling_factor</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">windowVals</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">Fs</span> <span class="o">*</span> <span class="p">(</span><span class="n">ind</span> <span class="o">+</span> <span class="n">NFFT</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Fs</span><span class="p">)</span> <span class="o">/</span> <span class="n">pad_to</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numFreqs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sides</span> <span class="o">==</span> <span class="s">&#39;default&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sides</span> <span class="o">==</span> <span class="s">&#39;twosided&#39;</span><span class="p">:</span>
+        <span class="c"># center the frequency range at zero</span>
+        <span class="n">freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">freqs</span><span class="p">[</span><span class="n">numFreqs</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">Fs</span><span class="p">,</span>
+                                <span class="n">freqs</span><span class="p">[:</span><span class="n">numFreqs</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]))</span>
+        <span class="n">Pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">Pxy</span><span class="p">[</span><span class="n">numFreqs</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:,</span> <span class="p">:],</span>
+                              <span class="n">Pxy</span><span class="p">[:</span><span class="n">numFreqs</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="p">:]),</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Pxy</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">t</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

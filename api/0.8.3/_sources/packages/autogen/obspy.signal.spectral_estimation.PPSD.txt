@@ -1,0 +1,115 @@
+obspy.signal.spectral_estimation.PPSD
+=====================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+.. autoclass:: PPSD
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~PPSD.__doc__
+     ~PPSD.__module__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PPSD.add
+     ~PPSD.get_percentile
+     ~PPSD.plot
+     ~PPSD.plot_coverage
+     ~PPSD.save
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PPSD._PPSD__check_time_present
+     ~PPSD._PPSD__get_normalized_cumulative_histogram
+     ~PPSD._PPSD__insert_data_times
+     ~PPSD._PPSD__insert_gap_times
+     ~PPSD._PPSD__insert_used_time
+     ~PPSD._PPSD__plot_coverage
+     ~PPSD._PPSD__process
+     ~PPSD._PPSD__sanity_check
+     ~PPSD._PPSD__setup_bins
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~PPSD.__init__
+  
+
+  
+  

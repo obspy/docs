@@ -1,0 +1,6 @@
+obspy.signal.trigger.arPick
+===========================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: arPick

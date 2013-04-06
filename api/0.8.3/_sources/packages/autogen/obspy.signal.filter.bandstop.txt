@@ -1,0 +1,6 @@
+obspy.signal.filter.bandstop
+============================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: bandstop

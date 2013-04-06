@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.copy
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.copy

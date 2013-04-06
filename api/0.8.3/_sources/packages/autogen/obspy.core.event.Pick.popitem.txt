@@ -1,0 +1,6 @@
+obspy.core.event.Pick.popitem
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.popitem

@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.saveWaveform
+========================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.saveWaveform

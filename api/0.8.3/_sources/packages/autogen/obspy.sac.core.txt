@@ -1,0 +1,33 @@
+obspy.sac.core
+==============
+
+.. currentmodule:: obspy.sac.core
+.. automodule:: obspy.sac.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isSAC
+      isSACXY
+      readSAC
+      readSACXY
+      writeSAC
+      writeSACXY
+   
+   
+
+   
+   
+   
+
+   
+   
+   

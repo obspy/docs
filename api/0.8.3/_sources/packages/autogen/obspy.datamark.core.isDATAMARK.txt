@@ -1,0 +1,6 @@
+obspy.datamark.core.isDATAMARK
+==============================
+
+.. currentmodule:: obspy.datamark.core
+
+.. autofunction:: isDATAMARK

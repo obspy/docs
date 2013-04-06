@@ -1,0 +1,6 @@
+obspy.signal.cpxtrace.instFreq
+==============================
+
+.. currentmodule:: obspy.signal.cpxtrace
+
+.. autofunction:: instFreq

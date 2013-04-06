@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.popitem
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.popitem

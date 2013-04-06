@@ -1,0 +1,6 @@
+obspy.core.util.base.getExampleFile
+===================================
+
+.. currentmodule:: obspy.core.util.base
+
+.. autofunction:: getExampleFile

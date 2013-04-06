@@ -1,0 +1,6 @@
+obspy.core.event.EventDescription.itervalues
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: EventDescription.itervalues

@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.ascii.writeSLIST &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.ascii" href="obspy.core.ascii.html" />
+    <link rel="next" title="obspy.core.ascii.writeTSPAIR" href="obspy.core.ascii.writeTSPAIR.html" />
+    <link rel="prev" title="obspy.core.ascii.readTSPAIR" href="obspy.core.ascii.readTSPAIR.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.writeTSPAIR.html" title="obspy.core.ascii.writeTSPAIR"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.readTSPAIR.html" title="obspy.core.ascii.readTSPAIR"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.ascii.html" accesskey="U">obspy.core.ascii</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-ascii-writeslist">
+<h1>obspy.core.ascii.writeSLIST<a class="headerlink" href="#obspy-core-ascii-writeslist" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.core.ascii.writeSLIST">
+<tt class="descname">writeSLIST</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/ascii.html#writeSLIST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.ascii.writeSLIST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a ASCII SLIST file.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function should NOT be called directly, it registers via the
+the <a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of an
+ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object, call this instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stream</strong> (<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>) <span class="dash" /> The ObsPy Stream object to write.</li>
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Name of file to write.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;slist.ascii&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;SLIST&quot;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p class="rubric">SLIST Format Description</p>
+<p>SLIST is a simple ASCII time series format. Each contiguous time series
+segment (no gaps or overlaps) is represented with a header line followed by
+a sample lists. There are no restrictions on how the segments are organized
+into files, a file might contain a single segment or many, concatenated
+segments either for the same channel or many different channels.</p>
+<p>Header lines have the general form:</p>
+<div class="highlight-python"><pre>TIMESERIES SourceName, # samples, # sps, Time, Format, Type, Units</pre>
+</div>
+<p>with</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">SourceName</span></tt></dt>
+<dd>&#8220;Net_Sta_Loc_Chan_Qual&#8221;, no spaces, quality code optional</dd>
+<dt><tt class="docutils literal"><span class="pre">#</span> <span class="pre">samples</span></tt></dt>
+<dd>Number of samples following header</dd>
+<dt><tt class="docutils literal"><span class="pre">#</span> <span class="pre">sps</span></tt></dt>
+<dd>Sampling rate in samples per second</dd>
+<dt><tt class="docutils literal"><span class="pre">Time</span></tt></dt>
+<dd>Time of first sample in ISO YYYY-MM-DDTHH:MM:SS.FFFFFF format</dd>
+<dt><tt class="docutils literal"><span class="pre">Format</span></tt></dt>
+<dd>&#8216;TSPAIR&#8217; (fixed)</dd>
+<dt><tt class="docutils literal"><span class="pre">Type</span></tt></dt>
+<dd>Sample type &#8216;INTEGER&#8217;, &#8216;FLOAT&#8217; or &#8216;ASCII&#8217;</dd>
+<dt><tt class="docutils literal"><span class="pre">Units</span></tt></dt>
+<dd>Units of time-series, e.g. Counts, M/S, etc., may not contain
+spaces</dd>
+</dl>
+<p>Samples are listed in 6 columns with the time-series incrementing from left
+to right and wrapping to the next line. The time of the first sample is the
+time listed in the header.</p>
+<p><em>Example SLIST file</em>:</p>
+<div class="highlight-python"><pre>TIMESERIES NL_HGN_00_BHZ_R, 12 samples, 40 sps, 2003-05-29T02:13:22.043400, SLIST, INTEGER, Counts
+2787        2776        2774        2780        2783        2782
+2776        2766        2759        2760        2765        2767
+...</pre>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.ascii.writeSLIST.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.writeTSPAIR.html" title="obspy.core.ascii.writeTSPAIR"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.ascii.readTSPAIR.html" title="obspy.core.ascii.readTSPAIR"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.ascii.html" >obspy.core.ascii</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

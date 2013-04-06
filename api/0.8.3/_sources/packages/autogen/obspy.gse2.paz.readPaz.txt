@@ -1,0 +1,6 @@
+obspy.gse2.paz.readPaz
+======================
+
+.. currentmodule:: obspy.gse2.paz
+
+.. autofunction:: readPaz

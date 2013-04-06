@@ -1,0 +1,6 @@
+obspy.imaging.beachball.PrincipalAxis.__init__
+==============================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. automethod:: PrincipalAxis.__init__

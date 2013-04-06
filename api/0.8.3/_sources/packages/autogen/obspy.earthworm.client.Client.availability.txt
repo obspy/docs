@@ -1,0 +1,6 @@
+obspy.earthworm.client.Client.availability
+==========================================
+
+.. currentmodule:: obspy.earthworm.client
+
+.. automethod:: Client.availability

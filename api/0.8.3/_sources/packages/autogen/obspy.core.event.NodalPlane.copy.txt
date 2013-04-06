@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.copy
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.copy

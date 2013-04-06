@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._parseSEED
+====================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._parseSEED

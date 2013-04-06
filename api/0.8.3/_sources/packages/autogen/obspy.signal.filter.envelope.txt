@@ -1,0 +1,6 @@
+obspy.signal.filter.envelope
+============================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: envelope

@@ -1,0 +1,6 @@
+obspy.core.util.misc.toIntOrZero
+================================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autofunction:: toIntOrZero

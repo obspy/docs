@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.sac.core &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.sac.core</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SAC bindings to ObsPy core module.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org) &amp; C. J. Ammon</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.sac.sacio</span> <span class="kn">import</span> <span class="n">SacIO</span><span class="p">,</span> <span class="n">_isText</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+
+<div class="viewcode-block" id="isSAC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.isSAC.html#obspy.sac.core.isSAC">[docs]</a><span class="k">def</span> <span class="nf">isSAC</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is a SAC file or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: SAC file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a SAC file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isSAC(&#39;/path/to/test.sac&#39;)  #doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="c"># 70 header floats, 9 position in header integers</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">70</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;&lt;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># check file size</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">sizecheck</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">st_size</span> <span class="o">-</span> <span class="p">(</span><span class="mi">632</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">npts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sizecheck</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c"># check if file is big-endian</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;&gt;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sizecheck</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">st_size</span> <span class="o">-</span> <span class="p">(</span><span class="mi">632</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">npts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sizecheck</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># File-size and theoretical size inconsistent!</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="isSACXY"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.isSACXY.html#obspy.sac.core.isSACXY">[docs]</a><span class="k">def</span> <span class="nf">isSACXY</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is alphanumeric SAC file or not.</span>
+
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :param filename: Alphanumeric SAC file to be checked.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :return: ``True`` if a alphanumeric SAC file.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; isSACXY(&#39;/path/to/testxy.sac&#39;)  #doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">### First find out if it is a text or a binary file. This should</span>
+    <span class="c">### always be true if a file is a text-file and only true for a</span>
+    <span class="c">### binary file in rare occasions (Recipe 173220 found on</span>
+    <span class="c">### http://code.activestate.com/</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_isText</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">hdcards</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># read in the header cards</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+            <span class="n">hdcards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hdcards</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c"># read in the seismogram</span>
+        <span class="n">seis</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># check that npts header value and seismogram length are consistent</span>
+    <span class="k">if</span> <span class="n">npts</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seis</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readSACXY"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.readSACXY.html#obspy.sac.core.readSACXY">[docs]</a><span class="k">def</span> <span class="nf">readSACXY</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_headers</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads an alphanumeric SAC file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Alphanumeric SAC file to be read.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the head. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :type debug_headers: bool, optional</span>
+<span class="sd">    :param debug_headers: Extracts also the SAC headers ``&#39;nzyear&#39;, &#39;nzjday&#39;,</span>
+<span class="sd">        &#39;nzhour&#39;, &#39;nzmin&#39;, &#39;nzsec&#39;, &#39;nzmsec&#39;, &#39;delta&#39;, &#39;scale&#39;, &#39;npts&#39;,</span>
+<span class="sd">        &#39;knetwk&#39;, &#39;kstnm&#39;, &#39;kcmpnm&#39;`` which are usually directly mapped to the</span>
+<span class="sd">        :class:`~obspy.core.stream.Stream` object if set to ``True``. Those</span>
+<span class="sd">        values are not synchronized with the Stream object itself and won&#39;t</span>
+<span class="sd">        be used during writing of a SAC file! Defaults to ``False``.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/testxy.sac&quot;) # doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">SacIO</span><span class="p">(</span><span class="n">debug_headers</span><span class="o">=</span><span class="n">debug_headers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">ReadSacXYHeader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">ReadSacXY</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c"># assign all header entries to a new dictionary compatible with ObsPy</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_obspy_header</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">seis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">([</span><span class="n">tr</span><span class="p">])</span>
+
+</div>
+<div class="viewcode-block" id="writeSACXY"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.writeSACXY.html#obspy.sac.core.writeSACXY">[docs]</a><span class="k">def</span> <span class="nf">writeSACXY</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a alphanumeric SAC file.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of file to write.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&quot;testxy.sac&quot;, format=&quot;SACXY&quot;)  #doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Translate the common (renamed) entries</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">SacIO</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%02d%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">WriteSacXY</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span>
+
+</div>
+<div class="viewcode-block" id="readSAC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.readSAC.html#obspy.sac.core.readSAC">[docs]</a><span class="k">def</span> <span class="nf">readSAC</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">headonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debug_headers</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads an SAC file and returns an ObsPy Stream object.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        ObsPy :func:`~obspy.core.stream.read` function, call this instead.</span>
+
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: SAC file to be read.</span>
+<span class="sd">    :type headonly: bool, optional</span>
+<span class="sd">    :param headonly: If set to True, read only the head. This is most useful</span>
+<span class="sd">        for scanning available data in huge (temporary) data sets.</span>
+<span class="sd">    :type debug_headers: bool, optional</span>
+<span class="sd">    :param debug_headers: Extracts also the SAC headers ``&#39;nzyear&#39;, &#39;nzjday&#39;,</span>
+<span class="sd">        &#39;nzhour&#39;, &#39;nzmin&#39;, &#39;nzsec&#39;, &#39;nzmsec&#39;, &#39;delta&#39;, &#39;scale&#39;, &#39;npts&#39;,</span>
+<span class="sd">        &#39;knetwk&#39;, &#39;kstnm&#39;, &#39;kcmpnm&#39;`` which are usually directly mapped to the</span>
+<span class="sd">        :class:`~obspy.core.stream.Stream` object if set to ``True``. Those</span>
+<span class="sd">        values are not synchronized with the Stream object itself and won&#39;t</span>
+<span class="sd">        be used during writing of a SAC file! Defaults to ``False``.</span>
+<span class="sd">    :rtype: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :return: A ObsPy Stream object.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; st = read(&quot;/path/to/test.sac&quot;) # doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># read SAC file</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">SacIO</span><span class="p">(</span><span class="n">debug_headers</span><span class="o">=</span><span class="n">debug_headers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">ReadSacHeader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">ReadSacFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c"># assign all header entries to a new dictionary compatible with an ObsPy</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_obspy_header</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">headonly</span><span class="p">:</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">seis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Stream</span><span class="p">([</span><span class="n">tr</span><span class="p">])</span>
+
+</div>
+<div class="viewcode-block" id="writeSAC"><a class="viewcode-back" href="../../../packages/autogen/obspy.sac.core.writeSAC.html#obspy.sac.core.writeSAC">[docs]</a><span class="k">def</span> <span class="nf">writeSAC</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a SAC file.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This function should NOT be called directly, it registers via the</span>
+<span class="sd">        the :meth:`~obspy.core.stream.Stream.write` method of an</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` object, call this instead.</span>
+
+<span class="sd">    :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">    :param stream: The ObsPy Stream object to write.</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    :param filename: Name of file to write.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; st.write(&quot;test.sac&quot;, format=&quot;SAC&quot;)  #doctest: +SKIP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Translate the common (renamed) entries</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trace</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">SacIO</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%02d%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">WriteSacBinary</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

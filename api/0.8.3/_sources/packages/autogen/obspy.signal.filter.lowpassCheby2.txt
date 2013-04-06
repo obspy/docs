@@ -1,0 +1,6 @@
+obspy.signal.filter.lowpassCheby2
+=================================
+
+.. currentmodule:: obspy.signal.filter
+
+.. autofunction:: lowpassCheby2

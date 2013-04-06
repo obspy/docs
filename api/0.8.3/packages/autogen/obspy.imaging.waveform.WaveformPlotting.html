@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.waveform.WaveformPlotting &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.imaging.waveform" href="obspy.imaging.waveform.html" />
+    <link rel="next" title="obspy.imaging.waveform.WaveformPlotting.plot" href="obspy.imaging.waveform.WaveformPlotting.plot.html" />
+    <link rel="prev" title="obspy.imaging.waveform.WaveformPlotting.__init__" href="obspy.imaging.waveform.WaveformPlotting.__init__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.waveform.WaveformPlotting.plot.html" title="obspy.imaging.waveform.WaveformPlotting.plot"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.waveform.WaveformPlotting.__init__.html" title="obspy.imaging.waveform.WaveformPlotting.__init__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.waveform.html" accesskey="U">obspy.imaging.waveform</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-imaging-waveform-waveformplotting">
+<h1>obspy.imaging.waveform.WaveformPlotting<a class="headerlink" href="#obspy-imaging-waveform-waveformplotting" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.imaging.waveform.WaveformPlotting">
+<em class="property">class </em><tt class="descname">WaveformPlotting</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/imaging/waveform.html#WaveformPlotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.imaging.waveform.WaveformPlotting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class that provides several solutions for plotting large and small waveform
+data sets.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This class should NOT be used directly, instead use the
+<a class="reference internal" href="obspy.core.stream.Stream.plot.html#obspy.core.stream.Stream.plot" title="obspy.core.stream.Stream.plot"><tt class="xref py py-meth docutils literal"><span class="pre">plot()</span></tt></a> method of the
+ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> or
+<a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects.</p>
+</div>
+<p>It uses matplotlib to plot the waveforms.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting.plot.html#obspy.imaging.waveform.WaveformPlotting.plot" title="obspy.imaging.waveform.WaveformPlotting.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a></td>
+<td>Plot the Traces showing one graph per Trace.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting.plotDay.html#obspy.imaging.waveform.WaveformPlotting.plotDay" title="obspy.imaging.waveform.WaveformPlotting.plotDay"><tt class="xref py py-obj docutils literal"><span class="pre">plotDay</span></tt></a></td>
+<td>Extend the seismogram.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting.plotWaveform.html#obspy.imaging.waveform.WaveformPlotting.plotWaveform" title="obspy.imaging.waveform.WaveformPlotting.plotWaveform"><tt class="xref py py-obj docutils literal"><span class="pre">plotWaveform</span></tt></a></td>
+<td>Creates a graph of any given ObsPy Stream object. It either saves the</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotGetMinMaxValues.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotGetMinMaxValues" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotGetMinMaxValues"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__dayplotGetMinMaxValues</span></tt></a></td>
+<td>Takes a Stream object and calculates the min and max values for each</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotNormalizeValues.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotNormalizeValues" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotNormalizeValues"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__dayplotNormalizeValues</span></tt></a></td>
+<td>Normalizes all values in the 3 dimensional array, so that the minimum value will be 0 and the maximum value will be 1.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetXTicks.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetXTicks" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetXTicks"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__dayplotSetXTicks</span></tt></a></td>
+<td>Sets the xticks for the dayplot.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetYTicks.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetYTicks" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__dayplotSetYTicks"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__dayplotSetYTicks</span></tt></a></td>
+<td>Sets the yticks for the dayplot.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergablesIds.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergablesIds" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergablesIds"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__getMergablesIds</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergeId.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergeId" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getMergeId"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__getMergeId</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getX.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getX" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getX"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__getX</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getY.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getY" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__getY"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__getY</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotMinMax.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotMinMax" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotMinMax"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__plotMinMax</span></tt></a></td>
+<td>Plots the data using a min/max approach that calculated the minimum and maximum values of each &#8220;pixel&#8221; and than plots only these values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetXTicks.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetXTicks" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetXTicks"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__plotSetXTicks</span></tt></a></td>
+<td>Goes through all axes in pyplot and sets time ticks on the x axis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetYTicks.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetYTicks" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotSetYTicks"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__plotSetYTicks</span></tt></a></td>
+<td>Goes through all axes in pyplot, reads self.stats and sets all ticks on the y axis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotStraight.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotStraight" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__plotStraight"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__plotStraight</span></tt></a></td>
+<td>Just plots the data samples in the self.stream.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__setupFigure.html#obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__setupFigure" title="obspy.imaging.waveform.WaveformPlotting._WaveformPlotting__setupFigure"><tt class="xref py py-obj docutils literal"><span class="pre">_WaveformPlotting__setupFigure</span></tt></a></td>
+<td>The design and look of the whole plot to be produced.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._plotDayplotScale.html#obspy.imaging.waveform.WaveformPlotting._plotDayplotScale" title="obspy.imaging.waveform.WaveformPlotting._plotDayplotScale"><tt class="xref py py-obj docutils literal"><span class="pre">_plotDayplotScale</span></tt></a></td>
+<td>Plots the dayplot scale if requested.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting._plotEvent.html#obspy.imaging.waveform.WaveformPlotting._plotEvent" title="obspy.imaging.waveform.WaveformPlotting._plotEvent"><tt class="xref py py-obj docutils literal"><span class="pre">_plotEvent</span></tt></a></td>
+<td>Helper function to plot an event into the dayplot.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.imaging.waveform.WaveformPlotting.__init__.html#obspy.imaging.waveform.WaveformPlotting.__init__" title="obspy.imaging.waveform.WaveformPlotting.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Checks some variables and maps the kwargs to class variables.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.imaging.waveform.WaveformPlotting.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.waveform.WaveformPlotting.plot.html" title="obspy.imaging.waveform.WaveformPlotting.plot"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.waveform.WaveformPlotting.__init__.html" title="obspy.imaging.waveform.WaveformPlotting.__init__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.waveform.html" >obspy.imaging.waveform</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

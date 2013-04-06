@@ -1,0 +1,6 @@
+obspy.core.event.Origin._pretty_str
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin._pretty_str

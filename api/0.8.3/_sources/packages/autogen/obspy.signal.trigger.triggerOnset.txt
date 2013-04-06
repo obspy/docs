@@ -1,0 +1,6 @@
+obspy.signal.trigger.triggerOnset
+=================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: triggerOnset

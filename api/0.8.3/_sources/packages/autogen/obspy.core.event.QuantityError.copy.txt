@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.copy
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.copy

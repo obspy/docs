@@ -1,0 +1,6 @@
+obspy.gse2.libgse2.getStartAndEndTime
+=====================================
+
+.. currentmodule:: obspy.gse2.libgse2
+
+.. autofunction:: getStartAndEndTime

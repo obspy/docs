@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.unpack &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.segy.unpack</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c">#  Filename: unpack.py</span>
+<span class="c">#  Purpose: Routines for unpacking SEG Y data formats.</span>
+<span class="c">#   Author: Lion Krischer</span>
+<span class="c">#    Email: krischer@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2010 Lion Krischer</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions that will all take a file pointer and the sample count and return a</span>
+<span class="sd">numpy array with the unpacked values.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">clibsegy</span>
+
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c"># Get the system byteorder.</span>
+<span class="n">BYTEORDER</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span>
+<span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">==</span> <span class="s">&#39;little&#39;</span><span class="p">:</span>
+    <span class="n">BYTEORDER</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">BYTEORDER</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span>
+
+
+<span class="n">clibsegy</span><span class="o">.</span><span class="n">ibm2ieee</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">),</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">]</span>
+<span class="n">clibsegy</span><span class="o">.</span><span class="n">ibm2ieee</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+
+<div class="viewcode-block" id="unpack_4byte_IBM"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_4byte_IBM.html#obspy.segy.unpack.unpack_4byte_IBM">[docs]</a><span class="k">def</span> <span class="nf">unpack_4byte_IBM</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks 4 byte IBM floating points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read as 4 byte integer so bit shifting works.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c"># Call the C code which transforms the data inplace.</span>
+    <span class="n">clibsegy</span><span class="o">.</span><span class="n">ibm2ieee</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="c"># Old pure Python/NumPy code</span>
+<span class="c">#</span>
+<span class="c">#def unpack_4byte_IBM(file, count, endian=&#39;&gt;&#39;):</span>
+<span class="c">#    &quot;&quot;&quot;</span>
+<span class="c">#    Unpacks 4 byte IBM floating points.</span>
+<span class="c">#    &quot;&quot;&quot;</span>
+<span class="c">#    # Read as 4 byte integer so bit shifting works.</span>
+<span class="c">#    data = np.fromstring(file.read(count * 4), dtype=&#39;int32&#39;)</span>
+<span class="c">#    # Swap the byteorder if necessary.</span>
+<span class="c">#    if BYTEORDER != endian:</span>
+<span class="c">#        data = data.byteswap()</span>
+<span class="c">#    # See http://mail.scipy.org/pipermail/scipy-user/2009-January/019392.html</span>
+<span class="c">#    # XXX: Might need check for values out of range:</span>
+<span class="c">#    # http://bytes.com/topic/c/answers/</span>
+<span class="c">#    #         221981-c-code-converting-ibm-370-floating-point-ieee-754-a</span>
+<span class="c">#    sign = np.bitwise_and(np.right_shift(data, 31), 0x01)</span>
+<span class="c">#    exponent = np.bitwise_and(np.right_shift(data, 24), 0x7f)</span>
+<span class="c">#    mantissa = np.bitwise_and(data, 0x00ffffff)</span>
+<span class="c">#    # Force single precision.</span>
+<span class="c">#    mantissa = np.require(mantissa, &#39;float32&#39;)</span>
+<span class="c">#    mantissa /= 0x1000000</span>
+<span class="c">#    # Do the following calculation in a weird way to avoid autocasting to</span>
+<span class="c">#    # float64.</span>
+<span class="c">#    # data = (1.0 - 2.0 * sign) * mantissa * 16.0 ** (exponent - 64.0)</span>
+<span class="c">#    sign *= -2.0</span>
+<span class="c">#    sign += 1.0</span>
+<span class="c">#    mantissa *= 16.0 ** (exponent - 64)</span>
+<span class="c">#    mantissa *= sign</span>
+<span class="c">#    return mantissa</span>
+
+</div>
+<div class="viewcode-block" id="unpack_4byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_4byte_Integer.html#obspy.segy.unpack.unpack_4byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">unpack_4byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks 4 byte integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read as 4 byte integer so bit shifting works.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="unpack_2byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_2byte_Integer.html#obspy.segy.unpack.unpack_2byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">unpack_2byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks 2 byte integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read as 4 byte integer so bit shifting works.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int16&#39;</span><span class="p">)</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="unpack_4byte_Fixed_point"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_4byte_Fixed_point.html#obspy.segy.unpack.unpack_4byte_Fixed_point">[docs]</a><span class="k">def</span> <span class="nf">unpack_4byte_Fixed_point</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div>
+<div class="viewcode-block" id="unpack_4byte_IEEE"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_4byte_IEEE.html#obspy.segy.unpack.unpack_4byte_IEEE">[docs]</a><span class="k">def</span> <span class="nf">unpack_4byte_IEEE</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks 4 byte IEEE floating points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Read as 4 byte integer so bit shifting works.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">count</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="unpack_1byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.unpack_1byte_Integer.html#obspy.segy.unpack.unpack_1byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">unpack_1byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div>
+<div class="viewcode-block" id="OnTheFlyDataUnpacker"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.OnTheFlyDataUnpacker.html#obspy.segy.unpack.OnTheFlyDataUnpacker">[docs]</a><span class="k">class</span> <span class="nc">OnTheFlyDataUnpacker</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tie-up a data sample unpack function with its parameters.</span>
+
+<span class="sd">    This class allows for data to be read directly from the disk as needed,</span>
+<span class="sd">    preventing the need to store data in memory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="OnTheFlyDataUnpacker.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.OnTheFlyDataUnpacker.__init__.html#obspy.segy.unpack.OnTheFlyDataUnpacker.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unpack_function</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filemode</span><span class="p">,</span> <span class="n">seek</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                 <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unpack_function</span> <span class="o">=</span> <span class="n">unpack_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filemode</span> <span class="o">=</span> <span class="n">filemode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span> <span class="o">=</span> <span class="n">seek</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endian</span> <span class="o">=</span> <span class="n">endian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OnTheFlyDataUnpacker.__call__"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.unpack.OnTheFlyDataUnpacker.__call__.html#obspy.segy.unpack.OnTheFlyDataUnpacker.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mtime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;File &#39;</span><span class="si">%s</span><span class="s">&#39; changed since reading headers&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;; data may be read incorrectly &quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;(modification time = </span><span class="si">%s</span><span class="s">).&quot;</span> <span class="o">%</span> <span class="n">mtime</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filemode</span><span class="p">)</span>
+        <span class="nb">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_function</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

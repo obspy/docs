@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.__setattr__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.__setattr__

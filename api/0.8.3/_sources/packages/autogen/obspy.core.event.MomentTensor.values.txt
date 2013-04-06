@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.values
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.values

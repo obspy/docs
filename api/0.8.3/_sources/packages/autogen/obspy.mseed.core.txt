@@ -1,0 +1,39 @@
+obspy.mseed.core
+================
+
+.. currentmodule:: obspy.mseed.core
+.. automodule:: obspy.mseed.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isMSEED
+      readMSEED
+      writeMSEED
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      MSTG
+   
+   
+
+   
+   
+   

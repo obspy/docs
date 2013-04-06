@@ -1,0 +1,6 @@
+obspy.datamark.core.readDATAMARK
+================================
+
+.. currentmodule:: obspy.datamark.core
+
+.. autofunction:: readDATAMARK

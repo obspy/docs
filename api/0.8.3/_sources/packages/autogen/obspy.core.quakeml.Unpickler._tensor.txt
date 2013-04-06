@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._tensor
+====================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._tensor

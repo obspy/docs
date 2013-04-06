@@ -1,0 +1,6 @@
+obspy.segy.core.SEGYCoreWritingError
+====================================
+
+.. currentmodule:: obspy.segy.core
+
+.. autoexception:: SEGYCoreWritingError

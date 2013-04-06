@@ -1,0 +1,6 @@
+obspy.db.indexer.WaveformFileCrawler._select
+============================================
+
+.. currentmodule:: obspy.db.indexer
+
+.. automethod:: WaveformFileCrawler._select

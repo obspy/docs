@@ -1,0 +1,6 @@
+obspy.core.event.Arrival.keys
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Arrival.keys

@@ -1,0 +1,6 @@
+obspy.signal.trigger.classicSTALTA
+==================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: classicSTALTA

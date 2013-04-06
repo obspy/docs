@@ -1,0 +1,6 @@
+obspy.signal.invsim.cornFreq2Paz
+================================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: cornFreq2Paz

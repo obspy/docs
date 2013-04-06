@@ -1,0 +1,6 @@
+obspy.core.event.Axis.pop
+=========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.pop

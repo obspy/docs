@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.copy
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.copy

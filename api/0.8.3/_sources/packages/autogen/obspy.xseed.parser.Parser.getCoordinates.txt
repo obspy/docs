@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser.getCoordinates
+========================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser.getCoordinates

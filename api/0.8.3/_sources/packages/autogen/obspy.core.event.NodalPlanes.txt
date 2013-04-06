@@ -1,0 +1,195 @@
+obspy.core.event.NodalPlanes
+============================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: NodalPlanes
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~NodalPlanes.__abstractmethods__
+     ~NodalPlanes.__dict__
+     ~NodalPlanes.__doc__
+     ~NodalPlanes.__hash__
+     ~NodalPlanes.__module__
+     ~NodalPlanes.__weakref__
+     ~NodalPlanes.defaults
+     ~NodalPlanes.item
+     ~NodalPlanes.key
+     ~NodalPlanes.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~NodalPlanes.clear
+     ~NodalPlanes.copy
+     ~NodalPlanes.get
+     ~NodalPlanes.items
+     ~NodalPlanes.iteritems
+     ~NodalPlanes.iterkeys
+     ~NodalPlanes.itervalues
+     ~NodalPlanes.keys
+     ~NodalPlanes.pop
+     ~NodalPlanes.popitem
+     ~NodalPlanes.setdefault
+     ~NodalPlanes.update
+     ~NodalPlanes.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~NodalPlanes._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~NodalPlanes.__contains__
+     ~NodalPlanes.__deepcopy__
+     ~NodalPlanes.__delattr__
+     ~NodalPlanes.__delitem__
+     ~NodalPlanes.__eq__
+     ~NodalPlanes.__getattr__
+     ~NodalPlanes.__getitem__
+     ~NodalPlanes.__getstate__
+     ~NodalPlanes.__init__
+     ~NodalPlanes.__iter__
+     ~NodalPlanes.__len__
+     ~NodalPlanes.__ne__
+     ~NodalPlanes.__nonzero__
+     ~NodalPlanes.__repr__
+     ~NodalPlanes.__setattr__
+     ~NodalPlanes.__setitem__
+     ~NodalPlanes.__setstate__
+     ~NodalPlanes.__str__
+     ~NodalPlanes.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,28 @@
+obspy.segy.util
+===============
+
+.. currentmodule:: obspy.segy.util
+.. automodule:: obspy.segy.util
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      unpack_header_value
+   
+   
+
+   
+   
+   
+
+   
+   
+   

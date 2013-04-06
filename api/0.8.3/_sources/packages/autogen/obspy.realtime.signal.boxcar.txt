@@ -1,0 +1,6 @@
+obspy.realtime.signal.boxcar
+============================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: boxcar

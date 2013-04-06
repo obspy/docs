@@ -1,0 +1,6 @@
+obspy.db.db.WaveformFile.__init__
+=================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformFile.__init__

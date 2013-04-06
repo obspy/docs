@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__str__
+================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__str__

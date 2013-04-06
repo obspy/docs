@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.clear
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.clear

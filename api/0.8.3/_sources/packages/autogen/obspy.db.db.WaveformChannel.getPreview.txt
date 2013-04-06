@@ -1,0 +1,6 @@
+obspy.db.db.WaveformChannel.getPreview
+======================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformChannel.getPreview

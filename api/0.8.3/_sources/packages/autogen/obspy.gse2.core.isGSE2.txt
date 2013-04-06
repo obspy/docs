@@ -1,0 +1,6 @@
+obspy.gse2.core.isGSE2
+======================
+
+.. currentmodule:: obspy.gse2.core
+
+.. autofunction:: isGSE2

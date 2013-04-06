@@ -1,0 +1,6 @@
+obspy.sac.core.writeSAC
+=======================
+
+.. currentmodule:: obspy.sac.core
+
+.. autofunction:: writeSAC

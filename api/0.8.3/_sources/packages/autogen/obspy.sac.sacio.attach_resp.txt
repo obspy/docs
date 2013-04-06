@@ -1,0 +1,6 @@
+obspy.sac.sacio.attach_resp
+===========================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. autofunction:: attach_resp

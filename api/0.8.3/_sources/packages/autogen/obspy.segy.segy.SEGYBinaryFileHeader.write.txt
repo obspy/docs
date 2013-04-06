@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYBinaryFileHeader.write
+==========================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYBinaryFileHeader.write

@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.getPAZ
+================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.getPAZ

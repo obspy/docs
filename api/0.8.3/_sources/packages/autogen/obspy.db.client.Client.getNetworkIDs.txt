@@ -1,0 +1,6 @@
+obspy.db.client.Client.getNetworkIDs
+====================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getNetworkIDs

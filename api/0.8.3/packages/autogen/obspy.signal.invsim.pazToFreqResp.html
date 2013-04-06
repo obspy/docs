@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.invsim.pazToFreqResp &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.invsim" href="obspy.signal.invsim.html" />
+    <link rel="next" title="obspy.signal.invsim.seisSim" href="obspy.signal.invsim.seisSim.html" />
+    <link rel="prev" title="obspy.signal.invsim.paz2AmpValueOfFreqResp" href="obspy.signal.invsim.paz2AmpValueOfFreqResp.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.seisSim.html" title="obspy.signal.invsim.seisSim"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.paz2AmpValueOfFreqResp.html" title="obspy.signal.invsim.paz2AmpValueOfFreqResp"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" accesskey="U">obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-invsim-paztofreqresp">
+<h1>obspy.signal.invsim.pazToFreqResp<a class="headerlink" href="#obspy-signal-invsim-paztofreqresp" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.invsim.pazToFreqResp">
+<tt class="descname">pazToFreqResp</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/invsim.html#pazToFreqResp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.invsim.pazToFreqResp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Poles and Zeros (PAZ) to frequency response. The output
+contains the frequency zero which is the offset of the trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>poles</strong> (<em>List of complex numbers</em>) <span class="dash" /> The poles of the transfer function</li>
+<li><strong>zeros</strong> (<em>List of complex numbers</em>) <span class="dash" /> The zeros of the transfer function</li>
+<li><strong>scale_fac</strong> (<em>Float</em>) <span class="dash" /> Gain factor</li>
+<li><strong>t_samp</strong> (<em>Float</em>) <span class="dash" /> Sampling interval in seconds</li>
+<li><strong>nfft</strong> (<em>Integer</em>) <span class="dash" /> Number of FFT points of signal which needs correction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">numpy.ndarray complex128</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Frequency response of PAZ of length nfft</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In order to plot/calculate the phase you need to multiply the
+complex part by -1. This results from the different definition of
+the Fourier transform and the phase. The numpy.fft is defined as
+A(jw) = int_{-inf}^{+inf} a(t) e^{-jwt}; where as the analytic
+signal is defined A(jw) = | A(jw) | e^{jphi}. That is in order to
+calculate the phase the complex conjugate of the signal needs to be
+taken. E.g. phi = angle(f,conj(h),deg=True)
+As the range of phi is from -pi to pi you could add 2*pi to the
+negative values in order to get a plot from [0, 2pi]:
+where(phi&lt;0,phi+2*pi,phi); plot(f,phi)</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.invsim.pazToFreqResp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.seisSim.html" title="obspy.signal.invsim.seisSim"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.invsim.paz2AmpValueOfFreqResp.html" title="obspy.signal.invsim.paz2AmpValueOfFreqResp"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.invsim.html" >obspy.signal.invsim</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

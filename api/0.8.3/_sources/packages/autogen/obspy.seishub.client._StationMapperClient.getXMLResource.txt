@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.getXMLResource
+========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.getXMLResource

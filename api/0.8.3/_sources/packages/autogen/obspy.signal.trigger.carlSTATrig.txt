@@ -1,0 +1,6 @@
+obspy.signal.trigger.carlSTATrig
+================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: carlSTATrig

@@ -1,0 +1,6 @@
+obspy.db.client.Client.__init__
+===============================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.__init__

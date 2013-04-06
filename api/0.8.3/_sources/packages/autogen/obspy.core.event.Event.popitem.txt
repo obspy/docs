@@ -1,0 +1,6 @@
+obspy.core.event.Event.popitem
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Event.popitem

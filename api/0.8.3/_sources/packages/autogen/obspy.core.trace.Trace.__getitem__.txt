@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.__getitem__
+==================================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.__getitem__

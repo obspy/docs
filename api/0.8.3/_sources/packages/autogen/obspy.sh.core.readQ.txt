@@ -1,0 +1,6 @@
+obspy.sh.core.readQ
+===================
+
+.. currentmodule:: obspy.sh.core
+
+.. autofunction:: readQ

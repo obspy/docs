@@ -1,0 +1,6 @@
+obspy.xseed.fields.VariableString.getXML
+========================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: VariableString.getXML

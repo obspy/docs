@@ -1,0 +1,6 @@
+obspy.seishub.client._EventMapperClient.deleteResource
+======================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _EventMapperClient.deleteResource

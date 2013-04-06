@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__deepcopy__
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__deepcopy__

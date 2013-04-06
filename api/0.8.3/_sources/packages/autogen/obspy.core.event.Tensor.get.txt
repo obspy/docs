@@ -1,0 +1,6 @@
+obspy.core.event.Tensor.get
+===========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Tensor.get

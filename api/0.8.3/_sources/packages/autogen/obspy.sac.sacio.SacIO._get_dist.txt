@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO._get_dist
+===============================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO._get_dist

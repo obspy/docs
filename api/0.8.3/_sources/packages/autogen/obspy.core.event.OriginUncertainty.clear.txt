@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.clear
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.clear

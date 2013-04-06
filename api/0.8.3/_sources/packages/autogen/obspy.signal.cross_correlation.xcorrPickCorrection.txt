@@ -1,0 +1,6 @@
+obspy.signal.cross_correlation.xcorrPickCorrection
+==================================================
+
+.. currentmodule:: obspy.signal.cross_correlation
+
+.. autofunction:: xcorrPickCorrection

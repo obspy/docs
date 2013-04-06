@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.popitem
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.popitem

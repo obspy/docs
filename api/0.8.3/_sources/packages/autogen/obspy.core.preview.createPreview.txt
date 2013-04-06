@@ -1,0 +1,6 @@
+obspy.core.preview.createPreview
+================================
+
+.. currentmodule:: obspy.core.preview
+
+.. autofunction:: createPreview

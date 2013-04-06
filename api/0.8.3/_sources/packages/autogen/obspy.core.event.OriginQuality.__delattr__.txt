@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.__delattr__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.__delattr__

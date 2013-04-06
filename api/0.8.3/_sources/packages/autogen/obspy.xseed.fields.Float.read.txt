@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.read
+=============================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.read

@@ -1,0 +1,6 @@
+obspy.neries.client.Client._fetch
+=================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client._fetch

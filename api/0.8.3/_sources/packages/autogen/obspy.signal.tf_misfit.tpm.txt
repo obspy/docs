@@ -1,0 +1,6 @@
+obspy.signal.tf_misfit.tpm
+==========================
+
+.. currentmodule:: obspy.signal.tf_misfit
+
+.. autofunction:: tpm

@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.__delattr__
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.__delattr__

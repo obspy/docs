@@ -1,0 +1,6 @@
+obspy.iris.client.Client.dataselect
+===================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.dataselect

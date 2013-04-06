@@ -1,0 +1,6 @@
+obspy.segy.core.writeSEGY
+=========================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: writeSEGY

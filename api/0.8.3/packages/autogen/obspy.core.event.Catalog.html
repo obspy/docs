@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.Catalog &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.Catalog.append" href="obspy.core.event.Catalog.append.html" />
+    <link rel="prev" title="obspy.core.event.Axis.__subclasshook__" href="obspy.core.event.Axis.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.append.html" title="obspy.core.event.Catalog.append"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Axis.__subclasshook__.html" title="obspy.core.event.Axis.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-catalog">
+<h1>obspy.core.event.Catalog<a class="headerlink" href="#obspy-core-event-catalog" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.Catalog">
+<em class="property">class </em><tt class="descname">Catalog</tt><big>(</big><em>events=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#Catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.Catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This class serves as a container for Event objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>events</strong> (list of <a class="reference internal" href="obspy.core.event.Event.html#obspy.core.event.Event" title="obspy.core.event.Event"><tt class="xref py py-class docutils literal"><span class="pre">Event</span></tt></a>, optional) <span class="dash" /> List of events</li>
+<li><strong>resource_id</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>) <span class="dash" /> Resource identifier of the catalog.</li>
+<li><strong>description</strong> (<em>str, optional</em>) <span class="dash" /> Description string that can be assigned to the
+earthquake catalog, or collection of events.</li>
+<li><strong>comments</strong> (list of <a class="reference internal" href="obspy.core.event.Comment.html#obspy.core.event.Comment" title="obspy.core.event.Comment"><tt class="xref py py-class docutils literal"><span class="pre">Comment</span></tt></a>, optional) <span class="dash" /> Additional comments.</li>
+<li><strong>creation_info</strong> (<a class="reference internal" href="obspy.core.event.CreationInfo.html#obspy.core.event.CreationInfo" title="obspy.core.event.CreationInfo"><tt class="xref py py-class docutils literal"><span class="pre">CreationInfo</span></tt></a>, optional) <span class="dash" /> Creation information used to describe author,
+version, and creation time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">creation_info</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">resource_id</span></tt></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.append.html#obspy.core.event.Catalog.append" title="obspy.core.event.Catalog.append"><tt class="xref py py-obj docutils literal"><span class="pre">append</span></tt></a></td>
+<td>Appends a single Event object to the current Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.clear.html#obspy.core.event.Catalog.clear" title="obspy.core.event.Catalog.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td>Clears event list (convenient method).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.copy.html#obspy.core.event.Catalog.copy" title="obspy.core.event.Catalog.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td>Returns a deepcopy of the Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.count.html#obspy.core.event.Catalog.count" title="obspy.core.event.Catalog.count"><tt class="xref py py-obj docutils literal"><span class="pre">count</span></tt></a></td>
+<td>Returns the number of Events in the Catalog object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.extend.html#obspy.core.event.Catalog.extend" title="obspy.core.event.Catalog.extend"><tt class="xref py py-obj docutils literal"><span class="pre">extend</span></tt></a></td>
+<td>Extends the current Catalog object with a list of Event objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.filter.html#obspy.core.event.Catalog.filter" title="obspy.core.event.Catalog.filter"><tt class="xref py py-obj docutils literal"><span class="pre">filter</span></tt></a></td>
+<td>Returns a new Catalog object only containing Events which match the</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.plot.html#obspy.core.event.Catalog.plot" title="obspy.core.event.Catalog.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a></td>
+<td>Creates preview map of all events in current Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.write.html#obspy.core.event.Catalog.write" title="obspy.core.event.Catalog.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<td>Saves catalog into a file.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog._get_creation_info.html#obspy.core.event.Catalog._get_creation_info" title="obspy.core.event.Catalog._get_creation_info"><tt class="xref py py-obj docutils literal"><span class="pre">_get_creation_info</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog._get_resource_id.html#obspy.core.event.Catalog._get_resource_id" title="obspy.core.event.Catalog._get_resource_id"><tt class="xref py py-obj docutils literal"><span class="pre">_get_resource_id</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog._set_creation_info.html#obspy.core.event.Catalog._set_creation_info" title="obspy.core.event.Catalog._set_creation_info"><tt class="xref py py-obj docutils literal"><span class="pre">_set_creation_info</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog._set_resource_id.html#obspy.core.event.Catalog._set_resource_id" title="obspy.core.event.Catalog._set_resource_id"><tt class="xref py py-obj docutils literal"><span class="pre">_set_resource_id</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__add__.html#obspy.core.event.Catalog.__add__" title="obspy.core.event.Catalog.__add__"><tt class="xref py py-obj docutils literal"><span class="pre">__add__</span></tt></a></td>
+<td>Method to add two catalogs.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.__delitem__.html#obspy.core.event.Catalog.__delitem__" title="obspy.core.event.Catalog.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td>Passes on the __delitem__ method to the underlying list of traces.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__eq__.html#obspy.core.event.Catalog.__eq__" title="obspy.core.event.Catalog.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>__eq__ method of the Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.__getitem__.html#obspy.core.event.Catalog.__getitem__" title="obspy.core.event.Catalog.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td>__getitem__ method of the Catalog object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__getslice__.html#obspy.core.event.Catalog.__getslice__" title="obspy.core.event.Catalog.__getslice__"><tt class="xref py py-obj docutils literal"><span class="pre">__getslice__</span></tt></a></td>
+<td>__getslice__ method of the Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.__iadd__.html#obspy.core.event.Catalog.__iadd__" title="obspy.core.event.Catalog.__iadd__"><tt class="xref py py-obj docutils literal"><span class="pre">__iadd__</span></tt></a></td>
+<td>Method to add two catalog with self += other.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__init__.html#obspy.core.event.Catalog.__init__" title="obspy.core.event.Catalog.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.__iter__.html#obspy.core.event.Catalog.__iter__" title="obspy.core.event.Catalog.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td>Return a robust iterator for Events of current Catalog.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__len__.html#obspy.core.event.Catalog.__len__" title="obspy.core.event.Catalog.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td>Returns the number of Events in the Catalog object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Catalog.__setitem__.html#obspy.core.event.Catalog.__setitem__" title="obspy.core.event.Catalog.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td>__setitem__ method of the Catalog object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Catalog.__str__.html#obspy.core.event.Catalog.__str__" title="obspy.core.event.Catalog.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Returns short summary string of the current catalog.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.Catalog.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Catalog.append.html" title="obspy.core.event.Catalog.append"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Axis.__subclasshook__.html" title="obspy.core.event.Axis.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

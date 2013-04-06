@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.insert
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.insert

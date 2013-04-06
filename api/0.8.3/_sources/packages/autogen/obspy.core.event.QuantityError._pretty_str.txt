@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError._pretty_str
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError._pretty_str

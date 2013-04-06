@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.Tensor &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.Tensor.clear" href="obspy.core.event.Tensor.clear.html" />
+    <link rel="prev" title="obspy.core.event.StationMagnitudeContribution.__subclasshook__" href="obspy.core.event.StationMagnitudeContribution.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Tensor.clear.html" title="obspy.core.event.Tensor.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.StationMagnitudeContribution.__subclasshook__.html" title="obspy.core.event.StationMagnitudeContribution.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-tensor">
+<h1>obspy.core.event.Tensor<a class="headerlink" href="#obspy-core-event-tensor" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.Tensor">
+<em class="property">class </em><tt class="descname">Tensor</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#Tensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.Tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.__Tensor</span></tt></p>
+<p>The Tensor class represents the six moment-tensor elements m_rr, m_tt,
+m_pp, m_rt, m_rp, m_tp, where r is up, t is south, and p is east. See
+Aki &amp; Richards (1980) for conversions to other coordinate systems.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>m_rr</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mrr. Unit: Nm</li>
+<li><strong>m_rr_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>m_tt</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mtt. Unit: Nm</li>
+<li><strong>m_tt_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>m_pp</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mpp. Unit: Nm</li>
+<li><strong>m_pp_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>m_rt</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mrt. Unit: Nm</li>
+<li><strong>m_rt_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>m_rp</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mrp. Unit: Nm</li>
+<li><strong>m_rp_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+<li><strong>m_tp</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) <span class="dash" /> Moment-tensor element Mtp. Unit: Nm</li>
+<li><strong>m_tp_errors</strong> (<tt class="xref py py-class docutils literal"><span class="pre">AttribDict</span></tt>) <span class="dash" /> AttribDict containing error quantities.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">key</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.clear.html#obspy.core.event.Tensor.clear" title="obspy.core.event.Tensor.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.copy.html#obspy.core.event.Tensor.copy" title="obspy.core.event.Tensor.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.get.html#obspy.core.event.Tensor.get" title="obspy.core.event.Tensor.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.items.html#obspy.core.event.Tensor.items" title="obspy.core.event.Tensor.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.iteritems.html#obspy.core.event.Tensor.iteritems" title="obspy.core.event.Tensor.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.iterkeys.html#obspy.core.event.Tensor.iterkeys" title="obspy.core.event.Tensor.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.itervalues.html#obspy.core.event.Tensor.itervalues" title="obspy.core.event.Tensor.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.keys.html#obspy.core.event.Tensor.keys" title="obspy.core.event.Tensor.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.pop.html#obspy.core.event.Tensor.pop" title="obspy.core.event.Tensor.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.popitem.html#obspy.core.event.Tensor.popitem" title="obspy.core.event.Tensor.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.setdefault.html#obspy.core.event.Tensor.setdefault" title="obspy.core.event.Tensor.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.update.html#obspy.core.event.Tensor.update" title="obspy.core.event.Tensor.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.values.html#obspy.core.event.Tensor.values" title="obspy.core.event.Tensor.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor._pretty_str.html#obspy.core.event.Tensor._pretty_str" title="obspy.core.event.Tensor._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__contains__.html#obspy.core.event.Tensor.__contains__" title="obspy.core.event.Tensor.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__deepcopy__.html#obspy.core.event.Tensor.__deepcopy__" title="obspy.core.event.Tensor.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__delattr__.html#obspy.core.event.Tensor.__delattr__" title="obspy.core.event.Tensor.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__delitem__.html#obspy.core.event.Tensor.__delitem__" title="obspy.core.event.Tensor.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__eq__.html#obspy.core.event.Tensor.__eq__" title="obspy.core.event.Tensor.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Two instances are considered equal if all attributes and all lists</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__getattr__.html#obspy.core.event.Tensor.__getattr__" title="obspy.core.event.Tensor.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__getitem__.html#obspy.core.event.Tensor.__getitem__" title="obspy.core.event.Tensor.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__getstate__.html#obspy.core.event.Tensor.__getstate__" title="obspy.core.event.Tensor.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__init__.html#obspy.core.event.Tensor.__init__" title="obspy.core.event.Tensor.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__iter__.html#obspy.core.event.Tensor.__iter__" title="obspy.core.event.Tensor.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__len__.html#obspy.core.event.Tensor.__len__" title="obspy.core.event.Tensor.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__ne__.html#obspy.core.event.Tensor.__ne__" title="obspy.core.event.Tensor.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__nonzero__.html#obspy.core.event.Tensor.__nonzero__" title="obspy.core.event.Tensor.__nonzero__"><tt class="xref py py-obj docutils literal"><span class="pre">__nonzero__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__repr__.html#obspy.core.event.Tensor.__repr__" title="obspy.core.event.Tensor.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__setattr__.html#obspy.core.event.Tensor.__setattr__" title="obspy.core.event.Tensor.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>Custom property implementation that works if the class is</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__setitem__.html#obspy.core.event.Tensor.__setitem__" title="obspy.core.event.Tensor.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__setstate__.html#obspy.core.event.Tensor.__setstate__" title="obspy.core.event.Tensor.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.Tensor.__str__.html#obspy.core.event.Tensor.__str__" title="obspy.core.event.Tensor.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Fairly extensive in an attempt to cover several use cases.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.Tensor.__subclasshook__.html#obspy.core.event.Tensor.__subclasshook__" title="obspy.core.event.Tensor.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.Tensor.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.Tensor.clear.html" title="obspy.core.event.Tensor.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.StationMagnitudeContribution.__subclasshook__.html" title="obspy.core.event.StationMagnitudeContribution.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.resample
+=======================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.resample

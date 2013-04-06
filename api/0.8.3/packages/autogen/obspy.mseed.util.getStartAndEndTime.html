@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.util.getStartAndEndTime &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.util" href="obspy.mseed.util.html" />
+    <link rel="next" title="obspy.mseed.util.getTimingAndDataQuality" href="obspy.mseed.util.getTimingAndDataQuality.html" />
+    <link rel="prev" title="obspy.mseed.util.getRecordInformation" href="obspy.mseed.util.getRecordInformation.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getTimingAndDataQuality.html" title="obspy.mseed.util.getTimingAndDataQuality"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getRecordInformation.html" title="obspy.mseed.util.getRecordInformation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" accesskey="U">obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-util-getstartandendtime">
+<h1>obspy.mseed.util.getStartAndEndTime<a class="headerlink" href="#obspy-mseed-util-getstartandendtime" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.util.getStartAndEndTime">
+<tt class="descname">getStartAndEndTime</tt><big>(</big><em>file_or_file_object</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/util.html#getStartAndEndTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.util.getStartAndEndTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the start- and endtime of a Mini-SEED file or file-like object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_or_file_object</strong> (<em>basestring or open file-like object.</em>) <span class="dash" /> Mini-SEED file name or open file-like object
+containing a Mini-SEED record.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple (start time of first record, end time of last record)</td>
+</tr>
+</tbody>
+</table>
+<p>This method will return the start time of the first record and the end time
+of the last record. Keep in mind that it will not return the correct result
+if the records in the Mini-SEED file do not have a chronological ordering.</p>
+<p>The returned endtime is the time of the last data sample and not the
+time that the last sample covers.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getExampleFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="s">&quot;BW.BGLD.__.EHE.D.2008.001.first_10_records&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getStartAndEndTime</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  
+<span class="go">    (UTCDateTime(2007, 12, 31, 23, 59, 59, 915000),</span>
+<span class="go">    UTCDateTime(2008, 1, 1, 0, 0, 20, 510000))</span>
+</pre></div>
+</div>
+<p>It also works with an open file pointer. The file pointer itself will not
+be changed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getStartAndEndTime</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  
+<span class="go">    (UTCDateTime(2007, 12, 31, 23, 59, 59, 915000),</span>
+<span class="go">    UTCDateTime(2008, 1, 1, 0, 0, 20, 510000))</span>
+</pre></div>
+</div>
+<p>And also with a Mini-SEED file stored in a StringIO.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getStartAndEndTime</span><span class="p">(</span><span class="n">file_object</span><span class="p">)</span>  
+<span class="go">    (UTCDateTime(2007, 12, 31, 23, 59, 59, 915000),</span>
+<span class="go">    UTCDateTime(2008, 1, 1, 0, 0, 20, 510000))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If the file pointer does not point to the first record, the start time will
+refer to the record it points to.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getStartAndEndTime</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  
+<span class="go">    (UTCDateTime(2008, 1, 1, 0, 0, 1, 975000),</span>
+<span class="go">    UTCDateTime(2008, 1, 1, 0, 0, 20, 510000))</span>
+</pre></div>
+</div>
+<p>The same is valid for a file-like object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getStartAndEndTime</span><span class="p">(</span><span class="n">file_object</span><span class="p">)</span>  
+<span class="go">    (UTCDateTime(2008, 1, 1, 0, 0, 1, 975000),</span>
+<span class="go">    UTCDateTime(2008, 1, 1, 0, 0, 20, 510000))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.util.getStartAndEndTime.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getTimingAndDataQuality.html" title="obspy.mseed.util.getTimingAndDataQuality"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getRecordInformation.html" title="obspy.mseed.util.getRecordInformation"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" >obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

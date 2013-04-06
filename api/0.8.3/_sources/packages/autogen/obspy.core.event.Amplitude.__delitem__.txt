@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.__delitem__
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.__delitem__

@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitudeContribution._pretty_str
+=========================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitudeContribution._pretty_str

@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.iteritems
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.iteritems

@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.clear
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.clear

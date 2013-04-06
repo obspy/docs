@@ -1,0 +1,40 @@
+obspy.gse2.libgse2.HEADER
+=========================
+
+.. currentmodule:: obspy.gse2.libgse2
+.. autoclass:: HEADER
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~HEADER.__dict__
+     ~HEADER.__doc__
+     ~HEADER.__module__
+     ~HEADER.__weakref__
+     ~HEADER.auxid
+     ~HEADER.calib
+     ~HEADER.calper
+     ~HEADER.channel
+     ~HEADER.d_day
+     ~HEADER.d_mon
+     ~HEADER.d_year
+     ~HEADER.datatype
+     ~HEADER.hang
+     ~HEADER.instype
+     ~HEADER.n_samps
+     ~HEADER.samp_rate
+     ~HEADER.station
+     ~HEADER.t_hour
+     ~HEADER.t_min
+     ~HEADER.t_sec
+     ~HEADER.vang
+  
+  
+
+  
+  
+  

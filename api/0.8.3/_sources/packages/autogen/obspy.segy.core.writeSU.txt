@@ -1,0 +1,6 @@
+obspy.segy.core.writeSU
+=======================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: writeSU

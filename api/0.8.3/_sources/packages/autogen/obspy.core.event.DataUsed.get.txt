@@ -1,0 +1,6 @@
+obspy.core.event.DataUsed.get
+=============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: DataUsed.get

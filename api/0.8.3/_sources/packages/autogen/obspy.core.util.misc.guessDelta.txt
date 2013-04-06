@@ -1,0 +1,6 @@
+obspy.core.util.misc.guessDelta
+===============================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autofunction:: guessDelta

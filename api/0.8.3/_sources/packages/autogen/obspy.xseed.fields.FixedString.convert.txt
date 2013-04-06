@@ -1,0 +1,6 @@
+obspy.xseed.fields.FixedString.convert
+======================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: FixedString.convert

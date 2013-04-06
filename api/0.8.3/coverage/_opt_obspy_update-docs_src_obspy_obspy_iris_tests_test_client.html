@@ -1,0 +1,1035 @@
+<!doctype html PUBLIC "-//W3C//DTD html 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    
+    
+    <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
+    <title>Coverage for /opt/obspy/update-docs/src/obspy/obspy/iris/tests/test_client: 100%</title>
+    <link rel='stylesheet' href='style.css' type='text/css'>
+    <script type='text/javascript' src='jquery-1.4.3.min.js'></script>
+    <script type='text/javascript' src='jquery.hotkeys.js'></script>
+    <script type='text/javascript' src='jquery.isonscreen.js'></script>
+    <script type='text/javascript' src='coverage_html.js'></script>
+    <script type='text/javascript' charset='utf-8'>
+        jQuery(document).ready(coverage.pyfile_ready);
+    </script>
+</head>
+<body id='pyfile'>
+
+<div id='header'>
+    <div class='content'>
+        <h1>Coverage for <b>/opt/obspy/update-docs/src/obspy/obspy/iris/tests/test_client</b> :
+            <span class='pc_cov'>100%</span>
+        </h1>
+        <img id='keyboard_icon' src='keybd_closed.png'>
+        <h2 class='stats'>
+            273 statements
+            <span class='run hide_run shortkey_r' onclick='coverage.toggle_lines(this, "run")'>273 run</span>
+            <span class='mis shortkey_m' onclick='coverage.toggle_lines(this, "mis")'>0 missing</span>
+            <span class='exc shortkey_x' onclick='coverage.toggle_lines(this, "exc")'>2 excluded</span>
+            
+        </h2>
+    </div>
+</div>
+
+<div class='help_panel'>
+    <img id='panel_icon' src='keybd_open.png'>
+<p class='legend'>Hot-keys on this page</p>
+    <div>
+<p class='keyhelp'>
+        <span class='key'>r</span>
+        <span class='key'>m</span>
+        <span class='key'>x</span>
+        <span class='key'>p</span> &nbsp; toggle line displays
+    </p>
+<p class='keyhelp'>
+        <span class='key'>j</span>
+        <span class='key'>k</span> &nbsp; next/prev highlighted chunk
+    </p>
+<p class='keyhelp'>
+        <span class='key'>0</span> &nbsp; (zero) top of page
+    </p>
+<p class='keyhelp'>
+        <span class='key'>1</span> &nbsp; (one) first highlighted chunk
+    </p>
+    </div>
+</div>
+
+<div id='source'>
+    <table cellspacing='0' cellpadding='0'>
+        <tr>
+            <td class='linenos' valign='top'>
+<p id='n1' class='pln'><a href='#n1'>1</a></p>
+<p id='n2' class='stm run hide_run'><a href='#n2'>2</a></p>
+<p id='n3' class='pln'><a href='#n3'>3</a></p>
+<p id='n4' class='pln'><a href='#n4'>4</a></p>
+<p id='n5' class='pln'><a href='#n5'>5</a></p>
+<p id='n6' class='stm run hide_run'><a href='#n6'>6</a></p>
+<p id='n7' class='stm run hide_run'><a href='#n7'>7</a></p>
+<p id='n8' class='stm run hide_run'><a href='#n8'>8</a></p>
+<p id='n9' class='stm run hide_run'><a href='#n9'>9</a></p>
+<p id='n10' class='stm run hide_run'><a href='#n10'>10</a></p>
+<p id='n11' class='stm run hide_run'><a href='#n11'>11</a></p>
+<p id='n12' class='stm run hide_run'><a href='#n12'>12</a></p>
+<p id='n13' class='stm run hide_run'><a href='#n13'>13</a></p>
+<p id='n14' class='stm run hide_run'><a href='#n14'>14</a></p>
+<p id='n15' class='pln'><a href='#n15'>15</a></p>
+<p id='n16' class='pln'><a href='#n16'>16</a></p>
+<p id='n17' class='stm run hide_run'><a href='#n17'>17</a></p>
+<p id='n18' class='pln'><a href='#n18'>18</a></p>
+<p id='n19' class='pln'><a href='#n19'>19</a></p>
+<p id='n20' class='pln'><a href='#n20'>20</a></p>
+<p id='n21' class='stm run hide_run'><a href='#n21'>21</a></p>
+<p id='n22' class='pln'><a href='#n22'>22</a></p>
+<p id='n23' class='stm run hide_run'><a href='#n23'>23</a></p>
+<p id='n24' class='pln'><a href='#n24'>24</a></p>
+<p id='n25' class='stm run hide_run'><a href='#n25'>25</a></p>
+<p id='n26' class='pln'><a href='#n26'>26</a></p>
+<p id='n27' class='pln'><a href='#n27'>27</a></p>
+<p id='n28' class='pln'><a href='#n28'>28</a></p>
+<p id='n29' class='pln'><a href='#n29'>29</a></p>
+<p id='n30' class='stm run hide_run'><a href='#n30'>30</a></p>
+<p id='n31' class='stm run hide_run'><a href='#n31'>31</a></p>
+<p id='n32' class='stm run hide_run'><a href='#n32'>32</a></p>
+<p id='n33' class='stm run hide_run'><a href='#n33'>33</a></p>
+<p id='n34' class='stm run hide_run'><a href='#n34'>34</a></p>
+<p id='n35' class='stm run hide_run'><a href='#n35'>35</a></p>
+<p id='n36' class='stm run hide_run'><a href='#n36'>36</a></p>
+<p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
+<p id='n38' class='stm run hide_run'><a href='#n38'>38</a></p>
+<p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
+<p id='n40' class='stm run hide_run'><a href='#n40'>40</a></p>
+<p id='n41' class='pln'><a href='#n41'>41</a></p>
+<p id='n42' class='stm run hide_run'><a href='#n42'>42</a></p>
+<p id='n43' class='pln'><a href='#n43'>43</a></p>
+<p id='n44' class='pln'><a href='#n44'>44</a></p>
+<p id='n45' class='stm run hide_run'><a href='#n45'>45</a></p>
+<p id='n46' class='pln'><a href='#n46'>46</a></p>
+<p id='n47' class='pln'><a href='#n47'>47</a></p>
+<p id='n48' class='pln'><a href='#n48'>48</a></p>
+<p id='n49' class='pln'><a href='#n49'>49</a></p>
+<p id='n50' class='stm run hide_run'><a href='#n50'>50</a></p>
+<p id='n51' class='stm run hide_run'><a href='#n51'>51</a></p>
+<p id='n52' class='stm run hide_run'><a href='#n52'>52</a></p>
+<p id='n53' class='stm run hide_run'><a href='#n53'>53</a></p>
+<p id='n54' class='stm run hide_run'><a href='#n54'>54</a></p>
+<p id='n55' class='stm run hide_run'><a href='#n55'>55</a></p>
+<p id='n56' class='stm run hide_run'><a href='#n56'>56</a></p>
+<p id='n57' class='stm run hide_run'><a href='#n57'>57</a></p>
+<p id='n58' class='pln'><a href='#n58'>58</a></p>
+<p id='n59' class='stm run hide_run'><a href='#n59'>59</a></p>
+<p id='n60' class='pln'><a href='#n60'>60</a></p>
+<p id='n61' class='pln'><a href='#n61'>61</a></p>
+<p id='n62' class='stm run hide_run'><a href='#n62'>62</a></p>
+<p id='n63' class='pln'><a href='#n63'>63</a></p>
+<p id='n64' class='pln'><a href='#n64'>64</a></p>
+<p id='n65' class='pln'><a href='#n65'>65</a></p>
+<p id='n66' class='stm run hide_run'><a href='#n66'>66</a></p>
+<p id='n67' class='stm run hide_run'><a href='#n67'>67</a></p>
+<p id='n68' class='stm run hide_run'><a href='#n68'>68</a></p>
+<p id='n69' class='pln'><a href='#n69'>69</a></p>
+<p id='n70' class='stm run hide_run'><a href='#n70'>70</a></p>
+<p id='n71' class='stm run hide_run'><a href='#n71'>71</a></p>
+<p id='n72' class='stm run hide_run'><a href='#n72'>72</a></p>
+<p id='n73' class='stm run hide_run'><a href='#n73'>73</a></p>
+<p id='n74' class='stm run hide_run'><a href='#n74'>74</a></p>
+<p id='n75' class='pln'><a href='#n75'>75</a></p>
+<p id='n76' class='stm run hide_run'><a href='#n76'>76</a></p>
+<p id='n77' class='stm run hide_run'><a href='#n77'>77</a></p>
+<p id='n78' class='stm run hide_run'><a href='#n78'>78</a></p>
+<p id='n79' class='stm run hide_run'><a href='#n79'>79</a></p>
+<p id='n80' class='stm run hide_run'><a href='#n80'>80</a></p>
+<p id='n81' class='pln'><a href='#n81'>81</a></p>
+<p id='n82' class='stm run hide_run'><a href='#n82'>82</a></p>
+<p id='n83' class='stm run hide_run'><a href='#n83'>83</a></p>
+<p id='n84' class='pln'><a href='#n84'>84</a></p>
+<p id='n85' class='stm run hide_run'><a href='#n85'>85</a></p>
+<p id='n86' class='stm run hide_run'><a href='#n86'>86</a></p>
+<p id='n87' class='stm run hide_run'><a href='#n87'>87</a></p>
+<p id='n88' class='pln'><a href='#n88'>88</a></p>
+<p id='n89' class='stm run hide_run'><a href='#n89'>89</a></p>
+<p id='n90' class='stm run hide_run'><a href='#n90'>90</a></p>
+<p id='n91' class='pln'><a href='#n91'>91</a></p>
+<p id='n92' class='stm run hide_run'><a href='#n92'>92</a></p>
+<p id='n93' class='stm run hide_run'><a href='#n93'>93</a></p>
+<p id='n94' class='stm run hide_run'><a href='#n94'>94</a></p>
+<p id='n95' class='stm run hide_run'><a href='#n95'>95</a></p>
+<p id='n96' class='pln'><a href='#n96'>96</a></p>
+<p id='n97' class='stm run hide_run'><a href='#n97'>97</a></p>
+<p id='n98' class='pln'><a href='#n98'>98</a></p>
+<p id='n99' class='pln'><a href='#n99'>99</a></p>
+<p id='n100' class='pln'><a href='#n100'>100</a></p>
+<p id='n101' class='stm run hide_run'><a href='#n101'>101</a></p>
+<p id='n102' class='stm run hide_run'><a href='#n102'>102</a></p>
+<p id='n103' class='pln'><a href='#n103'>103</a></p>
+<p id='n104' class='stm run hide_run'><a href='#n104'>104</a></p>
+<p id='n105' class='pln'><a href='#n105'>105</a></p>
+<p id='n106' class='pln'><a href='#n106'>106</a></p>
+<p id='n107' class='stm run hide_run'><a href='#n107'>107</a></p>
+<p id='n108' class='stm run hide_run'><a href='#n108'>108</a></p>
+<p id='n109' class='stm run hide_run'><a href='#n109'>109</a></p>
+<p id='n110' class='stm run hide_run'><a href='#n110'>110</a></p>
+<p id='n111' class='stm run hide_run'><a href='#n111'>111</a></p>
+<p id='n112' class='stm run hide_run'><a href='#n112'>112</a></p>
+<p id='n113' class='stm run hide_run'><a href='#n113'>113</a></p>
+<p id='n114' class='stm run hide_run'><a href='#n114'>114</a></p>
+<p id='n115' class='pln'><a href='#n115'>115</a></p>
+<p id='n116' class='stm run hide_run'><a href='#n116'>116</a></p>
+<p id='n117' class='pln'><a href='#n117'>117</a></p>
+<p id='n118' class='pln'><a href='#n118'>118</a></p>
+<p id='n119' class='pln'><a href='#n119'>119</a></p>
+<p id='n120' class='stm run hide_run'><a href='#n120'>120</a></p>
+<p id='n121' class='pln'><a href='#n121'>121</a></p>
+<p id='n122' class='stm run hide_run'><a href='#n122'>122</a></p>
+<p id='n123' class='stm run hide_run'><a href='#n123'>123</a></p>
+<p id='n124' class='stm run hide_run'><a href='#n124'>124</a></p>
+<p id='n125' class='pln'><a href='#n125'>125</a></p>
+<p id='n126' class='stm run hide_run'><a href='#n126'>126</a></p>
+<p id='n127' class='stm run hide_run'><a href='#n127'>127</a></p>
+<p id='n128' class='stm run hide_run'><a href='#n128'>128</a></p>
+<p id='n129' class='stm run hide_run'><a href='#n129'>129</a></p>
+<p id='n130' class='stm run hide_run'><a href='#n130'>130</a></p>
+<p id='n131' class='stm run hide_run'><a href='#n131'>131</a></p>
+<p id='n132' class='pln'><a href='#n132'>132</a></p>
+<p id='n133' class='stm run hide_run'><a href='#n133'>133</a></p>
+<p id='n134' class='stm run hide_run'><a href='#n134'>134</a></p>
+<p id='n135' class='stm run hide_run'><a href='#n135'>135</a></p>
+<p id='n136' class='stm run hide_run'><a href='#n136'>136</a></p>
+<p id='n137' class='pln'><a href='#n137'>137</a></p>
+<p id='n138' class='stm run hide_run'><a href='#n138'>138</a></p>
+<p id='n139' class='stm run hide_run'><a href='#n139'>139</a></p>
+<p id='n140' class='stm run hide_run'><a href='#n140'>140</a></p>
+<p id='n141' class='pln'><a href='#n141'>141</a></p>
+<p id='n142' class='stm run hide_run'><a href='#n142'>142</a></p>
+<p id='n143' class='pln'><a href='#n143'>143</a></p>
+<p id='n144' class='pln'><a href='#n144'>144</a></p>
+<p id='n145' class='pln'><a href='#n145'>145</a></p>
+<p id='n146' class='stm run hide_run'><a href='#n146'>146</a></p>
+<p id='n147' class='pln'><a href='#n147'>147</a></p>
+<p id='n148' class='stm run hide_run'><a href='#n148'>148</a></p>
+<p id='n149' class='stm run hide_run'><a href='#n149'>149</a></p>
+<p id='n150' class='stm run hide_run'><a href='#n150'>150</a></p>
+<p id='n151' class='stm run hide_run'><a href='#n151'>151</a></p>
+<p id='n152' class='pln'><a href='#n152'>152</a></p>
+<p id='n153' class='stm run hide_run'><a href='#n153'>153</a></p>
+<p id='n154' class='stm run hide_run'><a href='#n154'>154</a></p>
+<p id='n155' class='stm run hide_run'><a href='#n155'>155</a></p>
+<p id='n156' class='stm run hide_run'><a href='#n156'>156</a></p>
+<p id='n157' class='pln'><a href='#n157'>157</a></p>
+<p id='n158' class='stm run hide_run'><a href='#n158'>158</a></p>
+<p id='n159' class='stm run hide_run'><a href='#n159'>159</a></p>
+<p id='n160' class='stm run hide_run'><a href='#n160'>160</a></p>
+<p id='n161' class='stm run hide_run'><a href='#n161'>161</a></p>
+<p id='n162' class='pln'><a href='#n162'>162</a></p>
+<p id='n163' class='stm run hide_run'><a href='#n163'>163</a></p>
+<p id='n164' class='pln'><a href='#n164'>164</a></p>
+<p id='n165' class='pln'><a href='#n165'>165</a></p>
+<p id='n166' class='pln'><a href='#n166'>166</a></p>
+<p id='n167' class='stm run hide_run'><a href='#n167'>167</a></p>
+<p id='n168' class='pln'><a href='#n168'>168</a></p>
+<p id='n169' class='stm run hide_run'><a href='#n169'>169</a></p>
+<p id='n170' class='stm run hide_run'><a href='#n170'>170</a></p>
+<p id='n171' class='pln'><a href='#n171'>171</a></p>
+<p id='n172' class='stm run hide_run'><a href='#n172'>172</a></p>
+<p id='n173' class='stm run hide_run'><a href='#n173'>173</a></p>
+<p id='n174' class='pln'><a href='#n174'>174</a></p>
+<p id='n175' class='stm run hide_run'><a href='#n175'>175</a></p>
+<p id='n176' class='stm run hide_run'><a href='#n176'>176</a></p>
+<p id='n177' class='pln'><a href='#n177'>177</a></p>
+<p id='n178' class='stm run hide_run'><a href='#n178'>178</a></p>
+<p id='n179' class='stm run hide_run'><a href='#n179'>179</a></p>
+<p id='n180' class='pln'><a href='#n180'>180</a></p>
+<p id='n181' class='stm run hide_run'><a href='#n181'>181</a></p>
+<p id='n182' class='stm run hide_run'><a href='#n182'>182</a></p>
+<p id='n183' class='pln'><a href='#n183'>183</a></p>
+<p id='n184' class='stm run hide_run'><a href='#n184'>184</a></p>
+<p id='n185' class='stm run hide_run'><a href='#n185'>185</a></p>
+<p id='n186' class='pln'><a href='#n186'>186</a></p>
+<p id='n187' class='stm run hide_run'><a href='#n187'>187</a></p>
+<p id='n188' class='stm run hide_run'><a href='#n188'>188</a></p>
+<p id='n189' class='pln'><a href='#n189'>189</a></p>
+<p id='n190' class='pln'><a href='#n190'>190</a></p>
+<p id='n191' class='stm run hide_run'><a href='#n191'>191</a></p>
+<p id='n192' class='stm run hide_run'><a href='#n192'>192</a></p>
+<p id='n193' class='stm run hide_run'><a href='#n193'>193</a></p>
+<p id='n194' class='stm run hide_run'><a href='#n194'>194</a></p>
+<p id='n195' class='pln'><a href='#n195'>195</a></p>
+<p id='n196' class='stm run hide_run'><a href='#n196'>196</a></p>
+<p id='n197' class='pln'><a href='#n197'>197</a></p>
+<p id='n198' class='pln'><a href='#n198'>198</a></p>
+<p id='n199' class='pln'><a href='#n199'>199</a></p>
+<p id='n200' class='stm run hide_run'><a href='#n200'>200</a></p>
+<p id='n201' class='stm run hide_run'><a href='#n201'>201</a></p>
+<p id='n202' class='pln'><a href='#n202'>202</a></p>
+<p id='n203' class='stm run hide_run'><a href='#n203'>203</a></p>
+<p id='n204' class='pln'><a href='#n204'>204</a></p>
+<p id='n205' class='stm run hide_run'><a href='#n205'>205</a></p>
+<p id='n206' class='pln'><a href='#n206'>206</a></p>
+<p id='n207' class='pln'><a href='#n207'>207</a></p>
+<p id='n208' class='pln'><a href='#n208'>208</a></p>
+<p id='n209' class='stm run hide_run'><a href='#n209'>209</a></p>
+<p id='n210' class='stm run hide_run'><a href='#n210'>210</a></p>
+<p id='n211' class='pln'><a href='#n211'>211</a></p>
+<p id='n212' class='stm run hide_run'><a href='#n212'>212</a></p>
+<p id='n213' class='stm run hide_run'><a href='#n213'>213</a></p>
+<p id='n214' class='pln'><a href='#n214'>214</a></p>
+<p id='n215' class='pln'><a href='#n215'>215</a></p>
+<p id='n216' class='stm run hide_run'><a href='#n216'>216</a></p>
+<p id='n217' class='stm run hide_run'><a href='#n217'>217</a></p>
+<p id='n218' class='pln'><a href='#n218'>218</a></p>
+<p id='n219' class='stm run hide_run'><a href='#n219'>219</a></p>
+<p id='n220' class='stm run hide_run'><a href='#n220'>220</a></p>
+<p id='n221' class='pln'><a href='#n221'>221</a></p>
+<p id='n222' class='pln'><a href='#n222'>222</a></p>
+<p id='n223' class='stm run hide_run'><a href='#n223'>223</a></p>
+<p id='n224' class='stm run hide_run'><a href='#n224'>224</a></p>
+<p id='n225' class='pln'><a href='#n225'>225</a></p>
+<p id='n226' class='stm run hide_run'><a href='#n226'>226</a></p>
+<p id='n227' class='stm run hide_run'><a href='#n227'>227</a></p>
+<p id='n228' class='pln'><a href='#n228'>228</a></p>
+<p id='n229' class='pln'><a href='#n229'>229</a></p>
+<p id='n230' class='stm run hide_run'><a href='#n230'>230</a></p>
+<p id='n231' class='stm run hide_run'><a href='#n231'>231</a></p>
+<p id='n232' class='pln'><a href='#n232'>232</a></p>
+<p id='n233' class='stm run hide_run'><a href='#n233'>233</a></p>
+<p id='n234' class='stm run hide_run'><a href='#n234'>234</a></p>
+<p id='n235' class='pln'><a href='#n235'>235</a></p>
+<p id='n236' class='pln'><a href='#n236'>236</a></p>
+<p id='n237' class='stm run hide_run'><a href='#n237'>237</a></p>
+<p id='n238' class='pln'><a href='#n238'>238</a></p>
+<p id='n239' class='stm run hide_run'><a href='#n239'>239</a></p>
+<p id='n240' class='pln'><a href='#n240'>240</a></p>
+<p id='n241' class='stm run hide_run'><a href='#n241'>241</a></p>
+<p id='n242' class='stm run hide_run'><a href='#n242'>242</a></p>
+<p id='n243' class='pln'><a href='#n243'>243</a></p>
+<p id='n244' class='pln'><a href='#n244'>244</a></p>
+<p id='n245' class='stm run hide_run'><a href='#n245'>245</a></p>
+<p id='n246' class='pln'><a href='#n246'>246</a></p>
+<p id='n247' class='stm run hide_run'><a href='#n247'>247</a></p>
+<p id='n248' class='pln'><a href='#n248'>248</a></p>
+<p id='n249' class='stm run hide_run'><a href='#n249'>249</a></p>
+<p id='n250' class='stm run hide_run'><a href='#n250'>250</a></p>
+<p id='n251' class='pln'><a href='#n251'>251</a></p>
+<p id='n252' class='pln'><a href='#n252'>252</a></p>
+<p id='n253' class='stm run hide_run'><a href='#n253'>253</a></p>
+<p id='n254' class='pln'><a href='#n254'>254</a></p>
+<p id='n255' class='stm run hide_run'><a href='#n255'>255</a></p>
+<p id='n256' class='pln'><a href='#n256'>256</a></p>
+<p id='n257' class='stm run hide_run'><a href='#n257'>257</a></p>
+<p id='n258' class='stm run hide_run'><a href='#n258'>258</a></p>
+<p id='n259' class='pln'><a href='#n259'>259</a></p>
+<p id='n260' class='pln'><a href='#n260'>260</a></p>
+<p id='n261' class='stm run hide_run'><a href='#n261'>261</a></p>
+<p id='n262' class='pln'><a href='#n262'>262</a></p>
+<p id='n263' class='stm run hide_run'><a href='#n263'>263</a></p>
+<p id='n264' class='pln'><a href='#n264'>264</a></p>
+<p id='n265' class='stm run hide_run'><a href='#n265'>265</a></p>
+<p id='n266' class='stm run hide_run'><a href='#n266'>266</a></p>
+<p id='n267' class='pln'><a href='#n267'>267</a></p>
+<p id='n268' class='pln'><a href='#n268'>268</a></p>
+<p id='n269' class='stm run hide_run'><a href='#n269'>269</a></p>
+<p id='n270' class='pln'><a href='#n270'>270</a></p>
+<p id='n271' class='stm run hide_run'><a href='#n271'>271</a></p>
+<p id='n272' class='pln'><a href='#n272'>272</a></p>
+<p id='n273' class='stm run hide_run'><a href='#n273'>273</a></p>
+<p id='n274' class='stm run hide_run'><a href='#n274'>274</a></p>
+<p id='n275' class='pln'><a href='#n275'>275</a></p>
+<p id='n276' class='pln'><a href='#n276'>276</a></p>
+<p id='n277' class='stm run hide_run'><a href='#n277'>277</a></p>
+<p id='n278' class='pln'><a href='#n278'>278</a></p>
+<p id='n279' class='stm run hide_run'><a href='#n279'>279</a></p>
+<p id='n280' class='pln'><a href='#n280'>280</a></p>
+<p id='n281' class='stm run hide_run'><a href='#n281'>281</a></p>
+<p id='n282' class='pln'><a href='#n282'>282</a></p>
+<p id='n283' class='stm run hide_run'><a href='#n283'>283</a></p>
+<p id='n284' class='pln'><a href='#n284'>284</a></p>
+<p id='n285' class='pln'><a href='#n285'>285</a></p>
+<p id='n286' class='stm run hide_run'><a href='#n286'>286</a></p>
+<p id='n287' class='pln'><a href='#n287'>287</a></p>
+<p id='n288' class='stm run hide_run'><a href='#n288'>288</a></p>
+<p id='n289' class='pln'><a href='#n289'>289</a></p>
+<p id='n290' class='pln'><a href='#n290'>290</a></p>
+<p id='n291' class='stm run hide_run'><a href='#n291'>291</a></p>
+<p id='n292' class='pln'><a href='#n292'>292</a></p>
+<p id='n293' class='pln'><a href='#n293'>293</a></p>
+<p id='n294' class='pln'><a href='#n294'>294</a></p>
+<p id='n295' class='pln'><a href='#n295'>295</a></p>
+<p id='n296' class='pln'><a href='#n296'>296</a></p>
+<p id='n297' class='stm run hide_run'><a href='#n297'>297</a></p>
+<p id='n298' class='pln'><a href='#n298'>298</a></p>
+<p id='n299' class='stm run hide_run'><a href='#n299'>299</a></p>
+<p id='n300' class='pln'><a href='#n300'>300</a></p>
+<p id='n301' class='pln'><a href='#n301'>301</a></p>
+<p id='n302' class='pln'><a href='#n302'>302</a></p>
+<p id='n303' class='stm run hide_run'><a href='#n303'>303</a></p>
+<p id='n304' class='pln'><a href='#n304'>304</a></p>
+<p id='n305' class='stm run hide_run'><a href='#n305'>305</a></p>
+<p id='n306' class='pln'><a href='#n306'>306</a></p>
+<p id='n307' class='pln'><a href='#n307'>307</a></p>
+<p id='n308' class='stm run hide_run'><a href='#n308'>308</a></p>
+<p id='n309' class='stm run hide_run'><a href='#n309'>309</a></p>
+<p id='n310' class='pln'><a href='#n310'>310</a></p>
+<p id='n311' class='stm run hide_run'><a href='#n311'>311</a></p>
+<p id='n312' class='pln'><a href='#n312'>312</a></p>
+<p id='n313' class='stm run hide_run'><a href='#n313'>313</a></p>
+<p id='n314' class='pln'><a href='#n314'>314</a></p>
+<p id='n315' class='stm run hide_run'><a href='#n315'>315</a></p>
+<p id='n316' class='stm run hide_run'><a href='#n316'>316</a></p>
+<p id='n317' class='pln'><a href='#n317'>317</a></p>
+<p id='n318' class='stm run hide_run'><a href='#n318'>318</a></p>
+<p id='n319' class='pln'><a href='#n319'>319</a></p>
+<p id='n320' class='stm run hide_run'><a href='#n320'>320</a></p>
+<p id='n321' class='pln'><a href='#n321'>321</a></p>
+<p id='n322' class='stm run hide_run'><a href='#n322'>322</a></p>
+<p id='n323' class='stm run hide_run'><a href='#n323'>323</a></p>
+<p id='n324' class='pln'><a href='#n324'>324</a></p>
+<p id='n325' class='stm run hide_run'><a href='#n325'>325</a></p>
+<p id='n326' class='pln'><a href='#n326'>326</a></p>
+<p id='n327' class='stm run hide_run'><a href='#n327'>327</a></p>
+<p id='n328' class='pln'><a href='#n328'>328</a></p>
+<p id='n329' class='stm run hide_run'><a href='#n329'>329</a></p>
+<p id='n330' class='stm run hide_run'><a href='#n330'>330</a></p>
+<p id='n331' class='pln'><a href='#n331'>331</a></p>
+<p id='n332' class='stm run hide_run'><a href='#n332'>332</a></p>
+<p id='n333' class='pln'><a href='#n333'>333</a></p>
+<p id='n334' class='pln'><a href='#n334'>334</a></p>
+<p id='n335' class='pln'><a href='#n335'>335</a></p>
+<p id='n336' class='pln'><a href='#n336'>336</a></p>
+<p id='n337' class='stm run hide_run'><a href='#n337'>337</a></p>
+<p id='n338' class='pln'><a href='#n338'>338</a></p>
+<p id='n339' class='stm run hide_run'><a href='#n339'>339</a></p>
+<p id='n340' class='pln'><a href='#n340'>340</a></p>
+<p id='n341' class='pln'><a href='#n341'>341</a></p>
+<p id='n342' class='pln'><a href='#n342'>342</a></p>
+<p id='n343' class='pln'><a href='#n343'>343</a></p>
+<p id='n344' class='stm run hide_run'><a href='#n344'>344</a></p>
+<p id='n345' class='pln'><a href='#n345'>345</a></p>
+<p id='n346' class='stm run hide_run'><a href='#n346'>346</a></p>
+<p id='n347' class='pln'><a href='#n347'>347</a></p>
+<p id='n348' class='pln'><a href='#n348'>348</a></p>
+<p id='n349' class='pln'><a href='#n349'>349</a></p>
+<p id='n350' class='pln'><a href='#n350'>350</a></p>
+<p id='n351' class='pln'><a href='#n351'>351</a></p>
+<p id='n352' class='stm run hide_run'><a href='#n352'>352</a></p>
+<p id='n353' class='pln'><a href='#n353'>353</a></p>
+<p id='n354' class='stm run hide_run'><a href='#n354'>354</a></p>
+<p id='n355' class='stm run hide_run'><a href='#n355'>355</a></p>
+<p id='n356' class='stm run hide_run'><a href='#n356'>356</a></p>
+<p id='n357' class='pln'><a href='#n357'>357</a></p>
+<p id='n358' class='stm run hide_run'><a href='#n358'>358</a></p>
+<p id='n359' class='stm run hide_run'><a href='#n359'>359</a></p>
+<p id='n360' class='pln'><a href='#n360'>360</a></p>
+<p id='n361' class='stm run hide_run'><a href='#n361'>361</a></p>
+<p id='n362' class='stm run hide_run'><a href='#n362'>362</a></p>
+<p id='n363' class='pln'><a href='#n363'>363</a></p>
+<p id='n364' class='stm run hide_run'><a href='#n364'>364</a></p>
+<p id='n365' class='stm run hide_run'><a href='#n365'>365</a></p>
+<p id='n366' class='pln'><a href='#n366'>366</a></p>
+<p id='n367' class='stm run hide_run'><a href='#n367'>367</a></p>
+<p id='n368' class='stm run hide_run'><a href='#n368'>368</a></p>
+<p id='n369' class='pln'><a href='#n369'>369</a></p>
+<p id='n370' class='pln'><a href='#n370'>370</a></p>
+<p id='n371' class='stm run hide_run'><a href='#n371'>371</a></p>
+<p id='n372' class='stm run hide_run'><a href='#n372'>372</a></p>
+<p id='n373' class='stm run hide_run'><a href='#n373'>373</a></p>
+<p id='n374' class='stm run hide_run'><a href='#n374'>374</a></p>
+<p id='n375' class='stm run hide_run'><a href='#n375'>375</a></p>
+<p id='n376' class='stm run hide_run'><a href='#n376'>376</a></p>
+<p id='n377' class='pln'><a href='#n377'>377</a></p>
+<p id='n378' class='stm run hide_run'><a href='#n378'>378</a></p>
+<p id='n379' class='stm run hide_run'><a href='#n379'>379</a></p>
+<p id='n380' class='stm run hide_run'><a href='#n380'>380</a></p>
+<p id='n381' class='stm run hide_run'><a href='#n381'>381</a></p>
+<p id='n382' class='pln'><a href='#n382'>382</a></p>
+<p id='n383' class='stm run hide_run'><a href='#n383'>383</a></p>
+<p id='n384' class='pln'><a href='#n384'>384</a></p>
+<p id='n385' class='stm run hide_run'><a href='#n385'>385</a></p>
+<p id='n386' class='stm run hide_run'><a href='#n386'>386</a></p>
+<p id='n387' class='stm run hide_run'><a href='#n387'>387</a></p>
+<p id='n388' class='pln'><a href='#n388'>388</a></p>
+<p id='n389' class='stm run hide_run'><a href='#n389'>389</a></p>
+<p id='n390' class='pln'><a href='#n390'>390</a></p>
+<p id='n391' class='pln'><a href='#n391'>391</a></p>
+<p id='n392' class='pln'><a href='#n392'>392</a></p>
+<p id='n393' class='pln'><a href='#n393'>393</a></p>
+<p id='n394' class='pln'><a href='#n394'>394</a></p>
+<p id='n395' class='stm run hide_run'><a href='#n395'>395</a></p>
+<p id='n396' class='pln'><a href='#n396'>396</a></p>
+<p id='n397' class='stm run hide_run'><a href='#n397'>397</a></p>
+<p id='n398' class='stm run hide_run'><a href='#n398'>398</a></p>
+<p id='n399' class='stm run hide_run'><a href='#n399'>399</a></p>
+<p id='n400' class='stm run hide_run'><a href='#n400'>400</a></p>
+<p id='n401' class='pln'><a href='#n401'>401</a></p>
+<p id='n402' class='stm run hide_run'><a href='#n402'>402</a></p>
+<p id='n403' class='stm run hide_run'><a href='#n403'>403</a></p>
+<p id='n404' class='stm run hide_run'><a href='#n404'>404</a></p>
+<p id='n405' class='pln'><a href='#n405'>405</a></p>
+<p id='n406' class='stm run hide_run'><a href='#n406'>406</a></p>
+<p id='n407' class='stm run hide_run'><a href='#n407'>407</a></p>
+<p id='n408' class='stm run hide_run'><a href='#n408'>408</a></p>
+<p id='n409' class='pln'><a href='#n409'>409</a></p>
+<p id='n410' class='stm run hide_run'><a href='#n410'>410</a></p>
+<p id='n411' class='stm run hide_run'><a href='#n411'>411</a></p>
+<p id='n412' class='stm run hide_run'><a href='#n412'>412</a></p>
+<p id='n413' class='pln'><a href='#n413'>413</a></p>
+<p id='n414' class='stm run hide_run'><a href='#n414'>414</a></p>
+<p id='n415' class='pln'><a href='#n415'>415</a></p>
+<p id='n416' class='pln'><a href='#n416'>416</a></p>
+<p id='n417' class='pln'><a href='#n417'>417</a></p>
+<p id='n418' class='pln'><a href='#n418'>418</a></p>
+<p id='n419' class='pln'><a href='#n419'>419</a></p>
+<p id='n420' class='stm run hide_run'><a href='#n420'>420</a></p>
+<p id='n421' class='pln'><a href='#n421'>421</a></p>
+<p id='n422' class='stm run hide_run'><a href='#n422'>422</a></p>
+<p id='n423' class='stm run hide_run'><a href='#n423'>423</a></p>
+<p id='n424' class='pln'><a href='#n424'>424</a></p>
+<p id='n425' class='stm run hide_run'><a href='#n425'>425</a></p>
+<p id='n426' class='pln'><a href='#n426'>426</a></p>
+<p id='n427' class='stm run hide_run'><a href='#n427'>427</a></p>
+<p id='n428' class='pln'><a href='#n428'>428</a></p>
+<p id='n429' class='pln'><a href='#n429'>429</a></p>
+<p id='n430' class='stm run hide_run'><a href='#n430'>430</a></p>
+<p id='n431' class='stm run hide_run'><a href='#n431'>431</a></p>
+<p id='n432' class='stm run hide_run'><a href='#n432'>432</a></p>
+<p id='n433' class='stm run hide_run'><a href='#n433'>433</a></p>
+<p id='n434' class='pln'><a href='#n434'>434</a></p>
+<p id='n435' class='stm run hide_run'><a href='#n435'>435</a></p>
+<p id='n436' class='pln'><a href='#n436'>436</a></p>
+<p id='n437' class='pln'><a href='#n437'>437</a></p>
+<p id='n438' class='pln'><a href='#n438'>438</a></p>
+<p id='n439' class='stm run hide_run'><a href='#n439'>439</a></p>
+<p id='n440' class='pln'><a href='#n440'>440</a></p>
+<p id='n441' class='stm run hide_run'><a href='#n441'>441</a></p>
+<p id='n442' class='stm run hide_run'><a href='#n442'>442</a></p>
+<p id='n443' class='stm run hide_run'><a href='#n443'>443</a></p>
+<p id='n444' class='pln'><a href='#n444'>444</a></p>
+<p id='n445' class='stm run hide_run'><a href='#n445'>445</a></p>
+<p id='n446' class='stm run hide_run'><a href='#n446'>446</a></p>
+<p id='n447' class='pln'><a href='#n447'>447</a></p>
+<p id='n448' class='stm run hide_run'><a href='#n448'>448</a></p>
+<p id='n449' class='stm run hide_run'><a href='#n449'>449</a></p>
+<p id='n450' class='stm run hide_run'><a href='#n450'>450</a></p>
+<p id='n451' class='pln'><a href='#n451'>451</a></p>
+<p id='n452' class='stm run hide_run'><a href='#n452'>452</a></p>
+<p id='n453' class='stm run hide_run'><a href='#n453'>453</a></p>
+<p id='n454' class='pln'><a href='#n454'>454</a></p>
+<p id='n455' class='stm run hide_run'><a href='#n455'>455</a></p>
+<p id='n456' class='stm run hide_run'><a href='#n456'>456</a></p>
+<p id='n457' class='stm run hide_run'><a href='#n457'>457</a></p>
+<p id='n458' class='stm run hide_run'><a href='#n458'>458</a></p>
+<p id='n459' class='stm run hide_run'><a href='#n459'>459</a></p>
+<p id='n460' class='pln'><a href='#n460'>460</a></p>
+<p id='n461' class='stm run hide_run'><a href='#n461'>461</a></p>
+<p id='n462' class='stm run hide_run'><a href='#n462'>462</a></p>
+<p id='n463' class='pln'><a href='#n463'>463</a></p>
+<p id='n464' class='stm run hide_run'><a href='#n464'>464</a></p>
+<p id='n465' class='stm run hide_run'><a href='#n465'>465</a></p>
+<p id='n466' class='stm run hide_run'><a href='#n466'>466</a></p>
+<p id='n467' class='pln'><a href='#n467'>467</a></p>
+<p id='n468' class='stm run hide_run'><a href='#n468'>468</a></p>
+<p id='n469' class='stm run hide_run'><a href='#n469'>469</a></p>
+<p id='n470' class='pln'><a href='#n470'>470</a></p>
+<p id='n471' class='pln'><a href='#n471'>471</a></p>
+<p id='n472' class='stm run hide_run'><a href='#n472'>472</a></p>
+<p id='n473' class='stm run hide_run'><a href='#n473'>473</a></p>
+<p id='n474' class='pln'><a href='#n474'>474</a></p>
+<p id='n475' class='pln'><a href='#n475'>475</a></p>
+<p id='n476' class='exc'><a href='#n476'>476</a></p>
+<p id='n477' class='exc'><a href='#n477'>477</a></p>
+                
+            </td>
+            <td class='text' valign='top'>
+<p id='t1' class='pln'><span class='com'># -*- coding: utf-8 -*-</span><span class='strut'>&nbsp;</span></p>
+<p id='t2' class='stm run hide_run'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t3' class='pln'><span class='str'>The obspy.iris.client test suite.</span><span class='strut'>&nbsp;</span></p>
+<p id='t4' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t6' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>obspy</span><span class='op'>.</span><span class='nam'>core</span><span class='op'>.</span><span class='nam'>utcdatetime</span> <span class='key'>import</span> <span class='nam'>UTCDateTime</span><span class='strut'>&nbsp;</span></p>
+<p id='t7' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>obspy</span><span class='op'>.</span><span class='nam'>core</span><span class='op'>.</span><span class='nam'>util</span> <span class='key'>import</span> <span class='nam'>NamedTemporaryFile</span><span class='strut'>&nbsp;</span></p>
+<p id='t8' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>obspy</span><span class='op'>.</span><span class='nam'>iris</span> <span class='key'>import</span> <span class='nam'>Client</span><span class='strut'>&nbsp;</span></p>
+<p id='t9' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>filecmp</span><span class='strut'>&nbsp;</span></p>
+<p id='t10' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>numpy</span> <span class='key'>as</span> <span class='nam'>np</span><span class='strut'>&nbsp;</span></p>
+<p id='t11' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>os</span><span class='strut'>&nbsp;</span></p>
+<p id='t12' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>unittest</span><span class='strut'>&nbsp;</span></p>
+<p id='t13' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>urllib</span><span class='strut'>&nbsp;</span></p>
+<p id='t14' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>warnings</span><span class='strut'>&nbsp;</span></p>
+<p id='t15' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t16' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t17' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>ClientTestCase</span><span class='op'>(</span><span class='nam'>unittest</span><span class='op'>.</span><span class='nam'>TestCase</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t18' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t19' class='pln'><span class='str'>&nbsp; &nbsp; Test cases for obspy.iris.client.Client.</span><span class='strut'>&nbsp;</span></p>
+<p id='t20' class='pln'><span class='str'>&nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t21' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>setUp</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t22' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># directory where the test files are located</span><span class='strut'>&nbsp;</span></p>
+<p id='t23' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>path</span> <span class='op'>=</span> <span class='nam'>os</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>dirname</span><span class='op'>(</span><span class='nam'>__file__</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t24' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t25' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_getWaveform</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t26' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t27' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Testing simple waveform request method.</span><span class='strut'>&nbsp;</span></p>
+<p id='t28' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t29' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># simple example</span><span class='strut'>&nbsp;</span></p>
+<p id='t30' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t31' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>start</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.019538Z&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>end</span> <span class='op'>=</span> <span class='nam'>start</span> <span class='op'>+</span> <span class='num'>20</span><span class='strut'>&nbsp;</span></p>
+<p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>stream</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>getWaveform</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t34' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>len</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>)</span><span class='op'>,</span> <span class='num'>1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>starttime</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>endtime</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>network</span><span class='op'>,</span> <span class='str'>&#39;IU&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>station</span><span class='op'>,</span> <span class='str'>&#39;ANMO&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>location</span><span class='op'>,</span> <span class='str'>&#39;00&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>stream</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>channel</span><span class='op'>,</span> <span class='str'>&#39;BHZ&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># no data raises an exception</span><span class='strut'>&nbsp;</span></p>
+<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>getWaveform</span><span class='op'>,</span> <span class='str'>&quot;YY&quot;</span><span class='op'>,</span> <span class='str'>&quot;XXXX&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t43' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t44' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t45' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_saveWaveform</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t46' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t47' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Testing simple waveform file save method.</span><span class='strut'>&nbsp;</span></p>
+<p id='t48' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t49' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># file identical to file retrieved via web interface</span><span class='strut'>&nbsp;</span></p>
+<p id='t50' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t51' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>start</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t52' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>end</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:31:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t53' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>origfile</span> <span class='op'>=</span> <span class='nam'>os</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>join</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>,</span> <span class='str'>&#39;data&#39;</span><span class='op'>,</span> <span class='str'>&#39;IU.ANMO.00.BHZ.mseed&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t54' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t55' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveWaveform</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t56' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>filecmp</span><span class='op'>.</span><span class='nam'>cmp</span><span class='op'>(</span><span class='nam'>origfile</span><span class='op'>,</span> <span class='nam'>tempfile</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t57' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t58' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># no data raises an exception</span><span class='strut'>&nbsp;</span></p>
+<p id='t59' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveWaveform</span><span class='op'>,</span> <span class='str'>&quot;YY&quot;</span><span class='op'>,</span> <span class='str'>&quot;XXXX&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t60' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t61' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t62' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_saveResponse</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t63' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t64' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Fetches and stores response information as SEED RESP file.</span><span class='strut'>&nbsp;</span></p>
+<p id='t65' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t66' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t67' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>start</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-001T00:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t68' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>end</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2008-001T00:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t69' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># RESP, single channel</span><span class='strut'>&nbsp;</span></p>
+<p id='t70' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>origfile</span> <span class='op'>=</span> <span class='nam'>os</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>join</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>,</span> <span class='str'>&#39;data&#39;</span><span class='op'>,</span> <span class='str'>&#39;RESP.ANMO.IU.00.BHZ&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t71' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t72' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveResponse</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t73' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>filecmp</span><span class='op'>.</span><span class='nam'>cmp</span><span class='op'>(</span><span class='nam'>origfile</span><span class='op'>,</span> <span class='nam'>tempfile</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t74' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t75' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># RESP, multiple channels</span><span class='strut'>&nbsp;</span></p>
+<p id='t76' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>origfile</span> <span class='op'>=</span> <span class='nam'>os</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>join</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>,</span> <span class='str'>&#39;data&#39;</span><span class='op'>,</span> <span class='str'>&#39;RESP.ANMO.IU._.BH_&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t77' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t78' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveResponse</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;*&quot;</span><span class='op'>,</span> <span class='str'>&quot;BH?&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t79' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>filecmp</span><span class='op'>.</span><span class='nam'>cmp</span><span class='op'>(</span><span class='nam'>origfile</span><span class='op'>,</span> <span class='nam'>tempfile</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t80' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t81' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># StationXML, single channel</span><span class='strut'>&nbsp;</span></p>
+<p id='t82' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t83' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveResponse</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t84' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>format</span><span class='op'>=</span><span class='str'>&quot;StationXML&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t85' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span> <span class='op'>=</span> <span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t86' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;&lt;Station net_code=&quot;IU&quot; sta_code=&quot;ANMO&quot;&gt;&#39;</span> <span class='key'>in</span> <span class='nam'>data</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t87' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t88' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># SACPZ, single channel</span><span class='strut'>&nbsp;</span></p>
+<p id='t89' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t90' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>saveResponse</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>start</span><span class='op'>,</span> <span class='nam'>end</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t91' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>format</span><span class='op'>=</span><span class='str'>&quot;SACPZ&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t92' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span> <span class='op'>=</span> <span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t93' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;NETWORK&nbsp;&nbsp; (KNETWK): IU&#39;</span> <span class='key'>in</span> <span class='nam'>data</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t94' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;STATION&nbsp; &nbsp; (KSTNM): ANMO&#39;</span> <span class='key'>in</span> <span class='nam'>data</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t95' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t96' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t97' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_getEvents</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t98' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t99' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests getEvents method.</span><span class='strut'>&nbsp;</span></p>
+<p id='t100' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t101' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t102' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2012-03-13T04:49:38&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t103' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t104' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>cat</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>getEvents</span><span class='op'>(</span><span class='nam'>mindepth</span><span class='op'>=</span><span class='num'>34.9</span><span class='op'>,</span> <span class='nam'>maxdepth</span><span class='op'>=</span><span class='num'>35.1</span><span class='op'>,</span> <span class='nam'>magtype</span><span class='op'>=</span><span class='str'>&quot;MB&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t105' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>catalog</span><span class='op'>=</span><span class='str'>&quot;NEIC PDE&quot;</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='op'>-</span><span class='num'>56.1</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>26.7</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t106' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>maxradius</span><span class='op'>=</span><span class='num'>2</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>dt</span> <span class='op'>+</span> <span class='num'>10</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t107' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>len</span><span class='op'>(</span><span class='nam'>cat</span><span class='op'>)</span><span class='op'>,</span> <span class='num'>1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t108' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>ev</span> <span class='op'>=</span> <span class='nam'>cat</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
+<p id='t109' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>len</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>origins</span><span class='op'>)</span><span class='op'>,</span> <span class='num'>1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t110' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>len</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>magnitudes</span><span class='op'>)</span><span class='op'>,</span> <span class='num'>1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t111' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>origins</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>depth</span><span class='op'>,</span> <span class='num'>35.0</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t112' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>origins</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>latitude</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>55.404</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t113' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>origins</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>longitude</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>27.895</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t114' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>ev</span><span class='op'>.</span><span class='nam'>magnitudes</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>magnitude_type</span><span class='op'>,</span> <span class='str'>&#39;MB&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t115' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t116' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_sacpz</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t117' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t118' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Fetches SAC poles and zeros information.</span><span class='strut'>&nbsp;</span></p>
+<p id='t119' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t120' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t121' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t122' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-01-01&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t123' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2008-01-01&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t124' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>sacpz</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t125' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># drop lines with creation date (current time during request)</span><span class='strut'>&nbsp;</span></p>
+<p id='t126' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>result</span><span class='op'>.</span><span class='nam'>splitlines</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t127' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>sacpz_file</span> <span class='op'>=</span> <span class='nam'>os</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>join</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>,</span> <span class='str'>&#39;data&#39;</span><span class='op'>,</span> <span class='str'>&#39;IU.ANMO.00.BHZ.sacpz&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t128' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>expected</span> <span class='op'>=</span> <span class='nam'>open</span><span class='op'>(</span><span class='nam'>sacpz_file</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>splitlines</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t129' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span><span class='op'>.</span><span class='nam'>pop</span><span class='op'>(</span><span class='num'>5</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t130' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>expected</span><span class='op'>.</span><span class='nam'>pop</span><span class='op'>(</span><span class='num'>5</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t131' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>expected</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t132' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2 - empty location code</span><span class='strut'>&nbsp;</span></p>
+<p id='t133' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2002-11-01&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t134' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>sacpz</span><span class='op'>(</span><span class='str'>&#39;UW&#39;</span><span class='op'>,</span> <span class='str'>&#39;LON&#39;</span><span class='op'>,</span> <span class='str'>&#39;&#39;</span><span class='op'>,</span> <span class='str'>&#39;BHZ&#39;</span><span class='op'>,</span> <span class='nam'>dt</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t135' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&quot;* STATION&nbsp; &nbsp; (KSTNM): LON&quot;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t136' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&quot;* LOCATION&nbsp;&nbsp; (KHOLE):&nbsp;&nbsp; &quot;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t137' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 3 - empty location code via &#39;--&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t138' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>sacpz</span><span class='op'>(</span><span class='str'>&#39;UW&#39;</span><span class='op'>,</span> <span class='str'>&#39;LON&#39;</span><span class='op'>,</span> <span class='str'>&#39;--&#39;</span><span class='op'>,</span> <span class='str'>&#39;BHZ&#39;</span><span class='op'>,</span> <span class='nam'>dt</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t139' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&quot;* STATION&nbsp; &nbsp; (KSTNM): LON&quot;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t140' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&quot;* LOCATION&nbsp;&nbsp; (KHOLE):&nbsp;&nbsp; &quot;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t141' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t142' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_distaz</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t143' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t144' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests distance and azimuth calculation between two points on a sphere.</span><span class='strut'>&nbsp;</span></p>
+<p id='t145' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t146' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t147' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># normal request</span><span class='strut'>&nbsp;</span></p>
+<p id='t148' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>(</span><span class='nam'>stalat</span><span class='op'>=</span><span class='num'>1.1</span><span class='op'>,</span> <span class='nam'>stalon</span><span class='op'>=</span><span class='num'>1.2</span><span class='op'>,</span> <span class='nam'>evtlat</span><span class='op'>=</span><span class='num'>3.2</span><span class='op'>,</span> <span class='nam'>evtlon</span><span class='op'>=</span><span class='num'>1.4</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t149' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;distance&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>2.09554</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t150' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;backazimuth&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>5.46946</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t151' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;azimuth&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>185.47692</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t152' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># w/o kwargs</span><span class='strut'>&nbsp;</span></p>
+<p id='t153' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>(</span><span class='num'>1.1</span><span class='op'>,</span> <span class='num'>1.2</span><span class='op'>,</span> <span class='num'>3.2</span><span class='op'>,</span> <span class='num'>1.4</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t154' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;distance&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>2.09554</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t155' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;backazimuth&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>5.46946</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t156' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>[</span><span class='str'>&#39;azimuth&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>185.47692</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t157' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># missing parameters</span><span class='strut'>&nbsp;</span></p>
+<p id='t158' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>,</span> <span class='nam'>stalat</span><span class='op'>=</span><span class='num'>1.1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t159' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>,</span> <span class='num'>1.1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t160' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>,</span> <span class='nam'>stalat</span><span class='op'>=</span><span class='num'>1.1</span><span class='op'>,</span> <span class='nam'>stalon</span><span class='op'>=</span><span class='num'>1.2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t161' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>distaz</span><span class='op'>,</span> <span class='num'>1.1</span><span class='op'>,</span> <span class='num'>1.2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t162' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t163' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_flinnengdahl</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t164' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t165' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests calculation of Flinn-Engdahl region code or name.</span><span class='strut'>&nbsp;</span></p>
+<p id='t166' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t167' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t168' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># code</span><span class='strut'>&nbsp;</span></p>
+<p id='t169' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='nam'>lat</span><span class='op'>=</span><span class='op'>-</span><span class='num'>20.5</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>100.6</span><span class='op'>,</span> <span class='nam'>rtype</span><span class='op'>=</span><span class='str'>&quot;code&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t170' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='num'>683</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t171' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># w/o kwargs</span><span class='strut'>&nbsp;</span></p>
+<p id='t172' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='op'>-</span><span class='num'>20.5</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>100.6</span><span class='op'>,</span> <span class='str'>&quot;code&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t173' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='num'>683</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t174' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># region</span><span class='strut'>&nbsp;</span></p>
+<p id='t175' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='nam'>lat</span><span class='op'>=</span><span class='num'>42</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>122.24</span><span class='op'>,</span> <span class='nam'>rtype</span><span class='op'>=</span><span class='str'>&quot;region&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t176' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='str'>&#39;OREGON&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t177' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># w/o kwargs</span><span class='strut'>&nbsp;</span></p>
+<p id='t178' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='num'>42</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>122.24</span><span class='op'>,</span> <span class='str'>&quot;region&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t179' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='str'>&#39;OREGON&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t180' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># both</span><span class='strut'>&nbsp;</span></p>
+<p id='t181' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='nam'>lat</span><span class='op'>=</span><span class='op'>-</span><span class='num'>20.5</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>100.6</span><span class='op'>,</span> <span class='nam'>rtype</span><span class='op'>=</span><span class='str'>&quot;both&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t182' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='op'>(</span><span class='num'>683</span><span class='op'>,</span> <span class='str'>&#39;SOUTHEAST CENTRAL PACIFIC OCEAN&#39;</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t183' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># w/o kwargs</span><span class='strut'>&nbsp;</span></p>
+<p id='t184' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='op'>-</span><span class='num'>20.5</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>100.6</span><span class='op'>,</span> <span class='str'>&quot;both&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t185' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='op'>(</span><span class='num'>683</span><span class='op'>,</span> <span class='str'>&#39;SOUTHEAST CENTRAL PACIFIC OCEAN&#39;</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t186' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># default rtype</span><span class='strut'>&nbsp;</span></p>
+<p id='t187' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>(</span><span class='nam'>lat</span><span class='op'>=</span><span class='num'>42</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>122.24</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t188' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='op'>(</span><span class='num'>32</span><span class='op'>,</span> <span class='str'>&#39;OREGON&#39;</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t189' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># w/o kwargs</span><span class='strut'>&nbsp;</span></p>
+<p id='t190' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># outside boundaries</span><span class='strut'>&nbsp;</span></p>
+<p id='t191' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='op'>-</span><span class='num'>90.1</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='num'>0</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t192' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='num'>90.1</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='num'>0</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t193' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='num'>0</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>180.1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t194' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertRaises</span><span class='op'>(</span><span class='nam'>Exception</span><span class='op'>,</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>flinnengdahl</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='num'>0</span><span class='op'>,</span> <span class='nam'>lon</span><span class='op'>=</span><span class='num'>180.1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t195' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t196' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_traveltime</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t197' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t198' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests calculation of travel-times for seismic phases.</span><span class='strut'>&nbsp;</span></p>
+<p id='t199' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t200' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t201' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>traveltime</span><span class='op'>(</span><span class='nam'>evloc</span><span class='op'>=</span><span class='op'>(</span><span class='op'>-</span><span class='num'>36.122</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>72.898</span><span class='op'>)</span><span class='op'>,</span> <span class='nam'>evdepth</span><span class='op'>=</span><span class='num'>22.9</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t202' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>staloc</span><span class='op'>=</span><span class='op'>[</span><span class='op'>(</span><span class='op'>-</span><span class='num'>33.45</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>70.67</span><span class='op'>)</span><span class='op'>,</span> <span class='op'>(</span><span class='num'>47.61</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>122.33</span><span class='op'>)</span><span class='op'>,</span> <span class='op'>(</span><span class='num'>35.69</span><span class='op'>,</span> <span class='num'>139.69</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t203' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>.</span><span class='nam'>startswith</span><span class='op'>(</span><span class='str'>&#39;Model: iasp91&#39;</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t204' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t205' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_evalresp</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t206' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t207' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests evaluating instrument response information.</span><span class='strut'>&nbsp;</span></p>
+<p id='t208' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t209' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t210' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-01-01&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t211' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># plot as PNG file</span><span class='strut'>&nbsp;</span></p>
+<p id='t212' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t213' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t214' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;plot&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t215' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t216' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rb&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='num'>4</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>:</span><span class='num'>4</span><span class='op'>]</span><span class='op'>,</span> <span class='str'>&#39;PNG&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t217' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t218' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># plot-amp as PNG file</span><span class='strut'>&nbsp;</span></p>
+<p id='t219' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t220' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t221' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;plot-amp&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t222' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t223' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rb&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='num'>4</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>:</span><span class='num'>4</span><span class='op'>]</span><span class='op'>,</span> <span class='str'>&#39;PNG&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t224' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t225' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># plot-phase as PNG file</span><span class='strut'>&nbsp;</span></p>
+<p id='t226' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t227' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t228' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;plot-phase&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t229' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t230' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rb&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='num'>4</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>:</span><span class='num'>4</span><span class='op'>]</span><span class='op'>,</span> <span class='str'>&#39;PNG&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t231' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t232' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t233' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t234' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t235' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t236' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t237' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t238' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05&nbsp; 1.202802E+04&nbsp; 1.792007E+02\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t239' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t240' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># cs as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t241' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t242' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t243' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;cs&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t244' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t245' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t246' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05 -1.202685E+04 1.677835E+02\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t247' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t248' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap &amp; def as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t249' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t250' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t251' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>,</span> <span class='nam'>units</span><span class='op'>=</span><span class='str'>&#39;def&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t252' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t253' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t254' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05&nbsp; 1.202802E+04&nbsp; 1.792007E+02\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t255' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t256' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap &amp; dis as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t257' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t258' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t259' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>,</span> <span class='nam'>units</span><span class='op'>=</span><span class='str'>&#39;dis&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t260' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t261' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t262' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05&nbsp; 7.557425E-01&nbsp; 2.692007E+02\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t263' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t264' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap &amp; vel as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t265' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t266' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t267' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>,</span> <span class='nam'>units</span><span class='op'>=</span><span class='str'>&#39;vel&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t268' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t269' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t270' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05&nbsp; 1.202802E+04&nbsp; 1.792007E+02\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t271' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t272' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap &amp; acc as ASCII file</span><span class='strut'>&nbsp;</span></p>
+<p id='t273' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>tempfile</span> <span class='op'>=</span> <span class='nam'>NamedTemporaryFile</span><span class='op'>(</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>name</span><span class='strut'>&nbsp;</span></p>
+<p id='t274' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t275' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>,</span> <span class='nam'>units</span><span class='op'>=</span><span class='str'>&#39;acc&#39;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t276' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filename</span><span class='op'>=</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t277' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>,</span> <span class='str'>&#39;rt&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>readline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t278' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='str'>&#39;1.000000E-05&nbsp; 1.914318E+08&nbsp; 8.920073E+01\n&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t279' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>os</span><span class='op'>.</span><span class='nam'>remove</span><span class='op'>(</span><span class='nam'>tempfile</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t280' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># fap as NumPy ndarray</span><span class='strut'>&nbsp;</span></p>
+<p id='t281' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t282' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;fap&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t283' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>np</span><span class='op'>.</span><span class='nam'>testing</span><span class='op'>.</span><span class='nam'>assert_array_equal</span><span class='op'>(</span><span class='nam'>data</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t284' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='op'>[</span><span class='num'>1.00000000e-05</span><span class='op'>,</span> <span class='num'>1.20280200e+04</span><span class='op'>,</span> <span class='num'>1.79200700e+02</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t285' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># cs as NumPy ndarray</span><span class='strut'>&nbsp;</span></p>
+<p id='t286' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>data</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>evalresp</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='nam'>station</span><span class='op'>=</span><span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='nam'>location</span><span class='op'>=</span><span class='str'>&quot;00&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t287' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>time</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;cs&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t288' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>np</span><span class='op'>.</span><span class='nam'>testing</span><span class='op'>.</span><span class='nam'>assert_array_equal</span><span class='op'>(</span><span class='nam'>data</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t289' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='op'>[</span><span class='num'>1.00000000e-05</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>1.20268500e+04</span><span class='op'>,</span> <span class='num'>1.67783500e+02</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t290' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t291' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_event</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t292' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t293' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests event Web service interface.</span><span class='strut'>&nbsp;</span></p>
+<p id='t294' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t295' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Examples are inspired by http://www.iris.edu/ws/event/.</span><span class='strut'>&nbsp;</span></p>
+<p id='t296' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t297' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t298' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t299' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>url</span> <span class='op'>=</span> <span class='str'>&quot;http://www.iris.edu/ws/event/query?mindepth=34.9&amp;&quot;</span> <span class='op'>+</span> <span class='xx'>\</span><span class='strut'>&nbsp;</span></p>
+<p id='t300' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;maxdepth=35.1&amp;catalog=NEIC%20PDE&amp;contributor=NEIC%20PDE-Q&amp;&quot;</span> <span class='op'>+</span> <span class='xx'>\</span><span class='strut'>&nbsp;</span></p>
+<p id='t301' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;magtype=MB&amp;lat=-56.1&amp;lon=-26.7&amp;maxradius=1&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t302' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># direct call</span><span class='strut'>&nbsp;</span></p>
+<p id='t303' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc1</span> <span class='op'>=</span> <span class='nam'>urllib</span><span class='op'>.</span><span class='nam'>urlopen</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t304' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># using client</span><span class='strut'>&nbsp;</span></p>
+<p id='t305' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>event</span><span class='op'>(</span><span class='nam'>mindepth</span><span class='op'>=</span><span class='num'>34.9</span><span class='op'>,</span> <span class='nam'>maxdepth</span><span class='op'>=</span><span class='num'>35.1</span><span class='op'>,</span> <span class='nam'>catalog</span><span class='op'>=</span><span class='str'>&quot;NEIC PDE&quot;</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t306' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>contributor</span><span class='op'>=</span><span class='str'>&quot;NEIC PDE-Q&quot;</span><span class='op'>,</span> <span class='nam'>magtype</span><span class='op'>=</span><span class='str'>&quot;MB&quot;</span><span class='op'>,</span> <span class='nam'>lat</span><span class='op'>=</span><span class='op'>-</span><span class='num'>56.1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t307' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>lon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>26.7</span><span class='op'>,</span> <span class='nam'>maxradius</span><span class='op'>=</span><span class='num'>1</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t308' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>doc1</span><span class='op'>,</span> <span class='nam'>doc2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t309' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t310' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2</span><span class='strut'>&nbsp;</span></p>
+<p id='t311' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>url</span> <span class='op'>=</span> <span class='str'>&quot;http://www.iris.edu/ws/event/query?eventid=3316989&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t312' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># direct call</span><span class='strut'>&nbsp;</span></p>
+<p id='t313' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc1</span> <span class='op'>=</span> <span class='nam'>urllib</span><span class='op'>.</span><span class='nam'>urlopen</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t314' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># using client</span><span class='strut'>&nbsp;</span></p>
+<p id='t315' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>event</span><span class='op'>(</span><span class='nam'>eventid</span><span class='op'>=</span><span class='num'>3316989</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t316' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>doc1</span><span class='op'>,</span> <span class='nam'>doc2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t317' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2</span><span class='strut'>&nbsp;</span></p>
+<p id='t318' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>url</span> <span class='op'>=</span> <span class='str'>&quot;http://www.iris.edu/ws/event/query?eventid=3316989&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t319' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># direct call</span><span class='strut'>&nbsp;</span></p>
+<p id='t320' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc1</span> <span class='op'>=</span> <span class='nam'>urllib</span><span class='op'>.</span><span class='nam'>urlopen</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t321' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># using client</span><span class='strut'>&nbsp;</span></p>
+<p id='t322' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>event</span><span class='op'>(</span><span class='nam'>eventid</span><span class='op'>=</span><span class='num'>3316989</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t323' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>doc1</span><span class='op'>,</span> <span class='nam'>doc2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t324' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 3</span><span class='strut'>&nbsp;</span></p>
+<p id='t325' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>url</span> <span class='op'>=</span> <span class='str'>&quot;http://www.iris.edu/ws/event/query?minmag=8.5&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t326' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># direct call</span><span class='strut'>&nbsp;</span></p>
+<p id='t327' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc1</span> <span class='op'>=</span> <span class='nam'>urllib</span><span class='op'>.</span><span class='nam'>urlopen</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t328' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># using client</span><span class='strut'>&nbsp;</span></p>
+<p id='t329' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>event</span><span class='op'>(</span><span class='nam'>minmag</span><span class='op'>=</span><span class='num'>8.5</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t330' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>doc1</span><span class='op'>,</span> <span class='nam'>doc2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t331' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 4</span><span class='strut'>&nbsp;</span></p>
+<p id='t332' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>url</span> <span class='op'>=</span> <span class='str'>&quot;http://www.iris.edu/ws/event/query?starttime=2011-01-07T&quot;</span> <span class='op'>+</span> <span class='xx'>\</span><span class='strut'>&nbsp;</span></p>
+<p id='t333' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;14%3A00%3A00&amp;endtime=2011-02-07&amp;minlat=15&amp;maxlat=40&amp;&quot;</span> <span class='op'>+</span> <span class='xx'>\</span><span class='strut'>&nbsp;</span></p>
+<p id='t334' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;minlon=-170&amp;maxlon=170&amp;preferredonly=yes&amp;&quot;</span> <span class='op'>+</span> <span class='xx'>\</span><span class='strut'>&nbsp;</span></p>
+<p id='t335' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;includeallmagnitudes=yes&amp;orderby=magnitude&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t336' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># direct call</span><span class='strut'>&nbsp;</span></p>
+<p id='t337' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc1</span> <span class='op'>=</span> <span class='nam'>urllib</span><span class='op'>.</span><span class='nam'>urlopen</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>read</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t338' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># using client</span><span class='strut'>&nbsp;</span></p>
+<p id='t339' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>doc2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>event</span><span class='op'>(</span><span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='num'>2011</span><span class='op'>,</span> <span class='num'>1</span><span class='op'>,</span> <span class='num'>7</span><span class='op'>,</span> <span class='num'>14</span><span class='op'>)</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t340' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&#39;2011-02-07&#39;</span><span class='op'>)</span><span class='op'>,</span> <span class='nam'>minlat</span><span class='op'>=</span><span class='num'>15.0</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t341' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>maxlat</span><span class='op'>=</span><span class='num'>40.0</span><span class='op'>,</span> <span class='nam'>minlon</span><span class='op'>=</span><span class='op'>-</span><span class='num'>170</span><span class='op'>,</span> <span class='nam'>maxlon</span><span class='op'>=</span><span class='num'>170</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t342' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>preferredonly</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>,</span> <span class='nam'>includeallmagnitudes</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t343' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>orderby</span><span class='op'>=</span><span class='str'>&#39;magnitude&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t344' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEqual</span><span class='op'>(</span><span class='nam'>doc1</span><span class='op'>,</span> <span class='nam'>doc2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t345' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t346' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_availability</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t347' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t348' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests availability of waveform data at the DMC.</span><span class='strut'>&nbsp;</span></p>
+<p id='t349' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t350' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Examples are inspired by http://www.iris.edu/ws/availability/.</span><span class='strut'>&nbsp;</span></p>
+<p id='t351' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t352' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t353' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t354' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t355' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T10:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t356' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&#39;IU&#39;</span><span class='op'>,</span> <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&#39;B*&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t357' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t358' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t359' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU YSS 00 BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t360' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2</span><span class='strut'>&nbsp;</span></p>
+<p id='t361' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2011-11-13T07:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t362' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&#39;GE&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t363' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>dt</span> <span class='op'>+</span> <span class='num'>10</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t364' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t365' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;GE DAG -- BHE&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t366' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 3 - unknown network results in empty string</span><span class='strut'>&nbsp;</span></p>
+<p id='t367' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='num'>2011</span><span class='op'>,</span> <span class='num'>11</span><span class='op'>,</span> <span class='num'>16</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t368' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='nam'>network</span><span class='op'>=</span><span class='str'>&#39;XX&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>dt</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t369' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>dt</span> <span class='op'>+</span> <span class='num'>10</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t370' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 4 - location=None</span><span class='strut'>&nbsp;</span></p>
+<p id='t371' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t372' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:40:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t373' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;K*&quot;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t374' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t375' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU KBL -- BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t376' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU KBS 00 BHE&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t377' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 5 - empty location</span><span class='strut'>&nbsp;</span></p>
+<p id='t378' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;K*&quot;</span><span class='op'>,</span> <span class='str'>&quot;&quot;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t379' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t380' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU KBL -- BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t381' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertFalse</span><span class='op'>(</span><span class='str'>&#39;IU KBS 00 BHE&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t382' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 6 - empty location code via &#39;--&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t383' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;K*&quot;</span><span class='op'>,</span> <span class='str'>&quot;--&quot;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t384' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t385' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t386' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU KBL -- BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t387' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertFalse</span><span class='op'>(</span><span class='str'>&#39;IU KBS 00 BHE&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t388' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t389' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_resp</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t390' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t391' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests resp Web service interface.</span><span class='strut'>&nbsp;</span></p>
+<p id='t392' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t393' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Examples are inspired by http://www.iris.edu/ws/resp/.</span><span class='strut'>&nbsp;</span></p>
+<p id='t394' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t395' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t396' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t397' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-001T00:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t398' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2008-001T00:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t399' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>resp</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t400' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B050F03&nbsp; &nbsp;&nbsp; Station:&nbsp; &nbsp;&nbsp; ANMO&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t401' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2 - empty location code</span><span class='strut'>&nbsp;</span></p>
+<p id='t402' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>resp</span><span class='op'>(</span><span class='str'>&quot;UW&quot;</span><span class='op'>,</span> <span class='str'>&quot;LON&quot;</span><span class='op'>,</span> <span class='str'>&quot;&quot;</span><span class='op'>,</span> <span class='str'>&quot;EHZ&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t403' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B050F03&nbsp; &nbsp;&nbsp; Station:&nbsp; &nbsp;&nbsp; LON&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t404' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B052F03&nbsp; &nbsp;&nbsp; Location:&nbsp; &nbsp; ??&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t405' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 3 - empty location code via &#39;--&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t406' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>resp</span><span class='op'>(</span><span class='str'>&quot;UW&quot;</span><span class='op'>,</span> <span class='str'>&quot;LON&quot;</span><span class='op'>,</span> <span class='str'>&quot;--&quot;</span><span class='op'>,</span> <span class='str'>&quot;EHZ&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t407' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B050F03&nbsp; &nbsp;&nbsp; Station:&nbsp; &nbsp;&nbsp; LON&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t408' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B052F03&nbsp; &nbsp;&nbsp; Location:&nbsp; &nbsp; ??&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t409' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 4</span><span class='strut'>&nbsp;</span></p>
+<p id='t410' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>dt</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t411' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>resp</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;*&quot;</span><span class='op'>,</span> <span class='str'>&quot;*&quot;</span><span class='op'>,</span> <span class='nam'>dt</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t412' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;B050F03&nbsp; &nbsp;&nbsp; Station:&nbsp; &nbsp;&nbsp; ANMO&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t413' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t414' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_timeseries</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t415' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t416' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Tests timeseries Web service interface.</span><span class='strut'>&nbsp;</span></p>
+<p id='t417' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t418' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; Examples are inspired by http://www.iris.edu/ws/timeseries/.</span><span class='strut'>&nbsp;</span></p>
+<p id='t419' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t420' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t421' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1</span><span class='strut'>&nbsp;</span></p>
+<p id='t422' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-001T00:00:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t423' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2005-001T00:01:00&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t424' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># no filter</span><span class='strut'>&nbsp;</span></p>
+<p id='t425' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>st1</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>timeseries</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t426' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># instrument corrected</span><span class='strut'>&nbsp;</span></p>
+<p id='t427' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>st2</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>timeseries</span><span class='op'>(</span><span class='str'>&quot;IU&quot;</span><span class='op'>,</span> <span class='str'>&quot;ANMO&quot;</span><span class='op'>,</span> <span class='str'>&quot;00&quot;</span><span class='op'>,</span> <span class='str'>&quot;BHZ&quot;</span><span class='op'>,</span> <span class='nam'>t1</span><span class='op'>,</span> <span class='nam'>t2</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t428' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>filter</span><span class='op'>=</span><span class='op'>[</span><span class='str'>&quot;correct&quot;</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t429' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># compare results</span><span class='strut'>&nbsp;</span></p>
+<p id='t430' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>st1</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>starttime</span><span class='op'>,</span> <span class='nam'>st2</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>starttime</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t431' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>st1</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>endtime</span><span class='op'>,</span> <span class='nam'>st2</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>stats</span><span class='op'>.</span><span class='nam'>endtime</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t432' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertEquals</span><span class='op'>(</span><span class='nam'>st1</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>data</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>,</span> <span class='num'>24</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t433' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertAlmostEquals</span><span class='op'>(</span><span class='nam'>st2</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>.</span><span class='nam'>data</span><span class='op'>[</span><span class='num'>0</span><span class='op'>]</span><span class='op'>,</span> <span class='op'>-</span><span class='num'>2.4910707e-06</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t434' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t435' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>test_issue419</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t436' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t437' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; obspy.iris.Client.availability should work with output=&#39;bulkdataselect&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t438' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t439' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>client</span> <span class='op'>=</span> <span class='nam'>Client</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t440' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 1 - default output (&#39;bulkdataselect&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t441' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t442' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T10:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t443' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&#39;IU&#39;</span><span class='op'>,</span> <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&#39;B*&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t444' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t445' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t446' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU YSS 00 BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t447' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 2 - explicit set output &#39;bulkdataselect&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t448' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t449' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T10:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t450' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&#39;IU&#39;</span><span class='op'>,</span> <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&#39;B*&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t451' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;bulkdataselect&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t452' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t453' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU YSS 00 BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t454' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 3 - output &#39;bulk&#39; (backward compatibility)</span><span class='strut'>&nbsp;</span></p>
+<p id='t455' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t456' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T10:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t457' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>with</span> <span class='nam'>warnings</span><span class='op'>.</span><span class='nam'>catch_warnings</span><span class='op'>(</span><span class='nam'>record</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t458' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>warnings</span><span class='op'>.</span><span class='nam'>simplefilter</span><span class='op'>(</span><span class='str'>&#39;ignore&#39;</span><span class='op'>,</span> <span class='nam'>DeprecationWarning</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t459' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&#39;IU&#39;</span><span class='op'>,</span> <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&#39;B*&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t460' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;bulk&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t461' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t462' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;IU YSS 00 BHZ&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t463' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'># 4 - output &#39;xml&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t464' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t1</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T06:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t465' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>t2</span> <span class='op'>=</span> <span class='nam'>UTCDateTime</span><span class='op'>(</span><span class='str'>&quot;2010-02-27T10:30:00.000&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t466' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>result</span> <span class='op'>=</span> <span class='nam'>client</span><span class='op'>.</span><span class='nam'>availability</span><span class='op'>(</span><span class='str'>&#39;IU&#39;</span><span class='op'>,</span> <span class='nam'>channel</span><span class='op'>=</span><span class='str'>&#39;B*&#39;</span><span class='op'>,</span> <span class='nam'>starttime</span><span class='op'>=</span><span class='nam'>t1</span><span class='op'>,</span><span class='strut'>&nbsp;</span></p>
+<p id='t467' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class='nam'>endtime</span><span class='op'>=</span><span class='nam'>t2</span><span class='op'>,</span> <span class='nam'>output</span><span class='op'>=</span><span class='str'>&#39;xml&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t468' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='nam'>isinstance</span><span class='op'>(</span><span class='nam'>result</span><span class='op'>,</span> <span class='nam'>basestring</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t469' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>assertTrue</span><span class='op'>(</span><span class='str'>&#39;&lt;?xml&#39;</span> <span class='key'>in</span> <span class='nam'>result</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t470' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t471' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t472' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>suite</span><span class='op'>(</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t473' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>unittest</span><span class='op'>.</span><span class='nam'>makeSuite</span><span class='op'>(</span><span class='nam'>ClientTestCase</span><span class='op'>,</span> <span class='str'>&#39;test&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t474' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t475' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t476' class='exc'><span class='key'>if</span> <span class='nam'>__name__</span> <span class='op'>==</span> <span class='str'>&#39;__main__&#39;</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t477' class='exc'>&nbsp; &nbsp; <span class='nam'>unittest</span><span class='op'>.</span><span class='nam'>main</span><span class='op'>(</span><span class='nam'>defaultTest</span><span class='op'>=</span><span class='str'>&#39;suite&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+                
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id='footer'>
+    <div class='content'>
+        <p>
+            <a class='nav' href='index.html'>&#xab; index</a> &nbsp; &nbsp; <a class='nav' href='http://nedbatchelder.com/code/coverage'>coverage.py v3.5</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

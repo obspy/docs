@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.__init__
+====================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.__init__

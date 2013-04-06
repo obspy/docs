@@ -1,0 +1,6 @@
+obspy.core.event.Tensor.popitem
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Tensor.popitem

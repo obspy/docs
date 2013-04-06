@@ -1,0 +1,6 @@
+obspy.db.feature.BandpassPreviewFeature.process
+===============================================
+
+.. currentmodule:: obspy.db.feature
+
+.. automethod:: BandpassPreviewFeature.process

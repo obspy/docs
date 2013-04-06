@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.iteritems
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.iteritems

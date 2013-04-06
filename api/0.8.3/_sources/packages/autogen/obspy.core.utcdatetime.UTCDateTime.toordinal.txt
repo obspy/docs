@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.toordinal
+============================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.toordinal

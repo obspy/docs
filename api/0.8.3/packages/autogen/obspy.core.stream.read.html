@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.stream.read &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.stream" href="obspy.core.stream.html" />
+    <link rel="next" title="obspy.core.stream.readPickle" href="obspy.core.stream.readPickle.html" />
+    <link rel="prev" title="obspy.core.stream.isPickle" href="obspy.core.stream.isPickle.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.readPickle.html" title="obspy.core.stream.readPickle"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.isPickle.html" title="obspy.core.stream.isPickle"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" accesskey="U">obspy.core.stream</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-stream-read">
+<h1>obspy.core.stream.read<a class="headerlink" href="#obspy-core-stream-read" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.core.stream.read">
+<tt class="descname">read</tt><big>(</big><em>pathname_or_url=None</em>, <em>format=None</em>, <em>headonly=False</em>, <em>starttime=None</em>, <em>endtime=None</em>, <em>nearest_sample=True</em>, <em>dtype=None</em>, <em>apply_calib=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/stream.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.stream.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read waveform files into an ObsPy Stream object.</p>
+<p>The <a class="reference internal" href="#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function opens either one or multiple
+waveform files given via file name or URL using the <tt class="docutils literal"><span class="pre">pathname_or_url</span></tt>
+attribute.</p>
+<p>The format of the waveform file will be automatically detected if not
+given. See the <a class="reference internal" href="#supported-formats">Supported Formats</a> section below for available formats.</p>
+<p>This function returns an ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object, a
+<tt class="docutils literal"><span class="pre">list</span></tt>-like object of multiple ObsPy <a class="reference internal" href="obspy.core.trace.Trace.html#obspy.core.trace.Trace" title="obspy.core.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pathname_or_url</strong> (<em>str or StringIO.StringIO, optional</em>) <span class="dash" /> String containing a file name or a URL or a open
+file-like object. Wildcards are allowed for a file name. If this
+attribute is omitted, an example <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>
+object will be returned.</li>
+<li><strong>format</strong> (<em>string, optional</em>) <span class="dash" /> Format of the file to read, e.g. <tt class="docutils literal"><span class="pre">&quot;GSE2&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;MSEED&quot;</span></tt>,
+<tt class="docutils literal"><span class="pre">&quot;SAC&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SEISAN&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;WAV&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;Q&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;SH_ASC&quot;</span></tt>, etc. See
+the <a class="reference internal" href="#supported-formats">Supported Formats</a> section below for a full list of supported
+formats. If format is set to <tt class="docutils literal"><span class="pre">None</span></tt> it will be automatically detected
+which results in a slightly slower reading. If you specify a format no
+further format checking is done.</li>
+<li><strong>headonly</strong> (<em>bool, optional</em>) <span class="dash" /> If set to <tt class="docutils literal"><span class="pre">True</span></tt>, read only the data header. This is
+most useful for scanning available meta information of huge data sets.</li>
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Specify the start time to read.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Specify the end time to read.</li>
+<li><strong>nearest_sample</strong> (<em>bool, optional</em>) <span class="dash" /> Only applied if <cite>starttime</cite> or <cite>endtime</cite> is given.
+Select nearest sample or the one containing the specified time. For
+more info, see <a class="reference internal" href="obspy.core.trace.Trace.trim.html#obspy.core.trace.Trace.trim" title="obspy.core.trace.Trace.trim"><tt class="xref py py-meth docutils literal"><span class="pre">trim()</span></tt></a>.</li>
+<li><strong>dtype</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a>, optional) <span class="dash" /> Convert data of all traces into given numpy.dtype.</li>
+<li><strong>apply_calib</strong> (<em>bool, optional</em>) <span class="dash" /> Automatically applies the calibration factor
+<tt class="docutils literal"><span class="pre">trace.stats.calib</span></tt> for each trace, if set. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>kwargs</strong> <span class="dash" /> Additional keyword arguments passed to the underlying
+waveform reader method.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Basic Usage</p>
+<p>In most cases a filename is specified as the only argument to
+<a class="reference internal" href="#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a>. For a quick start you may omit all
+arguments and ObsPy will create and return a basic example seismogram.
+Further usages of the <a class="reference internal" href="#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function can
+be seen in the <a class="reference internal" href="#further-examples">Further Examples</a> section underneath.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">3 Trace(s) in Stream:</span>
+<span class="go">BW.RJOB..EHZ | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHN | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+<span class="go">BW.RJOB..EHE | 2009-08-24T00:20:03.000000Z - ... | 100.0 Hz, 3000 samples</span>
+</pre></div>
+</div>
+<p class="rubric"><span class="target" id="supported-formats">Supported Formats</span></p>
+<p>Additional ObsPy modules extend the functionality of the
+<a class="reference internal" href="#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function. The following table summarizes
+all known file formats currently supported by ObsPy. The table order also
+reflects the order of the autodetection routine if no format option is
+specified.</p>
+<p>Please refer to the <a class="reference internal" href="#linked-function-call">Linked Function Call</a> of each module for any extra
+options available at the import stage.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="31%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Format</th>
+<th class="head">Required Module</th>
+<th class="head"><span class="target" id="linked-function-call">Linked Function Call</span></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MSEED</td>
+<td><a class="reference internal" href="../obspy.mseed.html#module-obspy.mseed" title="obspy.mseed"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.mseed</span></tt></a></td>
+<td><a class="reference internal" href="obspy.mseed.core.readMSEED.html#obspy.mseed.core.readMSEED" title="obspy.mseed.core.readMSEED"><tt class="xref py py-func docutils literal"><span class="pre">obspy.mseed.core.readMSEED()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SAC</td>
+<td><a class="reference internal" href="../obspy.sac.html#module-obspy.sac" title="obspy.sac"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sac</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sac.core.readSAC.html#obspy.sac.core.readSAC" title="obspy.sac.core.readSAC"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sac.core.readSAC()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>GSE2</td>
+<td><a class="reference internal" href="../obspy.gse2.html#module-obspy.gse2" title="obspy.gse2"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.gse2</span></tt></a></td>
+<td><a class="reference internal" href="obspy.gse2.core.readGSE2.html#obspy.gse2.core.readGSE2" title="obspy.gse2.core.readGSE2"><tt class="xref py py-func docutils literal"><span class="pre">obspy.gse2.core.readGSE2()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SEISAN</td>
+<td><a class="reference internal" href="../obspy.seisan.html#module-obspy.seisan" title="obspy.seisan"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.seisan</span></tt></a></td>
+<td><a class="reference internal" href="obspy.seisan.core.readSEISAN.html#obspy.seisan.core.readSEISAN" title="obspy.seisan.core.readSEISAN"><tt class="xref py py-func docutils literal"><span class="pre">obspy.seisan.core.readSEISAN()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SACXY</td>
+<td><a class="reference internal" href="../obspy.sac.html#module-obspy.sac" title="obspy.sac"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sac</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sac.core.readSACXY.html#obspy.sac.core.readSACXY" title="obspy.sac.core.readSACXY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sac.core.readSACXY()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>GSE1</td>
+<td><a class="reference internal" href="../obspy.gse2.html#module-obspy.gse2" title="obspy.gse2"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.gse2</span></tt></a></td>
+<td><a class="reference internal" href="obspy.gse2.core.readGSE1.html#obspy.gse2.core.readGSE1" title="obspy.gse2.core.readGSE1"><tt class="xref py py-func docutils literal"><span class="pre">obspy.gse2.core.readGSE1()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>Q</td>
+<td><a class="reference internal" href="../obspy.sh.html#module-obspy.sh" title="obspy.sh"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sh</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sh.core.readQ.html#obspy.sh.core.readQ" title="obspy.sh.core.readQ"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sh.core.readQ()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SH_ASC</td>
+<td><a class="reference internal" href="../obspy.sh.html#module-obspy.sh" title="obspy.sh"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.sh</span></tt></a></td>
+<td><a class="reference internal" href="obspy.sh.core.readASC.html#obspy.sh.core.readASC" title="obspy.sh.core.readASC"><tt class="xref py py-func docutils literal"><span class="pre">obspy.sh.core.readASC()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SLIST</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><a class="reference internal" href="obspy.core.ascii.readSLIST.html#obspy.core.ascii.readSLIST" title="obspy.core.ascii.readSLIST"><tt class="xref py py-func docutils literal"><span class="pre">obspy.core.ascii.readSLIST()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>TSPAIR</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><a class="reference internal" href="obspy.core.ascii.readTSPAIR.html#obspy.core.ascii.readTSPAIR" title="obspy.core.ascii.readTSPAIR"><tt class="xref py py-func docutils literal"><span class="pre">obspy.core.ascii.readTSPAIR()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SEGY</td>
+<td><a class="reference internal" href="../obspy.segy.html#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.segy</span></tt></a></td>
+<td><a class="reference internal" href="obspy.segy.core.readSEGY.html#obspy.segy.core.readSEGY" title="obspy.segy.core.readSEGY"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.core.readSEGY()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>SU</td>
+<td><a class="reference internal" href="../obspy.segy.html#module-obspy.segy" title="obspy.segy"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.segy</span></tt></a></td>
+<td><a class="reference internal" href="obspy.segy.core.readSU.html#obspy.segy.core.readSU" title="obspy.segy.core.readSU"><tt class="xref py py-func docutils literal"><span class="pre">obspy.segy.core.readSU()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>SEG2</td>
+<td><a class="reference internal" href="../obspy.seg2.html#module-obspy.seg2" title="obspy.seg2"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.seg2</span></tt></a></td>
+<td><a class="reference internal" href="obspy.seg2.seg2.readSEG2.html#obspy.seg2.seg2.readSEG2" title="obspy.seg2.seg2.readSEG2"><tt class="xref py py-func docutils literal"><span class="pre">obspy.seg2.seg2.readSEG2()</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>WAV</td>
+<td><a class="reference internal" href="../obspy.wav.html#module-obspy.wav" title="obspy.wav"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.wav</span></tt></a></td>
+<td><a class="reference internal" href="obspy.wav.core.readWAV.html#obspy.wav.core.readWAV" title="obspy.wav.core.readWAV"><tt class="xref py py-func docutils literal"><span class="pre">obspy.wav.core.readWAV()</span></tt></a></td>
+</tr>
+<tr class="row-even"><td>PICKLE</td>
+<td><a class="reference internal" href="../obspy.core.html#module-obspy.core" title="obspy.core"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.core</span></tt></a></td>
+<td><tt class="xref py py-func docutils literal"><span class="pre">obspy.wav.stream.readPICKLE()</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>Next to the <a class="reference internal" href="#obspy.core.stream.read" title="obspy.core.stream.read"><tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt></a> function the
+<a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of the returned
+<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object can be used to export the data
+to the file system.</p>
+<p class="rubric"><span class="target" id="further-examples">Further Examples</span></p>
+<p>Example waveform files may be retrieved via <a class="reference external" href="http://examples.obspy.org">http://examples.obspy.org</a>.</p>
+<ol class="arabic">
+<li><p class="first">Reading multiple local files using wildcards.</p>
+<p>The following code uses wildcards, in this case it matches two files.
+Both files are then read into a single
+<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/loc_R*.z&quot;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">2 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-08-31T02:33:49.849998Z - ... | 200.0 Hz, 12000 samples</span>
+<span class="go">.RNON..Z | 2004-06-09T20:05:59.849998Z - ... | 200.0 Hz, 12000 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reading a local file without format detection.</p>
+<p>Using the <tt class="docutils literal"><span class="pre">format</span></tt> parameter disables the automatic detection and
+enforces reading a file in a given format.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/loc_RJOB20050831023349.z&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;GSE2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-08-31T02:33:49.849998Z - ... | 200.0 Hz, 12000 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reading a remote file via HTTP protocol.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/loc_RJOB20050831023349.z&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-08-31T02:33:49.849998Z - ... | 200.0 Hz, 12000 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reading a compressed files.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;/path/to/tspair.ascii.gz&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">XX.TEST..BHZ | 2008-01-15T00:00:00.025000Z - ... | 40.0 Hz, 635 samples</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/slist.ascii.bz2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">XX.TEST..BHZ | 2008-01-15T00:00:00.025000Z - ... | 40.0 Hz, 635 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reading a file-like object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">example_url</span> <span class="o">=</span> <span class="s">&quot;http://examples.obspy.org/loc_RJOB20050831023349.z&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stringio_obj</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">example_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">stringio_obj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-08-31T02:33:49.849998Z - ... | 200.0 Hz, 12000 samples</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Using &#8216;starttime&#8217; and &#8216;endtime&#8217; parameters</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2005-08-31T02:34:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/loc_RJOB20050831023349.z&quot;</span><span class="p">,</span>
+<span class="gp">... </span>          <span class="n">starttime</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">dt</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.RJOB..Z | 2005-08-31T02:33:59.999999Z - ... | 200.0 Hz, 2001 samples</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.stream.read.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.readPickle.html" title="obspy.core.stream.readPickle"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.isPickle.html" title="obspy.core.stream.isPickle"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

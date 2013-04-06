@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.evalresp &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client.event" href="obspy.iris.client.Client.event.html" />
+    <link rel="prev" title="obspy.iris.client.Client.distaz" href="obspy.iris.client.Client.distaz.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.event.html" title="obspy.iris.client.Client.event"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.distaz.html" title="obspy.iris.client.Client.distaz"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-evalresp">
+<h1>obspy.iris.client.Client.evalresp<a class="headerlink" href="#obspy-iris-client-client-evalresp" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.evalresp">
+<tt class="descclassname">Client.</tt><tt class="descname">evalresp</tt><big>(</big><em>network</em>, <em>station</em>, <em>location</em>, <em>channel</em>, <em>time=UTCDateTime(2012</em>, <em>12</em>, <em>18</em>, <em>5</em>, <em>24</em>, <em>14</em>, <em>930965)</em>, <em>minfreq=1e-05</em>, <em>maxfreq=None</em>, <em>nfreq=200</em>, <em>units='def'</em>, <em>width=800</em>, <em>height=600</em>, <em>annotate=True</em>, <em>output='plot'</em>, <em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.evalresp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.evalresp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low-level interface for <cite>evalresp</cite> Web service of IRIS
+(<a class="reference external" href="http://www.iris.edu/ws/evalresp/">http://www.iris.edu/ws/evalresp/</a>) - release 1.0.0 (2011-08-11).</p>
+<p>This method evaluates instrument response information stored at the
+IRIS DMC and outputs ASCII data or
+<a class="reference external" href="http://en.wikipedia.org/wiki/Bode_plots">Bode Plots</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'IU'</span></tt>.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'ANMO'</span></tt>.</li>
+<li><strong>location</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'00'</span></tt>. Use <tt class="docutils literal"><span class="pre">'--'</span></tt> for empty
+location codes.</li>
+<li><strong>channel</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'BHZ'</span></tt>.</li>
+<li><strong>time</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Evaluate the response at the given time. If not specified,
+the current time is used.</li>
+<li><strong>minfreq</strong> (<em>float, optional</em>) <span class="dash" /> The minimum frequency (Hz) at which response will be
+evaluated. Must be positive and less than the <tt class="docutils literal"><span class="pre">maxfreq</span></tt> value.
+Defaults to <tt class="docutils literal"><span class="pre">0.00001</span></tt> Hz (1/day ~ 0.000012 Hz).</li>
+<li><strong>maxfreq</strong> (<em>float, optional</em>) <span class="dash" /> The maximum frequency (Hz) at which response will be
+evaluated. Must be positive and greater than the <tt class="docutils literal"><span class="pre">minfreq</span></tt> value.
+Defaults to the channel sample-rate or the frequency of
+sensitivity, which ever is larger.</li>
+<li><strong>nfreq</strong> (<em>int, optional</em>) <span class="dash" /> Number frequencies at which response will be evaluated.
+Must be a positive integer no greater than <tt class="docutils literal"><span class="pre">10000</span></tt>. The
+instrument response is evaluated on a equally spaced logarithmic
+scale. Defaults to <tt class="docutils literal"><span class="pre">200</span></tt>.</li>
+<li><strong>units</strong> (<tt class="docutils literal"><span class="pre">'def'</span></tt>, <tt class="docutils literal"><span class="pre">'dis'</span></tt>, <tt class="docutils literal"><span class="pre">'vel'</span></tt>, <tt class="docutils literal"><span class="pre">'acc'</span></tt>, optional) <span class="dash" /> <p>Output Unit. Defaults to <tt class="docutils literal"><span class="pre">'def'</span></tt>.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">'def'</span></tt></dt>
+<dd>default units indicated in response metadata</dd>
+<dt><tt class="docutils literal"><span class="pre">'dis'</span></tt></dt>
+<dd>converts to units of displacement</dd>
+<dt><tt class="docutils literal"><span class="pre">'vel'</span></tt></dt>
+<dd>converts to units of velocity</dd>
+<dt><tt class="docutils literal"><span class="pre">'acc'</span></tt></dt>
+<dd>converts to units of acceleration</dd>
+</dl>
+<p>If units are not specified, then the units will default to those
+indicated in the response metadata</p>
+</li>
+<li><strong>width</strong> (<em>int, optional</em>) <span class="dash" /> The width of the generated plot. Defaults to <tt class="docutils literal"><span class="pre">800</span></tt>.
+Can only be used with the <tt class="docutils literal"><span class="pre">output='plot'</span></tt>, <tt class="docutils literal"><span class="pre">output='plot-amp'</span></tt>
+and <tt class="docutils literal"><span class="pre">output='plot-phase'</span></tt> options. Cannot be larger than <tt class="docutils literal"><span class="pre">5000</span></tt>
+and the product of width and height cannot be larger than
+<tt class="docutils literal"><span class="pre">6,000,000</span></tt>.</li>
+<li><strong>height</strong> (<em>int, optional</em>) <span class="dash" /> The height of the generated plot. Defaults to <tt class="docutils literal"><span class="pre">600</span></tt>.
+Can only be used with the <tt class="docutils literal"><span class="pre">output='plot'</span></tt>, <tt class="docutils literal"><span class="pre">output='plot-amp'</span></tt>
+and <tt class="docutils literal"><span class="pre">output='plot-phase'</span></tt> options. Cannot be larger than <tt class="docutils literal"><span class="pre">5000</span></tt>
+and the product of width and height cannot be larger than
+<tt class="docutils literal"><span class="pre">6,000,000</span></tt>.</li>
+<li><strong>annotate</strong> (<em>bool, optional</em>) <span class="dash" /> <p>Can be either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>. Defaults
+to <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<ul>
+<li>Draws vertical lines at the Nyquist frequency (one half the
+sample rate).</li>
+<li>Draw a vertical line at the stage-zero frequency of sensitivity.</li>
+<li>Draws a horizontal line at the stage-zero gain.</li>
+</ul>
+<p>Can only be used with the <tt class="docutils literal"><span class="pre">output='plot'</span></tt>, <tt class="docutils literal"><span class="pre">output='plot-amp'</span></tt>
+and <tt class="docutils literal"><span class="pre">output='plot-phase'</span></tt> options.</p>
+</li>
+<li><strong>output</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> <p>Output Options. Defaults to <tt class="docutils literal"><span class="pre">'plot'</span></tt>.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">'fap'</span></tt></dt>
+<dd>Three column ASCII (frequency, amplitude, phase)</dd>
+<dt><tt class="docutils literal"><span class="pre">'cs'</span></tt></dt>
+<dd>Three column ASCII (frequency, real, imaginary)</dd>
+<dt><tt class="docutils literal"><span class="pre">'plot'</span></tt></dt>
+<dd>Amplitude and phase plot</dd>
+<dt><tt class="docutils literal"><span class="pre">'plot-amp'</span></tt></dt>
+<dd>Amplitude only plot</dd>
+<dt><tt class="docutils literal"><span class="pre">'plot-phase'</span></tt></dt>
+<dd>Phase only plot</dd>
+</dl>
+<p>Plots are stored to the file system if the parameter <tt class="docutils literal"><span class="pre">filename</span></tt>
+is set, otherwise it will try to use matplotlib to directly plot
+the returned image.</p>
+</li>
+<li><strong>filename</strong> (<em>str, optional</em>) <span class="dash" /> Name of a output file. If this parameter is given
+nothing will be returned. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">numpy.ndarray, str or <cite>None</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Returns either a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt></a>, image string
+or nothing, depending on the <tt class="docutils literal"><span class="pre">output</span></tt> parameter.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<ol class="arabic">
+<li><p class="first">Returning frequency, amplitude, phase of first point.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2005-01-01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evalresp</span><span class="p">(</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="s">&quot;ANMO&quot;</span><span class="p">,</span> <span class="s">&quot;00&quot;</span><span class="p">,</span> <span class="s">&quot;BHZ&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span>
+<span class="gp">... </span>                       <span class="n">output</span><span class="o">=</span><span class="s">&#39;fap&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># frequency, amplitude, phase of first point</span>
+<span class="go">array([  1.00000000e-05,   1.20280200e+04,   1.79200700e+02])</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Returning amplitude and phase plot.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2005-01-01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">evalresp</span><span class="p">(</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="s">&quot;ANMO&quot;</span><span class="p">,</span> <span class="s">&quot;00&quot;</span><span class="p">,</span> <span class="s">&quot;BHZ&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/5a0da382b9.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/5a0da382b9.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/5a0da382b9.png" src="../../_images/5a0da382b9.png" />
+</div>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.evalresp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.event.html" title="obspy.iris.client.Client.event"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.distaz.html" title="obspy.iris.client.Client.distaz"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

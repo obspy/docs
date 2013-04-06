@@ -1,0 +1,6 @@
+obspy.core.event.Magnitude.get
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Magnitude.get

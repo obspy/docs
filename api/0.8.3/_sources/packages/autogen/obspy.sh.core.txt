@@ -1,0 +1,35 @@
+obspy.sh.core
+=============
+
+.. currentmodule:: obspy.sh.core
+.. automodule:: obspy.sh.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      fromUTCDateTime
+      isASC
+      isQ
+      readASC
+      readQ
+      toUTCDateTime
+      writeASC
+      writeQ
+   
+   
+
+   
+   
+   
+
+   
+   
+   

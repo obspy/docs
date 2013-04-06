@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.itervalues
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.itervalues

@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.clear
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.clear

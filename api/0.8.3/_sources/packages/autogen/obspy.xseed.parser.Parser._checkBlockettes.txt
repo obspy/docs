@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._checkBlockettes
+==========================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._checkBlockettes

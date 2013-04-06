@@ -1,0 +1,6 @@
+obspy.earthworm.client.Client.saveWaveform
+==========================================
+
+.. currentmodule:: obspy.earthworm.client
+
+.. automethod:: Client.saveWaveform

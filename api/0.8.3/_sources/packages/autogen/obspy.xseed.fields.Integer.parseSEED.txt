@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.parseSEED
+====================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.parseSEED

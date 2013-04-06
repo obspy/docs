@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.setdefault
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.setdefault

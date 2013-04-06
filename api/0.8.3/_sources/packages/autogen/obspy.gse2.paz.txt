@@ -1,0 +1,29 @@
+obspy.gse2.paz
+==============
+
+.. currentmodule:: obspy.gse2.paz
+.. automodule:: obspy.gse2.paz
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      attach_paz
+      readPaz
+   
+   
+
+   
+   
+   
+
+   
+   
+   

@@ -1,0 +1,6 @@
+obspy.core.event.Origin.copy
+============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.copy

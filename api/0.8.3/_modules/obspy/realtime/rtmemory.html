@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.rtmemory &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.realtime.rtmemory</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for handling ObsPy RtMemory objects.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org) &amp; Anthony Lomax</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="RtMemory"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory.html#obspy.realtime.rtmemory.RtMemory">[docs]</a><span class="k">class</span> <span class="nc">RtMemory</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Real time memory class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RtMemory.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory.__init__.html#obspy.realtime.rtmemory.RtMemory.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="RtMemory.initialize"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory.initialize.html#obspy.realtime.rtmemory.RtMemory.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">length_input</span><span class="p">,</span> <span class="n">length_output</span><span class="p">,</span>
+                   <span class="n">input_inital_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">output_inital_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and initialize input and output arrays for this RtMemory object.</span>
+
+<span class="sd">        :type data_type: data-type</span>
+<span class="sd">        :param trace:  Desired array data-type.</span>
+<span class="sd">        :type length_input: int</span>
+<span class="sd">        :param length_input: length of the input memory array.</span>
+<span class="sd">        :type length_output: int</span>
+<span class="sd">        :param length_output: length of the output memory array.</span>
+<span class="sd">        :type input_inital_value: float, optional</span>
+<span class="sd">        :param input_inital_value: Initialization value for the input</span>
+<span class="sd">            memory array (default is 1.0).</span>
+<span class="sd">        :type output_inital_value: float, optional</span>
+<span class="sd">        :param output_inital_value: Initialization value for the output</span>
+<span class="sd">            memory array (default is 1.0).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">length_input</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">input_inital_value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">length_output</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">output_inital_value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="RtMemory._update"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory._update.html#obspy.realtime.rtmemory.RtMemory._update">[docs]</a>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memory_array</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update specified memory array using specified number of points from</span>
+<span class="sd">        end of specified data array.</span>
+
+<span class="sd">        :type memory_array: numpy.ndarray</span>
+<span class="sd">        :param memory_array:  Memory array (input or output) in this</span>
+<span class="sd">            RtMemory object to update.</span>
+<span class="sd">        :type data: numpy.ndarray</span>
+<span class="sd">        :param data:  Data array to use for update.</span>
+<span class="sd">        :return: NumPy :class:`np.ndarray` object containing updated</span>
+<span class="sd">            memory array (input or output).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">memory_array</span><span class="p">):</span>
+            <span class="c"># data length greater than or equal to memory length</span>
+            <span class="n">memory_array</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">memory_array</span><span class="p">):]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># data length less than memory length</span>
+            <span class="c"># shift memory</span>
+            <span class="n">memory_array</span> <span class="o">=</span> <span class="n">memory_array</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:]</span>
+            <span class="c"># append data</span>
+            <span class="n">memory_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">memory_array</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">memory_array</span>
+</div>
+<div class="viewcode-block" id="RtMemory.updateOutput"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory.updateOutput.html#obspy.realtime.rtmemory.RtMemory.updateOutput">[docs]</a>    <span class="k">def</span> <span class="nf">updateOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update output memory using specified number of points from end of</span>
+<span class="sd">        specified array.</span>
+
+<span class="sd">        :type data: numpy.ndarray</span>
+<span class="sd">        :param data:  Data array to use for update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtMemory.updateInput"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rtmemory.RtMemory.updateInput.html#obspy.realtime.rtmemory.RtMemory.updateInput">[docs]</a>    <span class="k">def</span> <span class="nf">updateInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update input memory using specified number of points from end of</span>
+<span class="sd">        specified array.</span>
+
+<span class="sd">        :type data: numpy.ndarray</span>
+<span class="sd">        :param data:  Data array to use for update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

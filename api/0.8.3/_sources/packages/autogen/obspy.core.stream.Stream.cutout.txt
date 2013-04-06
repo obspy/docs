@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.cutout
+===============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.cutout

@@ -1,0 +1,6 @@
+obspy.signal.array_analysis.array_rotation_strain
+=================================================
+
+.. currentmodule:: obspy.signal.array_analysis
+
+.. autofunction:: array_rotation_strain

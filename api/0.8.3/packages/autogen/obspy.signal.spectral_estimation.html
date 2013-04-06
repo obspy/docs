@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.spectral_estimation &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal - Signal Processing Routines for ObsPy" href="../obspy.signal.html" />
+    <link rel="next" title="obspy.signal.spectral_estimation.fft_taper" href="obspy.signal.spectral_estimation.fft_taper.html" />
+    <link rel="prev" title="obspy.signal.polarization.eigval" href="obspy.signal.polarization.eigval.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.fft_taper.html" title="obspy.signal.spectral_estimation.fft_taper"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.polarization.eigval.html" title="obspy.signal.polarization.eigval"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" accesskey="U">obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-obspy.signal.spectral_estimation">
+<span id="obspy-signal-spectral-estimation"></span><h1>obspy.signal.spectral_estimation<a class="headerlink" href="#module-obspy.signal.spectral_estimation" title="Permalink to this headline">¶</a></h1>
+<p>Various Routines Related to Spectral Estimation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.fft_taper.html#obspy.signal.spectral_estimation.fft_taper" title="obspy.signal.spectral_estimation.fft_taper"><tt class="xref py py-obj docutils literal"><span class="pre">fft_taper</span></tt></a></td>
+<td>Cosine taper, 10 percent at each end (like done by <a class="reference internal" href="../../citations.html#mcnamara2004">[McNamara2004]</a>).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.get_NHNM.html#obspy.signal.spectral_estimation.get_NHNM" title="obspy.signal.spectral_estimation.get_NHNM"><tt class="xref py py-obj docutils literal"><span class="pre">get_NHNM</span></tt></a></td>
+<td>Returns periods and psd values for the New High Noise Model.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.get_NLNM.html#obspy.signal.spectral_estimation.get_NLNM" title="obspy.signal.spectral_estimation.get_NLNM"><tt class="xref py py-obj docutils literal"><span class="pre">get_NLNM</span></tt></a></td>
+<td>Returns periods and psd values for the New Low Noise Model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.psd.html#obspy.signal.spectral_estimation.psd" title="obspy.signal.spectral_estimation.psd"><tt class="xref py py-obj docutils literal"><span class="pre">psd</span></tt></a></td>
+<td>Wrapper for <a class="reference external" href="http://matplotlib.sourceforge.net/api/mlab_api.html#matplotlib.mlab.psd" title="(in Matplotlib v1.2.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.mlab.psd()</span></tt></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.welch_taper.html#obspy.signal.spectral_estimation.welch_taper" title="obspy.signal.spectral_estimation.welch_taper"><tt class="xref py py-obj docutils literal"><span class="pre">welch_taper</span></tt></a></td>
+<td>Applies a welch window to data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.welch_window.html#obspy.signal.spectral_estimation.welch_window" title="obspy.signal.spectral_estimation.welch_window"><tt class="xref py py-obj docutils literal"><span class="pre">welch_window</span></tt></a></td>
+<td>Return a welch window for data of length N.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD" title="obspy.signal.spectral_estimation.PPSD"><tt class="xref py py-obj docutils literal"><span class="pre">PPSD</span></tt></a></td>
+<td>Class to compile probabilistic power spectral densities for one combination of network/station/location/channel/sampling_rate.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.spectral_estimation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.fft_taper.html" title="obspy.signal.spectral_estimation.fft_taper"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.polarization.eigval.html" title="obspy.signal.polarization.eigval"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

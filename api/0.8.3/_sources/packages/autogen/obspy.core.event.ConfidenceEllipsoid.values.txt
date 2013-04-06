@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.values
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.values

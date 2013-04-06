@@ -1,0 +1,189 @@
+obspy.core.quakeml.Unpickler
+============================
+
+.. currentmodule:: obspy.core.quakeml
+.. autoclass:: Unpickler
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Unpickler.__dict__
+     ~Unpickler.__doc__
+     ~Unpickler.__module__
+     ~Unpickler.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Unpickler.load
+     ~Unpickler.loads
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Unpickler._arrival
+     ~Unpickler._axis
+     ~Unpickler._comments
+     ~Unpickler._composite_times
+     ~Unpickler._confidence_ellipsoid
+     ~Unpickler._creation_info
+     ~Unpickler._data_used
+     ~Unpickler._deserialize
+     ~Unpickler._event_description
+     ~Unpickler._float_value
+     ~Unpickler._focal_mechanism
+     ~Unpickler._int_value
+     ~Unpickler._magnitude
+     ~Unpickler._moment_tensor
+     ~Unpickler._nodal_plane
+     ~Unpickler._nodal_planes
+     ~Unpickler._origin
+     ~Unpickler._origin_quality
+     ~Unpickler._origin_uncertainty
+     ~Unpickler._pick
+     ~Unpickler._principal_axes
+     ~Unpickler._source_time_function
+     ~Unpickler._station_magnitude
+     ~Unpickler._station_magnitude_contributions
+     ~Unpickler._tensor
+     ~Unpickler._time_value
+     ~Unpickler._value
+     ~Unpickler._waveform_id
+     ~Unpickler._xpath
+     ~Unpickler._xpath2obj
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Unpickler.__init__
+  
+
+  
+  

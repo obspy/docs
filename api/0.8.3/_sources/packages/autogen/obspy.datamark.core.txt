@@ -1,0 +1,29 @@
+obspy.datamark.core
+===================
+
+.. currentmodule:: obspy.datamark.core
+.. automodule:: obspy.datamark.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isDATAMARK
+      readDATAMARK
+   
+   
+
+   
+   
+   
+
+   
+   
+   

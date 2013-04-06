@@ -1,0 +1,6 @@
+obspy.core.preview.resamplePreview
+==================================
+
+.. currentmodule:: obspy.core.preview
+
+.. autofunction:: resamplePreview

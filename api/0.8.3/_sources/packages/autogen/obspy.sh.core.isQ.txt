@@ -1,0 +1,6 @@
+obspy.sh.core.isQ
+=================
+
+.. currentmodule:: obspy.sh.core
+
+.. autofunction:: isQ

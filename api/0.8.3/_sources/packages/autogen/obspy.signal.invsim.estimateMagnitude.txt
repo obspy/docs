@@ -1,0 +1,6 @@
+obspy.signal.invsim.estimateMagnitude
+=====================================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: estimateMagnitude

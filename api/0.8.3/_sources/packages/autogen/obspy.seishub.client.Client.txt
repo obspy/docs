@@ -1,0 +1,81 @@
+obspy.seishub.client.Client
+===========================
+
+.. currentmodule:: obspy.seishub.client
+.. autoclass:: Client
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Client.__dict__
+     ~Client.__doc__
+     ~Client.__module__
+     ~Client.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Client.ping
+     ~Client.testAuth
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Client._HTTP_request
+     ~Client._fetch
+     ~Client._objectify
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Client.__init__
+  
+
+  
+  

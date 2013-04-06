@@ -1,0 +1,199 @@
+obspy.core.event.WaveformStreamID
+=================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: WaveformStreamID
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~WaveformStreamID.__abstractmethods__
+     ~WaveformStreamID.__dict__
+     ~WaveformStreamID.__doc__
+     ~WaveformStreamID.__hash__
+     ~WaveformStreamID.__module__
+     ~WaveformStreamID.__weakref__
+     ~WaveformStreamID.defaults
+     ~WaveformStreamID.item
+     ~WaveformStreamID.key
+     ~WaveformStreamID.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformStreamID.clear
+     ~WaveformStreamID.copy
+     ~WaveformStreamID.get
+     ~WaveformStreamID.getSEEDString
+     ~WaveformStreamID.items
+     ~WaveformStreamID.iteritems
+     ~WaveformStreamID.iterkeys
+     ~WaveformStreamID.itervalues
+     ~WaveformStreamID.keys
+     ~WaveformStreamID.pop
+     ~WaveformStreamID.popitem
+     ~WaveformStreamID.setdefault
+     ~WaveformStreamID.update
+     ~WaveformStreamID.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformStreamID._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformStreamID.__contains__
+     ~WaveformStreamID.__deepcopy__
+     ~WaveformStreamID.__delattr__
+     ~WaveformStreamID.__delitem__
+     ~WaveformStreamID.__eq__
+     ~WaveformStreamID.__getattr__
+     ~WaveformStreamID.__getitem__
+     ~WaveformStreamID.__getstate__
+     ~WaveformStreamID.__init__
+     ~WaveformStreamID.__iter__
+     ~WaveformStreamID.__len__
+     ~WaveformStreamID.__ne__
+     ~WaveformStreamID.__nonzero__
+     ~WaveformStreamID.__repr__
+     ~WaveformStreamID.__setattr__
+     ~WaveformStreamID.__setitem__
+     ~WaveformStreamID.__setstate__
+     ~WaveformStreamID.__str__
+     ~WaveformStreamID.__subclasshook__
+  
+
+  
+  

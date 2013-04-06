@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.itervalues
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.itervalues

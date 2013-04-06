@@ -1,0 +1,6 @@
+obspy.segy.segy.autodetectEndianAndSanityCheckSU
+================================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. autofunction:: autodetectEndianAndSanityCheckSU

@@ -1,0 +1,6 @@
+obspy.core.trace.Stats.copy
+===========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Stats.copy

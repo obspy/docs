@@ -1,0 +1,6 @@
+obspy.db.db.WaveformChannel.update
+==================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformChannel.update

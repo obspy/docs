@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.std
+==================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.std

@@ -1,0 +1,6 @@
+obspy.taup.taup.travelTimePlot
+==============================
+
+.. currentmodule:: obspy.taup.taup
+
+.. autofunction:: travelTimePlot

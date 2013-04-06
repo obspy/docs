@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__delattr__
+=================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__delattr__

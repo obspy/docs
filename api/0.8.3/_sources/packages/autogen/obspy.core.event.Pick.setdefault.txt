@@ -1,0 +1,6 @@
+obspy.core.event.Pick.setdefault
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.setdefault

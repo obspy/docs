@@ -1,0 +1,6 @@
+obspy.signal.util.utlLonLat
+===========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: utlLonLat

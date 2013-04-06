@@ -1,0 +1,6 @@
+obspy.core.event.OriginUncertainty.copy
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginUncertainty.copy

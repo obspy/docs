@@ -1,0 +1,195 @@
+obspy.core.event.ConfidenceEllipsoid
+====================================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: ConfidenceEllipsoid
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~ConfidenceEllipsoid.__abstractmethods__
+     ~ConfidenceEllipsoid.__dict__
+     ~ConfidenceEllipsoid.__doc__
+     ~ConfidenceEllipsoid.__hash__
+     ~ConfidenceEllipsoid.__module__
+     ~ConfidenceEllipsoid.__weakref__
+     ~ConfidenceEllipsoid.defaults
+     ~ConfidenceEllipsoid.item
+     ~ConfidenceEllipsoid.key
+     ~ConfidenceEllipsoid.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ConfidenceEllipsoid.clear
+     ~ConfidenceEllipsoid.copy
+     ~ConfidenceEllipsoid.get
+     ~ConfidenceEllipsoid.items
+     ~ConfidenceEllipsoid.iteritems
+     ~ConfidenceEllipsoid.iterkeys
+     ~ConfidenceEllipsoid.itervalues
+     ~ConfidenceEllipsoid.keys
+     ~ConfidenceEllipsoid.pop
+     ~ConfidenceEllipsoid.popitem
+     ~ConfidenceEllipsoid.setdefault
+     ~ConfidenceEllipsoid.update
+     ~ConfidenceEllipsoid.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ConfidenceEllipsoid._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~ConfidenceEllipsoid.__contains__
+     ~ConfidenceEllipsoid.__deepcopy__
+     ~ConfidenceEllipsoid.__delattr__
+     ~ConfidenceEllipsoid.__delitem__
+     ~ConfidenceEllipsoid.__eq__
+     ~ConfidenceEllipsoid.__getattr__
+     ~ConfidenceEllipsoid.__getitem__
+     ~ConfidenceEllipsoid.__getstate__
+     ~ConfidenceEllipsoid.__init__
+     ~ConfidenceEllipsoid.__iter__
+     ~ConfidenceEllipsoid.__len__
+     ~ConfidenceEllipsoid.__ne__
+     ~ConfidenceEllipsoid.__nonzero__
+     ~ConfidenceEllipsoid.__repr__
+     ~ConfidenceEllipsoid.__setattr__
+     ~ConfidenceEllipsoid.__setitem__
+     ~ConfidenceEllipsoid.__setstate__
+     ~ConfidenceEllipsoid.__str__
+     ~ConfidenceEllipsoid.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,6 @@
+obspy.gse2.libgse1.readIntegerData
+==================================
+
+.. currentmodule:: obspy.gse2.libgse1
+
+.. autofunction:: readIntegerData

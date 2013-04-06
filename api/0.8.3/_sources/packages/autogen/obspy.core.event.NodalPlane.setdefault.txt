@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.setdefault
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.setdefault

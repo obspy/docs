@@ -1,0 +1,97 @@
+obspy.xseed.fields.Integer
+==========================
+
+.. currentmodule:: obspy.xseed.fields
+.. autoclass:: Integer
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Integer.__dict__
+     ~Integer.__doc__
+     ~Integer.__module__
+     ~Integer.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Integer.convert
+     ~Integer.getSEED
+     ~Integer.getXML
+     ~Integer.parseSEED
+     ~Integer.parseXML
+     ~Integer.read
+     ~Integer.write
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Integer._formatString
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Integer.__init__
+     ~Integer.__str__
+  
+
+  
+  

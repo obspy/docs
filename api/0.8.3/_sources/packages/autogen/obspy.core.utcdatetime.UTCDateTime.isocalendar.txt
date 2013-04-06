@@ -1,0 +1,6 @@
+obspy.core.utcdatetime.UTCDateTime.isocalendar
+==============================================
+
+.. currentmodule:: obspy.core.utcdatetime
+
+.. automethod:: UTCDateTime.isocalendar

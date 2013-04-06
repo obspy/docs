@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.keys
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.keys

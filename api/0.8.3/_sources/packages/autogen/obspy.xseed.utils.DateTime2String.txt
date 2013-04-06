@@ -1,0 +1,6 @@
+obspy.xseed.utils.DateTime2String
+=================================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: DateTime2String

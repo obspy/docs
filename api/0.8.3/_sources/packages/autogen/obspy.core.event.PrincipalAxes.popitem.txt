@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.popitem
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.popitem

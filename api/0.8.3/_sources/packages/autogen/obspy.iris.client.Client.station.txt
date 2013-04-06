@@ -1,0 +1,6 @@
+obspy.iris.client.Client.station
+================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.station

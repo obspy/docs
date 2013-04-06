@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.detrend
+================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.detrend

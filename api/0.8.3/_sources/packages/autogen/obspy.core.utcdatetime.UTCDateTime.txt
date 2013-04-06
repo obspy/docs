@@ -1,0 +1,300 @@
+obspy.core.utcdatetime.UTCDateTime
+==================================
+
+.. currentmodule:: obspy.core.utcdatetime
+.. autoclass:: UTCDateTime
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~UTCDateTime.DEFAULT_PRECISION
+     ~UTCDateTime.__dict__
+     ~UTCDateTime.__doc__
+     ~UTCDateTime.__module__
+     ~UTCDateTime.__weakref__
+     ~UTCDateTime.date
+     ~UTCDateTime.datetime
+     ~UTCDateTime.day
+     ~UTCDateTime.hour
+     ~UTCDateTime.julday
+     ~UTCDateTime.microsecond
+     ~UTCDateTime.minute
+     ~UTCDateTime.month
+     ~UTCDateTime.precision
+     ~UTCDateTime.second
+     ~UTCDateTime.time
+     ~UTCDateTime.timestamp
+     ~UTCDateTime.weekday
+     ~UTCDateTime.year
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~UTCDateTime.ctime
+     ~UTCDateTime.dst
+     ~UTCDateTime.formatArcLink
+     ~UTCDateTime.formatFissures
+     ~UTCDateTime.formatIRISWebService
+     ~UTCDateTime.formatSEED
+     ~UTCDateTime.formatSeedLink
+     ~UTCDateTime.isocalendar
+     ~UTCDateTime.isoformat
+     ~UTCDateTime.isoweekday
+     ~UTCDateTime.strftime
+     ~UTCDateTime.strptime
+     ~UTCDateTime.timetuple
+     ~UTCDateTime.timetz
+     ~UTCDateTime.toordinal
+     ~UTCDateTime.tzname
+     ~UTCDateTime.utcoffset
+     ~UTCDateTime.utctimetuple
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~UTCDateTime._fromDateTime
+     ~UTCDateTime._getDate
+     ~UTCDateTime._getDateTime
+     ~UTCDateTime._getDay
+     ~UTCDateTime._getHour
+     ~UTCDateTime._getJulday
+     ~UTCDateTime._getMicrosecond
+     ~UTCDateTime._getMinute
+     ~UTCDateTime._getMonth
+     ~UTCDateTime._getPrecision
+     ~UTCDateTime._getSecond
+     ~UTCDateTime._getTime
+     ~UTCDateTime._getTimeStamp
+     ~UTCDateTime._getWeekday
+     ~UTCDateTime._getYear
+     ~UTCDateTime._set
+     ~UTCDateTime._setDay
+     ~UTCDateTime._setHour
+     ~UTCDateTime._setJulday
+     ~UTCDateTime._setMicrosecond
+     ~UTCDateTime._setMinute
+     ~UTCDateTime._setMonth
+     ~UTCDateTime._setPrecision
+     ~UTCDateTime._setSecond
+     ~UTCDateTime._setYear
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~UTCDateTime.__abs__
+     ~UTCDateTime.__add__
+     ~UTCDateTime.__eq__
+     ~UTCDateTime.__float__
+     ~UTCDateTime.__ge__
+     ~UTCDateTime.__gt__
+     ~UTCDateTime.__init__
+     ~UTCDateTime.__le__
+     ~UTCDateTime.__lt__
+     ~UTCDateTime.__ne__
+     ~UTCDateTime.__repr__
+     ~UTCDateTime.__str__
+     ~UTCDateTime.__sub__
+     ~UTCDateTime.__unicode__
+  
+
+  
+  

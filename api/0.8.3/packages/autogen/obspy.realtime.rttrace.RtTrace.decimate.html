@@ -1,0 +1,185 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.rttrace.RtTrace.decimate &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.realtime.rttrace.RtTrace" href="obspy.realtime.rttrace.RtTrace.html" />
+    <link rel="next" title="obspy.realtime.rttrace.RtTrace.detrend" href="obspy.realtime.rttrace.RtTrace.detrend.html" />
+    <link rel="prev" title="obspy.realtime.rttrace.RtTrace.count" href="obspy.realtime.rttrace.RtTrace.count.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.detrend.html" title="obspy.realtime.rttrace.RtTrace.detrend"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.count.html" title="obspy.realtime.rttrace.RtTrace.count"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" >obspy.realtime.rttrace</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.RtTrace.html" accesskey="U">obspy.realtime.rttrace.RtTrace</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-realtime-rttrace-rttrace-decimate">
+<h1>obspy.realtime.rttrace.RtTrace.decimate<a class="headerlink" href="#obspy-realtime-rttrace-rttrace-decimate" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.realtime.rttrace.RtTrace.decimate">
+<tt class="descclassname">RtTrace.</tt><tt class="descname">decimate</tt><big>(</big><em>factor</em>, <em>no_filter=False</em>, <em>strict_length=False</em><big>)</big><a class="headerlink" href="#obspy.realtime.rttrace.RtTrace.decimate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downsample trace data by an integer factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>factor</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> Factor by which the sampling rate is lowered by
+decimation.</li>
+<li><strong>no_filter</strong> (<em>bool, optional</em>) <span class="dash" /> Deactivates automatic filtering if set to <tt class="docutils literal"><span class="pre">True</span></tt>.
+Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>strict_length</strong> (<em>bool, optional</em>) <span class="dash" /> Leave traces unchanged for which endtime of trace
+would change. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Currently a simple integer decimation is implemented.
+Only every <tt class="docutils literal"><span class="pre">decimation_factor</span></tt>-th sample remains in the trace, all
+other samples are thrown away. Prior to decimation a lowpass filter is
+applied to ensure no aliasing artifacts are introduced. The automatic
+filtering can be deactivated with <tt class="docutils literal"><span class="pre">no_filter=True</span></tt>.</p>
+<p>If the length of the data array modulo <tt class="docutils literal"><span class="pre">decimation_factor</span></tt> is not
+zero then the endtime of the trace is changing on sub-sample scale. To
+abort downsampling in case of changing endtimes set
+<tt class="docutils literal"><span class="pre">strict_length=True</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operation is performed in place on the actual data arrays. The
+raw data is not accessible anymore afterwards. To keep your
+original data, use <a class="reference internal" href="obspy.core.trace.Trace.copy.html#obspy.core.trace.Trace.copy" title="obspy.core.trace.Trace.copy"><tt class="xref py py-meth docutils literal"><span class="pre">copy()</span></tt></a> to create
+a copy of your trace object.
+This also makes an entry with information on the applied processing
+in <tt class="docutils literal"><span class="pre">stats.processing</span></tt> of this trace.</p>
+</div>
+<p class="rubric">Example</p>
+<p>For the example we switch off the automatic pre-filtering so that
+the effect of the downsampling routine becomes clearer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">strict_length</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">no_filter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+<span class="go">0.25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([0, 4, 8])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.realtime.rttrace.RtTrace.decimate.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.detrend.html" title="obspy.realtime.rttrace.RtTrace.detrend"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.realtime.rttrace.RtTrace.count.html" title="obspy.realtime.rttrace.RtTrace.count"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.realtime.html" >obspy.realtime - Real time support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.html" >obspy.realtime.rttrace</a> &raquo;</li>
+          <li><a href="obspy.realtime.rttrace.RtTrace.html" >obspy.realtime.rttrace.RtTrace</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

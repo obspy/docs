@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile._writeTextualHeader
+============================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile._writeTextualHeader

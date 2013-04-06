@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.availability &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client.bulkdataselect" href="obspy.iris.client.Client.bulkdataselect.html" />
+    <link rel="prev" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.bulkdataselect.html" title="obspy.iris.client.Client.bulkdataselect"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.html" title="obspy.iris.client.Client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-availability">
+<h1>obspy.iris.client.Client.availability<a class="headerlink" href="#obspy-iris-client-client-availability" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.availability">
+<tt class="descclassname">Client.</tt><tt class="descname">availability</tt><big>(</big><em>network='*'</em>, <em>station='*'</em>, <em>location='*'</em>, <em>channel='*'</em>, <em>starttime=UTCDateTime(2012</em>, <em>12</em>, <em>11</em>, <em>5</em>, <em>24</em>, <em>14</em>, <em>930926)</em>, <em>endtime=UTCDateTime(2012</em>, <em>12</em>, <em>11</em>, <em>5</em>, <em>24</em>, <em>24</em>, <em>930944)</em>, <em>lat=None</em>, <em>lon=None</em>, <em>minradius=None</em>, <em>maxradius=None</em>, <em>minlat=None</em>, <em>maxlat=None</em>, <em>minlon=None</em>, <em>maxlon=None</em>, <em>output='bulkdataselect'</em>, <em>restricted=False</em>, <em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.availability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.availability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low-level interface for <cite>availability</cite> Web service of IRIS
+(<a class="reference external" href="http://www.iris.edu/ws/availability/">http://www.iris.edu/ws/availability/</a>) - release 1.2.1 (2012-04-06).</p>
+<p>This method returns information about what time series data is
+available at the IRIS DMC. Users can query for station metadata by
+network, station, channel, location, time and other search criteria.
+Results are may be formated in two formats: <tt class="docutils literal"><span class="pre">'bulk'</span></tt> or <tt class="docutils literal"><span class="pre">'xml'</span></tt>.</p>
+<p>The &#8216;bulk&#8217; formatted information can be passed directly to the
+<a class="reference internal" href="obspy.iris.client.Client.bulkdataselect.html#obspy.iris.client.Client.bulkdataselect" title="obspy.iris.client.Client.bulkdataselect"><tt class="xref py py-meth docutils literal"><span class="pre">bulkdataselect()</span></tt></a> method.</p>
+<p>The XML format contains station locations as well as channel time range
+for <a class="reference internal" href="#obspy.iris.client.Client.availability" title="obspy.iris.client.Client.availability"><tt class="xref py py-meth docutils literal"><span class="pre">availability()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>network</strong> (<em>str, optional</em>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'IU'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.</li>
+<li><strong>station</strong> (<em>str, optional</em>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'ANMO'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.</li>
+<li><strong>location</strong> (<em>str, optional</em>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'00'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.
+Use <tt class="docutils literal"><span class="pre">'--'</span></tt> for empty location codes.</li>
+<li><strong>channel</strong> (<em>str, optional</em>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'BHZ'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.</li>
+<li><strong>restricted</strong> (<em>bool, optional</em>) <span class="dash" /> If <tt class="docutils literal"><span class="pre">True</span></tt>, availability of restricted as well as
+unrestricted data is reported. Defaults to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> Start date and time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>) <span class="dash" /> End date and time.</li>
+<li><strong>minlat</strong> (<em>float, optional</em>) <span class="dash" /> Minimum latitude for rectangular bounding box.</li>
+<li><strong>minlon</strong> (<em>float, optional</em>) <span class="dash" /> Minimum longitude for rectangular bounding box.</li>
+<li><strong>maxlat</strong> (<em>float, optional</em>) <span class="dash" /> Maximum latitude for rectangular bounding box.</li>
+<li><strong>maxlon</strong> (<em>float, optional</em>) <span class="dash" /> Maximum longitude for rectangular bounding box.</li>
+<li><strong>lat</strong> (<em>float, optional</em>) <span class="dash" /> Latitude of center point for circular bounding area.</li>
+<li><strong>lon</strong> (<em>float, optional</em>) <span class="dash" /> Longitude of center point for circular bounding area.</li>
+<li><strong>minradius</strong> (<em>float, optional</em>) <span class="dash" /> Minimum radius for circular bounding area.</li>
+<li><strong>maxradius</strong> (<em>float, optional</em>) <span class="dash" /> Maximum radius for circular bounding area.</li>
+<li><strong>output</strong> (<em>str, optional</em>) <span class="dash" /> Output format, either <tt class="docutils literal"><span class="pre">&quot;bulkdataselect&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;xml&quot;</span></tt>.
+Defaults to <tt class="docutils literal"><span class="pre">&quot;bulkdataselect&quot;</span></tt>.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) <span class="dash" /> Name of a output file. If this parameter is given
+nothing will be returned. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">str or <tt class="docutils literal"><span class="pre">None</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">String that lists available channels, either as plaintext
+<cite>bulkdataselect</cite> format (<tt class="docutils literal"><span class="pre">output=&quot;bulkdataselect&quot;</span></tt>) or in XML
+format (<tt class="docutils literal"><span class="pre">output=&quot;xml&quot;</span></tt>) if no <tt class="docutils literal"><span class="pre">filename</span></tt> is given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>For restricting data by geographical coordinates either:</p>
+<ul class="last simple">
+<li>all of <tt class="docutils literal"><span class="pre">minlat</span></tt>, <tt class="docutils literal"><span class="pre">maxlat</span></tt>, <tt class="docutils literal"><span class="pre">minlon</span></tt> and <tt class="docutils literal"><span class="pre">maxlon</span></tt> have to
+be specified for a rectangular bounding box, or</li>
+<li>all of <tt class="docutils literal"><span class="pre">lat</span></tt>, <tt class="docutils literal"><span class="pre">lon</span></tt>, <tt class="docutils literal"><span class="pre">minradius</span></tt> and <tt class="docutils literal"><span class="pre">maxradius</span></tt> have to
+be specified for a circular bounding area</li>
+</ul>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T06:30:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-02-27T06:40:00&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">availability</span><span class="p">(</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="s">&quot;B*&quot;</span><span class="p">,</span> <span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="s">&quot;BH*&quot;</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">IU BBSR 00 BH1 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BBSR 00 BH2 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BBSR 00 BHZ 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BBSR 10 BHE 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BBSR 10 BHN 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BBSR 10 BHZ 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BILL 00 BHE 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BILL 00 BHN 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+<span class="go">IU BILL 00 BHZ 2010-02-27T06:30:00 2010-02-27T06:40:00</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bulkdataselect</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>  
+<span class="go">9 Trace(s) in Stream:</span>
+<span class="go">IU.BBSR.00.BH1 | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BBSR.00.BH2 | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BBSR.00.BHZ | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BBSR.10.BHE | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BBSR.10.BHN | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BBSR.10.BHZ | 2010-02-27T06:30:00... | 40.0 Hz, 24000 samples</span>
+<span class="go">IU.BILL.00.BHE | 2010-02-27T06:30:00... | 20.0 Hz, 12000 samples</span>
+<span class="go">IU.BILL.00.BHN | 2010-02-27T06:30:00... | 20.0 Hz, 12000 samples</span>
+<span class="go">IU.BILL.00.BHZ | 2010-02-27T06:30:00... | 20.0 Hz, 12000 samples</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.availability.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.bulkdataselect.html" title="obspy.iris.client.Client.bulkdataselect"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.html" title="obspy.iris.client.Client"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

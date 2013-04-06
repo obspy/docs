@@ -1,0 +1,49 @@
+obspy.segy.unpack.OnTheFlyDataUnpacker
+======================================
+
+.. currentmodule:: obspy.segy.unpack
+.. autoclass:: OnTheFlyDataUnpacker
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~OnTheFlyDataUnpacker.__doc__
+     ~OnTheFlyDataUnpacker.__module__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~OnTheFlyDataUnpacker.__call__
+     ~OnTheFlyDataUnpacker.__init__
+  
+
+  
+  

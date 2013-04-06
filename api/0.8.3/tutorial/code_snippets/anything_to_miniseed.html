@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17. Anything to MiniSEED &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="18. Beachball Plot" href="beachball_plot.html" />
+    <link rel="prev" title="16. Export Seismograms to ASCII" href="export_seismograms_to_ascii.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="beachball_plot.html" title="18. Beachball Plot"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="export_seismograms_to_ascii.html" title="16. Export Seismograms to ASCII"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="anything-to-miniseed">
+<h1>17. Anything to MiniSEED<a class="headerlink" href="#anything-to-miniseed" title="Permalink to this headline">¶</a></h1>
+<p>The following lines show how you can convert anything to <a class="reference external" href="http://www.iris.washington.edu/manuals/SEEDManual_V2.4.pdf">MiniSEED</a> format. In
+the example, a few lines of a weather station output are written to a MiniSEED
+file. The correct meta information <tt class="docutils literal"><span class="pre">starttime</span></tt>, the <tt class="docutils literal"><span class="pre">sampling_rate</span></tt>,
+<tt class="docutils literal"><span class="pre">station</span></tt> name and so forth are also encoded (Note: Only the ones given are
+allowed by the MiniSEED standard). Converting arbitrary ASCII to MiniSEED is
+extremely helpful if you want to send log messages, output of meteorologic
+stations or anything else via the <a class="reference external" href="http://www.iris.edu/data/dmc-seedlink.htm">SeedLink</a> protocol.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+
+<span class="n">weather</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">00.0000 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000000</span>
+<span class="s">00.0002 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000001</span>
+<span class="s">00.0005 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000002</span>
+<span class="s">00.0008 0.0 ??? 4.7 97.7 1015.4 0.0 010308 000003</span>
+<span class="s">00.0011 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000004</span>
+<span class="s">00.0013 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000005</span>
+<span class="s">00.0016 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000006</span>
+<span class="s">00.0019 0.0 ??? 4.7 97.7 1015.0 0.0 010308 000007</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="c"># Convert to numpy character array</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">weather</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S1&#39;</span><span class="p">)</span>
+
+<span class="c"># Fill header attributes</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;network&#39;</span><span class="p">:</span> <span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">:</span> <span class="s">&#39;RJOB&#39;</span><span class="p">,</span> <span class="s">&#39;location&#39;</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+         <span class="s">&#39;channel&#39;</span><span class="p">:</span> <span class="s">&#39;WLZ&#39;</span><span class="p">,</span> <span class="s">&#39;npts&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s">&#39;sampling_rate&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+         <span class="s">&#39;mseed&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;dataquality&#39;</span><span class="p">:</span> <span class="s">&#39;D&#39;</span><span class="p">}}</span>
+<span class="c"># set current time</span>
+<span class="n">stats</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">()</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">([</span><span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">stats</span><span class="p">)])</span>
+<span class="c"># write as ASCII file (encoding=0)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;weather.mseed&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;MSEED&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reclen</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+
+<span class="c"># Show that it worked, convert numpy character array back to string</span>
+<span class="n">st1</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;weather.mseed&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">st1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tostring</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/anything_to_miniseed.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="beachball_plot.html" title="18. Beachball Plot"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="export_seismograms_to_ascii.html" title="16. Export Seismograms to ASCII"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

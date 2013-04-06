@@ -1,0 +1,6 @@
+obspy.mseed.util.getStartAndEndTime
+===================================
+
+.. currentmodule:: obspy.mseed.util
+
+.. autofunction:: getStartAndEndTime

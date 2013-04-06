@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.write
+============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.write

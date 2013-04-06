@@ -1,0 +1,6 @@
+obspy.xseed.utils.getXPath
+==========================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: getXPath

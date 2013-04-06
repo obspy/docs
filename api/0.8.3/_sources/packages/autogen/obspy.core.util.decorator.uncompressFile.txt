@@ -1,0 +1,6 @@
+obspy.core.util.decorator.uncompressFile
+========================================
+
+.. currentmodule:: obspy.core.util.decorator
+
+.. autofunction:: uncompressFile

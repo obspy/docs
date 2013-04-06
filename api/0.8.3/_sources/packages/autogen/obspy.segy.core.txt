@@ -1,0 +1,53 @@
+obspy.segy.core
+===============
+
+.. currentmodule:: obspy.segy.core
+.. automodule:: obspy.segy.core
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      __segy_trace__str__
+      isSEGY
+      isSU
+      readSEGY
+      readSU
+      writeSEGY
+      writeSU
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      LazyTraceHeaderAttribDict
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEGYCoreWritingError
+      SEGYSampleIntervalError
+   
+   

@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.realtime.rttrace &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.realtime.rttrace</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for handling ObsPy RtTrace objects.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org) &amp; Anthony Lomax</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">Stats</span>
+<span class="kn">from</span> <span class="nn">obspy.realtime</span> <span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">from</span> <span class="nn">obspy.realtime.rtmemory</span> <span class="kn">import</span> <span class="n">RtMemory</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="c"># dictionary to map given type-strings to processing functions keys must be all</span>
+<span class="c"># lower case - values are tuples: (function name, number of RtMemory objects)</span>
+<span class="n">REALTIME_PROCESS_FUNCTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;scale&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s">&#39;integrate&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">integrate</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;differentiate&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">differentiate</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;boxcar&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">boxcar</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s">&#39;tauc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">tauc</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s">&#39;mwpintegral&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">mwpIntegral</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="RtTrace"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.html#obspy.realtime.rttrace.RtTrace">[docs]</a><span class="k">class</span> <span class="nc">RtTrace</span><span class="p">(</span><span class="n">Trace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An object containing data of a continuous series constructed dynamically</span>
+<span class="sd">    from sequential data packets.</span>
+
+<span class="sd">    New data packets may be periodically appended. Registered time-domain</span>
+<span class="sd">    processes can be applied to the new data and the resulting trace will be</span>
+<span class="sd">    left trimmed to maintain a specified maximum trace length.</span>
+
+<span class="sd">    :type max_length: int, optional</span>
+<span class="sd">    :param max_length: maximum trace length in seconds</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    RtTrace has been built to handle real time processing of periodically</span>
+<span class="sd">    append data packets, such as adding and processing data requested from an</span>
+<span class="sd">    SeedLink server. See :mod:`obspy.seedlink` for further information.</span>
+
+<span class="sd">    For the sake of simplicity we will just split data of an existing example</span>
+<span class="sd">    file into multiple chucks (Trace objects) of about equal size (step 1 + 2)</span>
+<span class="sd">    and append those chunks in a simple loop (step 4) into an RtTrace object.</span>
+<span class="sd">    Additionally there are two real time processing functions registered to the</span>
+<span class="sd">    RtTrace object (step 3) which will automatically process any appended data</span>
+<span class="sd">    chunks.</span>
+
+<span class="sd">    1. Read first trace of example SAC data file and extract contained time</span>
+<span class="sd">       offset and epicentral distance of an earthquake::</span>
+
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; from obspy.realtime import RtTrace</span>
+<span class="sd">        &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">        &gt;&gt;&gt; from obspy.realtime.signal import calculateMwpMag</span>
+<span class="sd">        &gt;&gt;&gt; data_trace = read(&#39;/path/to/II.TLY.BHZ.SAC&#39;)[0]</span>
+<span class="sd">        &gt;&gt;&gt; len(data_trace)</span>
+<span class="sd">        12684</span>
+<span class="sd">        &gt;&gt;&gt; ref_time_offset = data_trace.stats.sac.a</span>
+<span class="sd">        &gt;&gt;&gt; print(ref_time_offset)</span>
+<span class="sd">        301.506</span>
+<span class="sd">        &gt;&gt;&gt; epicentral_distance = data_trace.stats.sac.gcarc</span>
+<span class="sd">        &gt;&gt;&gt; print(epicentral_distance)</span>
+<span class="sd">        30.0855</span>
+
+<span class="sd">    2. Split given trace into a list of three sub-traces::</span>
+
+<span class="sd">        &gt;&gt;&gt; traces = data_trace / 3</span>
+<span class="sd">        &gt;&gt;&gt; [len(tr) for tr in traces]</span>
+<span class="sd">        [4228, 4228, 4228]</span>
+
+<span class="sd">    3. Assemble real time trace and register two processes::</span>
+
+<span class="sd">        &gt;&gt;&gt; rt_trace = RtTrace()</span>
+<span class="sd">        &gt;&gt;&gt; rt_trace.registerRtProcess(&#39;integrate&#39;)</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; rt_trace.registerRtProcess(&#39;mwpIntegral&#39;, mem_time=240,</span>
+<span class="sd">        ...     ref_time=(data_trace.stats.starttime + ref_time_offset),</span>
+<span class="sd">        ...     max_time=120, gain=1.610210e+09)</span>
+<span class="sd">        2</span>
+
+<span class="sd">    4. Append and auto-process packet data into RtTrace::</span>
+
+<span class="sd">        &gt;&gt;&gt; for tr in traces:</span>
+<span class="sd">        ...     processed_trace = rt_trace.append(tr, gap_overlap_check=True)</span>
+<span class="sd">        ...</span>
+<span class="sd">        &gt;&gt;&gt; len(rt_trace)</span>
+<span class="sd">        12684</span>
+
+<span class="sd">    5. Some post processing to get Mwp::</span>
+
+<span class="sd">        &gt;&gt;&gt; peak = np.amax(np.abs(rt_trace.data))</span>
+<span class="sd">        &gt;&gt;&gt; print(peak)</span>
+<span class="sd">        0.136404</span>
+<span class="sd">        &gt;&gt;&gt; mwp = calculateMwpMag(peak, epicentral_distance)</span>
+<span class="sd">        &gt;&gt;&gt; print(mwp)</span>
+<span class="sd">        8.78902911791</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">have_appended_data</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RtTrace.rtProcessFunctionsToString"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.rtProcessFunctionsToString.html#obspy.realtime.rttrace.RtTrace.rtProcessFunctionsToString">[docs]</a>    <span class="k">def</span> <span class="nf">rtProcessFunctionsToString</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return doc string for all predefined real-time processing functions.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :return: String containing doc for all real-time processing functions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&#39;Real-time processing functions (use as: &#39;</span> <span class="o">+</span> \
+            <span class="s">&#39;RtTrace.registerRtProcess(process_name, [parameter values])):</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">:</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="s">&#39;  &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="mi">80</span> <span class="o">*</span> <span class="s">&#39;-&#39;</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtTrace.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.__init__.html#obspy.realtime.rttrace.RtTrace.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes an RtTrace.</span>
+
+<span class="sd">        See :class:`obspy.core.trace.Trace` for all parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># set window length attribute</span>
+        <span class="k">if</span> <span class="n">max_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">max_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Input max_length out of bounds: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">max_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
+
+        <span class="c"># initialize processing list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># initialize parent Trace with no data or header - all data must be</span>
+        <span class="c"># added using append</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RtTrace</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtTrace.__eq__"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.__eq__.html#obspy.realtime.rttrace.RtTrace.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements rich comparison of RtTrace objects for &quot;==&quot; operator.</span>
+
+<span class="sd">        Traces are the same, if both their data and stats are the same.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check if other object is a RtTrace</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">RtTrace</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RtTrace</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtTrace.__add__"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.__add__.html#obspy.realtime.rttrace.RtTrace.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Too ambiguous, throw an Error.</span>
+
+<span class="sd">        .. seealso:: :meth:`obspy.realtime.RtTrace.append`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Too ambiguous for realtime trace data. Try: RtTrace.append()&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtTrace.append"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.append.html#obspy.realtime.rttrace.RtTrace.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">gap_overlap_check</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Appends a Trace object to this RtTrace.</span>
+
+<span class="sd">        Registered real-time processing will be applied to copy of appended</span>
+<span class="sd">        Trace object before it is appended.  This RtTrace will be truncated</span>
+<span class="sd">        from the beginning to RtTrace.max_length, if specified.</span>
+<span class="sd">        Sampling rate, data type and trace.id of both traces must match.</span>
+
+<span class="sd">        :type trace: :class:`~obspy.core.trace.Trace`</span>
+<span class="sd">        :param trace:  :class:`~obspy.core.trace.Trace` object to append to</span>
+<span class="sd">            this RtTrace</span>
+<span class="sd">        :type gap_overlap_check: bool, optional</span>
+<span class="sd">        :param gap_overlap_check: Action to take when there is a gap or overlap</span>
+<span class="sd">            between the end of this RtTrace and start of appended Trace:</span>
+<span class="sd">                If True, raise TypeError.</span>
+<span class="sd">                If False, all trace processing memory will be re-initialized to</span>
+<span class="sd">                    prevent false signal in processed trace.</span>
+<span class="sd">            (default is ``True``).</span>
+<span class="sd">        :type verbose: bool, optional</span>
+<span class="sd">        :param verbose: Print additional information to stdout</span>
+<span class="sd">        :return: NumPy :class:`np.ndarray` object containing processed trace</span>
+<span class="sd">            data from appended Trace object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+            <span class="c"># only add Trace objects</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Only obspy.core.trace.Trace objects are allowed&quot;</span><span class="p">)</span>
+
+        <span class="c"># sanity checks</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">have_appended_data</span><span class="p">:</span>
+            <span class="c">#  check id</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">getId</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Trace ID differs:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span>
+                                <span class="n">trace</span><span class="o">.</span><span class="n">getId</span><span class="p">())</span>
+            <span class="c">#  check sample rate</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Sampling rate differs:&quot;</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
+                                <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+            <span class="c">#  check calibration factor</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Calibration factor differs:&quot;</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span><span class="p">)</span>
+            <span class="c"># check data type</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Data type differs:&quot;</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c"># TODO: IMPORTANT? Should improve check for gaps and overlaps</span>
+        <span class="c"># and handle more elegantly</span>
+        <span class="c"># check times</span>
+        <span class="n">gap_or_overlap</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">have_appended_data</span><span class="p">:</span>
+            <span class="c">#delta = int(math.floor(\</span>
+            <span class="c">#    round((rt.stats.starttime - lt.stats.endtime) * sr, 5) )) - 1</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">-</span> <span class="mf">1.0</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">: Overlap/gap of (</span><span class="si">%g</span><span class="s">) samples in data: (</span><span class="si">%s</span><span class="s">) (</span><span class="si">%s</span><span class="s">) &quot;</span> <span class="o">+</span> \
+                    <span class="s">&quot;diff=</span><span class="si">%g</span><span class="s">s  dt=</span><span class="si">%g</span><span class="s">s&quot;</span>
+                <span class="k">print</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                             <span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span>
+                             <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Overlap of (</span><span class="si">%g</span><span class="s">) samples in data: (</span><span class="si">%s</span><span class="s">) (</span><span class="si">%s</span><span class="s">) diff=</span><span class="si">%g</span><span class="s">s&quot;</span> <span class="o">+</span> \
+                    <span class="s">&quot;  dt=</span><span class="si">%g</span><span class="s">s&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="o">-</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span>
+                             <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gap_overlap_check</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">gap_or_overlap</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Gap of (</span><span class="si">%g</span><span class="s">) samples in data: (</span><span class="si">%s</span><span class="s">) (</span><span class="si">%s</span><span class="s">) diff=</span><span class="si">%g</span><span class="s">s&quot;</span> <span class="o">+</span> \
+                    <span class="s">&quot;  dt=</span><span class="si">%g</span><span class="s">s&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span>
+                             <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gap_overlap_check</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">gap_or_overlap</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">gap_or_overlap</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot; - Trace processing memory will be re-initialized.&quot;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># correct start time to pin absolute trace timing to start of</span>
+                <span class="c"># appended trace, this prevents slow drift of nominal trace</span>
+                <span class="c"># timing from absolute time when nominal sample rate differs</span>
+                <span class="c"># from true sample rate</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">: self.stats.starttime adjusted by: </span><span class="si">%g</span><span class="s">s&quot;</span> \
+                        <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">diff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+        <span class="c"># first apply all registered processing to Trace</span>
+        <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="p">:</span>
+            <span class="n">process_name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">rtmemory_list</span> <span class="o">=</span> <span class="n">proc</span>
+            <span class="c"># if gap or overlap, clear memory</span>
+            <span class="k">if</span> <span class="n">gap_or_overlap</span> <span class="ow">and</span> <span class="n">rtmemory_list</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rtmemory_list</span><span class="p">)):</span>
+                    <span class="n">rtmemory_list</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">RtMemory</span><span class="p">()</span>
+            <span class="c"># apply processing</span>
+            <span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="s">&#39;__call__&#39;</span><span class="p">):</span>
+                <span class="c"># check if direct function call</span>
+                <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">process_name</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># got predefined function</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">[</span><span class="n">process_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">options</span><span class="p">[</span><span class="s">&#39;rtmemory_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rtmemory_list</span>
+                <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="c"># assure dtype is not changed</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c"># if first data, set stats</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">have_appended_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">Stats</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_appended_data</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="n">trace</span>
+        <span class="c"># handle all following data sets</span>
+        <span class="c"># fix Trace.__add__ parameters</span>
+        <span class="c"># TODO: IMPORTANT? Should check for gaps and overlaps and handle</span>
+        <span class="c"># more elegantly</span>
+        <span class="n">sum_trace</span> <span class="o">=</span> <span class="n">Trace</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">interpolation_samples</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s">&#39;latest&#39;</span><span class="p">,</span> <span class="n">sanity_checks</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Trace.__add__ returns new Trace, so update to this RtTrace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">sum_trace</span><span class="o">.</span><span class="n">data</span>
+        <span class="c"># left trim if data length exceeds max_length</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">max_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_samples</span><span class="p">:</span>
+                <span class="n">starttime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> \
+                    <span class="n">max_samples</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ltrim</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">nearest_sample</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">fill_value</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">trace</span>
+</div>
+<div class="viewcode-block" id="RtTrace.registerRtProcess"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.registerRtProcess.html#obspy.realtime.rttrace.RtTrace.registerRtProcess">[docs]</a>    <span class="k">def</span> <span class="nf">registerRtProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds real-time processing algorithm to processing list of this RtTrace.</span>
+
+<span class="sd">        Processing function must be one of:</span>
+<span class="sd">            %s. % REALTIME_PROCESS_FUNCTIONS.keys()</span>
+<span class="sd">            or a non-recursive, time-domain np or obspy function which takes</span>
+<span class="sd">            a single array as an argument and returns an array</span>
+
+<span class="sd">        :type process: str or function</span>
+<span class="sd">        :param process: Specifies which processing function is added,</span>
+<span class="sd">            e.g. ``&quot;boxcar&quot;`` or ``np.abs``` (functions without brackets).</span>
+<span class="sd">            See :mod:`obspy.realtime.signal` for all predefined processing</span>
+<span class="sd">            functions.</span>
+<span class="sd">        :type options: dict, optional</span>
+<span class="sd">        :param options: Required keyword arguments to be passed the respective</span>
+<span class="sd">            processing function, e.g. ``width=100`` for ``&#39;boxcar&#39;`` process.</span>
+<span class="sd">            See :mod:`obspy.realtime.signal` for all options.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :return: Length of processing list after registering new processing</span>
+<span class="sd">            function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># create process_name either from string or function name</span>
+        <span class="n">process_name</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">process</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c"># set processing entry for this process</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">rtmemory_list</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="s">&#39;__call__&#39;</span><span class="p">):</span>
+            <span class="c"># direct function call</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">process_name</span> <span class="ow">in</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">:</span>
+            <span class="c"># predefined function</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">[</span><span class="n">process_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">num</span><span class="p">:</span>
+                <span class="c"># make sure we have num new RtMemory instances</span>
+                <span class="n">rtmemory_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">RtMemory</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">)]</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">rtmemory_list</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># check if process name is contained within a predefined function,</span>
+            <span class="c"># e.g. &#39;int&#39; for &#39;integrate&#39;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">process_name</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">process_name</span> <span class="o">=</span> <span class="n">key</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">REALTIME_PROCESS_FUNCTIONS</span><span class="p">[</span><span class="n">process_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">num</span><span class="p">:</span>
+                    <span class="c"># make sure we have num new RtMemory instances</span>
+                    <span class="n">rtmemory_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">RtMemory</span><span class="p">()</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">)]</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">rtmemory_list</span><span class="p">)</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Can&#39;t register process </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">process</span><span class="p">))</span>
+
+        <span class="c"># add process entry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+        <span class="c"># add processing information to the stats dictionary</span>
+        <span class="n">proc_info</span> <span class="o">=</span> <span class="s">&quot;realtime_process:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">process_name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addProcessingInfo</span><span class="p">(</span><span class="n">proc_info</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RtTrace.copy"><a class="viewcode-back" href="../../../packages/autogen/obspy.realtime.rttrace.RtTrace.copy.html#obspy.realtime.rttrace.RtTrace.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a deepcopy of this RtTrace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># XXX: ugly hack to allow deepcopy of an RtTrace object containing</span>
+        <span class="c"># registered NumPy function (numpy.ufunc) calls</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">processing</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">return</span> <span class="n">new</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

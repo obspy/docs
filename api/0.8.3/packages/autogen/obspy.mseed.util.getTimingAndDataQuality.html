@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.mseed.util.getTimingAndDataQuality &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.mseed.util" href="obspy.mseed.util.html" />
+    <link rel="next" title="obspy.mseed.util.shiftTimeOfFile" href="obspy.mseed.util.shiftTimeOfFile.html" />
+    <link rel="prev" title="obspy.mseed.util.getStartAndEndTime" href="obspy.mseed.util.getStartAndEndTime.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.shiftTimeOfFile.html" title="obspy.mseed.util.shiftTimeOfFile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getStartAndEndTime.html" title="obspy.mseed.util.getStartAndEndTime"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" accesskey="U">obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-mseed-util-gettiminganddataquality">
+<h1>obspy.mseed.util.getTimingAndDataQuality<a class="headerlink" href="#obspy-mseed-util-gettiminganddataquality" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.mseed.util.getTimingAndDataQuality">
+<tt class="descname">getTimingAndDataQuality</tt><big>(</big><em>file_or_file_object</em><big>)</big><a class="reference internal" href="../../_modules/obspy/mseed/util.html#getTimingAndDataQuality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.mseed.util.getTimingAndDataQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts all data quality flags of the given Mini-SEED file and returns
+statistics about the timing quality if applicable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_or_file_object</strong> (<em>basestring or open file-like object.</em>) <span class="dash" /> Mini-SEED file name or open file-like object
+containing a Mini-SEED record.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary with information about the timing quality and the data
+quality flags.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Data quality</p>
+<p>This method will count all set data quality flag bits in the fixed section
+of the data header in a Mini-SEED file and returns the total count for each
+flag type.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Bit</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[Bit 0]</td>
+<td>Amplifier saturation detected (station dependent)</td>
+</tr>
+<tr class="row-odd"><td>[Bit 1]</td>
+<td>Digitizer clipping detected</td>
+</tr>
+<tr class="row-even"><td>[Bit 2]</td>
+<td>Spikes detected</td>
+</tr>
+<tr class="row-odd"><td>[Bit 3]</td>
+<td>Glitches detected</td>
+</tr>
+<tr class="row-even"><td>[Bit 4]</td>
+<td>Missing/padded data present</td>
+</tr>
+<tr class="row-odd"><td>[Bit 5]</td>
+<td>Telemetry synchronization error</td>
+</tr>
+<tr class="row-even"><td>[Bit 6]</td>
+<td>A digital filter may be charging</td>
+</tr>
+<tr class="row-odd"><td>[Bit 7]</td>
+<td>Time tag is questionable</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Timing quality</p>
+<p>If the file has a Blockette 1001 statistics about the timing quality will
+also be returned. See the doctests for more information.</p>
+<p>This method will read the timing quality in Blockette 1001 for each
+record in the file if available and return the following statistics:
+Minima, maxima, average, median and upper and lower quantile.
+Quantiles are calculated using a integer round outwards policy: lower
+quantiles are rounded down (probability &lt; 0.5), and upper quantiles
+(probability &gt; 0.5) are rounded up.
+This gives no more than the requested probability in the tails, and at
+least the requested probability in the central area.
+The median is calculating by either taking the middle value or, with an
+even numbers of values, the average between the two middle values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getExampleFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="s">&quot;qualityflags.mseed&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="go">{&#39;data_quality_flags&#39;: [9, 8, 7, 6, 5, 4, 3, 2]}</span>
+</pre></div>
+</div>
+<p>Also works with file pointers and StringIOs.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="go">{&#39;data_quality_flags&#39;: [9, 8, 7, 6, 5, 4, 3, 2]}</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">file_object</span><span class="p">)</span>
+<span class="go">{&#39;data_quality_flags&#39;: [9, 8, 7, 6, 5, 4, 3, 2]}</span>
+</pre></div>
+</div>
+<p>If the file pointer or StringIO position does not correspond to the first
+record the omitted records will be skipped.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">file_object</span><span class="p">)</span>
+<span class="go">{&#39;data_quality_flags&#39;: [8, 8, 7, 6, 5, 4, 3, 2]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Reading a file with Blockette 1001 will return timing quality statistics.
+The data quality flags will always exists because they are part of the
+fixed Mini-SEED header and therefore need to be in every Mini-SEED file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="s">&quot;timingquality.mseed&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  
+<span class="go">{&#39;timing_quality_upper_quantile&#39;: 75.0,</span>
+<span class="go">&#39;data_quality_flags&#39;: [0, 0, 0, 0, 0, 0, 0, 0], &#39;timing_quality_min&#39;: 0.0,</span>
+<span class="go">&#39;timing_quality_lower_quantile&#39;: 25.0, &#39;timing_quality_average&#39;: 50.0,</span>
+<span class="go">&#39;timing_quality_median&#39;: 50.0, &#39;timing_quality_max&#39;: 100.0}</span>
+</pre></div>
+</div>
+<p>Also works with file pointers and StringIOs.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  
+<span class="go">{&#39;timing_quality_upper_quantile&#39;: 75.0,</span>
+<span class="go">&#39;data_quality_flags&#39;: [0, 0, 0, 0, 0, 0, 0, 0], &#39;timing_quality_min&#39;: 0.0,</span>
+<span class="go">&#39;timing_quality_lower_quantile&#39;: 25.0, &#39;timing_quality_average&#39;: 50.0,</span>
+<span class="go">&#39;timing_quality_median&#39;: 50.0, &#39;timing_quality_max&#39;: 100.0}</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getTimingAndDataQuality</span><span class="p">(</span><span class="n">file_object</span><span class="p">)</span>  
+<span class="go">{&#39;timing_quality_upper_quantile&#39;: 75.0,</span>
+<span class="go">&#39;data_quality_flags&#39;: [0, 0, 0, 0, 0, 0, 0, 0], &#39;timing_quality_min&#39;: 0.0,</span>
+<span class="go">&#39;timing_quality_lower_quantile&#39;: 25.0, &#39;timing_quality_average&#39;: 50.0,</span>
+<span class="go">&#39;timing_quality_median&#39;: 50.0, &#39;timing_quality_max&#39;: 100.0}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_object</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.mseed.util.getTimingAndDataQuality.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.shiftTimeOfFile.html" title="obspy.mseed.util.shiftTimeOfFile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.mseed.util.getStartAndEndTime.html" title="obspy.mseed.util.getStartAndEndTime"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.mseed.html" >obspy.mseed - Mini-SEED read and write support</a> &raquo;</li>
+          <li><a href="obspy.mseed.util.html" >obspy.mseed.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

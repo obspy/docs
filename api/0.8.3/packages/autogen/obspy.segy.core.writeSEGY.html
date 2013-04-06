@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.core.writeSEGY &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.segy.core" href="obspy.segy.core.html" />
+    <link rel="next" title="obspy.segy.core.writeSU" href="obspy.segy.core.writeSU.html" />
+    <link rel="prev" title="obspy.segy.core.readSU" href="obspy.segy.core.readSU.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.writeSU.html" title="obspy.segy.core.writeSU"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.readSU.html" title="obspy.segy.core.readSU"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.core.html" accesskey="U">obspy.segy.core</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-segy-core-writesegy">
+<h1>obspy.segy.core.writeSEGY<a class="headerlink" href="#obspy-segy-core-writesegy" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.segy.core.writeSEGY">
+<tt class="descname">writeSEGY</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>data_encoding=None</em>, <em>byteorder=None</em>, <em>textual_header_encoding=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/segy/core.html#writeSEGY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.segy.core.writeSEGY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a SEG Y file from given ObsPy Stream object.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This function should NOT be called directly, it registers via the
+the <a class="reference internal" href="obspy.core.stream.Stream.write.html#obspy.core.stream.Stream.write" title="obspy.core.stream.Stream.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of an
+ObsPy <a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object, call this instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stream</strong> (<a class="reference internal" href="obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a>) <span class="dash" /> The ObsPy Stream object to write.</li>
+<li><strong>filename</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Name of file to write.</li>
+<li><strong>data_encoding</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> <p>The data encoding is an integer with the following
+currently supported meaning:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">1</span></tt></dt>
+<dd>4 byte IBM floating points (float32)</dd>
+<dt><tt class="docutils literal"><span class="pre">2</span></tt></dt>
+<dd>4 byte Integers (int32)</dd>
+<dt><tt class="docutils literal"><span class="pre">3</span></tt></dt>
+<dd>2 byte Integer (int16)</dd>
+<dt><tt class="docutils literal"><span class="pre">5</span></tt></dt>
+<dd>4 byte IEEE floating points (float32)</dd>
+</dl>
+</div></blockquote>
+<p>The value in the brackets is the necessary dtype of the data. ObsPy
+will now automatically convert the data because data might change/loose
+precision during the conversion so the user has to take care of the
+correct dtype.</p>
+<p>If it is <tt class="docutils literal"><span class="pre">None</span></tt>, the value of the first Trace will be used for all
+consecutive Traces. If it is None for the first Trace, 1 (IBM floating
+point numbers) will be used. Different data encodings for different
+traces are currently not supported because these will most likely not
+be readable by other software.</p>
+</li>
+<li><strong>byteorder</strong> (<tt class="docutils literal"><span class="pre">'&lt;'</span></tt>, <tt class="docutils literal"><span class="pre">'&gt;'</span></tt>, or <tt class="docutils literal"><span class="pre">None</span></tt>) <span class="dash" /> Determines the endianness of the file. Either <tt class="docutils literal"><span class="pre">'&gt;'</span></tt> for
+big endian or <tt class="docutils literal"><span class="pre">'&lt;'</span></tt> for little endian. If is <tt class="docutils literal"><span class="pre">None</span></tt>, it will either
+be the endianness of the first Trace or if that is also not set, it
+will be big endian. A mix between little and big endian for the headers
+and traces is currently not supported.</li>
+<li><strong>textual_header_encoding</strong> (<tt class="docutils literal"><span class="pre">'EBCDIC'</span></tt>, <tt class="docutils literal"><span class="pre">'ASCII'</span></tt> or <tt class="docutils literal"><span class="pre">None</span></tt>) <span class="dash" /> The encoding of the textual header. If it
+is <tt class="docutils literal"><span class="pre">None</span></tt>, the textual_file_header_encoding attribute in the
+stats.segy dictionary of the first Trace is used and if that is not
+set, ASCII will be used.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will automatically set the data encoding field of the binary
+file header so the user does not need to worry about it.</p>
+<p>The starttime of every trace is not a required field in the SEG Y
+specification. If the starttime of a trace is UTCDateTime(0) it will be
+interpreted as a not-set starttime and no time is written to the trace
+header. Every other time will be written.</p>
+<p>SEG Y supports a sample interval from 1 to 65535 microseconds in steps of 1
+microsecond. Larger intervals cannot be supported due to the definition of
+the SEG Y format. Therefore the smallest possible sampling rate is ~ 15.26
+Hz. Please keep that in mind.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.segy.core.writeSEGY.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.writeSU.html" title="obspy.segy.core.writeSU"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.core.readSU.html" title="obspy.segy.core.readSU"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.core.html" >obspy.segy.core</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

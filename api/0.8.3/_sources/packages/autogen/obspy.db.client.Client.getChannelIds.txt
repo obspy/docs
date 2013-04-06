@@ -1,0 +1,6 @@
+obspy.db.client.Client.getChannelIds
+====================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getChannelIds

@@ -1,0 +1,6 @@
+obspy.xseed.fields.VariableString.read
+======================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: VariableString.read

@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.pop
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.pop

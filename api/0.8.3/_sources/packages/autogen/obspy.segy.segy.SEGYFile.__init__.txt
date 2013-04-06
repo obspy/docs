@@ -1,0 +1,6 @@
+obspy.segy.segy.SEGYFile.__init__
+=================================
+
+.. currentmodule:: obspy.segy.segy
+
+.. automethod:: SEGYFile.__init__

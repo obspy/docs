@@ -1,0 +1,6 @@
+obspy.xseed.fields.FixedString.write
+====================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: FixedString.write

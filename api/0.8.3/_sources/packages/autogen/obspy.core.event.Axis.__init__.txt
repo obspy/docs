@@ -1,0 +1,6 @@
+obspy.core.event.Axis.__init__
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.__init__

@@ -1,0 +1,977 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.spectral_estimation &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.spectral_estimation</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#------------------------------------------------------------------------------</span>
+<span class="c"># Filename: spectral_estimation.py</span>
+<span class="c">#  Purpose: Various Routines Related to Spectral Estimation</span>
+<span class="c">#   Author: Tobias Megies</span>
+<span class="c">#    Email: tobias.megies@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2011-2012 Tobias Megies</span>
+<span class="c">#------------------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Various Routines Related to Spectral Estimation</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">bisect</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">Stream</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getMatplotlibVersion</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cosTaper</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.util</span> <span class="kn">import</span> <span class="n">prevpow2</span>
+
+
+<span class="n">MATPLOTLIB_VERSION</span> <span class="o">=</span> <span class="n">getMatplotlibVersion</span><span class="p">()</span>
+
+<span class="n">dtiny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">tiny</span>
+
+
+<span class="k">if</span> <span class="n">MATPLOTLIB_VERSION</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="c"># if matplotlib is not present be silent about it and only raise the</span>
+    <span class="c"># ImportError if matplotlib actually is used (currently in psd() and</span>
+    <span class="c"># PPSD())</span>
+    <span class="n">msg_matplotlib_ImportError</span> <span class="o">=</span> <span class="s">&quot;Failed to import matplotlib. While this &quot;</span> \
+            <span class="s">&quot;is no dependency of obspy.signal it is however necessary for a &quot;</span> \
+            <span class="s">&quot;few routines. Please install matplotlib in order to be able &quot;</span> \
+            <span class="s">&quot;to use e.g. psd() or PPSD().&quot;</span>
+    <span class="c"># set up two dummy functions. this makes it possible to make the docstring</span>
+    <span class="c"># of psd() look like it should with two functions as default values for</span>
+    <span class="c"># kwargs although matplotlib might not be present and the routines</span>
+    <span class="c"># therefore not usable</span>
+
+    <span class="k">def</span> <span class="nf">detrend_none</span><span class="p">():</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">window_hanning</span><span class="p">():</span>
+        <span class="k">pass</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="c"># Import matplotlib routines. These are no official dependency of</span>
+    <span class="c"># obspy.signal so an import error should really only be raised if any</span>
+    <span class="c"># routine is used which relies on matplotlib (at the moment: psd, PPSD).</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">mlab</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">date2num</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FormatStrFormatter</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LinearSegmentedColormap</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.mlab</span> <span class="kn">import</span> <span class="n">detrend_none</span><span class="p">,</span> <span class="n">window_hanning</span>
+
+
+<span class="c"># build colormap as done in paper by mcnamara</span>
+<span class="n">CDICT</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;red&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                 <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+         <span class="s">&#39;green&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                   <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+         <span class="s">&#39;blue&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))}</span>
+<span class="n">NOISE_MODEL_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span>
+                                <span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="s">&quot;noise_models.npz&quot;</span><span class="p">)</span>
+<span class="c"># do not change these variables, otherwise results may differ from PQLX!</span>
+<span class="n">PPSD_LENGTH</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c"># psds are calculated on 1h long segments</span>
+<span class="n">PPSD_STRIDE</span> <span class="o">=</span> <span class="mi">1800</span>  <span class="c"># psds are calculated overlapping, moving 0.5h ahead</span>
+
+
+<div class="viewcode-block" id="psd"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.psd.html#obspy.signal.spectral_estimation.psd">[docs]</a><span class="k">def</span> <span class="nf">psd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">NFFT</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">Fs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">detrend</span><span class="o">=</span><span class="n">detrend_none</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window_hanning</span><span class="p">,</span>
+        <span class="n">noverlap</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :func:`matplotlib.mlab.psd`.</span>
+
+<span class="sd">    Always returns a onesided psd (positive frequencies only), corrects for</span>
+<span class="sd">    this fact by scaling with a factor of 2. Also, always normalizes to dB/Hz</span>
+<span class="sd">    by dividing with sampling rate.</span>
+
+<span class="sd">    This wrapper is intended to intercept changes in</span>
+<span class="sd">    :func:`matplotlib.mlab.psd` default behavior which changes with</span>
+<span class="sd">    matplotlib version 0.98.4:</span>
+
+<span class="sd">    * http://matplotlib.sourceforge.net/users/whats_new.html\</span>
+<span class="sd">#psd-amplitude-scaling</span>
+<span class="sd">    * http://matplotlib.sourceforge.net/_static/CHANGELOG</span>
+<span class="sd">      (entries on 2009-05-18 and 2008-11-11)</span>
+<span class="sd">    * http://matplotlib.svn.sourceforge.net/viewvc/matplotlib\</span>
+<span class="sd">?view=revision&amp;revision=6518</span>
+<span class="sd">    * http://matplotlib.sourceforge.net/api/api_changes.html#changes-for-0-98-x</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        For details on all arguments see :func:`matplotlib.mlab.psd`.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        When using `window=welch_taper`</span>
+<span class="sd">        (:func:`obspy.signal.spectral_estimation.welch_taper`)</span>
+<span class="sd">        and `detrend=detrend_linear` (:func:`matplotlib.mlab.detrend_linear`)</span>
+<span class="sd">        the psd function delivers practically the same results as PITSA.</span>
+<span class="sd">        Only DC and the first 3-4 lowest non-DC frequencies deviate very</span>
+<span class="sd">        slightly. In contrast to PITSA, this routine also returns the psd value</span>
+<span class="sd">        at the Nyquist frequency and therefore is one frequency sample longer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># check if matplotlib is available, no official dependency for obspy.signal</span>
+    <span class="k">if</span> <span class="n">MATPLOTLIB_VERSION</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg_matplotlib_ImportError</span><span class="p">)</span>
+
+    <span class="c"># check matplotlib version</span>
+    <span class="k">elif</span> <span class="n">MATPLOTLIB_VERSION</span> <span class="o">&gt;=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+        <span class="n">new_matplotlib</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_matplotlib</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="c"># build up kwargs that do not change with version 0.98.4</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;NFFT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NFFT</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;Fs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Fs</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;detrend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detrend</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">window</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;noverlap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">noverlap</span>
+    <span class="c"># add additional kwargs to control behavior for matplotlib versions higher</span>
+    <span class="c"># than 0.98.4. These settings make sure that the scaling is already done</span>
+    <span class="c"># during the following psd call for newer matplotlib versions.</span>
+    <span class="k">if</span> <span class="n">new_matplotlib</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;pad_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;sides&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;onesided&#39;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;scale_by_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="c"># do the actual call to mlab.psd</span>
+    <span class="n">Pxx</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">mlab</span><span class="o">.</span><span class="n">psd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c"># do scaling manually for old matplotlib versions</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_matplotlib</span><span class="p">:</span>
+        <span class="n">Pxx</span> <span class="o">=</span> <span class="n">Pxx</span> <span class="o">/</span> <span class="n">Fs</span>
+        <span class="n">Pxx</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pxx</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">2.0</span>
+    <span class="k">return</span> <span class="n">Pxx</span><span class="p">,</span> <span class="n">freqs</span>
+
+</div>
+<div class="viewcode-block" id="fft_taper"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.fft_taper.html#obspy.signal.spectral_estimation.fft_taper">[docs]</a><span class="k">def</span> <span class="nf">fft_taper</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cosine taper, 10 percent at each end (like done by [McNamara2004]_).</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Inplace operation, so data should be float.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">*=</span> <span class="n">cosTaper</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="welch_taper"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.welch_taper.html#obspy.signal.spectral_estimation.welch_taper">[docs]</a><span class="k">def</span> <span class="nf">welch_taper</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies a welch window to data. See</span>
+<span class="sd">    :func:`~obspy.signal.spectral_estimation.welch_window`.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Inplace operation, so data should be float.</span>
+
+<span class="sd">    :type data: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param data: Data to apply the taper to. Inplace operation, but also</span>
+<span class="sd">        returns data for convenience.</span>
+<span class="sd">    :returns: Tapered data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">*=</span> <span class="n">welch_window</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="welch_window"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.welch_window.html#obspy.signal.spectral_estimation.welch_window">[docs]</a><span class="k">def</span> <span class="nf">welch_window</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a welch window for data of length N.</span>
+
+<span class="sd">    Routine is checked against PITSA for both even and odd values, but not for</span>
+<span class="sd">    strange values like N&lt;5.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        See e.g.:</span>
+<span class="sd">        http://www.cg.tuwien.ac.at/hostings/cescg/CESCG99/TTheussl/node7.html</span>
+
+<span class="sd">    :type N: int</span>
+<span class="sd">    :param N: Length of window function.</span>
+<span class="sd">    :rtype: :class:`~numpy.ndarray`</span>
+<span class="sd">    :returns: Window function for tapering data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">taper_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">taper_left</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">taper_left</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="c"># first/last sample is zero by definition</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c"># even number of samples: two ones in the middle, perfectly symmetric</span>
+        <span class="n">taper_right</span> <span class="o">=</span> <span class="n">taper_left</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># odd number of samples: still two ones in the middle, however, not</span>
+        <span class="c"># perfectly symmetric anymore. right side is shorter by one sample</span>
+        <span class="n">nn</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">taper_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">taper_right</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">taper_right</span> <span class="o">/</span> <span class="n">nn</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">taper_left</span> <span class="o">=</span> <span class="n">taper_left</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c"># first/last sample is zero by definition</span>
+    <span class="n">taper_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">taper_right</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">taper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">taper_left</span><span class="p">,</span> <span class="n">taper_right</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">taper</span>
+
+</div>
+<div class="viewcode-block" id="PPSD"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.html#obspy.signal.spectral_estimation.PPSD">[docs]</a><span class="k">class</span> <span class="nc">PPSD</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to compile probabilistic power spectral densities for one combination</span>
+<span class="sd">    of network/station/location/channel/sampling_rate.</span>
+
+<span class="sd">    Calculations are based on the routine used by [McNamara2004]_.</span>
+<span class="sd">    For information on New High/Low Noise Model see [Peterson2003]_.</span>
+
+<span class="sd">    .. rubric:: Basic Usage</span>
+
+<span class="sd">    &gt;&gt;&gt; from obspy import read</span>
+<span class="sd">    &gt;&gt;&gt; from obspy.signal import PPSD</span>
+
+<span class="sd">    &gt;&gt;&gt; st = read()</span>
+<span class="sd">    &gt;&gt;&gt; tr = st.select(channel=&quot;EHZ&quot;)[0]</span>
+<span class="sd">    &gt;&gt;&gt; paz = {&#39;gain&#39;: 60077000.0,</span>
+<span class="sd">    ...        &#39;poles&#39;: [-0.037004+0.037016j, -0.037004-0.037016j,</span>
+<span class="sd">    ...                  -251.33+0j, -131.04-467.29j, -131.04+467.29j],</span>
+<span class="sd">    ...        &#39;sensitivity&#39;: 2516778400.0,</span>
+<span class="sd">    ...        &#39;zeros&#39;: [0j, 0j]}</span>
+
+<span class="sd">    &gt;&gt;&gt; ppsd = PPSD(tr.stats, paz)</span>
+<span class="sd">    &gt;&gt;&gt; print ppsd.id</span>
+<span class="sd">    BW.RJOB..EHZ</span>
+<span class="sd">    &gt;&gt;&gt; print ppsd.times</span>
+<span class="sd">    []</span>
+
+<span class="sd">    Now we could add data to the probabilistic psd (all processing like</span>
+<span class="sd">    demeaning, tapering and so on is done internally) and plot it like ...</span>
+
+<span class="sd">    &gt;&gt;&gt; ppsd.add(st) # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; print ppsd.times # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; ppsd.plot() # doctest: +SKIP</span>
+
+<span class="sd">    ... but the example stream is too short and does not contain enough data.</span>
+
+<span class="sd">    And/or we could save the ppsd data in a pickled file ...</span>
+
+<span class="sd">    &gt;&gt;&gt; ppsd.save(&quot;myfile.pkl&quot;) # doctest: +SKIP</span>
+
+<span class="sd">    ... that later can be loaded again using the `pickle` module in the Python</span>
+<span class="sd">    Standard Library, e.g. to add more data or plot it again.</span>
+
+<span class="sd">    &gt;&gt;&gt; import pickle</span>
+<span class="sd">    &gt;&gt;&gt; ppsd = pickle.load(&quot;myfile.pkl&quot;)  # doctest: +SKIP</span>
+
+<span class="sd">    For a real world example see the `ObsPy Tutorial`_.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        It is safer (but a bit slower) to provide a</span>
+<span class="sd">        :class:`~obspy.xseed.parser.Parser` instance with information from</span>
+<span class="sd">        e.g. a Dataless SEED than to just provide a static PAZ dictionary.</span>
+
+<span class="sd">    .. _`ObsPy Tutorial`: http://docs.obspy.org/tutorial/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="PPSD.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.__init__.html#obspy.signal.spectral_estimation.PPSD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">paz</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">skip_on_gaps</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">is_rotational_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">db_bins</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the PPSD object setting all fixed information on the station</span>
+<span class="sd">        that should not change afterwards to guarantee consistent spectral</span>
+<span class="sd">        estimates.</span>
+<span class="sd">        The necessary instrument response information can be provided in two</span>
+<span class="sd">        ways:</span>
+
+<span class="sd">        * Providing an `obspy.xseed` :class:`~obspy.xseed.parser.Parser`,</span>
+<span class="sd">          e.g. containing metadata from a Dataless SEED file. This is the safer</span>
+<span class="sd">          way but it might a bit slower because for every processed time</span>
+<span class="sd">          segment the response information is extracted from the parser.</span>
+<span class="sd">        * Providing a dictionary containing poles and zeros information. Be</span>
+<span class="sd">          aware that this leads to wrong results if the instrument&#39;s response</span>
+<span class="sd">          is changing with data added to the PPSD. Use with caution!</span>
+
+<span class="sd">        :note: When using `is_rotational_data=True` the applied processing</span>
+<span class="sd">               steps are changed. Differentiation of data (converting velocity</span>
+<span class="sd">               to acceleration data) will be omitted and a flat instrument</span>
+<span class="sd">               response is assumed, leaving away response removal and only</span>
+<span class="sd">               dividing by `paz[&#39;sensitivity&#39;]` specified in the provided `paz`</span>
+<span class="sd">               dictionary (other keys do not have to be present then). For</span>
+<span class="sd">               scaling factors that are usually multiplied to the data remember</span>
+<span class="sd">               to use the inverse as `paz[&#39;sensitivity&#39;]`.</span>
+
+<span class="sd">        :type stats: :class:`~obspy.core.trace.Stats`</span>
+<span class="sd">        :param stats: Stats of the station/instrument to process</span>
+<span class="sd">        :type paz: dict (optional)</span>
+<span class="sd">        :param paz: Response information of instrument. If not specified the</span>
+<span class="sd">                information is supposed to be present as stats.paz.</span>
+<span class="sd">        :type parser: :class:`obspy.xseed.parser.Parser` (optional)</span>
+<span class="sd">        :param parser: Parser instance with response information (e.g. read</span>
+<span class="sd">                from a Dataless SEED volume)</span>
+<span class="sd">        :type skip_on_gaps: Boolean (optional)</span>
+<span class="sd">        :param skip_on_gaps: Determines whether time segments with gaps should</span>
+<span class="sd">                be skipped entirely. McNamara &amp; Buland merge gappy</span>
+<span class="sd">                traces by filling with zeros. This results in a clearly</span>
+<span class="sd">                identifiable outlier psd line in the PPSD visualization. Select</span>
+<span class="sd">                `skip_on_gaps=True` for not filling gaps with zeros which might</span>
+<span class="sd">                result in some data segments shorter than 1 hour not used in</span>
+<span class="sd">                the PPSD.</span>
+<span class="sd">        :type is_rotational_data: Boolean (optional)</span>
+<span class="sd">        :param is_rotational_data: If set to True adapt processing of data to</span>
+<span class="sd">                rotational data. See note for details.</span>
+<span class="sd">        :type db_bins: List of three ints/floats</span>
+<span class="sd">        :param db_bins: Specify the lower and upper boundary and the width of</span>
+<span class="sd">                the db bins. The bin width might get adjusted to fit  a number</span>
+<span class="sd">                of equally spaced bins in between the given boundaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check if matplotlib is available, no official dependency for</span>
+        <span class="c"># obspy.signal</span>
+        <span class="k">if</span> <span class="n">MATPLOTLIB_VERSION</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg_matplotlib_ImportError</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">paz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Both paz and parser specified. Using parser object for &quot;</span> \
+                  <span class="s">&quot;metadata.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%(network)s</span><span class="s">.</span><span class="si">%(station)s</span><span class="s">.</span><span class="si">%(location)s</span><span class="s">.</span><span class="si">%(channel)s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">station</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_rotational_data</span> <span class="o">=</span> <span class="n">is_rotational_data</span>
+        <span class="c"># trace length for one hour piece</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">*</span> <span class="n">PPSD_LENGTH</span><span class="p">)</span>
+        <span class="c"># set paz either from kwarg or try to get it from stats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">paz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
+        <span class="k">if</span> <span class="n">skip_on_gaps</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c"># nfft is determined mimicing the fft setup in McNamara&amp;Buland paper:</span>
+        <span class="c"># (they take 13 segments overlapping 75% and truncate to next lower</span>
+        <span class="c">#  power of 2)</span>
+        <span class="c">#  - take number of points of whole ppsd segment (currently 1 hour)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span> <span class="o">=</span> <span class="n">PPSD_LENGTH</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span>
+        <span class="c">#  - make 13 single segments overlapping by 75%</span>
+        <span class="c">#    (1 full segment length + 25% * 12 full segment lengths)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span> <span class="o">/</span> <span class="mf">4.0</span>
+        <span class="c">#  - go to next smaller power of 2 for nfft</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span> <span class="o">=</span> <span class="n">prevpow2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nfft</span><span class="p">)</span>
+        <span class="c">#  - use 75% overlap (we end up with a little more than 13 segments..)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nlap</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.75</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times_gaps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist_stack</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setup_bins</span><span class="p">()</span>
+        <span class="c"># set up the binning for the db scale</span>
+        <span class="n">num_bins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">db_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">db_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">db_bins</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">db_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">db_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">num_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colormap</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s">&#39;mcnamara&#39;</span><span class="p">,</span> <span class="n">CDICT</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__setup_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes an initial dummy psd and thus sets up the bins and all the rest.</span>
+<span class="sd">        Should be able to do it without a dummy psd..</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dummy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">)</span>
+        <span class="n">_spec</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">mlab</span><span class="o">.</span><span class="n">psd</span><span class="p">(</span><span class="n">dummy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
+                               <span class="n">noverlap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nlap</span><span class="p">)</span>
+
+        <span class="c"># leave out first entry (offset)</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="n">per</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">freq</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per</span> <span class="o">=</span> <span class="n">per</span>
+        <span class="c"># calculate left/rigth edge of first period bin,</span>
+        <span class="c"># width of bin is one octave</span>
+        <span class="n">per_left</span> <span class="o">=</span> <span class="n">per</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">per_right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">per_left</span>
+        <span class="c"># calculate center period of first period bin</span>
+        <span class="n">per_center</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">per_left</span> <span class="o">*</span> <span class="n">per_right</span><span class="p">)</span>
+        <span class="c"># calculate mean of all spectral values in the first bin</span>
+        <span class="n">per_octaves_left</span> <span class="o">=</span> <span class="p">[</span><span class="n">per_left</span><span class="p">]</span>
+        <span class="n">per_octaves_right</span> <span class="o">=</span> <span class="p">[</span><span class="n">per_right</span><span class="p">]</span>
+        <span class="n">per_octaves</span> <span class="o">=</span> <span class="p">[</span><span class="n">per_center</span><span class="p">]</span>
+        <span class="c"># we move through the period range at 1/8 octave steps</span>
+        <span class="n">factor_eighth_octave</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mf">0.125</span>
+        <span class="c"># do this for the whole period range and append the values to our lists</span>
+        <span class="k">while</span> <span class="n">per_right</span> <span class="o">&lt;</span> <span class="n">per</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">per_left</span> <span class="o">*=</span> <span class="n">factor_eighth_octave</span>
+            <span class="n">per_right</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">per_left</span>
+            <span class="n">per_center</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">per_left</span> <span class="o">*</span> <span class="n">per_right</span><span class="p">)</span>
+            <span class="n">per_octaves_left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">per_left</span><span class="p">)</span>
+            <span class="n">per_octaves_right</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">per_right</span><span class="p">)</span>
+            <span class="n">per_octaves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">per_center</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per_octaves_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">per_octaves_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per_octaves_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">per_octaves_right</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">per_octaves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">per_octaves</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_bins</span> <span class="o">=</span> <span class="n">per_octaves</span>
+        <span class="c"># mid-points of all the period bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_bin_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">period_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">period_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if trace is compatible for use in the current PPSD instance.</span>
+<span class="sd">        Returns True if trace can be used or False if not.</span>
+
+<span class="sd">        :type trace: :class:`~obspy.core.trace.Trace`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">__insert_used_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">utcdatetime</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inserts the given UTCDateTime at the right position in the list keeping</span>
+<span class="sd">        the order intact.</span>
+
+<span class="sd">        :type utcdatetime: :class:`~obspy.core.utcdatetime.UTCDateTime`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bisect</span><span class="o">.</span><span class="n">insort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">,</span> <span class="n">utcdatetime</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__insert_gap_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets gap information of stream and adds the encountered gaps to the gap</span>
+<span class="sd">        list of the PPSD instance.</span>
+
+<span class="sd">        :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times_gaps</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">gap</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">gap</span><span class="p">[</span><span class="mi">5</span><span class="p">]]</span> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">getGaps</span><span class="p">()]</span>
+
+    <span class="k">def</span> <span class="nf">__insert_data_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets gap information of stream and adds the encountered gaps to the gap</span>
+<span class="sd">        list of the PPSD instance.</span>
+
+<span class="sd">        :type stream: :class:`~obspy.core.stream.Stream`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times_data</span> <span class="o">+=</span> \
+                <span class="p">[[</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">]</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__check_time_present</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">utcdatetime</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the given UTCDateTime is already part of the current PPSD</span>
+<span class="sd">        instance. That is, checks if from utcdatetime to utcdatetime plus 1</span>
+<span class="sd">        hour there is already data in the PPSD.</span>
+<span class="sd">        Returns True if adding an one hour piece starting at the given time</span>
+<span class="sd">        would result in an overlap of the ppsd data base, False if it is OK to</span>
+<span class="sd">        insert this piece of data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index1</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">,</span> <span class="n">utcdatetime</span><span class="p">)</span>
+        <span class="n">index2</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">,</span>
+                                     <span class="n">utcdatetime</span> <span class="o">+</span> <span class="n">PPSD_LENGTH</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index1</span> <span class="o">!=</span> <span class="n">index2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="PPSD.add"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.add.html#obspy.signal.spectral_estimation.PPSD.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process all traces with compatible information and add their spectral</span>
+<span class="sd">        estimates to the histogram containg the probabilistic psd.</span>
+<span class="sd">        Also ensures that no piece of data is inserted twice.</span>
+
+<span class="sd">        :type stream: :class:`~obspy.core.stream.Stream` or</span>
+<span class="sd">                :class:`~obspy.core.trace.Trace`</span>
+<span class="sd">        :param stream: Stream or trace with data that should be added to the</span>
+<span class="sd">                probabilistic psd histogram.</span>
+<span class="sd">        :returns: True if appropriate data were found and the ppsd statistics</span>
+<span class="sd">                were changed, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># return later if any changes were applied to the ppsd statistics</span>
+        <span class="n">changed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="c"># prepare the list of traces to go through</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">([</span><span class="n">stream</span><span class="p">])</span>
+        <span class="c"># select appropriate traces</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                               <span class="n">sampling_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+        <span class="c"># save information on available data and gaps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__insert_data_times</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__insert_gap_times</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+        <span class="c"># merge depending on skip_on_gaps set during __init__</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="c"># the following check should not be necessary due to the select()..</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sanity_check</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Skipping incompatible trace.&quot;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+            <span class="n">t2</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span>
+            <span class="k">while</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">PPSD_LENGTH</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_time_present</span><span class="p">(</span><span class="n">t1</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Already covered time spans detected (e.g. </span><span class="si">%s</span><span class="s">), &quot;</span> <span class="o">+</span> \
+                          <span class="s">&quot;skipping these slices.&quot;</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="n">t1</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># throw warnings if trace length is different</span>
+                    <span class="c"># than one hour..!?!</span>
+                    <span class="nb">slice</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t1</span> <span class="o">+</span> <span class="n">PPSD_LENGTH</span><span class="p">)</span>
+                    <span class="c"># XXX not good, should be working in place somehow</span>
+                    <span class="c"># XXX how to do it with the padding, though?</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__process</span><span class="p">(</span><span class="nb">slice</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__insert_used_time</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                            <span class="k">print</span> <span class="n">t1</span>
+                        <span class="n">changed</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">t1</span> <span class="o">+=</span> <span class="n">PPSD_STRIDE</span>  <span class="c"># advance half an hour</span>
+
+            <span class="c"># enforce time limits, pad zeros if gaps</span>
+            <span class="c">#tr.trim(t, t+PPSD_LENGTH, pad=True)</span>
+        <span class="k">return</span> <span class="n">changed</span>
+</div>
+    <span class="k">def</span> <span class="nf">__process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes a one-hour segment of data and adds the information to the</span>
+<span class="sd">        PPSD histogram. If Trace is compatible (station, channel, ...) has to</span>
+<span class="sd">        checked beforehand.</span>
+
+<span class="sd">        :type tr: :class:`~obspy.core.trace.Trace`</span>
+<span class="sd">        :param tr: Compatible Trace with data of one PPSD segment</span>
+<span class="sd">        :returns: True if segment was successfully added to histogram, False</span>
+<span class="sd">                otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># XXX DIRTY HACK!!</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># one last check..</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Got an non-one-hour piece of data to process. Skipping&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c"># being paranoid, only necessary if in-place operations would follow</span>
+        <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="c"># if trace has a masked array we fill in zeros</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c"># if it is no masked array, we get an AttributeError</span>
+        <span class="c"># and have nothing to do</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c"># get instrument response preferably from parser object</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">paz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">getPAZ</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Error getting response from parser:</span><span class="se">\n</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> \
+                      <span class="s">&quot;Skipping time segment(s).&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="n">paz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paz</span>
+        <span class="k">if</span> <span class="n">paz</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Missing poles and zeros information for response &quot;</span> \
+                  <span class="s">&quot;removal. Skipping time segment(s).&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c"># restitution:</span>
+        <span class="c"># mcnamara apply the correction at the end in freq-domain,</span>
+        <span class="c"># does it make a difference?</span>
+        <span class="c"># probably should be done earlier on bigger chunk of data?!</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_rotational_data</span><span class="p">:</span>
+            <span class="c"># in case of rotational data just remove sensitivity</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">/=</span> <span class="n">paz</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="n">paz</span><span class="p">,</span> <span class="n">remove_sensitivity</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">paz_simulate</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">simulate_sensitivity</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="c"># go to acceleration, do nothing for rotational data:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_rotational_data</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+
+        <span class="c"># use our own wrapper for mlab.psd to have consistent results on all</span>
+        <span class="c"># matplotlib versions</span>
+        <span class="n">spec</span><span class="p">,</span> <span class="n">_freq</span> <span class="o">=</span> <span class="n">psd</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfft</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
+                          <span class="n">detrend</span><span class="o">=</span><span class="n">mlab</span><span class="o">.</span><span class="n">detrend_linear</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">fft_taper</span><span class="p">,</span>
+                          <span class="n">noverlap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nlap</span><span class="p">)</span>
+
+        <span class="c"># leave out first entry (offset)</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c"># working with the periods not frequencies later so reverse spectrum</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c"># avoid calculating log of zero</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">spec</span> <span class="o">&lt;</span> <span class="n">dtiny</span>
+        <span class="n">spec</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtiny</span>
+
+        <span class="c"># go to dB</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+        <span class="n">spec</span> <span class="o">*=</span> <span class="mi">10</span>
+
+        <span class="n">spec_octaves</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># do this for the whole period range and append the values to our lists</span>
+        <span class="k">for</span> <span class="n">per_left</span><span class="p">,</span> <span class="n">per_right</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">per_octaves_left</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">per_octaves_right</span><span class="p">):</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[(</span><span class="n">per_left</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">per</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">per</span> <span class="o">&lt;=</span> <span class="n">per_right</span><span class="p">)]</span>
+            <span class="n">spec_center</span> <span class="o">=</span> <span class="n">specs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">spec_octaves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spec_center</span><span class="p">)</span>
+        <span class="n">spec_octaves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">spec_octaves</span><span class="p">)</span>
+
+        <span class="n">hist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xedges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">per_octaves</span><span class="p">,</span>
+                <span class="n">spec_octaves</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">period_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_bins</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># we have to make sure manually that the bins are always the same!</span>
+            <span class="c"># this is done with the various assert() statements above.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hist_stack</span> <span class="o">+=</span> <span class="n">hist</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c"># only during first run initialize stack with first histogram</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hist_stack</span> <span class="o">=</span> <span class="n">hist</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="PPSD.get_percentile"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.get_percentile.html#obspy.signal.spectral_estimation.PPSD.get_percentile">[docs]</a>    <span class="k">def</span> <span class="nf">get_percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">hist_cum</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns periods and approximate psd values for given percentile value.</span>
+
+<span class="sd">        :type percentile: int</span>
+<span class="sd">        :param percentile: percentile for which to return approximate psd</span>
+<span class="sd">                value. (e.g. a value of 50 is equal to the median.)</span>
+<span class="sd">        :type hist_cum: `numpy.ndarray` (optional)</span>
+<span class="sd">        :param hist_cum: if it was already computed beforehand, the normalized</span>
+<span class="sd">                cumulative histogram can be provided here (to avoid computing</span>
+<span class="sd">                it again), otherwise it is computed from the currently stored</span>
+<span class="sd">                histogram.</span>
+<span class="sd">        :returns: (periods, percentile_values)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hist_cum</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">hist_cum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_normalized_cumulative_histogram</span><span class="p">()</span>
+        <span class="c"># go to percent</span>
+        <span class="n">percentile</span> <span class="o">=</span> <span class="n">percentile</span> <span class="o">/</span> <span class="mf">100.0</span>
+        <span class="k">if</span> <span class="n">percentile</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># only for this special case we have to search from the other side</span>
+            <span class="c"># (otherwise we always get index 0 in .searchsorted())</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="s">&quot;right&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="s">&quot;left&quot;</span>
+        <span class="n">percentile_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">percentile</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">)</span> \
+                             <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">hist_cum</span><span class="p">]</span>
+        <span class="c"># map to power db values</span>
+        <span class="n">percentile_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_bins</span><span class="p">[</span><span class="n">percentile_values</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">period_bin_centers</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__get_normalized_cumulative_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current histogram in a cumulative version normalized per</span>
+<span class="sd">        period column, i.e. going from 0 to 1 from low to high psd values for</span>
+<span class="sd">        every period column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># sum up the columns to cumulative entries</span>
+        <span class="n">hist_cum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist_stack</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c"># normalize every column with its overall number of entries</span>
+        <span class="c"># (can vary from the number of self.times because of values outside</span>
+        <span class="c">#  the histogram db ranges)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">hist_cum</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c"># avoid zero division</span>
+        <span class="n">norm</span><span class="p">[</span><span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">hist_cum</span> <span class="o">=</span> <span class="p">(</span><span class="n">hist_cum</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">norm</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">hist_cum</span>
+
+<div class="viewcode-block" id="PPSD.save"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.save.html#obspy.signal.spectral_estimation.PPSD.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves PPSD instance as a pickled file that can be loaded again using</span>
+<span class="sd">        pickle.load(filename).</span>
+
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param filename: Name of output file with pickled PPSD object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PPSD.plot"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.plot.html#obspy.signal.spectral_estimation.PPSD.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">show_coverage</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">show_histogram</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+             <span class="n">show_percentiles</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+             <span class="n">show_noise_models</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the 2D histogram of the current PPSD.</span>
+<span class="sd">        If a filename is specified the plot is saved to this file, otherwise</span>
+<span class="sd">        a plot window is shown.</span>
+
+<span class="sd">        :type filename: str (optional)</span>
+<span class="sd">        :param filename: Name of output file</span>
+<span class="sd">        :type show_coverage: bool (optional)</span>
+<span class="sd">        :param show_coverage: Enable/disable second axes with representation of</span>
+<span class="sd">                data coverage time intervals.</span>
+<span class="sd">        :type show_percentiles: bool (optional)</span>
+<span class="sd">        :param show_percentiles: Enable/disable plotting of approximated</span>
+<span class="sd">                percentiles. These are calculated from the binned histogram and</span>
+<span class="sd">                are not the exact percentiles.</span>
+<span class="sd">        :type percentiles: list of ints</span>
+<span class="sd">        :param percentiles: percentiles to show if plotting of percentiles is</span>
+<span class="sd">                selected.</span>
+<span class="sd">        :type show_noise_models: bool (optional)</span>
+<span class="sd">        :param show_noise_models: Enable/disable plotting of noise models.</span>
+<span class="sd">        :type grid: bool (optional)</span>
+<span class="sd">        :param grid: Enable/disable grid in histogram plot.</span>
+<span class="sd">        :type show: bool (optional)</span>
+<span class="sd">        :param show: Enable/disable immediately showing the plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xedges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yedges</span><span class="p">)</span>
+        <span class="n">hist_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist_stack</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">show_coverage</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+            <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_histogram</span><span class="p">:</span>
+            <span class="n">ppsd</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">hist_stack</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">colormap</span><span class="p">)</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ppsd</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s">&quot;[%]&quot;</span><span class="p">)</span>
+            <span class="n">color_limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+            <span class="n">ppsd</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="o">*</span><span class="n">color_limits</span><span class="p">)</span>
+            <span class="n">cb</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="o">*</span><span class="n">color_limits</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">grid</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s">&quot;major&quot;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s">&quot;minor&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_percentiles</span><span class="p">:</span>
+            <span class="n">hist_cum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_normalized_cumulative_histogram</span><span class="p">()</span>
+            <span class="c"># for every period look up the approximate place of the percentiles</span>
+            <span class="k">for</span> <span class="n">percentile</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">:</span>
+                <span class="n">periods</span><span class="p">,</span> <span class="n">percentile_values</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_percentile</span><span class="p">(</span><span class="n">percentile</span><span class="o">=</span><span class="n">percentile</span><span class="p">,</span>
+                                            <span class="n">hist_cum</span><span class="o">=</span><span class="n">hist_cum</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;black&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_noise_models</span><span class="p">:</span>
+            <span class="n">model_periods</span><span class="p">,</span> <span class="n">high_noise</span> <span class="o">=</span> <span class="n">get_NHNM</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">model_periods</span><span class="p">,</span> <span class="n">high_noise</span><span class="p">,</span> <span class="s">&#39;0.4&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">model_periods</span><span class="p">,</span> <span class="n">low_noise</span> <span class="o">=</span> <span class="n">get_NLNM</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">model_periods</span><span class="p">,</span> <span class="n">low_noise</span><span class="p">,</span> <span class="s">&#39;0.4&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">semilogx</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">179</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;Period [s]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;Amplitude [dB]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">))</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">   </span><span class="si">%s</span><span class="s"> -- </span><span class="si">%s</span><span class="s">  (</span><span class="si">%i</span><span class="s"> segments)&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_coverage</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plot_coverage</span><span class="p">(</span><span class="n">ax2</span><span class="p">)</span>
+            <span class="c"># emulating fig.autofmt_xdate():</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">():</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_ha</span><span class="p">(</span><span class="s">&quot;right&quot;</span><span class="p">)</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="PPSD.plot_coverage"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.PPSD.plot_coverage.html#obspy.signal.spectral_estimation.PPSD.plot_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">plot_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the data coverage of the histogram of the current PPSD.</span>
+<span class="sd">        If a filename is specified the plot is saved to this file, otherwise</span>
+<span class="sd">        a plot window is shown.</span>
+
+<span class="sd">        :type filename: str (optional)</span>
+<span class="sd">        :param filename: Name of output file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plot_coverage</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">   </span><span class="si">%s</span><span class="s"> -- </span><span class="si">%s</span><span class="s">  (</span><span class="si">%i</span><span class="s"> segments)&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">__plot_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper function to plot coverage into given axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">figure</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis_date</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+        <span class="c"># plot data coverage</span>
+        <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">date2num</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">]</span>
+        <span class="n">ends</span> <span class="o">=</span> <span class="p">[</span><span class="n">date2num</span><span class="p">((</span><span class="n">t</span> <span class="o">+</span> <span class="n">PPSD_LENGTH</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_used</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c"># plot data</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_data</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&quot;g&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c"># plot gaps</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">times_gaps</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="get_NLNM"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.get_NLNM.html#obspy.signal.spectral_estimation.get_NLNM">[docs]</a><span class="k">def</span> <span class="nf">get_NLNM</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns periods and psd values for the New Low Noise Model.</span>
+<span class="sd">    For information on New High/Low Noise Model see [Peterson2003]_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">NOISE_MODEL_FILE</span><span class="p">)</span>
+    <span class="n">periods</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;model_periods&#39;</span><span class="p">]</span>
+    <span class="n">nlnm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;low_noise&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="n">nlnm</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_NHNM"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.spectral_estimation.get_NHNM.html#obspy.signal.spectral_estimation.get_NHNM">[docs]</a><span class="k">def</span> <span class="nf">get_NHNM</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns periods and psd values for the New High Noise Model.</span>
+<span class="sd">    For information on New High/Low Noise Model see [Peterson2003]_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">NOISE_MODEL_FILE</span><span class="p">)</span>
+    <span class="n">periods</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;model_periods&#39;</span><span class="p">]</span>
+    <span class="n">nlnm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;high_noise&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="n">nlnm</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

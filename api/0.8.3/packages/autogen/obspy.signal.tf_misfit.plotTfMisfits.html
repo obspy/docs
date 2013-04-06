@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.tf_misfit.plotTfMisfits &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.tf_misfit" href="obspy.signal.tf_misfit.html" />
+    <link rel="next" title="obspy.signal.tf_misfit.plotTfr" href="obspy.signal.tf_misfit.plotTfr.html" />
+    <link rel="prev" title="obspy.signal.tf_misfit.plotTfGofs" href="obspy.signal.tf_misfit.plotTfGofs.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfr.html" title="obspy.signal.tf_misfit.plotTfr"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfGofs.html" title="obspy.signal.tf_misfit.plotTfGofs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" accesskey="U">obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-tf-misfit-plottfmisfits">
+<h1>obspy.signal.tf_misfit.plotTfMisfits<a class="headerlink" href="#obspy-signal-tf-misfit-plottfmisfits" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.tf_misfit.plotTfMisfits">
+<tt class="descname">plotTfMisfits</tt><big>(</big><em>st1, st2, dt=0.01, t0=0.0, fmin=1.0, fmax=10.0, nf=100, w0=6, norm='global', st2_isref=True, left=0.1, bottom=0.1, h_1=0.2, h_2=0.125, h_3=0.2, w_1=0.2, w_2=0.6, w_cb=0.01, d_cb=0.0, show=True, plot_args=['k', 'r', 'b'], ylim=0.0, clim=0.0, cmap=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/tf_misfit.html#plotTfMisfits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.tf_misfit.plotTfMisfits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot all timefrequency misfits and the time series in one plot (per
+component).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>st1</strong> <span class="dash" /> signal 1 of two signals to compare, type numpy.ndarray with
+shape (number of components, number of time samples) or (number of
+timesamples, ) for single component data</li>
+<li><strong>st2</strong> <span class="dash" /> signal 2 of two signals to compare, type and shape as st1</li>
+<li><strong>dt</strong> <span class="dash" /> time step between two samples in st1 and st2</li>
+<li><strong>t0</strong> <span class="dash" /> starting time for plotting</li>
+<li><strong>fmin</strong> <span class="dash" /> minimal frequency to be analyzed</li>
+<li><strong>fmax</strong> <span class="dash" /> maximal frequency to be analyzed</li>
+<li><strong>nf</strong> <span class="dash" /> number of frequencies (will be chosen with logarithmic spacing)</li>
+<li><strong>w0</strong> <span class="dash" /> parameter for the wavelet, tradeoff between time and frequency
+resolution</li>
+<li><strong>norm</strong> <span class="dash" /> &#8216;global&#8217; or &#8216;local&#8217; normalization of the misfit</li>
+<li><strong>st2_isref</strong> <span class="dash" /> Boolean, True if st2 is a reference signal, False if none
+is a reference</li>
+<li><strong>left</strong> <span class="dash" /> plot distance from the left of the figure</li>
+<li><strong>bottom</strong> <span class="dash" /> plot distance from the bottom of the figure</li>
+<li><strong>h_1</strong> <span class="dash" /> height of the signal axes</li>
+<li><strong>h_2</strong> <span class="dash" /> height of the TEM and TPM axes</li>
+<li><strong>h_3</strong> <span class="dash" /> height of the TFEM and TFPM axes</li>
+<li><strong>w_1</strong> <span class="dash" /> width of the FEM and FPM axes</li>
+<li><strong>w_2</strong> <span class="dash" /> width of the TFEM, TFPM, signal etc. axes</li>
+<li><strong>w_cb</strong> <span class="dash" /> width of the colorbar axes</li>
+<li><strong>d_cb</strong> <span class="dash" /> distance of the colorbar axes to the other axes</li>
+<li><strong>show</strong> <span class="dash" /> show figure or return</li>
+<li><strong>plot_args</strong> <span class="dash" /> list of plot arguments passed to the signal 1/2 and
+TEM/TPM/FEM/FPM plots</li>
+<li><strong>ylim</strong> <span class="dash" /> limits in misfit for TEM/TPM/FEM/FPM</li>
+<li><strong>clim</strong> <span class="dash" /> limits of the colorbars</li>
+<li><strong>cmap</strong> <span class="dash" /> colormap for TFEM/TFPM, either a string or
+matplotlib.cm.Colormap instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">If show is False, returns a maplotlib.pyplot.figure object (single
+component data) or a list of figure objects (multi component data)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>For a signal with pure phase error</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../citations.html#kristekova2006">[Kristekova2006]</a>, Fig.(4)</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">hilbert</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tmax</span> <span class="o">=</span> <span class="mf">6.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmax</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A1</span> <span class="o">=</span> <span class="mf">4.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi1</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase_shift</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st1</span> <span class="o">=</span> <span class="p">(</span><span class="n">A1</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">))</span> <span class="o">*</span>
+<span class="gp">... </span>      <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f1</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">H1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Reference signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st2</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Distorted signal:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># generate analytical signal (hilbert transform) and add phase shift</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st1</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span> <span class="o">+</span>
+<span class="gp">... </span>                                    <span class="n">phase_shift</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTfMisfits</span><span class="p">(</span><span class="n">st1</span><span class="p">,</span> <span class="n">st2</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/c8e4698e1a.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/c8e4698e1a.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/c8e4698e1a.png" src="../../_images/c8e4698e1a.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.tf_misfit.plotTfMisfits.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfr.html" title="obspy.signal.tf_misfit.plotTfr"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfGofs.html" title="obspy.signal.tf_misfit.plotTfGofs"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" >obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

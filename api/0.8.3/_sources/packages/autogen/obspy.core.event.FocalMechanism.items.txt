@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.items
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.items

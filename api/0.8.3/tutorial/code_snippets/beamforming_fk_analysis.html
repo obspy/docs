@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Beamforming - FK Analysis &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="9. Seismogram Envelopes" href="seismogram_envelopes.html" />
+    <link rel="prev" title="7. Merging Seismograms" href="merging_seismograms.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seismogram_envelopes.html" title="9. Seismogram Envelopes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="merging_seismograms.html" title="7. Merging Seismograms"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="beamforming-fk-analysis">
+<h1>8. Beamforming - FK Analysis<a class="headerlink" href="#beamforming-fk-analysis" title="Permalink to this headline">¶</a></h1>
+<p>The following code shows how to do an FK Analysis with ObsPy. The data are from
+the blasting of the AGFA skyscraper in Munich. We execute
+<a class="reference internal" href="../../packages/autogen/obspy.signal.array_analysis.sonic.html#obspy.signal.array_analysis.sonic" title="obspy.signal.array_analysis.sonic"><tt class="xref py py-func docutils literal"><span class="pre">sonic()</span></tt></a> using the following settings:</p>
+<ul class="simple">
+<li>The slowness grid is set to corner values of -3.0 to 3.0 s/km with a step
+fraction of <tt class="docutils literal"><span class="pre">sl_s</span> <span class="pre">=</span> <span class="pre">0.03</span></tt>.</li>
+<li>The window length is 1.0 s, using a step fraction of 0.05 s.</li>
+<li>The data is bandpass filtered, using corners at 1.0 and 8.0 Hz,
+prewhitening is disabled.</li>
+<li><tt class="docutils literal"><span class="pre">semb_thres</span></tt> and <tt class="docutils literal"><span class="pre">vel_thres</span></tt> are set to infinitesimally small numbers
+and must not be changed.</li>
+<li>The <tt class="docutils literal"><span class="pre">timestamp</span></tt> will be written in <tt class="docutils literal"><span class="pre">'mlabdays'</span></tt>, which can be read
+directly by our plotting routine.</li>
+<li><tt class="docutils literal"><span class="pre">stime</span></tt> and <tt class="docutils literal"><span class="pre">etime</span></tt> have to be given in the UTCDateTime format.</li>
+</ul>
+<p>The output will be stored in <tt class="docutils literal"><span class="pre">out</span></tt>.</p>
+<p>The second half shows how to plot the output. We use the output
+<tt class="docutils literal"><span class="pre">out</span></tt> produced by <a class="reference internal" href="../../packages/autogen/obspy.signal.array_analysis.sonic.html#obspy.signal.array_analysis.sonic" title="obspy.signal.array_analysis.sonic"><tt class="xref py py-func docutils literal"><span class="pre">sonic()</span></tt></a>, which are
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy</span> <span class="pre">ndarrays</span></tt></a> containing timestamp, relative power,
+absolute power, backazimuth, slowness. The colorbar corresponds to relative
+power.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">AttribDict</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cornFreq2Paz</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.array_analysis</span> <span class="kn">import</span> <span class="n">sonic</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># Load data</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/agfa.mseed&quot;</span><span class="p">)</span>
+
+<span class="c"># Set PAZ and coordinates for all 5 channels</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">205479446.68601453</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108589</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.582967</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">205479446.68601453</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108192</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583120</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">250000000.0</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108692</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583414</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">+</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">-</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">222222228.10910088</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108456</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583049</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">+</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">-</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.105</span> <span class="o">+</span> <span class="mi">0</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">222222228.10910088</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108730</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583157</span><span class="p">})</span>
+
+
+<span class="c"># Instrument correction to 1Hz corner frequency</span>
+<span class="n">paz1hz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">damp</span><span class="o">=</span><span class="mf">0.707</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="s">&#39;self&#39;</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">paz1hz</span><span class="p">)</span>
+
+<span class="c"># Execute sonic</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="c"># slowness grid: X min, X max, Y min, Y max, Slow Step</span>
+    <span class="n">sll_x</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">slm_x</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">sll_y</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">slm_y</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">sl_s</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+    <span class="c"># sliding window properties</span>
+    <span class="n">win_len</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">win_frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="c"># frequency properties</span>
+    <span class="n">frqlow</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">frqhigh</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">prewhiten</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="c"># restrict output</span>
+    <span class="n">semb_thres</span><span class="o">=-</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">vel_thres</span><span class="o">=-</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s">&#39;mlabday&#39;</span><span class="p">,</span>
+    <span class="n">stime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20080217110515&quot;</span><span class="p">),</span> <span class="n">etime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20080217110545&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">sonic</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c"># Plot</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rel.power&#39;</span><span class="p">,</span> <span class="s">&#39;abs.power&#39;</span><span class="p">,</span> <span class="s">&#39;baz&#39;</span><span class="p">,</span> <span class="s">&#39;slow&#39;</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">out</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+               <span class="n">edgecolors</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">out</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_1.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_1.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_1.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/beamforming_fk_analysis_1.png" src="../../_images/beamforming_fk_analysis_1.png" />
+</div>
+<p>Another representation would be a polar plot, which sums the relative power in
+gridded bins, each defined by backazimuth and slowness of the analyzed signal
+part. The backazimuth is counted clockwise from north, the slowness limits can
+be set by hand.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">AttribDict</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cornFreq2Paz</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.array_analysis</span> <span class="kn">import</span> <span class="n">sonic</span>
+
+<span class="c"># Load data</span>
+<span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/agfa.mseed&quot;</span><span class="p">)</span>
+
+<span class="c"># Set PAZ and coordinates for all 5 channels</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">205479446.68601453</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108589</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.582967</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">205479446.68601453</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108192</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583120</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">-</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.03736</span> <span class="o">+</span> <span class="mf">0.03617</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">250000000.0</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108692</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583414</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">+</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">-</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">222222228.10910088</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108456</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583049</span><span class="p">})</span>
+
+<span class="n">st</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">paz</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">+</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.39823</span> <span class="o">-</span> <span class="mf">4.48709</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.105</span> <span class="o">+</span> <span class="mi">0</span><span class="n">j</span><span class="p">)],</span>
+    <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+    <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">222222228.10910088</span><span class="p">,</span>
+    <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+<span class="n">st</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">({</span>
+    <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="mf">48.108730</span><span class="p">,</span>
+    <span class="s">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.450000</span><span class="p">,</span>
+    <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="mf">11.583157</span><span class="p">})</span>
+
+
+<span class="c"># Instrument correction to 1Hz corner frequency</span>
+<span class="n">paz1hz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">damp</span><span class="o">=</span><span class="mf">0.707</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="s">&#39;self&#39;</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">paz1hz</span><span class="p">)</span>
+
+<span class="c"># Execute sonic</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="c"># slowness grid: X min, X max, Y min, Y max, Slow Step</span>
+    <span class="n">sll_x</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">slm_x</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">sll_y</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">slm_y</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">sl_s</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+    <span class="c"># sliding window properties</span>
+    <span class="n">win_len</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">win_frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="c"># frequency properties</span>
+    <span class="n">frqlow</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">frqhigh</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">prewhiten</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="c"># restrict output</span>
+    <span class="n">semb_thres</span><span class="o">=-</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">vel_thres</span><span class="o">=-</span><span class="mf">1e9</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s">&#39;mlabday&#39;</span><span class="p">,</span>
+    <span class="n">stime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20080217110515&quot;</span><span class="p">),</span> <span class="n">etime</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;20080217110545&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">sonic</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c"># Plot</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colorbar</span> <span class="kn">import</span> <span class="n">ColorbarBase</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">Normalize</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">hot_r</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+<span class="c">#</span>
+<span class="c"># make output human readable, adjust backazimuth to values between 0 and 360</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">rel_power</span><span class="p">,</span> <span class="n">abs_power</span><span class="p">,</span> <span class="n">baz</span><span class="p">,</span> <span class="n">slow</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">T</span>
+<span class="n">baz</span><span class="p">[</span><span class="n">baz</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">360</span>
+
+<span class="c"># choose number of fractions in plot (desirably 360 degree/N is an integer!)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">abins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">360.</span> <span class="o">/</span> <span class="n">N</span>
+<span class="n">sbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># sum rel power in bins given by abins and sbins</span>
+<span class="n">hist</span><span class="p">,</span> <span class="n">baz_edges</span><span class="p">,</span> <span class="n">sl_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="n">baz</span><span class="p">,</span> <span class="n">slow</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">abins</span><span class="p">,</span> <span class="n">sbins</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">rel_power</span><span class="p">)</span>
+
+<span class="c"># transform to gradient</span>
+<span class="n">baz_edges</span> <span class="o">=</span> <span class="n">baz_edges</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+<span class="c"># add polar and colorbar axes</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">cax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="n">polar</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">dh</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sl_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">sl_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">dw</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">baz_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">baz_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c"># circle through backazimuth</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hist</span><span class="p">):</span>
+    <span class="n">bars</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="p">(</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dw</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">),</span>
+                  <span class="n">height</span><span class="o">=</span><span class="n">dh</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">),</span>
+                  <span class="n">width</span><span class="o">=</span><span class="n">dw</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="n">dh</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span>
+                  <span class="n">color</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">row</span> <span class="o">/</span> <span class="n">hist</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="s">&#39;W&#39;</span><span class="p">])</span>
+
+<span class="c"># set slowness limits</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ColorbarBase</span><span class="p">(</span><span class="n">cax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+             <span class="n">norm</span><span class="o">=</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">hist</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">hist</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_2.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_2.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/beamforming_fk_analysis_2.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/beamforming_fk_analysis_2.png" src="../../_images/beamforming_fk_analysis_2.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/beamforming_fk_analysis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seismogram_envelopes.html" title="9. Seismogram Envelopes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="merging_seismograms.html" title="7. Merging Seismograms"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

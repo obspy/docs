@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.ResourceIdentifier &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI" href="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI.html" />
+    <link rel="prev" title="obspy.core.event.QuantityError.__subclasshook__" href="obspy.core.event.QuantityError.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI.html" title="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.QuantityError.__subclasshook__.html" title="obspy.core.event.QuantityError.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-resourceidentifier">
+<h1>obspy.core.event.ResourceIdentifier<a class="headerlink" href="#obspy-core-event-resourceidentifier" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.ResourceIdentifier">
+<em class="property">class </em><tt class="descname">ResourceIdentifier</tt><big>(</big><em>resource_id=None</em>, <em>prefix=None</em>, <em>referred_object=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#ResourceIdentifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.ResourceIdentifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Unique identifier of any resource so it can be referred to.</p>
+<p>In QuakeML many elements and types can have a unique id that other elements
+use to refer to it. This is called a ResourceIdentifier and it is used for
+the same purpose in the obspy.core.event classes.</p>
+<p>In QuakeML it has to be of the following regex form:</p>
+<div class="highlight-python"><pre>(smi|quakeml):[\w\d][\w\d\-\.\*\(\)_~']{2,}/[\w\d\-\.\*\(\)_~']
+[\w\d\-\.\*\(\)\+\?_~'=,;#/&amp;amp;]*</pre>
+</div>
+<p>e.g.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">smi:sub.website.org/event/12345678</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">quakeml:google.org/pick/unique_pick_id</span></tt></li>
+</ul>
+<p>smi stands for &#8220;seismological meta-information&#8221;.</p>
+<p>In this class it can be any hashable object, e.g. most immutable objects
+like numbers and strings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_id</strong> (<em>Any hashable object, e.g. numbers, strings, tuples, ...
+optional</em>) <span class="dash" /> A unique identifier of the element it refers to. It is
+not verified, that it actually is unique. The user has to take care of
+that. If no resource_id is given, uuid.uuid4() will be used to
+create one which assures uniqueness within one Python run.</li>
+<li><strong>prefix</strong> (<em>str, optional</em>) <span class="dash" /> An optional identifier that will be put in front of any
+automatically created resource_id. Will only have an effect if
+resource_id is not given. Makes automatically generated resource_ids
+more reasonable.</li>
+<li><strong>referred_object</strong> (<em>Python object, optional</em>) <span class="dash" /> The object this instance refers to. All instances
+created with the same resource_id will be able to access the object as
+long as at least one instance actual has a reference to it.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">General Usage</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="s">&#39;2012-04-11--385392&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span>
+<span class="go">ResourceIdentifier(resource_id=&quot;2012-04-11--385392&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># If no resource_id is given it will be generated automatically.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> 
+<span class="go">ResourceIdentifier(resource_id=&quot;...&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Supplying a prefix will simply prefix the automatically generated</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># resource_id.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;event&#39;</span><span class="p">)</span> 
+<span class="go">ResourceIdentifier(resource_id=&quot;event/...&quot;)</span>
+</pre></div>
+</div>
+<p>ResourceIdentifiers can, and oftentimes should, carry a reference to the
+object they refer to. This is a weak reference which means that if the
+object get deleted or runs out of scope, e.g. gets garbage collected, the
+reference will cease to exist.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref_count</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getrefcount</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">referred_object</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># The reference does not changed the reference count of the object.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ref_count</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">getrefcount</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># It actually is the same object.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">event</span> <span class="ow">is</span> <span class="n">res_id</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Deleting it, or letting the garbage collector handle the object will</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># invalidate the reference.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">event</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">res_id</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">()</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<p>The most powerful ability (and reason why one would want to use a resource
+identifier class in the first place) is that once a ResourceIdentifier with
+an attached referred object has been created, any other ResourceIdentifier
+instances with the same resource_id can retrieve that object. This works
+across all ResourceIdentifiers that have been instantiated within one
+Python run.
+This enables, e.g. the resource references between the different QuakeML
+elements to work in a rather natural way.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">event_object</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj_id</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">event_object</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="s">&quot;obspy.org/event/test&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref_a</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">res_id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># The object is refers to cannot be found yet. Because no instance that</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># an attached object has been created so far.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ref_a</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">()</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># This instance has an attached object.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref_b</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">res_id</span><span class="p">,</span> <span class="n">referred_object</span><span class="o">=</span><span class="n">event_object</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref_c</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">res_id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># All ResourceIdentifiers will refer to the same object.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">ref_a</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">())</span> <span class="o">==</span> <span class="n">obj_id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">ref_b</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">())</span> <span class="o">==</span> <span class="n">obj_id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">ref_c</span><span class="o">.</span><span class="n">getReferredObject</span><span class="p">())</span> <span class="o">==</span> <span class="n">obj_id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Any hashable type can be used as a resource_id.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Using a non-hashable resource_id will result in an error.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">TypeError</span>: <span class="n">resource_id needs to be a hashable type.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span><span class="o">.</span><span class="n">resource_id</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">TypeError</span>: <span class="n">resource_id needs to be a hashable type.</span>
+</pre></div>
+</div>
+<p>The id can be converted to a valid QuakeML ResourceIdentifier by calling
+the convertIDToQuakeMLURI() method. The resulting id will be of the form</p>
+<blockquote>
+<div>smi:authority_id/prefix/resource_id</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;origin&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span><span class="o">.</span><span class="n">convertIDToQuakeMLURI</span><span class="p">(</span><span class="n">authority_id</span><span class="o">=</span><span class="s">&quot;obspy.org&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> 
+<span class="go">ResourceIdentifier(resource_id=&quot;smi:obspy.org/origin/...&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span><span class="o">.</span><span class="n">convertIDToQuakeMLURI</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span>
+<span class="go">ResourceIdentifier(resource_id=&quot;smi:local/foo&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># A good way to create a QuakeML compatibly ResourceIdentifier from</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># scratch is</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;pick&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span><span class="o">.</span><span class="n">convertIDToQuakeMLURI</span><span class="p">(</span><span class="n">authority_id</span><span class="o">=</span><span class="s">&#39;obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span>  
+<span class="go">ResourceIdentifier(resource_id=&quot;smi:obspy.org/pick/...&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># If the given resource_id is already a valid QuakeML</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># ResourceIdentifier, nothing will happen.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="s">&#39;smi:test.org/subdir/id&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span>
+<span class="go">ResourceIdentifier(resource_id=&quot;smi:test.org/subdir/id&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span><span class="o">.</span><span class="n">convertIDToQuakeMLURI</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span>
+<span class="go">ResourceIdentifier(resource_id=&quot;smi:test.org/subdir/id&quot;)</span>
+</pre></div>
+</div>
+<p>ResourceIdentifiers are considered identical if the resource_ids are
+the same.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Create two different resource_ids.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id_1</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id_2</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span><span class="p">(</span><span class="n">res_id_1</span> <span class="o">!=</span> <span class="n">res_id_2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Equalize the resource_ids. NEVER do this. This just an example.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id_2</span><span class="o">.</span><span class="n">resource_id</span> <span class="o">=</span> <span class="n">res_id_1</span><span class="o">.</span><span class="n">resource_id</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span><span class="p">(</span><span class="n">res_id_1</span> <span class="o">==</span> <span class="n">res_id_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>ResourceIdentifier instances can be used as dictionary keys.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dictionary</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_id</span> <span class="o">=</span> <span class="n">ResourceIdentifier</span><span class="p">(</span><span class="n">resource_id</span><span class="o">=</span><span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictionary</span><span class="p">[</span><span class="n">res_id</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># The same resource_id can still be used as a key.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dictionary</span><span class="p">[</span><span class="s">&quot;foo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">items</span>
+<span class="go">[(ResourceIdentifier(resource_id=&quot;foo&quot;), &#39;bar&#39;), (&#39;foo&#39;, &#39;bar&#39;)]</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">resource_id</span></tt></td>
+<td>unique identifier of the current instance</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI.html#obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI" title="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI"><tt class="xref py py-obj docutils literal"><span class="pre">convertIDToQuakeMLURI</span></tt></a></td>
+<td>Converts the current resource_id to a valid QuakeML URI.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.copy.html#obspy.core.event.ResourceIdentifier.copy" title="obspy.core.event.ResourceIdentifier.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td>Returns a copy of the ResourceIdentifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.getQuakeMLURI.html#obspy.core.event.ResourceIdentifier.getQuakeMLURI" title="obspy.core.event.ResourceIdentifier.getQuakeMLURI"><tt class="xref py py-obj docutils literal"><span class="pre">getQuakeMLURI</span></tt></a></td>
+<td>Returns the resource_id as a valid QuakeML URI if possible. Does not</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.getReferredObject.html#obspy.core.event.ResourceIdentifier.getReferredObject" title="obspy.core.event.ResourceIdentifier.getReferredObject"><tt class="xref py py-obj docutils literal"><span class="pre">getReferredObject</span></tt></a></td>
+<td>Returns the object associated with the resource identifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.setReferredObject.html#obspy.core.event.ResourceIdentifier.setReferredObject" title="obspy.core.event.ResourceIdentifier.setReferredObject"><tt class="xref py py-obj docutils literal"><span class="pre">setReferredObject</span></tt></a></td>
+<td>Sets the object the ResourceIdentifier refers to.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier._ResourceIdentifier__delResourceID.html#obspy.core.event.ResourceIdentifier._ResourceIdentifier__delResourceID" title="obspy.core.event.ResourceIdentifier._ResourceIdentifier__delResourceID"><tt class="xref py py-obj docutils literal"><span class="pre">_ResourceIdentifier__delResourceID</span></tt></a></td>
+<td>Deleting is forbidden and will not work.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier._ResourceIdentifier__getResourceID.html#obspy.core.event.ResourceIdentifier._ResourceIdentifier__getResourceID" title="obspy.core.event.ResourceIdentifier._ResourceIdentifier__getResourceID"><tt class="xref py py-obj docutils literal"><span class="pre">_ResourceIdentifier__getResourceID</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier._ResourceIdentifier__setResourceID.html#obspy.core.event.ResourceIdentifier._ResourceIdentifier__setResourceID" title="obspy.core.event.ResourceIdentifier._ResourceIdentifier__setResourceID"><tt class="xref py py-obj docutils literal"><span class="pre">_ResourceIdentifier__setResourceID</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__eq__.html#obspy.core.event.ResourceIdentifier.__eq__" title="obspy.core.event.ResourceIdentifier.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__hash__.html#obspy.core.event.ResourceIdentifier.__hash__" title="obspy.core.event.ResourceIdentifier.__hash__"><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></a></td>
+<td>Uses the same hash as the resource id.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__init__.html#obspy.core.event.ResourceIdentifier.__init__" title="obspy.core.event.ResourceIdentifier.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__ne__.html#obspy.core.event.ResourceIdentifier.__ne__" title="obspy.core.event.ResourceIdentifier.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__repr__.html#obspy.core.event.ResourceIdentifier.__repr__" title="obspy.core.event.ResourceIdentifier.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.ResourceIdentifier.__str__.html#obspy.core.event.ResourceIdentifier.__str__" title="obspy.core.event.ResourceIdentifier.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.ResourceIdentifier.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI.html" title="obspy.core.event.ResourceIdentifier.convertIDToQuakeMLURI"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.QuantityError.__subclasshook__.html" title="obspy.core.event.QuantityError.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

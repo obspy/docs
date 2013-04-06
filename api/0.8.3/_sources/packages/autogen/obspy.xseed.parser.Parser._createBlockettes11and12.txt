@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._createBlockettes11and12
+==================================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._createBlockettes11and12

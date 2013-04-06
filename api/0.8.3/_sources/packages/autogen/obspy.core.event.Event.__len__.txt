@@ -1,0 +1,6 @@
+obspy.core.event.Event.__len__
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Event.__len__

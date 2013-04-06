@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.verify
+=====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.verify

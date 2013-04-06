@@ -1,0 +1,63 @@
+obspy.db.db.WaveformFile
+========================
+
+.. currentmodule:: obspy.db.db
+.. autoclass:: WaveformFile
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~WaveformFile.__dict__
+     ~WaveformFile.__doc__
+     ~WaveformFile.__mapper__
+     ~WaveformFile.__module__
+     ~WaveformFile.__table__
+     ~WaveformFile.__table_args__
+     ~WaveformFile.__tablename__
+     ~WaveformFile.__weakref__
+     ~WaveformFile.channels
+     ~WaveformFile.file
+     ~WaveformFile.format
+     ~WaveformFile.id
+     ~WaveformFile.metadata
+     ~WaveformFile.mtime
+     ~WaveformFile.path_id
+     ~WaveformFile.size
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~WaveformFile.__init__
+     ~WaveformFile.__repr__
+  
+
+  
+  

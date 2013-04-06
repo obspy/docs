@@ -1,0 +1,6 @@
+obspy.gse2.libgse2.ChksumError
+==============================
+
+.. currentmodule:: obspy.gse2.libgse2
+
+.. autoexception:: ChksumError

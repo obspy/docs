@@ -1,0 +1,1144 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.waveform &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.imaging.waveform</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: waveform.py</span>
+<span class="c">#  Purpose: Waveform plotting for obspy.Stream objects</span>
+<span class="c">#   Author: Lion Krischer</span>
+<span class="c">#    Email: krischer@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Lion Krischer</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Trace</span>
+<span class="kn">from</span> <span class="nn">obspy.core.preview</span> <span class="kn">import</span> <span class="n">mergePreviews</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">createEmptyDataChunk</span><span class="p">,</span> <span class="n">FlinnEngdahl</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util.decorator</span> <span class="kn">import</span> <span class="n">deprecated_keywords</span>
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">patches</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Waveform plotting for obspy.Stream objects.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU General Public License (GPL)</span>
+<span class="sd">    (http://www.gnu.org/licenses/gpl.txt)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="WaveformPlotting"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting.html#obspy.imaging.waveform.WaveformPlotting">[docs]</a><span class="k">class</span> <span class="nc">WaveformPlotting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that provides several solutions for plotting large and small waveform</span>
+<span class="sd">    data sets.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        This class should NOT be used directly, instead use the</span>
+<span class="sd">        :meth:`~obspy.core.stream.Stream.plot` method of the</span>
+<span class="sd">        ObsPy :class:`~obspy.core.stream.Stream` or</span>
+<span class="sd">        :class:`~obspy.core.trace.Trace` objects.</span>
+
+<span class="sd">    It uses matplotlib to plot the waveforms.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="WaveformPlotting.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting.__init__.html#obspy.imaging.waveform.WaveformPlotting.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks some variables and maps the kwargs to class variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;stream&#39;</span><span class="p">)</span>
+        <span class="c"># Check if it is a Stream or a Trace object.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">Stream</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Plotting is only supported for Stream or Trace objects.&#39;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Stream object should contain at least one Trace</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Empty stream object&quot;</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Type of the plot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;normal&#39;</span><span class="p">)</span>
+        <span class="c"># Start- and endtimes of the plots.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;starttime&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;endtime&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fig&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="c"># If no times are given take the min/max values from the stream object.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="k">for</span>
+                             <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="k">for</span>
+                           <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">])</span>
+        <span class="c"># Map stream object and slice just in case.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="p">)</span>
+        <span class="c"># normalize times</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;relative&#39;</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span>
+            <span class="c"># fix plotting boundaries</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c"># fix stream times</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">:</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">-</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="c"># Whether to use straight plotting or the fast minmax method.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plotting_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;method&#39;</span><span class="p">,</span> <span class="s">&#39;fast&#39;</span><span class="p">)</span>
+        <span class="c"># Below that value the data points will be plotted normally. Above it</span>
+        <span class="c"># the data will be plotted using a different approach (details see</span>
+        <span class="c"># below). Can be overwritten by the above self.plotting_method kwarg.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_npts</span> <span class="o">=</span> <span class="mi">400000</span>
+        <span class="c"># If automerge is enabled. Merge traces with the same id for the plot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">automerge</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;automerge&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="c"># If equal_scale is enabled all plots are equally scaled.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">equal_scale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;equal_scale&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Set default values.</span>
+        <span class="c"># The default value for the size is determined dynamically because</span>
+        <span class="c"># there might be more than one channel to plot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="c"># Values that will be used to calculate the size of the plot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_width</span> <span class="o">=</span> <span class="mi">800</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_height_per_channel</span> <span class="o">=</span> <span class="mi">250</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">800</span>
+            <span class="c"># Check the kind of plot.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;dayplot&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">600</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># One plot for each trace.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">automerge</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getMergablesIds</span><span class="p">()</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">count</span> <span class="o">*</span> <span class="mi">250</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="c"># Interval length in minutes for dayplot.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;interval&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="c"># Scaling.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_scaling_range</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;vertical_scaling_range&#39;</span><span class="p">,</span>
+                                                 <span class="bp">None</span><span class="p">)</span>
+        <span class="c"># Dots per inch of the plot. Might be useful for printing plots.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dpi&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="c"># Color of the graph.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;dayplot&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;#B2000F&#39;</span><span class="p">,</span> <span class="s">&#39;#004C12&#39;</span><span class="p">,</span> <span class="s">&#39;#847200&#39;</span><span class="p">,</span>
+                                              <span class="s">&#39;#0E01FF&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;number_of_ticks&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;number_of_ticks&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="c"># Background and face color.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background_color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;bgcolor&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;face_color&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="c"># Transparency. Overwrites background and facecolor settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;transparent&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transparent</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">background_color</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># Ticks.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tick_format&#39;</span><span class="p">,</span> <span class="s">&#39;%H:%M:%S&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tick_rotation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;tick_rotation&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c"># Whether or not to save a file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;outfile&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;handle&#39;</span><span class="p">)</span>
+        <span class="c"># File format of the resulting file. Usually defaults to PNG but might</span>
+        <span class="c"># be dependent on your matplotlib backend.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;show&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__getMergeId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">):</span>
+        <span class="n">tr_id</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">id</span>
+        <span class="c"># don&#39;t merge normal traces with previews</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+                <span class="n">tr_id</span> <span class="o">+=</span> <span class="s">&#39;preview&#39;</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c"># don&#39;t merge traces with different processing steps</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">processing</span><span class="p">:</span>
+                <span class="n">tr_id</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">processing</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">tr_id</span>
+
+    <span class="k">def</span> <span class="nf">__getMergablesIds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">:</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getMergeId</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tr_id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ids</span>
+
+<div class="viewcode-block" id="WaveformPlotting.plotWaveform"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting.plotWaveform.html#obspy.imaging.waveform.WaveformPlotting.plotWaveform">[docs]</a>    <span class="k">def</span> <span class="nf">plotWaveform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a graph of any given ObsPy Stream object. It either saves the</span>
+<span class="sd">        image directly to the file system or returns an binary image string.</span>
+
+<span class="sd">        For all color values you can use legit HTML names, HTML hex strings</span>
+<span class="sd">        (e.g. &#39;#eeefff&#39;) or you can pass an R , G , B tuple, where each of</span>
+<span class="sd">        R , G , B are in the range [0, 1]. You can also use single letters for</span>
+<span class="sd">        basic built-in colors (&#39;b&#39; = blue, &#39;g&#39; = green, &#39;r&#39; = red, &#39;c&#39; = cyan,</span>
+<span class="sd">        &#39;m&#39; = magenta, &#39;y&#39; = yellow, &#39;k&#39; = black, &#39;w&#39; = white) and gray shades</span>
+<span class="sd">        can be given as a string encoding a float in the 0-1 range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Setup the figure if not passed explicitly.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__setupFigure</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span>
+        <span class="c"># Determine kind of plot and do the actual plotting.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;dayplot&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotDay</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Adjust the subplot so there is always a fixed margin on every side</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s">&#39;dayplot&#39;</span><span class="p">:</span>
+            <span class="n">fract_y</span> <span class="o">=</span> <span class="mf">60.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+            <span class="n">fract_y2</span> <span class="o">=</span> <span class="mf">40.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+            <span class="n">fract_x</span> <span class="o">=</span> <span class="mf">80.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fract_y</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="n">fract_y2</span><span class="p">,</span>
+                                     <span class="n">left</span><span class="o">=</span><span class="n">fract_x</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fract_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="c"># The following just serves as a unified way of saving and displaying</span>
+        <span class="c"># the plots.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">transparent</span><span class="p">:</span>
+            <span class="n">extra_args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;dpi&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span>
+                          <span class="s">&#39;facecolor&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_color</span><span class="p">,</span>
+                          <span class="s">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_color</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extra_args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;dpi&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span>
+                          <span class="s">&#39;transparent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transparent</span><span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">:</span>
+            <span class="c"># If format is set use it.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
+                                 <span class="o">**</span><span class="n">extra_args</span><span class="p">)</span>
+            <span class="c"># Otherwise use format from self.outfile or default to PNG.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Return an binary imagestring if not self.outfile but self.format.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">:</span>
+                <span class="n">imgdata</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">imgdata</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
+                                 <span class="o">**</span><span class="n">extra_args</span><span class="p">)</span>
+                <span class="n">imgdata</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">imgdata</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WaveformPlotting.plot"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting.plot.html#obspy.imaging.waveform.WaveformPlotting.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the Traces showing one graph per Trace.</span>
+
+<span class="sd">        Plots the whole time series for self.max_npts points and less. For more</span>
+<span class="sd">        points it plots minmax values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stream_new</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Just remove empty traces.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">automerge</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">:</span>
+                <span class="n">stream_new</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                    <span class="n">stream_new</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Generate sorted list of traces (no copy)</span>
+            <span class="c"># Sort order, id, starttime, endtime</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getMergablesIds</span><span class="p">()</span>
+            <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+                <span class="n">stream_new</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">:</span>
+                    <span class="n">tr_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getMergeId</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">tr_id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
+                        <span class="c"># does not copy the elements of the data array</span>
+                        <span class="n">tr_ref</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                        <span class="c"># Trim does nothing if times are outside</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">&gt;=</span> <span class="n">tr_ref</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="ow">or</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">&lt;=</span> <span class="n">tr_ref</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="n">tr_ref</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                            <span class="n">stream_new</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr_ref</span><span class="p">)</span>
+                <span class="c"># delete if empty list</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream_new</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">stream_new</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                    <span class="k">continue</span>
+                <span class="n">stream_new</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">)</span>
+                <span class="n">stream_new</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="c"># If everything is lost in the process raise an Exception.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream_new</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Nothing to plot&quot;</span><span class="p">)</span>
+        <span class="c"># Create helper variable to track ids and min/max/mean values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Loop over each Trace and call the appropriate plotting method.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream_new</span><span class="p">):</span>
+            <span class="c"># Each trace needs to have the same sampling rate.</span>
+            <span class="n">sampling_rates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">_tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span> <span class="k">for</span> <span class="n">_tr</span> <span class="ow">in</span> <span class="n">tr</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sampling_rates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;All traces with the same id need to have the same &quot;</span> <span class="o">+</span> \
+                      <span class="s">&quot;sampling rate.&quot;</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">sampling_rates</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_color</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_new</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">axisbg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">background_color</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_new</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+            <span class="c"># XXX: Also enable the minmax plotting for previews.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotting_method</span> <span class="o">!=</span> <span class="s">&#39;full&#39;</span> <span class="ow">and</span> \
+                <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">*</span> <span class="n">sampling_rate</span> <span class="o">&gt;</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">max_npts</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__plotMinMax</span><span class="p">(</span><span class="n">stream_new</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__plotStraight</span><span class="p">(</span><span class="n">stream_new</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Set ticks.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plotSetXTicks</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plotSetYTicks</span><span class="p">()</span>
+</div>
+    <span class="nd">@deprecated_keywords</span><span class="p">({</span><span class="s">&#39;swap_time_axis&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+<div class="viewcode-block" id="WaveformPlotting.plotDay"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting.plotDay.html#obspy.imaging.waveform.WaveformPlotting.plotDay">[docs]</a>    <span class="k">def</span> <span class="nf">plotDay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extend the seismogram.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Create a copy of the stream because it might be operated on.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c"># Merge and trim to pad.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;All traces need to be of the same id for a dayplot&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Get minmax array.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dayplotGetMinMaxValues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Normalize array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dayplotNormalizeValues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Get timezone information. If none is  given, use local time.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;time_offset&#39;</span><span class="p">,</span>
+            <span class="nb">round</span><span class="p">((</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span> <span class="o">-</span> <span class="n">UTCDateTime</span><span class="p">())</span> <span class="o">/</span> <span class="mf">3600.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;timezone&#39;</span><span class="p">,</span> <span class="s">&#39;local time&#39;</span><span class="p">)</span>
+        <span class="c"># Try to guess how many steps are needed to advance one full time unit.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">&lt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="mi">60</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">&lt;</span> <span class="mi">1800</span> <span class="ow">and</span> <span class="mi">3600</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="mi">3600</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+        <span class="c"># Otherwise use a maximum value of 10.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">intervals</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="n">intervals</span>
+        <span class="c"># Create axis to plot on.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_color</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axisbg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">background_color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Adjust the subplots to be symmetrical. Also make some more room</span>
+        <span class="c"># at the top.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.88</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+        <span class="c"># Create x_value_array.</span>
+        <span class="n">aranged_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">x_values</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">aranged_array</span>
+        <span class="n">x_values</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">aranged_array</span>
+        <span class="n">intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># Loop over each step.</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">intervals</span><span class="p">):</span>
+            <span class="c"># Create offset array.</span>
+            <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">y_values</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">intervals</span> <span class="o">-</span> <span class="p">(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="c"># Add min and max values.</span>
+            <span class="n">y_values</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">y_values</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c"># Plot the values.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="n">_i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)])</span>
+        <span class="c"># Plot the scale, if required.</span>
+        <span class="n">scale_unit</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;data_unit&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scale_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plotDayplotScale</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">scale_unit</span><span class="p">)</span>
+        <span class="c"># Set ranges.</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">intervals</span> <span class="o">+</span> <span class="mf">0.3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+        <span class="c"># Set ticks.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dayplotSetYTicks</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dayplotSetXTicks</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># Choose to show grid but only on the x axis.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># Now try to plot some events.</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;events&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="c"># Potentially download some events with the help of obspy.neries.</span>
+        <span class="k">if</span> <span class="s">&quot;min_magnitude&quot;</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">obspy.neries</span> <span class="kn">import</span> <span class="n">Client</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+                <span class="n">events</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getEvents</span><span class="p">(</span><span class="n">min_datetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">,</span>
+                        <span class="n">max_datetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;catalog&quot;</span><span class="p">,</span>
+                        <span class="n">min_magnitude</span><span class="o">=</span><span class="n">events</span><span class="p">[</span><span class="s">&quot;min_magnitude&quot;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Could not download the events because of &#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">events</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_plotEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WaveformPlotting._plotEvent"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting._plotEvent.html#obspy.imaging.waveform.WaveformPlotting._plotEvent">[docs]</a>    <span class="k">def</span> <span class="nf">_plotEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper function to plot an event into the dayplot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s">&quot;preferred_origin&quot;</span><span class="p">):</span>
+            <span class="c"># Get the time from the preferred origin.</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">preferred_origin</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">origins</span><span class="p">:</span>
+                    <span class="n">origin</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">origins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">time</span>
+            <span class="c"># Attempt to get a magnitude string.</span>
+            <span class="n">mag</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">preferred_magnitude</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">mag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mag</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%.1f</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mag</span><span class="o">.</span><span class="n">mag</span><span class="p">,</span> <span class="n">mag</span><span class="o">.</span><span class="n">magnitude_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mag</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">FlinnEngdahl</span><span class="p">()</span><span class="o">.</span><span class="n">get_region</span><span class="p">(</span><span class="n">origin</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+                <span class="n">origin</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">region</span>
+            <span class="k">if</span> <span class="n">mag</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s">&quot;, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">mag</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s">&quot;time&quot;</span><span class="p">]</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s">&quot;text&quot;</span> <span class="ow">in</span> <span class="n">event</span> <span class="k">else</span> <span class="bp">None</span>
+
+        <span class="c"># Nothing to do if the event is not on the plot.</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="ow">or</span> <span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># Now find the position of the event in plot coordinates.</span>
+        <span class="n">frac</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="n">int_frac</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="n">event_frac</span> <span class="o">=</span> <span class="n">frac</span> <span class="o">/</span> <span class="n">int_frac</span>
+        <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_frac</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">x_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">event_frac</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">event_frac</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="c"># Some logic to get a somewhat sane positioning of the annotation</span>
+            <span class="c"># box and the arrow..</span>
+            <span class="n">text_offset_x</span> <span class="o">=</span> <span class="mf">0.10</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+            <span class="n">text_offset_y</span> <span class="o">=</span> <span class="mf">1.00</span>
+            <span class="c"># Relpos determines the connection of the arrow on the box in</span>
+            <span class="c"># relative coordinates.</span>
+            <span class="n">relpos</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+            <span class="c"># Arc strength is the amount of bending of the arrow.</span>
+            <span class="n">arc_strength</span> <span class="o">=</span> <span class="mf">0.25</span>
+            <span class="k">if</span> <span class="n">x_pos</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">):</span>
+                <span class="n">text_offset_x_sign</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">ha</span> <span class="o">=</span> <span class="s">&quot;left&quot;</span>
+                <span class="c"># Arc sign determines the direction of bending.</span>
+                <span class="n">arc_sign</span> <span class="o">=</span> <span class="s">&quot;+&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text_offset_x_sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+                <span class="n">ha</span> <span class="o">=</span> <span class="s">&quot;right&quot;</span>
+                <span class="n">relpos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">arc_sign</span> <span class="o">=</span> <span class="s">&quot;-&quot;</span>
+            <span class="k">if</span> <span class="n">y_pos</span> <span class="o">&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">):</span>
+                <span class="n">text_offset_y_sign</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="n">va</span> <span class="o">=</span> <span class="s">&quot;bottom&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text_offset_y_sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+                <span class="n">va</span> <span class="o">=</span> <span class="s">&quot;top&quot;</span>
+                <span class="k">if</span> <span class="n">arc_sign</span> <span class="o">==</span> <span class="s">&quot;-&quot;</span><span class="p">:</span>
+                    <span class="n">arc_sign</span> <span class="o">=</span> <span class="s">&quot;+&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">arc_sign</span> <span class="o">=</span> <span class="s">&quot;-&quot;</span>
+
+            <span class="c"># Draw the annotation including box.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span>
+                <span class="c"># The position of the event.</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">),</span>
+                <span class="c"># The position of the text, offset depending on the previously</span>
+                <span class="c"># calculated variables.</span>
+                <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="n">x_pos</span> <span class="o">+</span> <span class="n">text_offset_x_sign</span> <span class="o">*</span> <span class="n">text_offset_x</span><span class="p">,</span>
+                    <span class="n">y_pos</span> <span class="o">+</span> <span class="n">text_offset_y_sign</span> <span class="o">*</span> <span class="n">text_offset_y</span><span class="p">),</span>
+                <span class="c"># Everything in data coordinates.</span>
+                <span class="n">xycoords</span><span class="o">=</span><span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="n">textcoords</span><span class="o">=</span><span class="s">&quot;data&quot;</span><span class="p">,</span>
+                <span class="c"># Set the text alignment.</span>
+                <span class="n">ha</span><span class="o">=</span><span class="n">ha</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="n">va</span><span class="p">,</span>
+                <span class="c"># Text box style.</span>
+                <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s">&quot;round&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">),</span>
+                <span class="c"># Arrow style</span>
+                <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">arrowstyle</span><span class="o">=</span><span class="s">&quot;-&quot;</span><span class="p">,</span>
+                    <span class="n">connectionstyle</span><span class="o">=</span><span class="s">&quot;arc3, rad=</span><span class="si">%s%.1f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arc_sign</span><span class="p">,</span>
+                    <span class="n">arc_strength</span><span class="p">),</span> <span class="n">relpos</span><span class="o">=</span><span class="n">relpos</span><span class="p">,</span> <span class="n">shrinkB</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>
+                <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="c"># Draw the actual point. Use a marker with a star shape.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="s">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;yellow&quot;</span><span class="p">,</span>
+            <span class="n">markersize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WaveformPlotting._plotDayplotScale"><a class="viewcode-back" href="../../../packages/autogen/obspy.imaging.waveform.WaveformPlotting._plotDayplotScale.html#obspy.imaging.waveform.WaveformPlotting._plotDayplotScale">[docs]</a>    <span class="k">def</span> <span class="nf">_plotDayplotScale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the dayplot scale if requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="mi">5</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">top</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">very_right</span> <span class="o">=</span> <span class="n">right</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span>
+        <span class="n">middle</span> <span class="o">=</span> <span class="n">bottom</span> <span class="o">+</span> <span class="p">(</span><span class="n">top</span> <span class="o">-</span> <span class="n">bottom</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="n">verts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">bottom</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">middle</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">very_right</span><span class="p">,</span> <span class="n">middle</span><span class="p">)</span>
+            <span class="p">]</span>
+
+        <span class="n">codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="o">.</span><span class="n">MOVETO</span><span class="p">,</span>
+                 <span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span><span class="p">,</span>
+                 <span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span><span class="p">,</span>
+                 <span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span><span class="p">,</span>
+                 <span class="n">Path</span><span class="o">.</span><span class="n">MOVETO</span><span class="p">,</span>
+                 <span class="n">Path</span><span class="o">.</span><span class="n">LINETO</span>
+                 <span class="p">]</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">codes</span><span class="p">)</span>
+        <span class="n">patch</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">PathPatch</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">)</span>
+        <span class="n">patch</span><span class="o">.</span><span class="n">set_clip_on</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_factor</span>
+        <span class="c"># Manually determine the number of after comma digits</span>
+        <span class="k">if</span> <span class="n">factor</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="n">fmt_string</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%.0f</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span>
+        <span class="k">elif</span> <span class="n">factor</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="n">fmt_string</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%.1f</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt_string</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%.2f</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">very_right</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span>
+            <span class="n">fmt_string</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalization_factor</span><span class="p">,</span> <span class="n">unit</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span>
+            <span class="n">va</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&quot;small&quot;</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__plotStraight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Just plots the data samples in the self.stream. Useful for smaller</span>
+<span class="sd">        datasets up to around 1000000 samples (depending on the machine its</span>
+<span class="sd">        being run on).</span>
+
+<span class="sd">        Slow and high memory consumption for large datasets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Copy to avoid any changes to original data.</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">trace</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">trace</span><span class="p">)</span>
+            <span class="c"># Merge with &#39;interpolation&#39;. In case of overlaps this method will</span>
+            <span class="c"># always use the longest available trace.</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;preview&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">(</span><span class="n">traces</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">mergePreviews</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stream</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">trace</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># Check if it is a preview file and adjust accordingly.</span>
+        <span class="c"># XXX: Will look weird if the preview file is too small.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;preview&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+            <span class="c"># Mask the gaps.</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+            <span class="c"># Recreate the min_max scene.</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">old_time_range</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="c"># The times are not supposed to change.</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">old_time_range</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">npts</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Write to self.stats.</span>
+        <span class="n">calib</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+        <span class="nb">max</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="nb">min</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="c"># set label</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="s">&#39;preview&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">preview</span><span class="p">:</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s">&#39; [preview]&#39;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">):</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">tr_id</span><span class="p">,</span> <span class="n">calib</span> <span class="o">*</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+                           <span class="n">calib</span> <span class="o">*</span> <span class="nb">min</span><span class="p">,</span> <span class="n">calib</span> <span class="o">*</span> <span class="nb">max</span><span class="p">])</span>
+        <span class="c"># Pad the beginning and the end with masked values if necessary. Might</span>
+        <span class="c"># seem like overkill but it works really fast and is a clean solution</span>
+        <span class="c"># to gaps at the beginning/end.</span>
+        <span class="n">concat</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">*</span> \
+                <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">samples</span><span class="p">))]</span>
+            <span class="n">concat</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">concat</span><span class="p">)</span>
+            <span class="n">concat</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">!=</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">endtime</span><span class="p">)</span> <span class="o">*</span> \
+                      <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+            <span class="n">concat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">samples</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">concat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c"># Use the masked array concatenate, otherwise it will result in a</span>
+            <span class="c"># not masked array.</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">concat</span><span class="p">)</span>
+            <span class="c"># set starttime and calculate endtime</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="n">calib</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="c"># Set the x limit for the graph to also show the masked values at the</span>
+        <span class="c"># beginning/end.</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__plotMinMax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the data using a min/max approach that calculated the minimum and</span>
+<span class="sd">        maximum values of each &quot;pixel&quot; and than plots only these values. Works</span>
+<span class="sd">        much faster with large data sets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Some variables to help calculate the values.</span>
+        <span class="n">starttime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">timestamp</span>
+        <span class="n">endtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="o">.</span><span class="n">timestamp</span>
+        <span class="c"># The same trace will always have the same sampling_rate.</span>
+        <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span>
+        <span class="c"># The samples per resulting pixel.</span>
+        <span class="n">pixel_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">starttime</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span>
+                           <span class="n">sampling_rate</span><span class="p">)</span>
+        <span class="c"># Loop over all the traces. Do not merge them as there are many samples</span>
+        <span class="c"># and therefore merging would be slow.</span>
+        <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+            <span class="c"># Get the start of the next pixel in case the starttime of the</span>
+            <span class="c"># trace does not match the starttime of the plot.</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">starttime</span>
+            <span class="k">if</span> <span class="n">ts</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(((</span><span class="n">ts</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">*</span>
+                        <span class="n">sampling_rate</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_length</span><span class="p">))</span>
+                <span class="c"># Samples before start.</span>
+                <span class="n">prestart</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">start</span> <span class="o">*</span> <span class="n">pixel_length</span> <span class="o">/</span>
+                           <span class="n">sampling_rate</span><span class="p">)</span> <span class="o">-</span> <span class="n">ts</span><span class="p">)</span> <span class="o">*</span> <span class="n">sampling_rate</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">prestart</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c"># Figure out the number of pixels in the current trace.</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">prestart</span>
+            <span class="n">pixel_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span> <span class="o">//</span> <span class="n">pixel_length</span><span class="p">)</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span> <span class="o">%</span> <span class="n">pixel_length</span><span class="p">)</span>
+            <span class="c"># Reference to new data array which does not copy data but is</span>
+            <span class="c"># reshapeable.</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">prestart</span><span class="p">:</span> <span class="n">prestart</span> <span class="o">+</span> <span class="n">pixel_count</span> <span class="o">*</span> <span class="n">pixel_length</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">pixel_count</span><span class="p">,</span> <span class="n">pixel_length</span><span class="p">)</span>
+            <span class="c"># Calculate extreme_values and put them into new array.</span>
+            <span class="n">extreme_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="nb">min</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+            <span class="nb">max</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+            <span class="n">extreme_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pixel_count</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span>
+            <span class="n">extreme_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pixel_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span>
+            <span class="c"># First and last and last pixel need separate treatment.</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">prestart</span><span class="p">:</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">prestart</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">prestart</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+            <span class="k">if</span> <span class="n">rest</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pixel_count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pixel_count</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="n">rest</span><span class="p">:]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="n">rest</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+            <span class="c"># Use the first array as a reference and merge all following</span>
+            <span class="c"># extreme_values into it.</span>
+            <span class="k">if</span> <span class="n">_i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">minmax</span> <span class="o">=</span> <span class="n">extreme_values</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Merge minmax and extreme_values.</span>
+                <span class="nb">min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="nb">max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="c"># Fill both with the values.</span>
+                <span class="nb">min</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="nb">min</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">extreme_values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="nb">max</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="nb">max</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">extreme_values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="c"># Find the minimum and maximum values.</span>
+                <span class="nb">min</span> <span class="o">=</span> <span class="nb">min</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="nb">max</span> <span class="o">=</span> <span class="nb">max</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c"># Write again to minmax.</span>
+                <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span>
+                <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span>
+        <span class="c"># set label</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;label&#39;</span><span class="p">):</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr_id</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+        <span class="c"># Write to self.stats.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">tr_id</span><span class="p">,</span> <span class="n">minmax</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+                           <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                           <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()])</span>
+        <span class="c"># Finally plot the data.</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">aranged</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">x_values</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">aranged</span>
+        <span class="n">x_values</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">aranged</span>
+        <span class="c"># Initialize completely masked array. This version is a little bit</span>
+        <span class="c"># slower than first creating an empty array and then setting the mask</span>
+        <span class="c"># to True. But on NumPy 1.1 this results in a 0-D array which can not</span>
+        <span class="c"># be indexed.</span>
+        <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">y_values</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_values</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">minmax</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="c"># Set the x-limit to avoid clipping of masked values.</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__plotSetXTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Goes through all axes in pyplot and sets time ticks on the x axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Loop over all axes.</span>
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
+            <span class="c"># Get the xlimits.</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+            <span class="c"># Set the location of the ticks.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span><span class="p">))</span>
+            <span class="c"># Figure out times.</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endtime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span> <span class="o">/</span> \
+                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c"># Set the actual labels.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;relative&#39;</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">_i</span> <span class="o">*</span> <span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span>
+                          <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">_i</span> <span class="o">*</span>
+                          <span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tick_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span>
+                          <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span><span class="p">)]</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">,</span>
+                               <span class="n">rotation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tick_rotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__plotSetYTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Goes through all axes in pyplot, reads self.stats and sets all ticks on</span>
+<span class="sd">        the y axis.</span>
+
+<span class="sd">        This method also adjusts the y limits so that the mean value is always</span>
+<span class="sd">        in the middle of the graph and all graphs are equally scaled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Figure out the maximum distance from the mean value to either end.</span>
+        <span class="c"># Add 10 percent for better looking graphs.</span>
+        <span class="n">max_distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">trace</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">trace</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.1</span>
+        <span class="c"># Loop over all axes.</span>
+        <span class="k">for</span> <span class="n">_i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">):</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal_scale</span><span class="p">:</span>
+                <span class="n">trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+                <span class="n">max_distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">trace</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                   <span class="n">trace</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.1</span>
+            <span class="c"># Set the ylimit.</span>
+            <span class="n">min_range</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">max_distance</span>
+            <span class="n">max_range</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">max_distance</span>
+            <span class="c"># Set the location of the ticks.</span>
+            <span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">mean</span> <span class="o">-</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">,</span>
+                     <span class="n">mean</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">,</span>
+                     <span class="n">mean</span> <span class="o">-</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">,</span>
+                     <span class="n">mean</span><span class="p">,</span>
+                     <span class="n">mean</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">,</span>
+                     <span class="n">mean</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">,</span>
+                     <span class="n">mean</span> <span class="o">+</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">max_distance</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
+            <span class="c"># Setup format of the major ticks</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">ticks</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="c"># integer numbers</span>
+                <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ticks</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">10e6</span><span class="p">:</span>
+                    <span class="c"># but switch back to exponential for huge numbers</span>
+                    <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2g</span><span class="s">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2g</span><span class="s">&#39;</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="n">fmt</span> <span class="o">%</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()],</span>
+                               <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">)</span>
+            <span class="c"># Set the title of each plot.</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span>
+                         <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">min_range</span><span class="p">,</span> <span class="n">max_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__dayplotGetMinMaxValues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a Stream object and calculates the min and max values for each</span>
+<span class="sd">        pixel in the dayplot.</span>
+
+<span class="sd">        Writes a three dimensional array. The first axis is the step, i.e</span>
+<span class="sd">        number of trace, the second is the pixel in that step and the third</span>
+<span class="sd">        contains the minimum and maximum value of the pixel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Helper variables for easier access.</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">trace_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c"># Samples per interval.</span>
+        <span class="n">spi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">*</span> <span class="n">trace</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">)</span>
+        <span class="c"># Check the approximate number of samples per pixel and raise</span>
+        <span class="c"># error as fit.</span>
+        <span class="n">spp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spi</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+        <span class="k">if</span> <span class="n">spp</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            Too few samples to use dayplot with the given arguments.</span>
+<span class="s">            Adjust your arguments or use a different plotting method.</span>
+<span class="s">            &quot;&quot;&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Number of intervals plotted.</span>
+        <span class="n">noi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">trace_length</span><span class="p">)</span> <span class="o">/</span> <span class="n">spi</span>
+        <span class="n">inoi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">noi</span><span class="p">))</span>
+        <span class="c"># Plot an extra interval if at least 2 percent of the last interval</span>
+        <span class="c"># will actually contain data. Do it this way to lessen floating point</span>
+        <span class="c"># inaccuracies.</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">noi</span> <span class="o">-</span> <span class="n">inoi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">2E-2</span><span class="p">:</span>
+            <span class="n">noi</span> <span class="o">=</span> <span class="n">inoi</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">noi</span> <span class="o">=</span> <span class="n">inoi</span>
+
+        <span class="c"># Adjust data. Fill with masked values in case it is necessary.</span>
+        <span class="n">number_of_samples</span> <span class="o">=</span> <span class="n">noi</span> <span class="o">*</span> <span class="n">spi</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">number_of_samples</span> <span class="o">-</span> <span class="n">trace_length</span>
+        <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">number_of_samples</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                            <span class="n">createEmptyDataChunk</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)])</span>
+
+        <span class="c"># Create array for min/max values. Use masked arrays to handle gaps.</span>
+        <span class="n">extreme_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">noi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">noi</span><span class="p">,</span> <span class="n">spi</span><span class="p">)</span>
+
+        <span class="n">ispp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">spp</span><span class="p">)</span>
+        <span class="n">fspp</span> <span class="o">=</span> <span class="n">spp</span> <span class="o">%</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">fspp</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">spi</span> <span class="o">-</span> <span class="n">ispp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+
+        <span class="c"># Loop over each interval to avoid larger errors towards the end.</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noi</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">delta</span><span class="p">:</span>
+                <span class="n">cur_interval</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">_i</span><span class="p">][:</span><span class="o">-</span><span class="n">delta</span><span class="p">]</span>
+                <span class="n">rest</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="o">-</span><span class="n">delta</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cur_interval</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span>
+            <span class="n">cur_interval</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">ispp</span><span class="p">)</span>
+            <span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_interval</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_interval</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c"># Add the rest.</span>
+            <span class="k">if</span> <span class="n">delta</span><span class="p">:</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                                <span class="n">rest</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                <span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">extreme_values</span><span class="p">[</span><span class="n">_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                                <span class="n">rest</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="c"># Set class variable.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">=</span> <span class="n">extreme_values</span>
+
+    <span class="k">def</span> <span class="nf">__dayplotNormalizeValues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalizes all values in the 3 dimensional array, so that the minimum</span>
+<span class="sd">        value will be 0 and the maximum value will be 1.</span>
+
+<span class="sd">        It will also convert all values to floats.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Convert to native floats.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span> <span class="o">*</span> \
+                              <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">calib</span>
+        <span class="c"># Make sure that the mean value is at 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+        <span class="c"># Scale so that 99.5 % of the data will fit the given range.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_scaling_range</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">percentile_delta</span> <span class="o">=</span> <span class="mf">0.005</span>
+            <span class="n">max_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+            <span class="n">min_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
+            <span class="c"># Remove masked values.</span>
+            <span class="n">max_values</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">min_values</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">max_values</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">percentile_delta</span><span class="p">)</span> <span class="o">*</span> <span class="n">length</span><span class="p">)</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="n">max_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">percentile_delta</span> <span class="o">*</span> <span class="n">length</span><span class="p">)</span>
+            <span class="n">min_val</span> <span class="o">=</span> <span class="n">min_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="c"># Exact fit.</span>
+        <span class="k">elif</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_scaling_range</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">min_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="c"># Fit with custom range.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="n">min_val</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_scaling_range</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="c"># Normalization factor.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">max_val</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">min_val</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+
+        <span class="c"># Scale from 0 to 1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalization_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span> <span class="o">+=</span> <span class="mf">0.5</span>
+
+    <span class="k">def</span> <span class="nf">__dayplotSetXTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the xticks for the dayplot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">localization_dict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;localization_dict&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">localization_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;seconds&#39;</span><span class="p">,</span> <span class="s">&#39;seconds&#39;</span><span class="p">)</span>
+        <span class="n">localization_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;minutes&#39;</span><span class="p">,</span> <span class="s">&#39;minutes&#39;</span><span class="p">)</span>
+        <span class="n">localization_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;hours&#39;</span><span class="p">,</span> <span class="s">&#39;hours&#39;</span><span class="p">)</span>
+        <span class="n">localization_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;time in&#39;</span><span class="p">,</span> <span class="s">&#39;time in&#39;</span><span class="p">)</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="c"># Check whether it are sec/mins/hours and convert to a universal unit.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">:</span>
+            <span class="n">time_type</span> <span class="o">=</span> <span class="n">localization_dict</span><span class="p">[</span><span class="s">&#39;seconds&#39;</span><span class="p">]</span>
+            <span class="n">time_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">&lt;</span> <span class="mi">24000</span><span class="p">:</span>
+            <span class="n">time_type</span> <span class="o">=</span> <span class="n">localization_dict</span><span class="p">[</span><span class="s">&#39;minutes&#39;</span><span class="p">]</span>
+            <span class="n">time_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">/</span> <span class="mi">60</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_type</span> <span class="o">=</span> <span class="n">localization_dict</span><span class="p">[</span><span class="s">&#39;hours&#39;</span><span class="p">]</span>
+            <span class="n">time_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">/</span> <span class="mi">3600</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># Hardcode some common values. The plus one is intentional. It had</span>
+        <span class="c"># hardly any performance impact and enhances readability.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">15</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">20</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">90</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">120</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">180</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">240</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">300</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">360</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">720</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c"># Otherwise run some kind of autodetection routine.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="p">:</span>
+            <span class="c"># Up to 15 time units and if its a full number, show every unit.</span>
+            <span class="k">if</span> <span class="n">time_value</span> <span class="o">&lt;=</span> <span class="mi">15</span> <span class="ow">and</span> <span class="n">time_value</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="n">time_value</span>
+            <span class="c"># Otherwise determine whether they are dividable for numbers up to</span>
+            <span class="c"># 15. If a number is not dividable just show 10 units.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="mi">10</span>
+                <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">time_value</span> <span class="o">%</span> <span class="n">_i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">count</span> <span class="o">=</span> <span class="n">_i</span>
+                        <span class="k">break</span>
+            <span class="c"># Show at least 5 ticks.</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="c"># Everything can be overwritten by user specified number of ticks.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ticks</span>
+        <span class="c"># Calculate and set ticks.</span>
+        <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+        <span class="n">ticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">_i</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">time_value</span><span class="p">,</span> <span class="n">count</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">ticklabels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tick_rotation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">localization_dict</span><span class="p">[</span><span class="s">&#39;time in&#39;</span><span class="p">],</span>
+                                           <span class="n">time_type</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__dayplotSetYTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the yticks for the dayplot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extreme_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># Do not display all ticks except if it are five or less steps.</span>
+        <span class="k">if</span> <span class="n">intervals</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">tick_steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">intervals</span><span class="p">)</span>
+            <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">ticks</span> <span class="o">-=</span> <span class="mf">0.5</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tick_steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">)</span>
+            <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">ticks</span> <span class="o">-=</span> <span class="mf">0.5</span>
+
+        <span class="c"># Complicated way to calculate the label of the y-Axis showing the</span>
+        <span class="c"># second time zone.</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%+i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_offset</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="n">sign</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;UTC (</span><span class="si">%s</span><span class="s"> = UTC </span><span class="si">%s</span><span class="s"> </span><span class="si">%02i</span><span class="s">:</span><span class="si">%02i</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">sign</span><span class="p">,</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_offset</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_offset</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">*</span> <span class="mi">60</span><span class="p">))</span>
+
+        <span class="n">ticklabels</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">+</span> <span class="n">_i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%H:%M&#39;</span><span class="p">)</span>
+                      <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">tick_steps</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ticklabels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setupFigure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The design and look of the whole plot to be produced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Setup figure and axes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span>
+                              <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span>
+                                       <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">))</span>
+        <span class="c"># XXX: Figure out why this is needed sometimes.</span>
+        <span class="c"># Set size and dpi.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getX</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getY</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">):</span>
+            <span class="n">suptitle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;relative&#39;</span><span class="p">:</span>
+            <span class="c"># hide time information for relative plots</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;dayplot&#39;</span><span class="p">:</span>
+            <span class="n">suptitle</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">subplotpars</span><span class="o">.</span><span class="n">left</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%SZ&#39;</span>
+            <span class="n">suptitle</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">  -  </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">endtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
+        <span class="c"># add suptitle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">suptitle</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">,</span>
+                          <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">dy</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+
+    <span class="k">def</span> <span class="nf">__getX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dx</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

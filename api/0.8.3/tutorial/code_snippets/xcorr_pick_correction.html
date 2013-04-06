@@ -1,0 +1,181 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>29. Cross Correlation Pick Correction &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="ObsPy Library Reference" href="../../packages/index.html" />
+    <link rel="prev" title="28. Travel Time Plot" href="travel_time_plot.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../packages/index.html" title="ObsPy Library Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="travel_time_plot.html" title="28. Travel Time Plot"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cross-correlation-pick-correction">
+<h1>29. Cross Correlation Pick Correction<a class="headerlink" href="#cross-correlation-pick-correction" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to align the waveforms of phase onsets of two
+earthquakes in order to correct the original pick times that can never be set
+perfectly consistent in routine analysis. A parabola is fit to the concave part
+of the cross correlation function around its maximum, following the approach by
+<a class="reference internal" href="../../citations.html#deichmann1992">[Deichmann1992]</a>.</p>
+<p>To adjust the parameters (i.e. the used time window around the pick and the
+filter settings) and to validate and check the results the options <cite>plot</cite> and
+<cite>filename</cite> can be used to open plot windows or save the figure to a file.</p>
+<p>See the documentation of
+<a class="reference internal" href="../../packages/autogen/obspy.signal.cross_correlation.xcorrPickCorrection.html#obspy.signal.cross_correlation.xcorrPickCorrection" title="obspy.signal.cross_correlation.xcorrPickCorrection"><tt class="xref py py-func docutils literal"><span class="pre">xcorrPickCorrection()</span></tt></a> for more details.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.signal.cross_correlation</span> <span class="kn">import</span> <span class="n">xcorrPickCorrection</span>
+
+<span class="c"># read example data of two small earthquakes</span>
+<span class="n">st1</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/BW.UH1..EHZ.D.2010.147.a.slist.gz&quot;</span><span class="p">)</span>
+<span class="n">st2</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/BW.UH1..EHZ.D.2010.147.b.slist.gz&quot;</span><span class="p">)</span>
+<span class="c"># select the single traces to use in correlation.</span>
+<span class="c"># to avoid artifacts from preprocessing there should be some data left and</span>
+<span class="c"># right of the short time window actually used in the correlation.</span>
+<span class="n">tr1</span> <span class="o">=</span> <span class="n">st1</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;Z&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">tr2</span> <span class="o">=</span> <span class="n">st2</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="s">&quot;Z&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c"># these are the original pick times set during routine analysis</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-05-27T16:24:33.315000Z&quot;</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2010-05-27T16:27:30.585000Z&quot;</span><span class="p">)</span>
+
+<span class="c"># estimate the time correction for pick 2 without any preprocessing and open</span>
+<span class="c"># a plot window to visually validate the results</span>
+<span class="n">dt</span><span class="p">,</span> <span class="n">coeff</span> <span class="o">=</span> <span class="n">xcorrPickCorrection</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">tr1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">tr2</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;No preprocessing:&quot;</span>
+<span class="k">print</span> <span class="s">&quot;  Time correction for pick 2: </span><span class="si">%.6f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">dt</span>
+<span class="k">print</span> <span class="s">&quot;  Correlation coefficient: </span><span class="si">%.2f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">coeff</span>
+<span class="c"># estimate the time correction with bandpass prefiltering</span>
+<span class="n">dt</span><span class="p">,</span> <span class="n">coeff</span> <span class="o">=</span> <span class="n">xcorrPickCorrection</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">tr1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">tr2</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="o">=</span><span class="s">&quot;bandpass&quot;</span><span class="p">,</span> <span class="n">filter_options</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;freqmin&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;freqmax&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<span class="k">print</span> <span class="s">&quot;Bandpass prefiltering:&quot;</span>
+<span class="k">print</span> <span class="s">&quot;  Time correction for pick 2: </span><span class="si">%.6f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">dt</span>
+<span class="k">print</span> <span class="s">&quot;  Correlation coefficient: </span><span class="si">%.2f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">coeff</span>
+</pre></div>
+</div>
+<p>The example will print the time correction for pick 2 and the respective
+correlation coefficient and open a plot window for correlations on both the
+original and preprocessed data:</p>
+<div class="highlight-python"><pre>No preprocessing:
+  Time correction for pick 2: -0.014459
+  Correlation coefficient: 0.92
+Bandpass prefiltering:
+  Time correction for pick 2: -0.013025
+  Correlation coefficient: 0.98</pre>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/xcorr_pick_correction_00.png" src="../../_images/xcorr_pick_correction_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/xcorr_pick_correction_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/xcorr_pick_correction_01.png" src="../../_images/xcorr_pick_correction_01.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/xcorr_pick_correction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../packages/index.html" title="ObsPy Library Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="travel_time_plot.html" title="28. Travel Time Plot"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

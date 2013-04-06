@@ -1,0 +1,56 @@
+obspy.segy.segy
+===============
+
+.. currentmodule:: obspy.segy.segy
+.. automodule:: obspy.segy.segy
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      autodetectEndianAndSanityCheckSU
+      readSEGY
+      readSU
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEGYBinaryFileHeader
+      SEGYFile
+      SEGYTrace
+      SEGYTraceHeader
+      SUFile
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEGYError
+      SEGYTraceHeaderTooSmallError
+      SEGYTraceOnTheFlyDataUnpackingError
+      SEGYTraceReadingError
+      SEGYWritingError
+   
+   

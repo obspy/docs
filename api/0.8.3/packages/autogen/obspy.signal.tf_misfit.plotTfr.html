@@ -1,0 +1,188 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.tf_misfit.plotTfr &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.tf_misfit" href="obspy.signal.tf_misfit.html" />
+    <link rel="next" title="obspy.signal.tf_misfit.pm" href="obspy.signal.tf_misfit.pm.html" />
+    <link rel="prev" title="obspy.signal.tf_misfit.plotTfMisfits" href="obspy.signal.tf_misfit.plotTfMisfits.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.pm.html" title="obspy.signal.tf_misfit.pm"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfMisfits.html" title="obspy.signal.tf_misfit.plotTfMisfits"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" accesskey="U">obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-tf-misfit-plottfr">
+<h1>obspy.signal.tf_misfit.plotTfr<a class="headerlink" href="#obspy-signal-tf-misfit-plottfr" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.tf_misfit.plotTfr">
+<tt class="descname">plotTfr</tt><big>(</big><em>st, dt=0.01, t0=0.0, fmin=1.0, fmax=10.0, nf=100, w0=6, left=0.1, bottom=0.1, h_1=0.2, h_2=0.6, w_1=0.2, w_2=0.6, w_cb=0.01, d_cb=0.0, show=True, plot_args=['k', 'k'], clim=0.0, cmap=None, mode='absolute', fft_zero_pad_fac=0</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/tf_misfit.html#plotTfr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.tf_misfit.plotTfr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot time-frequency representation, spectrum and time series of the signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>st</strong> <span class="dash" /> signal, type numpy.ndarray with shape (number of components,
+number of time samples) or (number of timesamples, ) for single
+component data</li>
+<li><strong>dt</strong> <span class="dash" /> time step between two samples in st</li>
+<li><strong>t0</strong> <span class="dash" /> starting time for plotting</li>
+<li><strong>fmin</strong> <span class="dash" /> minimal frequency to be analyzed</li>
+<li><strong>fmax</strong> <span class="dash" /> maximal frequency to be analyzed</li>
+<li><strong>nf</strong> <span class="dash" /> number of frequencies (will be chosen with logarithmic spacing)</li>
+<li><strong>w0</strong> <span class="dash" /> parameter for the wavelet, tradeoff between time and frequency
+resolution</li>
+<li><strong>left</strong> <span class="dash" /> plot distance from the left of the figure</li>
+<li><strong>bottom</strong> <span class="dash" /> plot distance from the bottom of the figure</li>
+<li><strong>h_1</strong> <span class="dash" /> height of the signal axis</li>
+<li><strong>h_2</strong> <span class="dash" /> height of the TFR/spectrum axis</li>
+<li><strong>w_1</strong> <span class="dash" /> width of the spectrum axis</li>
+<li><strong>w_2</strong> <span class="dash" /> width of the TFR/signal axes</li>
+<li><strong>w_cb</strong> <span class="dash" /> width of the colorbar axes</li>
+<li><strong>d_cb</strong> <span class="dash" /> distance of the colorbar axes to the other axes</li>
+<li><strong>show</strong> <span class="dash" /> show figure or return</li>
+<li><strong>plot_args</strong> <span class="dash" /> list of plot arguments passed to the signal and spectrum
+plots</li>
+<li><strong>clim</strong> <span class="dash" /> limits of the colorbars</li>
+<li><strong>cmap</strong> <span class="dash" /> colormap for TFEM/TFPM, either a string or
+matplotlib.cm.Colormap instance</li>
+<li><strong>mode</strong> <span class="dash" /> &#8216;absolute&#8217; for absolute value of TFR, &#8216;power&#8217; for <a href="#id1"><span class="problematic" id="id2">|</span></a>TFR|^2</li>
+<li><strong>fft_zero_pad_fac</strong> <span class="dash" /> integer, if &gt; 0, the signal is zero padded to nfft
+= nextpow2(len(st)) * fft_zero_pad_fac to get smoother spectrum in the
+low frequencies (has no effect on the TFR and might make
+demeaning/tapering necessary to avoid artefacts)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">If show is False, returns a maplotlib.pyplot.figure object (single
+component data) or a list of figure objects (multi component data)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&quot;http://examples.obspy.org/a02i.2008.240.mseed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotTfr</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=.</span><span class="mo">01</span><span class="p">,</span> 
+<span class="gp">... </span>        <span class="n">fmax</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span> <span class="n">w0</span><span class="o">=</span><span class="mf">8.</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">fft_zero_pad_fac</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/46fd0dda54.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/46fd0dda54.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/46fd0dda54.png" src="../../_images/46fd0dda54.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.tf_misfit.plotTfr.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.pm.html" title="obspy.signal.tf_misfit.pm"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.tf_misfit.plotTfMisfits.html" title="obspy.signal.tf_misfit.plotTfMisfits"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.tf_misfit.html" >obspy.signal.tf_misfit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

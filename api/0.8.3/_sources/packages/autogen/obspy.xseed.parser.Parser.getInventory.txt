@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser.getInventory
+======================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser.getInventory

@@ -1,0 +1,6 @@
+obspy.xseed.fields.FixedString.read
+===================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: FixedString.read

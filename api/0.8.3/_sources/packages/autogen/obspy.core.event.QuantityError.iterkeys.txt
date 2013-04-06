@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.iterkeys
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.iterkeys

@@ -1,0 +1,6 @@
+obspy.signal.trigger.recSTALTA
+==============================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: recSTALTA

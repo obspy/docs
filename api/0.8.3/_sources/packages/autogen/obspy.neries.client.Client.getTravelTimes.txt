@@ -1,0 +1,6 @@
+obspy.neries.client.Client.getTravelTimes
+=========================================
+
+.. currentmodule:: obspy.neries.client
+
+.. automethod:: Client.getTravelTimes

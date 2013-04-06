@@ -1,0 +1,6 @@
+obspy.core.util.types.Enum.__init__
+===================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: Enum.__init__

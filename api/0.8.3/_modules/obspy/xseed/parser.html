@@ -1,0 +1,1203 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.xseed.parser &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.xseed.parser</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main module containing XML-SEED parser.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">lxml.etree</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">SubElement</span><span class="p">,</span> <span class="n">tostring</span><span class="p">,</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">xmlparse</span>
+<span class="kn">from</span> <span class="nn">obspy.xseed</span> <span class="kn">import</span> <span class="n">DEFAULT_XSEED_VERSION</span><span class="p">,</span> <span class="n">utils</span><span class="p">,</span> <span class="n">blockette</span>
+<span class="kn">from</span> <span class="nn">obspy.xseed.utils</span> <span class="kn">import</span> <span class="n">SEEDParserException</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">getExampleFile</span><span class="p">,</span> <span class="n">deprecated_keywords</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+
+
+<span class="n">CONTINUE_FROM_LAST_RECORD</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;V&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">]</span>
+<span class="c"># @see: http://www.iris.edu/manuals/SEEDManual_V2.4.pdf, p. 22-24</span>
+<span class="n">HEADER_INFO</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;V&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Volume Index Control Header&#39;</span><span class="p">,</span>
+          <span class="s">&#39;blockettes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]},</span>
+    <span class="s">&#39;A&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Abbreviation Dictionary Control Header&#39;</span><span class="p">,</span>
+          <span class="s">&#39;blockettes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">]},</span>
+    <span class="s">&#39;S&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Station Control Header&#39;</span><span class="p">,</span>
+          <span class="s">&#39;blockettes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">62</span><span class="p">]}</span>
+<span class="p">}</span>
+<span class="n">RESP_BLOCKETTES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">53</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">62</span><span class="p">]</span>
+
+<span class="n">XSEED_VERSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;1.0&#39;</span><span class="p">,</span> <span class="s">&#39;1.1&#39;</span><span class="p">]</span>
+
+<span class="c"># Index fields of the abbreviation blockettes.</span>
+<span class="n">INDEX_FIELDS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">30</span><span class="p">:</span> <span class="s">&#39;data_format_identifier_code&#39;</span><span class="p">,</span>
+                <span class="mi">31</span><span class="p">:</span> <span class="s">&#39;comment_code_key&#39;</span><span class="p">,</span>
+                <span class="mi">32</span><span class="p">:</span> <span class="s">&#39;source_lookup_code&#39;</span><span class="p">,</span>
+                <span class="mi">33</span><span class="p">:</span> <span class="s">&#39;abbreviation_lookup_code&#39;</span><span class="p">,</span>
+                <span class="mi">34</span><span class="p">:</span> <span class="s">&#39;unit_lookup_code&#39;</span><span class="p">,</span>
+                <span class="mi">35</span><span class="p">:</span> <span class="s">&#39;beam_lookup_code&#39;</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Parser"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser">[docs]</a><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The XML-SEED parser class parses dataless or full SEED volumes.</span>
+
+<span class="sd">    .. seealso::</span>
+
+<span class="sd">        The SEED file format description can be found at</span>
+<span class="sd">        http://www.iris.edu/manuals/SEEDManual_V2.4.pdf.</span>
+
+<span class="sd">        The XML-SEED format was proposed in:</span>
+
+<span class="sd">        * http://www.orfeus-eu.org/Organization/Newsletter/vol6no2/xml.shtml</span>
+<span class="sd">        * http://www.jamstec.go.jp/pacific21/xmlninja/.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Parser.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.__init__.html#obspy.xseed.parser.Parser.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">compact</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the SEED parser.</span>
+
+<span class="sd">        :param data: Filename, URL, XSEED/SEED string, file pointer or StringIO</span>
+<span class="sd">        :type debug: Boolean.</span>
+<span class="sd">        :param debug: Enables a verbose debug log during parsing of SEED file.</span>
+<span class="sd">        :type strict: Boolean.</span>
+<span class="sd">        :param strict: Parser will raise an exception if SEED files does not</span>
+<span class="sd">            stay within the SEED specifications.</span>
+<span class="sd">        :type compact: Boolean.</span>
+<span class="sd">        :param compact: SEED volume will contain compact data strings. Missing</span>
+<span class="sd">            time strings will be filled with 00:00:00.0000 if this option is</span>
+<span class="sd">            disabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_length</span> <span class="o">=</span> <span class="mi">4096</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="mf">2.4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blockettes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strict</span> <span class="o">=</span> <span class="n">strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compact</span> <span class="o">=</span> <span class="n">compact</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># All parsed data is organized in volume, abbreviations and a list of</span>
+        <span class="c"># stations.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># if a file name is given, read it directly to the parser object</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parser.__str__"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.__str__.html#obspy.xseed.parser.Parser.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s">&#39;No data&#39;</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;No data&#39;</span>
+        <span class="n">ret_str</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInventory</span><span class="p">()</span>
+        <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;Networks:</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="c"># Sort alphabetically.</span>
+        <span class="n">networks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inv</span><span class="p">[</span><span class="s">&quot;networks&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">&quot;network_code&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
+            <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">network</span><span class="p">[</span><span class="s">&quot;network_code&quot;</span><span class="p">],</span>
+                <span class="n">network</span><span class="p">[</span><span class="s">&quot;network_name&quot;</span><span class="p">])</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inv</span><span class="p">[</span><span class="s">&quot;stations&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">&quot;station_id&quot;</span><span class="p">])</span>
+        <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;Stations:</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+            <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s">)</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">station</span><span class="p">[</span><span class="s">&quot;station_id&quot;</span><span class="p">],</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&quot;station_name&quot;</span><span class="p">])</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inv</span><span class="p">[</span><span class="s">&quot;channels&quot;</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">&quot;channel_id&quot;</span><span class="p">])</span>
+        <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;Channels:</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">channel</span><span class="p">[</span><span class="s">&quot;start_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span> <span class="k">if</span> \
+                    <span class="n">channel</span><span class="p">[</span><span class="s">&quot;start_date&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
+            <span class="n">end_date</span> <span class="o">=</span> <span class="n">channel</span><span class="p">[</span><span class="s">&quot;end_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span> <span class="k">if</span> \
+                    <span class="n">channel</span><span class="p">[</span><span class="s">&quot;end_date&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
+            <span class="n">ret_str</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s"> | </span><span class="si">%.2f</span><span class="s"> Hz | </span><span class="si">%s</span><span class="s"> | </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> \
+               <span class="p">(</span><span class="n">channel</span><span class="p">[</span><span class="s">&quot;channel_id&quot;</span><span class="p">],</span> <span class="n">channel</span><span class="p">[</span><span class="s">&quot;sampling_rate&quot;</span><span class="p">],</span>
+               <span class="n">channel</span><span class="p">[</span><span class="s">&quot;instrument&quot;</span><span class="p">],</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret_str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Parser.read"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.read.html#obspy.xseed.parser.Parser.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        General parser method for XML-SEED and Dataless SEED files.</span>
+
+<span class="sd">        :type data: Filename, URL, Basestring or StringIO object.</span>
+<span class="sd">        :param data: Filename, URL or XSEED/SEED string as file pointer or</span>
+<span class="sd">            StringIO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_format&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Clearing parser before every subsequent read()&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="c"># try to transform everything into StringIO object</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="c"># if it starts with /path/to/ try to search in examples</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/path/to/&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">getExampleFile</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">9</span><span class="p">:])</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="c"># otherwise just try to read the given /path/to folder</span>
+                    <span class="k">pass</span>
+            <span class="k">if</span> <span class="s">&quot;://&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="c"># some URL</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="c"># looks like a file - read it</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="c"># but could also be a big string with data</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&quot;read&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="c"># check first byte of data StringIO object</span>
+        <span class="n">first_byte</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first_byte</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="c"># SEED volumes starts with a number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parseSEED</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="s">&#39;SEED&#39;</span>
+        <span class="k">elif</span> <span class="n">first_byte</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+            <span class="c"># XML files should always starts with an &#39;&lt;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parseXSEED</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="s">&#39;XSEED&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span>
+</div>
+<div class="viewcode-block" id="Parser.getXSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getXSEED.html#obspy.xseed.parser.Parser.getXSEED">[docs]</a>    <span class="k">def</span> <span class="nf">getXSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">DEFAULT_XSEED_VERSION</span><span class="p">,</span> <span class="n">split_stations</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a XSEED representation of the current Parser object.</span>
+
+<span class="sd">        :type version: float, optional</span>
+<span class="sd">        :param version: XSEED version string (default is ``1.1``).</span>
+<span class="sd">        :type split_stations: boolean, optional</span>
+<span class="sd">        :param split_stations: Splits stations containing multiple channels</span>
+<span class="sd">            into multiple documents.</span>
+<span class="sd">        :rtype: str or dict</span>
+<span class="sd">        :return: Returns either a string or a dict of strings depending</span>
+<span class="sd">            on the flag ``split_stations``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">XSEED_VERSIONS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="s">&quot;Unknown XML-SEED version!&quot;</span><span class="p">)</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="s">&quot;xseed&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+        <span class="c"># Nothing to write if not all necessary data is available.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span> <span class="ow">or</span> \
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;No data to be written available.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Check blockettes:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkBlockettes</span><span class="p">():</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Not all necessary blockettes are available.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Add blockettes 11 and 12 only for XSEED version 1.0.</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s">&#39;1.0&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_createBlockettes11and12</span><span class="p">(</span><span class="n">blockette12</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Now start actually filling the XML tree.</span>
+        <span class="c"># Volume header:</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Volume Index Control Header&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">:</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette</span><span class="o">.</span><span class="n">getXML</span><span class="p">(</span><span class="n">xseed_version</span><span class="o">=</span><span class="n">version</span><span class="p">))</span>
+        <span class="c"># Delete blockettes 11 and 12 if necessary.</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s">&#39;1.0&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deleteBlockettes11and12</span><span class="p">()</span>
+        <span class="c"># Abbreviations:</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span>
+                    <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Abbreviation Dictionary Control Header&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">:</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette</span><span class="o">.</span><span class="n">getXML</span><span class="p">(</span><span class="n">xseed_version</span><span class="o">=</span><span class="n">version</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">split_stations</span><span class="p">:</span>
+            <span class="c"># Don&#39;t split stations</span>
+            <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+                <span class="n">sub</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Station Control Header&#39;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">station</span><span class="p">:</span>
+                    <span class="n">sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette</span><span class="o">.</span><span class="n">getXML</span><span class="p">(</span><span class="n">xseed_version</span><span class="o">=</span><span class="n">version</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s">&#39;1.0&#39;</span><span class="p">:</span>
+                <span class="c"># To pass the XSD schema test an empty time span control header</span>
+                <span class="c"># is added to the end of the file.</span>
+                <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Timespan Control Header&#39;</span><span class="p">))</span>
+                <span class="c"># Also no data is present in all supported SEED files.</span>
+                <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Data Records&#39;</span><span class="p">))</span>
+            <span class="c"># Return single XML String.</span>
+            <span class="k">return</span> <span class="n">tostring</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;UTF-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># generate a dict of XML resources for each station</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+                <span class="n">cdoc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                <span class="n">sub</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">cdoc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Station Control Header&#39;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">station</span><span class="p">:</span>
+                    <span class="n">sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette</span><span class="o">.</span><span class="n">getXML</span><span class="p">(</span><span class="n">xseed_version</span><span class="o">=</span><span class="n">version</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s">&#39;1.0&#39;</span><span class="p">:</span>
+                    <span class="c"># To pass the XSD schema test an empty time span control</span>
+                    <span class="c"># header is added to the end of the file.</span>
+                    <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Timespan Control Header&#39;</span><span class="p">))</span>
+                    <span class="c"># Also no data is present in all supported SEED files.</span>
+                    <span class="n">SubElement</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">toTag</span><span class="p">(</span><span class="s">&#39;Data Records&#39;</span><span class="p">))</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">end_effective_date</span>
+                <span class="n">result</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">tostring</span><span class="p">(</span><span class="n">cdoc</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                      <span class="n">xml_declaration</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;UTF-8&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="Parser.writeXSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.writeXSEED.html#obspy.xseed.parser.Parser.writeXSEED">[docs]</a>    <span class="k">def</span> <span class="nf">writeXSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a XML-SEED file with given name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getXSEED</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                    <span class="c"># past meta data - append timestamp</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.xml&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.xml&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># current meta data - leave original filename</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="n">filename</span>
+                <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+</div>
+<div class="viewcode-block" id="Parser.getSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getSEED.html#obspy.xseed.parser.Parser.getSEED">[docs]</a>    <span class="k">def</span> <span class="nf">getSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a SEED representation of the current Parser object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compact</span> <span class="o">=</span> <span class="n">compact</span>
+        <span class="c"># Nothing to write if not all necessary data is available.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;No data to be written available.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Check blockettes:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkBlockettes</span><span class="p">():</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Not all necessary blockettes are available.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># String to be written to:</span>
+        <span class="n">seed_string</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">cur_count</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">volume</span><span class="p">,</span> <span class="n">abbreviations</span><span class="p">,</span> <span class="n">stations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createBlockettes11and12</span><span class="p">()</span>
+        <span class="c"># Delete Blockette 11 again.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deleteBlockettes11and12</span><span class="p">()</span>
+        <span class="c"># Finally write the actual SEED String.</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">volume</span><span class="p">:</span>
+            <span class="n">seed_string</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="si">%06i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cur_count</span> <span class="o">+</span> <span class="n">_i</span>
+            <span class="n">cur_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">abbreviations</span><span class="p">:</span>
+            <span class="n">seed_string</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="si">%06i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cur_count</span> <span class="o">+</span> <span class="n">_i</span>
+            <span class="n">cur_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c"># Remove name of the stations.</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_j</span> <span class="ow">in</span> <span class="n">_i</span><span class="p">:</span>
+                <span class="n">seed_string</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="si">%06i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cur_count</span> <span class="o">+</span> <span class="n">_j</span>
+                <span class="n">cur_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">seed_string</span>
+</div>
+<div class="viewcode-block" id="Parser.writeSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.writeSEED.html#obspy.xseed.parser.Parser.writeSEED">[docs]</a>    <span class="k">def</span> <span class="nf">writeSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a dataless SEED file with given name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSEED</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Parser.getRESP"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getRESP.html#obspy.xseed.parser.Parser.getRESP">[docs]</a>    <span class="k">def</span> <span class="nf">getRESP</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a RESP representation of the current Parser object.</span>
+
+<span class="sd">        It aims to produce the same RESP files as when running rdseed with</span>
+<span class="sd">        the command: &quot;rdseed -f seed.test -R&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Check if there are any stations at all.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;No data to be written.&#39;</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># Channel Response list.</span>
+        <span class="n">resp_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Loop over all stations.</span>
+        <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">blockettes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c"># Read the current station information and store it.</span>
+            <span class="n">cur_station</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">station_call_letters</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">cur_network</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">network_code</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c"># Loop over all blockettes in that station.</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">station</span><span class="p">)):</span>
+                <span class="c"># Catch all blockette 52.</span>
+                <span class="k">if</span> <span class="n">station</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">52</span><span class="p">:</span>
+                    <span class="n">cur_location</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span><span class="o">.</span><span class="n">location_identifier</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">cur_channel</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="n">_i</span><span class="p">]</span><span class="o">.</span><span class="n">channel_identifier</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="c"># Take old list and send it to the RESP parser.</span>
+                    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">len</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c"># Send the blockettes to the parser and append to list.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_getRESPString</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">blockettes</span><span class="p">,</span> <span class="n">cur_station</span><span class="p">)</span>
+                        <span class="n">resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">filename</span><span class="p">,</span> <span class="n">resp</span><span class="p">])</span>
+                    <span class="c"># Create the filename.</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;RESP.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> \
+                        <span class="o">%</span> <span class="p">(</span><span class="n">cur_network</span><span class="p">,</span> <span class="n">cur_station</span><span class="p">,</span> <span class="n">cur_location</span><span class="p">,</span> <span class="n">cur_channel</span><span class="p">)</span>
+                    <span class="c"># Create new StringIO and list.</span>
+                    <span class="n">resp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">blockettes</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">blockettes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">[</span><span class="n">_i</span><span class="p">])</span>
+                    <span class="c"># Write header and the first two lines to the string.</span>
+                    <span class="n">header</span> <span class="o">=</span> \
+                    <span class="s">&#39;#</span><span class="se">\t\t</span><span class="s">&lt;&lt; obspy.xseed, Version 0.1.3 &gt;&gt;</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+                    <span class="s">&#39;#</span><span class="se">\t\t\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+                    <span class="s">&#39;#</span><span class="se">\t\t</span><span class="s">======== CHANNEL RESPONSE DATA ========</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> \
+                    <span class="s">&#39;B050F03     Station:     </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cur_station</span> <span class="o">+</span> \
+                    <span class="s">&#39;B050F16     Network:     </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cur_network</span>
+                    <span class="c"># Write to StringIO.</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">blockettes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">[</span><span class="n">_i</span><span class="p">])</span>
+            <span class="c"># It might happen that no blockette 52 is specified,</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">blockettes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># One last time for the last channel.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_getRESPString</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">blockettes</span><span class="p">,</span> <span class="n">cur_station</span><span class="p">)</span>
+                <span class="n">resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">filename</span><span class="p">,</span> <span class="n">resp</span><span class="p">])</span>
+        <span class="c"># Combine multiple channels.</span>
+        <span class="n">new_resp_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">available_channels</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">resp_list</span><span class="p">]</span>
+        <span class="n">channel_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">available_channels</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channel_set</span><span class="p">:</span>
+            <span class="n">channel_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">resp_list</span> <span class="k">if</span> <span class="n">_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">channel</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">new_resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel_list</span><span class="p">)):</span>
+                    <span class="n">channel_list</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">channel_list</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="n">new_resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">new_resp_list</span>
+</div>
+<div class="viewcode-block" id="Parser._select"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._select.html#obspy.xseed.parser.Parser._select">[docs]</a>    <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_id</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects all blockettes related to given SEED id and datetime.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span>
+        <span class="c"># parse blockettes if not SEED. Needed foe XSEED to be intialized.</span>
+        <span class="c"># XXX: Should potentially be fixed at some point.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">!=</span> <span class="s">&#39;SEED&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSEED</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">old_format</span> <span class="o">==</span> <span class="s">&quot;XSEED&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="s">&quot;XSEED&quot;</span>
+        <span class="c"># split id</span>
+        <span class="k">if</span> <span class="s">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">seed_id</span><span class="p">:</span>
+            <span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">cha</span> <span class="o">=</span> <span class="n">seed_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cha</span> <span class="o">=</span> <span class="n">seed_id</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="n">sta</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># create a copy of station list</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span>
+        <span class="c"># filter blockettes list by given SEED id</span>
+        <span class="n">station_flag</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">channel_flag</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">blockettes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="n">station</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+                    <span class="n">station_flag</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">if</span> <span class="n">net</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">blk</span><span class="o">.</span><span class="n">network_code</span> <span class="o">!=</span> <span class="n">net</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">sta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">blk</span><span class="o">.</span><span class="n">station_call_letters</span> <span class="o">!=</span> <span class="n">sta</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">start_effective_date</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">end_effective_date</span> <span class="ow">and</span> \
+                           <span class="n">blk</span><span class="o">.</span><span class="n">end_effective_date</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                    <span class="n">station_flag</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="n">tmpb50</span> <span class="o">=</span> <span class="n">blk</span>
+                <span class="k">elif</span> <span class="n">blk</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">52</span> <span class="ow">and</span> <span class="n">station_flag</span><span class="p">:</span>
+                    <span class="n">channel_flag</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">blk</span><span class="o">.</span><span class="n">location_identifier</span> <span class="o">!=</span> <span class="n">loc</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">channel_identifier</span> <span class="o">!=</span> <span class="n">cha</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">start_date</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="n">blk</span><span class="o">.</span><span class="n">end_date</span> <span class="ow">and</span> <span class="n">blk</span><span class="o">.</span><span class="n">end_date</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                    <span class="n">channel_flag</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="n">blockettes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpb50</span><span class="p">)</span>
+                    <span class="n">blockettes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">channel_flag</span> <span class="ow">and</span> <span class="n">station_flag</span><span class="p">:</span>
+                    <span class="n">blockettes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
+        <span class="c"># check number of selected channels (equals number of blockette 52)</span>
+        <span class="n">b50s</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blockettes</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">50</span><span class="p">]</span>
+        <span class="n">b52s</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blockettes</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">52</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b50s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">b52s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;No channel found with the given SEED id: </span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">seed_id</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">b50s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">b52s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;More than one channel found with the given SEED id: </span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">seed_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">blockettes</span>
+</div>
+    <span class="nd">@deprecated_keywords</span><span class="p">({</span><span class="s">&#39;channel_id&#39;</span><span class="p">:</span> <span class="s">&#39;seed_id&#39;</span><span class="p">})</span>
+<div class="viewcode-block" id="Parser.getPAZ"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getPAZ.html#obspy.xseed.parser.Parser.getPAZ">[docs]</a>    <span class="k">def</span> <span class="nf">getPAZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_id</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return PAZ.</span>
+
+<span class="sd">        .. note:: Currently only the Laplace transform is supported, that</span>
+<span class="sd">            is blockettes 43 and 53. A UserWarning will be raised for</span>
+<span class="sd">            unsupported response blockettes, however all other values, such</span>
+<span class="sd">            as overall sensitivity, normalization constant, etc. will be still</span>
+<span class="sd">            returned if found.</span>
+
+<span class="sd">        :type seed_id: str</span>
+<span class="sd">        :param seed_id: SEED or channel id, e.g. ``&quot;BW.RJOB..EHZ&quot;`` or</span>
+<span class="sd">            ``&quot;EHE&quot;``.</span>
+<span class="sd">        :type datetime: :class:`~obspy.core.utcdatetime.UTCDateTime`, optional</span>
+<span class="sd">        :param datetime: Timestamp of requested PAZ values</span>
+<span class="sd">        :return: Dictionary containing PAZ as well as the overall</span>
+<span class="sd">            sensitivity, the gain in the dictionary is the A0 normalization</span>
+<span class="sd">            constant</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blockettes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">seed_id</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">blockettes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">58</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">stage_sequence_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;sensitivity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">sensitivity_gain</span>
+                <span class="k">elif</span> <span class="n">blockette</span><span class="o">.</span><span class="n">stage_sequence_number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;seismometer_gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">sensitivity_gain</span>
+                <span class="k">elif</span> <span class="n">blockette</span><span class="o">.</span><span class="n">stage_sequence_number</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;digitizer_gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">sensitivity_gain</span>
+            <span class="k">elif</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">53</span> <span class="ow">or</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">60</span><span class="p">:</span>
+                    <span class="n">abbreviation</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">stages</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;seismometer_gain&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="p">[</span><span class="n">blk</span><span class="o">.</span><span class="n">sensitivity_gain</span> <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span>
+                         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="s">&#39;response_lookup_key&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+                            <span class="n">blk</span><span class="o">.</span><span class="n">response_lookup_key</span> <span class="o">==</span> <span class="n">abbreviation</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">abbreviation</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">stages</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">resp</span> <span class="o">=</span> <span class="p">[</span><span class="n">blk</span> <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="s">&#39;response_lookup_key&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+                               <span class="n">blk</span><span class="o">.</span><span class="n">response_lookup_key</span> <span class="o">==</span> <span class="n">abbreviation</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;response_type&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">resp</span> <span class="o">=</span> <span class="n">blockette</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;transfer_function_types&#39;</span>
+                <span class="c"># Check if Laplace transform</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="o">!=</span> <span class="s">&quot;A&quot;</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Only supporting Laplace transform response &#39;</span> <span class="o">+</span> \
+                          <span class="s">&#39;type. Skipping other response information.&#39;</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="c"># A0_normalization_factor</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;gain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">A0_normalization_factor</span>
+                <span class="c"># Poles</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;poles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">number_of_complex_poles</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">real_pole</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">resp</span><span class="o">.</span><span class="n">imaginary_pole</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">real_pole</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">imaginary_pole</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;poles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="c"># Zeros</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;zeros&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">number_of_complex_zeros</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">real_zero</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">resp</span><span class="o">.</span><span class="n">imaginary_zero</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">real_zero</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">imaginary_zero</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s">&#39;zeros&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+    <span class="nd">@deprecated_keywords</span><span class="p">({</span><span class="s">&#39;channel_id&#39;</span><span class="p">:</span> <span class="s">&#39;seed_id&#39;</span><span class="p">})</span>
+<div class="viewcode-block" id="Parser.getCoordinates"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getCoordinates.html#obspy.xseed.parser.Parser.getCoordinates">[docs]</a>    <span class="k">def</span> <span class="nf">getCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_id</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return Coordinates (from blockette 52)</span>
+
+<span class="sd">        :type seed_id: str</span>
+<span class="sd">        :param seed_id: SEED or channel id, e.g. ``&quot;BW.RJOB..EHZ&quot;`` or</span>
+<span class="sd">            ``&quot;EHE&quot;``.</span>
+<span class="sd">        :type datetime: :class:`~obspy.core.utcdatetime.UTCDateTime`, optional</span>
+<span class="sd">        :param datetime: Timestamp of requested PAZ values</span>
+<span class="sd">        :return: Dictionary containing Coordinates (latitude, longitude,</span>
+<span class="sd">            elevation)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blockettes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">seed_id</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">blockettes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">52</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">latitude</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">longitude</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">elevation</span>
+                <span class="n">data</span><span class="p">[</span><span class="s">&#39;local_depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">local_depth</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="Parser.writeRESP"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.writeRESP.html#obspy.xseed.parser.Parser.writeRESP">[docs]</a>    <span class="k">def</span> <span class="nf">writeRESP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">zipped</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes for each channel a RESP file within a given folder.</span>
+
+<span class="sd">        :param folder: Folder name.</span>
+<span class="sd">        :param zipped: Compresses all files into a single ZIP archive named by</span>
+<span class="sd">            the folder name extended with the extension &#39;.zip&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_resp_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRESP</span><span class="p">()</span>
+        <span class="c"># Check if channel information could be found.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_resp_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;No channel information could be found. The SEED file &quot;</span>
+                   <span class="s">&quot;needs to contain information about at least one channel.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">zipped</span><span class="p">:</span>
+            <span class="c"># Write single files.</span>
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">new_resp_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">folder</span><span class="p">:</span>
+                    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Create a ZIP archive.</span>
+            <span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">folder</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="s">&quot;zip&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">new_resp_list</span><span class="p">:</span>
+                <span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">zip_file</span><span class="o">.</span><span class="n">writestr</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Parser._parseSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._parseSEED.html#obspy.xseed.parser.Parser._parseSEED">[docs]</a>    <span class="k">def</span> <span class="nf">_parseSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses through a whole SEED volume.</span>
+
+<span class="sd">        It will always parse the whole file and skip any time span data.</span>
+
+<span class="sd">        :type data: File pointer or StringIO object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Jump to the beginning of the file.</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c"># Retrieve some basic data like version and record length.</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="c"># Check whether it starts with record sequence number 1 and a volume</span>
+        <span class="c"># index control header.</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="s">&#39;000001V &#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="s">&quot;Expecting 000001V &quot;</span><span class="p">)</span>
+        <span class="c"># The first blockette has to be Blockette 10.</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;010&#39;</span><span class="p">,</span> <span class="s">&#39;008&#39;</span><span class="p">,</span> <span class="s">&#39;005&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="s">&quot;Expecting blockette 010, 008 or 005&quot;</span><span class="p">)</span>
+        <span class="c"># Skip the next four bytes containing the length of the blockette.</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># Set the version.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="c"># Get the record length.</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="c"># Test record length.</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">!=</span> <span class="s">&#39;000002&#39;</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Got an invalid logical record length </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">length</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record_length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;RECORD LENGTH: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_length</span><span class="p">))</span>
+        <span class="c"># Set all temporary attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;volume&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;abbreviations&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;stations&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="c"># Jump back to beginning.</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c"># Read the first record.</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_length</span><span class="p">)</span>
+        <span class="n">merged_data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">record_type</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># Loop through file and pass merged records to _parseMergedData.</span>
+        <span class="k">while</span> <span class="n">record</span><span class="p">:</span>
+            <span class="n">record_continuation</span> <span class="o">=</span> <span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="n">CONTINUE_FROM_LAST_RECORD</span><span class="p">)</span>
+            <span class="n">same_record_type</span> <span class="o">=</span> <span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="n">record_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">record_type</span> <span class="o">==</span> <span class="s">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">record</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;050&#39;</span><span class="p">:</span>
+                <span class="n">record_continuation</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">record_continuation</span> <span class="ow">and</span> <span class="n">same_record_type</span><span class="p">:</span>
+                <span class="c"># continued record</span>
+                <span class="n">merged_data</span> <span class="o">+=</span> <span class="n">record</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parseMergedData</span><span class="p">(</span><span class="n">merged_data</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">record_type</span><span class="p">)</span>
+                <span class="c"># first or new type of record</span>
+                <span class="n">record_type</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="n">merged_data</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+                <span class="k">if</span> <span class="n">record_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HEADERS</span><span class="p">:</span>
+                    <span class="c"># only parse headers, no data</span>
+                    <span class="n">merged_data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+                    <span class="n">record_type</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">record_continuation</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">&quot;========&quot;</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_length</span><span class="p">)</span>
+        <span class="c"># Use parse once again.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parseMergedData</span><span class="p">(</span><span class="n">merged_data</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">record_type</span><span class="p">)</span>
+        <span class="c"># Update the internal structure to finish parsing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateInternalSEEDStructure</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Parser.getInventory"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser.getInventory.html#obspy.xseed.parser.Parser.getInventory">[docs]</a>    <span class="k">def</span> <span class="nf">getInventory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function returning a dictionary about whats actually in the Parser</span>
+<span class="sd">        object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;networks&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&quot;stations&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">current_network</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">current_station</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">blkt</span> <span class="ow">in</span> <span class="n">station</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">blkt</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+                    <span class="n">current_network</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">network_code</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">network_id</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">network_identifier_code</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">network_id</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                        <span class="n">new_id</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+                        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">network_id</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">_i</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                                <span class="n">new_id</span> <span class="o">+=</span> <span class="n">_i</span>
+                        <span class="n">network_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_id</span><span class="p">)</span>
+                    <span class="n">network_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_abbreviation</span><span class="p">(</span><span class="n">network_id</span><span class="p">)</span>
+                    <span class="n">info</span><span class="p">[</span><span class="s">&quot;networks&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&quot;network_code&quot;</span><span class="p">:</span> <span class="n">current_network</span><span class="p">,</span>
+                        <span class="s">&quot;network_name&quot;</span><span class="p">:</span> <span class="n">network_name</span><span class="p">})</span>
+                    <span class="n">current_station</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">station_call_letters</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">info</span><span class="p">[</span><span class="s">&quot;stations&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&quot;station_id&quot;</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">current_network</span><span class="p">,</span> <span class="n">current_station</span><span class="p">),</span>
+                        <span class="s">&quot;station_name&quot;</span><span class="p">:</span> <span class="n">blkt</span><span class="o">.</span><span class="n">site_name</span><span class="p">})</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">blkt</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">52</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">current_network</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">current_station</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Something went wrong&quot;</span><span class="p">)</span>
+                    <span class="n">chan_info</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">channel</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">channel_identifier</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">location</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">location_identifier</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">chan_info</span><span class="p">[</span><span class="s">&quot;channel_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current_network</span><span class="p">,</span>
+                        <span class="n">current_station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+                    <span class="n">chan_info</span><span class="p">[</span><span class="s">&quot;sampling_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">sample_rate</span>
+                    <span class="n">chan_info</span><span class="p">[</span><span class="s">&quot;instrument&quot;</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_abbreviation</span><span class="p">(</span><span class="n">blkt</span><span class="o">.</span><span class="n">instrument_identifier</span><span class="p">)</span>
+                    <span class="n">chan_info</span><span class="p">[</span><span class="s">&quot;start_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">start_date</span>
+                    <span class="n">chan_info</span><span class="p">[</span><span class="s">&quot;end_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">end_date</span>
+                    <span class="n">info</span><span class="p">[</span><span class="s">&quot;channels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chan_info</span><span class="p">)</span>
+                    <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">info</span>
+</div>
+<div class="viewcode-block" id="Parser._get_abbreviation"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._get_abbreviation.html#obspy.xseed.parser.Parser._get_abbreviation">[docs]</a>    <span class="k">def</span> <span class="nf">_get_abbreviation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper function returning the abbreviation for the given identifier</span>
+<span class="sd">        code.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">blkt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">blkt</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="mi">33</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">blkt</span><span class="o">.</span><span class="n">abbreviation_lookup_code</span> <span class="o">!=</span> <span class="n">identifier_code</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">return</span> <span class="n">blkt</span><span class="o">.</span><span class="n">abbreviation_description</span>
+        <span class="k">return</span> <span class="s">&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="Parser._parseXSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._parseXSEED.html#obspy.xseed.parser.Parser._parseXSEED">[docs]</a>    <span class="k">def</span> <span class="nf">_parseXSEED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse a XML-SEED string.</span>
+
+<span class="sd">        :type data: File pointer or StringIO object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">xmlparse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="n">xseed_version</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;version&#39;</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">getchildren</span><span class="p">()</span>
+        <span class="c"># Set all temporary attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;volume&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;abbreviations&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;stations&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="c"># Parse volume which is assumed to be the first header. Only parse</span>
+        <span class="c"># blockette 10 and discard the rest.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>\
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parseXMLBlockette</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getchildren</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;V&#39;</span><span class="p">,</span>
+                                    <span class="n">xseed_version</span><span class="p">))</span>
+        <span class="c"># Append all abbreviations.</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">getchildren</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;abbreviations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parseXMLBlockette</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="n">xseed_version</span><span class="p">))</span>
+        <span class="c"># Append all stations.</span>
+        <span class="k">for</span> <span class="n">control_header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">control_header</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;station_control_header&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">control_header</span><span class="o">.</span><span class="n">getchildren</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>\
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_parseXMLBlockette</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="n">xseed_version</span><span class="p">))</span>
+        <span class="c"># Update internal values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateInternalSEEDStructure</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Parser._getRESPString"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._getRESPString.html#obspy.xseed.parser.Parser._getRESPString">[docs]</a>    <span class="k">def</span> <span class="nf">_getRESPString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">blockettes</span><span class="p">,</span> <span class="n">station</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a file like object and a list of blockettes containing all</span>
+<span class="sd">        blockettes for one channel and writes them RESP like to the StringIO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blkt52</span> <span class="o">=</span> <span class="n">blockettes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c"># The first blockette in the list always has to be Blockette 52.</span>
+        <span class="n">channel_info</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Location&#39;</span><span class="p">:</span> <span class="n">blkt52</span><span class="o">.</span><span class="n">location_identifier</span><span class="p">,</span>
+                        <span class="s">&#39;Channel&#39;</span><span class="p">:</span> <span class="n">blkt52</span><span class="o">.</span><span class="n">channel_identifier</span><span class="p">,</span>
+                        <span class="s">&#39;Start date&#39;</span><span class="p">:</span> <span class="n">blkt52</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
+                        <span class="s">&#39;End date&#39;</span><span class="p">:</span> <span class="n">blkt52</span><span class="o">.</span><span class="n">end_date</span><span class="p">}</span>
+        <span class="c"># Set location and end date default values or convert end time..</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Location&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;??&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;End date&#39;</span><span class="p">]:</span>
+            <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;No Ending Time&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;End date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">formatSEED</span><span class="p">()</span>
+        <span class="c"># Convert starttime.</span>
+        <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Start date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Start date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">formatSEED</span><span class="p">()</span>
+        <span class="c"># Write Blockette 52 stuff.</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>\
+            <span class="s">&#39;B052F03     Location:    </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Location&#39;</span><span class="p">]</span> <span class="o">+</span> \
+            <span class="s">&#39;B052F04     Channel:     </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Channel&#39;</span><span class="p">]</span> <span class="o">+</span> \
+            <span class="s">&#39;B052F22     Start date:  </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Start date&#39;</span><span class="p">]</span> <span class="o">+</span> \
+            <span class="s">&#39;B052F23     End date:    </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;End date&#39;</span><span class="p">]</span> <span class="o">+</span> \
+            <span class="s">&#39;#</span><span class="se">\t\t</span><span class="s">=======================================</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="c"># Write all other blockettes. Currently now sorting takes place. This</span>
+        <span class="c"># is just an experiment to see how rdseed does it. The Blockettes</span>
+        <span class="c"># might need to be sorted.</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">blockettes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RESP_BLOCKETTES</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">blockette</span><span class="o">.</span><span class="n">getRESP</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">channel_info</span><span class="p">[</span><span class="s">&#39;Channel&#39;</span><span class="p">],</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;RESP output for blockette </span><span class="si">%s</span><span class="s"> not implemented yet.&#39;</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parser._parseXMLBlockette"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._parseXMLBlockette.html#obspy.xseed.parser.Parser._parseXMLBlockette">[docs]</a>    <span class="k">def</span> <span class="nf">_parseXMLBlockette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">XML_blockette</span><span class="p">,</span> <span class="n">record_type</span><span class="p">,</span> <span class="n">xseed_version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes the lxml tree of any blockette and returns a blockette object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Get blockette number.</span>
+        <span class="n">blockette_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">XML_blockette</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">blockette_id</span> <span class="ow">in</span> <span class="n">HEADER_INFO</span><span class="p">[</span><span class="n">record_type</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;blockettes&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="s">&#39;Blockette</span><span class="si">%03d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">blockette_id</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="s">&#39;Blockette </span><span class="si">%d</span><span class="s"> not implemented!&#39;</span> <span class="o">%</span>
+                                              <span class="n">blockette_id</span><span class="p">)</span>
+            <span class="n">blockette_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+            <span class="n">blockette_obj</span> <span class="o">=</span> <span class="n">blockette_class</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+                                            <span class="n">strict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strict</span><span class="p">,</span>
+                                            <span class="n">compact</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">,</span>
+                                            <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                                            <span class="n">record_type</span><span class="o">=</span><span class="n">record_type</span><span class="p">,</span>
+                                            <span class="n">xseed_version</span><span class="o">=</span><span class="n">xseed_version</span><span class="p">)</span>
+            <span class="n">blockette_obj</span><span class="o">.</span><span class="n">parseXML</span><span class="p">(</span><span class="n">XML_blockette</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">blockette_obj</span>
+        <span class="k">elif</span> <span class="n">blockette_id</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unknown blockette type </span><span class="si">%d</span><span class="s"> found&quot;</span> <span class="o">%</span> <span class="n">blockette_id</span>
+            <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parser._createCutAndFlushRecord"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._createCutAndFlushRecord.html#obspy.xseed.parser.Parser._createCutAndFlushRecord">[docs]</a>    <span class="k">def</span> <span class="nf">_createCutAndFlushRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blockettes</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes all blockettes of a record and return a list of finished records.</span>
+
+<span class="sd">        If necessary it will cut the record and return two or more flushed</span>
+<span class="sd">        records.</span>
+
+<span class="sd">        The returned records also include the control header type code and the</span>
+<span class="sd">        record continuation code. Therefore the returned record will have the</span>
+<span class="sd">        length self.record_length - 6. Other methods are responsible for</span>
+<span class="sd">        writing the sequence number.</span>
+
+<span class="sd">        It will always return a list with records.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_length</span> <span class="o">-</span> <span class="mi">8</span>
+        <span class="n">return_records</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Loop over all blockettes.</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">blockettes</span><span class="p">:</span>
+            <span class="n">blockette</span><span class="o">.</span><span class="n">compact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact</span>
+            <span class="n">rec_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+            <span class="c"># Never split a blockette’s “length/blockette type” section across</span>
+            <span class="c"># records.</span>
+            <span class="k">if</span> <span class="n">rec_len</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+                <span class="c"># Flush the rest of the record if necessary.</span>
+                <span class="n">record</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">rec_len</span><span class="p">)</span>
+                <span class="n">return_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+                <span class="n">rec_len</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">blockette_str</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">getSEED</span><span class="p">()</span>
+            <span class="c"># Calculate how much of the blockette is too long.</span>
+            <span class="n">overhead</span> <span class="o">=</span> <span class="n">rec_len</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">blockette_str</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span>
+            <span class="c"># If negative overhead: Write blockette.</span>
+            <span class="k">if</span> <span class="n">overhead</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">record</span> <span class="o">+=</span> <span class="n">blockette_str</span>
+            <span class="c"># Otherwise finish the record and start one or more new ones.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">record</span> <span class="o">+=</span> <span class="n">blockette_str</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">blockette_str</span><span class="p">)</span> <span class="o">-</span> <span class="n">overhead</span><span class="p">]</span>
+                <span class="c"># The record so far not written.</span>
+                <span class="n">rest_of_the_record</span> <span class="o">=</span> <span class="n">blockette_str</span><span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">blockette_str</span><span class="p">)</span> <span class="o">-</span> \
+                                                    <span class="n">overhead</span><span class="p">):]</span>
+                <span class="c"># Loop over the number of records to be written.</span>
+                <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rest_of_the_record</span><span class="p">)</span> <span class="o">/</span> \
+                                                   <span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)))):</span>
+                    <span class="n">return_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+                    <span class="n">record</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+                    <span class="c"># It doesn&#39;t hurt to index a string more than its length.</span>
+                    <span class="n">record</span> <span class="o">=</span> <span class="n">record</span> <span class="o">+</span> \
+                        <span class="n">rest_of_the_record</span><span class="p">[</span><span class="n">_i</span> <span class="o">*</span> <span class="n">length</span><span class="p">:</span> <span class="p">(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">length</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">return_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="c"># Flush last record</span>
+        <span class="n">return_records</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">return_records</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">*</span> \
+                                            <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">return_records</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c"># Add control header and continuation code.</span>
+        <span class="n">return_records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">record_type</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">return_records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">return_records</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">return_records</span><span class="p">[</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">record_type</span> <span class="o">+</span> <span class="s">&#39;*&#39;</span> <span class="o">+</span> <span class="n">return_records</span><span class="p">[</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">return_records</span>
+</div>
+<div class="viewcode-block" id="Parser._checkBlockettes"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._checkBlockettes.html#obspy.xseed.parser.Parser._checkBlockettes">[docs]</a>    <span class="k">def</span> <span class="nf">_checkBlockettes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if all blockettes necessary for creating a SEED String are</span>
+<span class="sd">        available.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">10</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_i</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">abb_blockettes</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">30</span> <span class="ow">in</span> <span class="n">abb_blockettes</span> <span class="ow">and</span> <span class="ow">not</span> <span class="mi">33</span> <span class="ow">in</span> <span class="n">abb_blockettes</span> <span class="ow">and</span> \
+           <span class="ow">not</span> <span class="mi">34</span> <span class="ow">in</span> <span class="n">abb_blockettes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c"># Check every station:</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+            <span class="n">stat_blockettes</span> <span class="o">=</span> <span class="p">[</span><span class="n">_j</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">_j</span> <span class="ow">in</span> <span class="n">_i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">50</span> <span class="ow">in</span> <span class="n">stat_blockettes</span> <span class="ow">and</span> <span class="ow">not</span> <span class="mi">52</span> <span class="ow">in</span> <span class="n">stat_blockettes</span> <span class="ow">and</span> \
+               <span class="ow">not</span> <span class="mi">58</span> <span class="ow">in</span> <span class="n">stat_blockettes</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="Parser._compareBlockettes"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._compareBlockettes.html#obspy.xseed.parser.Parser._compareBlockettes">[docs]</a>    <span class="k">def</span> <span class="nf">_compareBlockettes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blkt1</span><span class="p">,</span> <span class="n">blkt2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compares two blockettes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">blkt1</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c"># Continue if just some meta data.</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">IGNORE_ATTR</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">blkt1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">blkt2</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="Parser._updateInternalSEEDStructure"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._updateInternalSEEDStructure.html#obspy.xseed.parser.Parser._updateInternalSEEDStructure">[docs]</a>    <span class="k">def</span> <span class="nf">_updateInternalSEEDStructure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes everything in the self.temp dictionary and writes it into the</span>
+<span class="sd">        volume, abbreviations and stations attributes of the class.</span>
+
+<span class="sd">        The self.temp dictionary can only contain one seed volume with a</span>
+<span class="sd">        correct structure.</span>
+
+<span class="sd">        This method will try to merge everything, discard double entries and</span>
+<span class="sd">        adjust abbreviations.</span>
+
+<span class="sd">        It will also discard unnecessary blockettes that will be created</span>
+<span class="sd">        again when writing SEED or XSEED.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># If called without a filled temporary dictionary do nothing.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># Check if everything is empty.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span> <span class="ow">and</span> \
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># Delete Blockette 11 and 12.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;volume&#39;</span><span class="p">]</span>
+                           <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;abbreviations&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">])</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Merging is an experimental feature and still contains &#39;</span> <span class="o">+</span> \
+                  <span class="s">&#39;a lot of errors!&#39;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="c"># XXX: Sanity check for multiple Blockettes. Remove duplicates.</span>
+            <span class="c"># self._removeDuplicateAbbreviations()</span>
+            <span class="c"># Check the abbreviations.</span>
+            <span class="k">for</span> <span class="n">blkt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;abbreviations&#39;</span><span class="p">]:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">blkt</span><span class="o">.</span><span class="n">blockette_type</span>
+                <span class="c"># Loop over all existing abbreviations and find those with the</span>
+                <span class="c"># same id and content.</span>
+                <span class="n">cur_index</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="c"># Helper variable.</span>
+                <span class="n">blkt_done</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">for</span> <span class="n">ex_blkt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">id</span> <span class="o">!=</span> <span class="n">ex_blkt</span><span class="o">.</span><span class="n">blockette_type</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="c"># Raise the current index if it is the same blockette.</span>
+                    <span class="n">cur_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compareBlockettes</span><span class="p">(</span><span class="n">blkt</span><span class="p">,</span> <span class="n">ex_blkt</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="c"># Update the current blockette and all abbreviations.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_updateTemporaryStations</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ex_blkt</span><span class="p">,</span>
+                                                    <span class="n">INDEX_FIELDS</span><span class="p">[</span><span class="nb">id</span><span class="p">]))</span>
+                    <span class="n">blkt_done</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">blkt_done</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_updateTemporaryStations</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">cur_index</span><span class="p">)</span>
+                    <span class="c"># Append abbreviation.</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">blkt</span><span class="p">,</span> <span class="n">INDEX_FIELDS</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">cur_index</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blkt</span><span class="p">)</span>
+            <span class="c"># Update the stations.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">])</span>
+            <span class="c">#XXX Update volume control header!</span>
+
+        <span class="c"># Also make the version of the format 2.4.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">version_of_format</span> <span class="o">=</span> <span class="mf">2.4</span>
+</div>
+<div class="viewcode-block" id="Parser._updateTemporaryStations"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._updateTemporaryStations.html#obspy.xseed.parser.Parser._updateTemporaryStations">[docs]</a>    <span class="k">def</span> <span class="nf">_updateTemporaryStations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blkt_id</span><span class="p">,</span> <span class="n">index_nr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loops over all stations, finds the corresponding blockettes and changes</span>
+<span class="sd">        all abbreviation lookup codes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Blockette dictionary which maps abbreviation IDs and and fields.</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c"># Abbreviation Blockette : {Station Blockette: (Fields)}</span>
+            <span class="mi">30</span><span class="p">:</span> <span class="p">{</span><span class="mi">52</span><span class="p">:</span> <span class="p">(</span><span class="mi">16</span><span class="p">,)},</span>
+            <span class="mi">31</span><span class="p">:</span> <span class="p">{</span><span class="mi">51</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,),</span> <span class="mi">59</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)},</span>
+            <span class="mi">33</span><span class="p">:</span> <span class="p">{</span><span class="mi">50</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,),</span> <span class="mi">52</span><span class="p">:</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)},</span>
+            <span class="mi">34</span><span class="p">:</span> <span class="p">{</span><span class="mi">52</span><span class="p">:</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="mi">53</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="mi">54</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="mi">55</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)}</span>
+        <span class="p">}</span>
+        <span class="n">blockettes</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">blkt_id</span><span class="p">]</span>
+        <span class="c"># Loop over all stations.</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">blkt</span> <span class="ow">in</span> <span class="n">station</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">blockettes</span><span class="p">[</span><span class="n">blkt</span><span class="o">.</span><span class="n">blockette_type</span><span class="p">]</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">blkt</span><span class="p">,</span> <span class="n">blkt</span><span class="o">.</span><span class="n">getFields</span><span class="p">()[</span><span class="n">field</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+                            <span class="n">index_nr</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parser._parseMergedData"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._parseMergedData.html#obspy.xseed.parser.Parser._parseMergedData">[docs]</a>    <span class="k">def</span> <span class="nf">_parseMergedData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method takes any merged SEED record and writes its blockettes</span>
+<span class="sd">        in the corresponding dictionary entry of self.temp.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># Create StringIO for easier access.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c"># Do not do anything if no data is passed or if a time series header</span>
+        <span class="c"># is passed.</span>
+        <span class="k">if</span> <span class="n">record_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HEADERS</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># Set standard values.</span>
+        <span class="n">blockette_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">blockette_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c"># Find out what kind of record is being parsed.</span>
+        <span class="k">if</span> <span class="n">record_type</span> <span class="o">==</span> <span class="s">&#39;S&#39;</span><span class="p">:</span>
+            <span class="c"># Create new station blockettes list.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="n">root_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;stations&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">record_type</span> <span class="o">==</span> <span class="s">&#39;V&#39;</span><span class="p">:</span>
+            <span class="c"># Just one Volume header per file allowed.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;volume&#39;</span><span class="p">]):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;More than one Volume index control header found!&#39;</span>
+                <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">root_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;volume&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Just one abbreviations header allowed!</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;abbreviations&#39;</span><span class="p">]):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;More than one Abbreviation Dictionary Control &#39;</span> <span class="o">+</span> \
+                      <span class="s">&#39;Headers found!&#39;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="n">root_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="s">&#39;abbreviations&#39;</span><span class="p">]</span>
+        <span class="c"># Loop over all blockettes in data.</span>
+        <span class="k">while</span> <span class="n">blockette_id</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># remove spaces between blockettes</span>
+            <span class="k">while</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">blockette_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+                <span class="n">blockette_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">blockette_id</span> <span class="ow">in</span> <span class="n">HEADER_INFO</span><span class="p">[</span><span class="n">record_type</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;blockettes&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">class_name</span> <span class="o">=</span> <span class="s">&#39;Blockette</span><span class="si">%03d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">blockette_id</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="s">&#39;Blockette </span><span class="si">%d</span><span class="s"> not implemented!&#39;</span> <span class="o">%</span>
+                                              <span class="n">blockette_id</span><span class="p">)</span>
+                <span class="n">blockette_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+                <span class="n">blockette_obj</span> <span class="o">=</span> <span class="n">blockette_class</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+                                                <span class="n">strict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strict</span><span class="p">,</span>
+                                                <span class="n">compact</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compact</span><span class="p">,</span>
+                                                <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                                                <span class="n">record_type</span><span class="o">=</span><span class="n">record_type</span><span class="p">)</span>
+                <span class="n">blockette_obj</span><span class="o">.</span><span class="n">parseSEED</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">blockette_length</span><span class="p">)</span>
+                <span class="n">root_attribute</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette_obj</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">blockettes</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">blockette_id</span><span class="p">,</span>
+                                           <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blockette_obj</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">blockette_id</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Unknown blockette type </span><span class="si">%d</span><span class="s"> found&quot;</span> <span class="o">%</span> <span class="n">blockette_id</span>
+                <span class="k">raise</span> <span class="n">SEEDParserException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># check if everything is parsed</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">len</span> <span class="o">!=</span> <span class="n">data</span><span class="o">.</span><span class="n">tell</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;There exist unparsed elements!&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Parser._createBlockettes11and12"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._createBlockettes11and12.html#obspy.xseed.parser.Parser._createBlockettes11and12">[docs]</a>    <span class="k">def</span> <span class="nf">_createBlockettes11and12</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blockette12</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates blockettes 11 and 12 for SEED writing and XSEED version 1.1</span>
+<span class="sd">        writing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># All the following unfortunately is necessary to get a correct</span>
+        <span class="c"># Blockette 11:</span>
+        <span class="c"># Start with the station strings to be able to write Blockette 11</span>
+        <span class="c"># later on. The created list will contain lists with the first item</span>
+        <span class="c"># being the corresponding station identifier code and each part of the</span>
+        <span class="c"># record being a separate item.</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Loop over all stations.</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">:</span>
+            <span class="n">station</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c"># Blockette 50 always should be the first blockette</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">station_call_letters</span><span class="p">)</span>
+            <span class="c"># Loop over blockettes.</span>
+            <span class="n">station</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_createCutAndFlushRecord</span><span class="p">(</span><span class="n">_i</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">))</span>
+            <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+        <span class="c"># Make abbreviations.</span>
+        <span class="n">abbreviations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createCutAndFlushRecord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">)</span>
+        <span class="n">abbr_lenght</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">abbreviations</span><span class="p">)</span>
+        <span class="n">cur_count</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">abbr_lenght</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">blkt11</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">Blockette011</span><span class="p">()</span>
+            <span class="n">blkt11</span><span class="o">.</span><span class="n">number_of_stations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span>
+            <span class="n">stations_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">cur_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">stations_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stations_lengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_i</span><span class="p">)</span>
+            <span class="n">blkt11</span><span class="o">.</span><span class="n">sequence_number_of_station_header</span> <span class="o">=</span> <span class="n">stations_lengths</span>
+            <span class="n">blkt11</span><span class="o">.</span><span class="n">station_identifier_code</span> <span class="o">=</span> \
+                <span class="p">[</span><span class="n">_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">station_call_letters</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blkt11</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">blockette12</span><span class="p">:</span>
+                <span class="c"># Blockette 12 is also needed.</span>
+                <span class="n">blkt12</span> <span class="o">=</span> <span class="n">blockette</span><span class="o">.</span><span class="n">Blockette012</span><span class="p">()</span>
+                <span class="n">blkt12</span><span class="o">.</span><span class="n">number_of_spans_in_table</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blkt12</span><span class="p">)</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createCutAndFlushRecord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">,</span> <span class="s">&#39;V&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cur_count</span> <span class="o">-</span> <span class="n">abbr_lenght</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
+                <span class="n">cur_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_deleteBlockettes11and12</span><span class="p">()</span>
+                <span class="k">continue</span>
+            <span class="k">break</span>
+        <span class="k">return</span> <span class="n">volume</span><span class="p">,</span> <span class="n">abbreviations</span><span class="p">,</span> <span class="n">stations</span>
+</div>
+<div class="viewcode-block" id="Parser._deleteBlockettes11and12"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.parser.Parser._deleteBlockettes11and12.html#obspy.xseed.parser.Parser._deleteBlockettes11and12">[docs]</a>    <span class="k">def</span> <span class="nf">_deleteBlockettes11and12</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes blockette 11 and 12.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

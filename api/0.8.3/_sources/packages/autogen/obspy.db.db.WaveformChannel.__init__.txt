@@ -1,0 +1,6 @@
+obspy.db.db.WaveformChannel.__init__
+====================================
+
+.. currentmodule:: obspy.db.db
+
+.. automethod:: WaveformChannel.__init__

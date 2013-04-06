@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.times
+====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.times

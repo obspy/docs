@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.__delitem__
+================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.__delitem__

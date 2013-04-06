@@ -1,0 +1,6 @@
+obspy.core.ascii.readTSPAIR
+===========================
+
+.. currentmodule:: obspy.core.ascii
+
+.. autofunction:: readTSPAIR

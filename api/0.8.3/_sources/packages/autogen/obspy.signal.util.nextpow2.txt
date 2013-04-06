@@ -1,0 +1,6 @@
+obspy.signal.util.nextpow2
+==========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: nextpow2

@@ -1,0 +1,6 @@
+obspy.core.event.Catalog._get_resource_id
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog._get_resource_id

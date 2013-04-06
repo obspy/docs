@@ -1,0 +1,28 @@
+obspy.db.util
+=============
+
+.. currentmodule:: obspy.db.util
+.. automodule:: obspy.db.util
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      parseMappingData
+   
+   
+
+   
+   
+   
+
+   
+   
+   

@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer._formatString
+========================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer._formatString

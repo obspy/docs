@@ -1,0 +1,11 @@
+obspy.imaging.scripts.scan
+==========================
+
+.. note::
+    This script automatically installs during the setup procedure with the
+    name ``$ obspy-scan``. For more info on the command line options,
+    please run ``$ obspy-scan --help``.
+    Alternatively you can also execute ``$ python -m obspy.imaging.scripts.scan``.
+
+.. currentmodule:: obspy.imaging.scripts.scan
+.. automodule:: obspy.imaging.scripts.scan

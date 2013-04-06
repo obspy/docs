@@ -1,0 +1,6 @@
+obspy.iris.client.Client.availability
+=====================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.availability

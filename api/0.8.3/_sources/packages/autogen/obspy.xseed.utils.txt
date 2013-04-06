@@ -1,0 +1,46 @@
+obspy.xseed.utils
+=================
+
+.. currentmodule:: obspy.xseed.utils
+.. automodule:: obspy.xseed.utils
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      Blockette34Lookup
+      DateTime2String
+      LookupCode
+      compareSEED
+      formatRESP
+      getXPath
+      setXPath
+      toString
+      toTag
+      uniqueList
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEEDParserException
+   
+   

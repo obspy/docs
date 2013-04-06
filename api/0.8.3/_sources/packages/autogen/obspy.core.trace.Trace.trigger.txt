@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.trigger
+==============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.trigger

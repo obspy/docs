@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.db - A seismic waveform indexer and database for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.db.client" href="autogen/obspy.db.client.html" />
+    <link rel="prev" title="obspy.arclink.client.ArcLinkException" href="autogen/obspy.arclink.client.ArcLinkException.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.db.client.html" title="obspy.db.client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.arclink.client.ArcLinkException.html" title="obspy.arclink.client.ArcLinkException"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.db"></span><div class="section" id="obspy-db-a-seismic-waveform-indexer-and-database-for-obspy">
+<h1>obspy.db - A seismic waveform indexer and database for ObsPy<a class="headerlink" href="#obspy-db-a-seismic-waveform-indexer-and-database-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>The obspy.db package contains a waveform indexer collecting metadata from a
+file based waveform archive and storing in into a standard SQL database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.db.client.html#module-obspy.db.client" title="obspy.db.client"><tt class="xref py py-obj docutils literal"><span class="pre">client</span></tt></a></td>
+<td>Client for a database created by obspy.db.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.db.db.html#module-obspy.db.db" title="obspy.db.db"><tt class="xref py py-obj docutils literal"><span class="pre">db</span></tt></a></td>
+<td>SQLAlchemy ORM definitions (database layout) for obspy.db.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.db.feature.html#module-obspy.db.feature" title="obspy.db.feature"><tt class="xref py py-obj docutils literal"><span class="pre">feature</span></tt></a></td>
+<td>Optional feature generators for ObsPy Trace objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.db.indexer.html#module-obspy.db.indexer" title="obspy.db.indexer"><tt class="xref py py-obj docutils literal"><span class="pre">indexer</span></tt></a></td>
+<td>A waveform indexer collecting metadata from a file based waveform archive and</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.db.util.html#module-obspy.db.util" title="obspy.db.util"><tt class="xref py py-obj docutils literal"><span class="pre">util</span></tt></a></td>
+<td>Additional utilities for obspy.db.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scripts">
+<h2>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.db.scripts.indexer.html#module-obspy.db.scripts.indexer" title="obspy.db.scripts.indexer"><tt class="xref py py-obj docutils literal"><span class="pre">scripts.indexer</span></tt></a></td>
+<td>A command-line program that indexes seismogram files into a database.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.db - A seismic waveform indexer and database for ObsPy</a><ul>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts">Scripts</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.db.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.db.client.html" title="obspy.db.client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.arclink.client.ArcLinkException.html" title="obspy.arclink.client.ArcLinkException"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

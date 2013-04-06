@@ -1,0 +1,6 @@
+obspy.xseed.fields.Loop.parseXML
+================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Loop.parseXML

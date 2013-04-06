@@ -1,0 +1,6 @@
+obspy.wav.core.readWAV
+======================
+
+.. currentmodule:: obspy.wav.core
+
+.. autofunction:: readWAV

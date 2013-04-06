@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._axis
+==================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._axis

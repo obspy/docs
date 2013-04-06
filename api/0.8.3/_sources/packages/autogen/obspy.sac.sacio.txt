@@ -1,0 +1,48 @@
+obspy.sac.sacio
+===============
+
+.. currentmodule:: obspy.sac.sacio
+.. automodule:: obspy.sac.sacio
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      attach_paz
+      attach_resp
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SacIO
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SacError
+      SacIOError
+   
+   

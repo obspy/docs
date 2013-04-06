@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor.__setstate__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor.__setstate__

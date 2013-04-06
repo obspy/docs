@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.iteritems
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.iteritems

@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.verify
+=============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.verify

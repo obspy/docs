@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.__deepcopy__
+================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.__deepcopy__

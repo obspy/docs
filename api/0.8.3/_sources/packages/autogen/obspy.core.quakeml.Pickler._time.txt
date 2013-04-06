@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._time
+================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._time

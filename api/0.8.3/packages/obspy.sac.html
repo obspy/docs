@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.sac - SAC read and write support for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.sac.core" href="autogen/obspy.sac.core.html" />
+    <link rel="prev" title="obspy.mseed.scripts.recordanalyzer" href="autogen/obspy.mseed.scripts.recordanalyzer.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.sac.core.html" title="obspy.sac.core"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.mseed.scripts.recordanalyzer.html" title="obspy.mseed.scripts.recordanalyzer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.sac"></span><div class="section" id="obspy-sac-sac-read-and-write-support-for-obspy">
+<h1>obspy.sac - SAC read and write support for ObsPy<a class="headerlink" href="#obspy-sac-sac-read-and-write-support-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>This module provides read and write support for ASCII and binary SAC-files as
+defined by IRIS (<a class="reference external" href="http://www.iris.edu/manuals/sac/manual.html">http://www.iris.edu/manuals/sac/manual.html</a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>) &amp; C. J. Annon</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="reading">
+<h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
+<p>Similiar to reading any other waveform data format using
+<tt class="xref py py-func docutils literal"><span class="pre">read()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">&#39;/path/to/test.sac&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> 
+<span class="go">&lt;obspy.core.stream.Stream object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span> 
+<span class="go">1 Trace(s) in Stream:</span>
+<span class="go">.STA..Q | 1978-07-18T08:00:10.000000Z - ... | 1.0 Hz, 100 samples</span>
+</pre></div>
+</div>
+<p>The format will be determined automatically. As SAC-files can contain only one
+data trace (as opposed to Mini-SEED or GSE2), the length of &#8216;st&#8217; will be one.
+&#8216;st[0]&#8217; will have a stats attribute containing the issential meta data (station
+name, channel, location, start time, end time, sampling rate, number of
+points). Additionally, when reading a SAC-file it will have one additional
+attribute, &#8216;sac&#8217;, which contains all SAC-specific attributes (SAC header
+values).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>  
+<span class="go">         network:</span>
+<span class="go">         station: STA</span>
+<span class="go">        location:</span>
+<span class="go">         channel: Q</span>
+<span class="go">       starttime: 1978-07-18T08:00:10.000000Z</span>
+<span class="go">         endtime: 1978-07-18T08:01:49.000000Z</span>
+<span class="go">   sampling_rate: 1.0</span>
+<span class="go">           delta: 1.0</span>
+<span class="go">            npts: 100</span>
+<span class="go">           calib: 1.0</span>
+<span class="go">         _format: SAC</span>
+<span class="go">             sac: AttribDict({&#39;dist&#39;: -12345.0, &#39;isynth&#39;: -12345, ...&#39;})</span>
+</pre></div>
+</div>
+<p>The data is stored in the data attribut.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> 
+<span class="go">array([ -8.74227766e-08,  -3.09016973e-01,..., 3.09007347e-01], dtype=float32)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing">
+<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<p>Writing is also straight forward. All changes on the data as well as in
+stats and stats[&#8216;sac&#8217;] are written with the following command to a file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;tmp.sac&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;SAC&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.sac.core.html#module-obspy.sac.core" title="obspy.sac.core"><tt class="xref py py-obj docutils literal"><span class="pre">core</span></tt></a></td>
+<td>SAC bindings to ObsPy core module.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autogen/obspy.sac.sacio.html#module-obspy.sac.sacio" title="obspy.sac.sacio"><tt class="xref py py-obj docutils literal"><span class="pre">sacio</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.sac - SAC read and write support for ObsPy</a><ul>
+<li><a class="reference internal" href="#reading">Reading</a></li>
+<li><a class="reference internal" href="#writing">Writing</a></li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.sac.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.sac.core.html" title="obspy.sac.core"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.mseed.scripts.recordanalyzer.html" title="obspy.mseed.scripts.recordanalyzer"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

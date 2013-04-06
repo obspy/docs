@@ -1,0 +1,6 @@
+obspy.seishub.client.Client.ping
+================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client.ping

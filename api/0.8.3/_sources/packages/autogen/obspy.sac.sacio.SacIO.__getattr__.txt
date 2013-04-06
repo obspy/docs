@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.__getattr__
+=================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.__getattr__

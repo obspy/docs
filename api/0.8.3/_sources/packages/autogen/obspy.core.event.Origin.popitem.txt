@@ -1,0 +1,6 @@
+obspy.core.event.Origin.popitem
+===============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.popitem

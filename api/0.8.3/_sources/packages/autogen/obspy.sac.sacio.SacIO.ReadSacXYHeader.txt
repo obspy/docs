@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.ReadSacXYHeader
+=====================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.ReadSacXYHeader

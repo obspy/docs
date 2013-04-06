@@ -1,0 +1,6 @@
+obspy.core.ascii.readSLIST
+==========================
+
+.. currentmodule:: obspy.core.ascii
+
+.. autofunction:: readSLIST

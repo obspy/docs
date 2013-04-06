@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.write
+==============================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.write

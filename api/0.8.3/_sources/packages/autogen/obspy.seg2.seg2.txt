@@ -1,0 +1,49 @@
+obspy.seg2.seg2
+===============
+
+.. currentmodule:: obspy.seg2.seg2
+.. automodule:: obspy.seg2.seg2
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isSEG2
+      readSEG2
+      writeSEG2
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEG2
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      SEG2BaseError
+      SEG2InvalidFileError
+   
+   

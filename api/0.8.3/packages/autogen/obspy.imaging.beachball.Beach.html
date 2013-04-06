@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.beachball.Beach &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.imaging.beachball" href="obspy.imaging.beachball.html" />
+    <link rel="next" title="obspy.imaging.beachball.Beachball" href="obspy.imaging.beachball.Beachball.html" />
+    <link rel="prev" title="obspy.imaging.beachball.AuxPlane" href="obspy.imaging.beachball.AuxPlane.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.beachball.Beachball.html" title="obspy.imaging.beachball.Beachball"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.beachball.AuxPlane.html" title="obspy.imaging.beachball.AuxPlane"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.beachball.html" accesskey="U">obspy.imaging.beachball</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-imaging-beachball-beach">
+<h1>obspy.imaging.beachball.Beach<a class="headerlink" href="#obspy-imaging-beachball-beach" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.imaging.beachball.Beach">
+<tt class="descname">Beach</tt><big>(</big><em>fm</em>, <em>linewidth=2</em>, <em>facecolor='b'</em>, <em>bgcolor='w'</em>, <em>edgecolor='k'</em>, <em>alpha=1.0</em>, <em>xy=(0</em>, <em>0)</em>, <em>width=200</em>, <em>size=100</em>, <em>nofill=False</em>, <em>zorder=100</em><big>)</big><a class="reference internal" href="../../_modules/obspy/imaging/beachball.html#Beach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.imaging.beachball.Beach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a beach ball as a collection which can be connected to an
+current matplotlib axes instance (ax.add_collection).</p>
+<p>S1, D1, and R1, the strike, dip and rake of one of the focal planes, can
+be vectors of multiple focal mechanisms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fm</strong> <span class="dash" /> Focal mechanism that is either number of mechanisms (NM) by 3
+(strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the
+six independent components of the moment tensor, where the coordinate
+system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike
+is of the first plane, clockwise relative to north.
+The dip is of the first plane, defined clockwise and perpendicular to
+strike, relative to horizontal such that 0 is horizontal and 90 is
+vertical. The rake is of the first focal plane solution. 90 moves the
+hanging wall up-dip (thrust), 0 moves it in the strike direction
+(left-lateral), -90 moves it down-dip (normal), and 180 moves it
+opposite to strike (right-lateral).</li>
+<li><strong>facecolor</strong> <span class="dash" /> Color to use for quadrants of tension; can be a string,
+e.g. <tt class="docutils literal"><span class="pre">'r'</span></tt>, <tt class="docutils literal"><span class="pre">'b'</span></tt> or three component color vector, [R G B].
+Defaults to <tt class="docutils literal"><span class="pre">'b'</span></tt> (blue).</li>
+<li><strong>bgcolor</strong> <span class="dash" /> The background color. Defaults to <tt class="docutils literal"><span class="pre">'w'</span></tt> (white).</li>
+<li><strong>edgecolor</strong> <span class="dash" /> Color of the edges. Defaults to <tt class="docutils literal"><span class="pre">'k'</span></tt> (black).</li>
+<li><strong>alpha</strong> <span class="dash" /> The alpha level of the beach ball. Defaults to <tt class="docutils literal"><span class="pre">1.0</span></tt>
+(opaque).</li>
+<li><strong>xy</strong> <span class="dash" /> Origin position of the beach ball as tuple. Defaults to
+<tt class="docutils literal"><span class="pre">(0,</span> <span class="pre">0)</span></tt>.</li>
+<li><strong>width</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> Symbol size of beach ball. Defaults to <tt class="docutils literal"><span class="pre">200</span></tt>.</li>
+<li><strong>size</strong> <span class="dash" /> Controls the number of interpolation points for the
+curves. Minimum is automatically set to <tt class="docutils literal"><span class="pre">100</span></tt>.</li>
+<li><strong>nofill</strong> <span class="dash" /> Do not fill the beach ball, but only plot the planes.</li>
+<li><strong>zorder</strong> <span class="dash" /> Set zorder. Artists with lower zorder values are drawn
+first.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.imaging.beachball.Beach.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.beachball.Beachball.html" title="obspy.imaging.beachball.Beachball"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.beachball.AuxPlane.html" title="obspy.imaging.beachball.AuxPlane"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.beachball.html" >obspy.imaging.beachball</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

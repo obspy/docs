@@ -1,0 +1,6 @@
+obspy.core.event.QuantityError.__len__
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: QuantityError.__len__

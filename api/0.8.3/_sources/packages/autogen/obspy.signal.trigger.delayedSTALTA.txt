@@ -1,0 +1,6 @@
+obspy.signal.trigger.delayedSTALTA
+==================================
+
+.. currentmodule:: obspy.signal.trigger
+
+.. autofunction:: delayedSTALTA

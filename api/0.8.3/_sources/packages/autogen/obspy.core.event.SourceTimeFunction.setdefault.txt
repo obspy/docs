@@ -1,0 +1,6 @@
+obspy.core.event.SourceTimeFunction.setdefault
+==============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: SourceTimeFunction.setdefault

@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.__len__
+================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.__len__

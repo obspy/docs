@@ -1,0 +1,6 @@
+obspy.segy.pack.WrongDtypeException
+===================================
+
+.. currentmodule:: obspy.segy.pack
+
+.. autoexception:: WrongDtypeException

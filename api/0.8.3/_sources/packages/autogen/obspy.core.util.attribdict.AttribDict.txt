@@ -1,0 +1,185 @@
+obspy.core.util.attribdict.AttribDict
+=====================================
+
+.. currentmodule:: obspy.core.util.attribdict
+.. autoclass:: AttribDict
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~AttribDict.__abstractmethods__
+     ~AttribDict.__dict__
+     ~AttribDict.__doc__
+     ~AttribDict.__hash__
+     ~AttribDict.__module__
+     ~AttribDict.__weakref__
+     ~AttribDict.defaults
+     ~AttribDict.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~AttribDict.clear
+     ~AttribDict.copy
+     ~AttribDict.get
+     ~AttribDict.items
+     ~AttribDict.iteritems
+     ~AttribDict.iterkeys
+     ~AttribDict.itervalues
+     ~AttribDict.keys
+     ~AttribDict.pop
+     ~AttribDict.popitem
+     ~AttribDict.setdefault
+     ~AttribDict.update
+     ~AttribDict.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~AttribDict._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~AttribDict.__contains__
+     ~AttribDict.__deepcopy__
+     ~AttribDict.__delattr__
+     ~AttribDict.__delitem__
+     ~AttribDict.__eq__
+     ~AttribDict.__getattr__
+     ~AttribDict.__getitem__
+     ~AttribDict.__getstate__
+     ~AttribDict.__init__
+     ~AttribDict.__iter__
+     ~AttribDict.__len__
+     ~AttribDict.__ne__
+     ~AttribDict.__repr__
+     ~AttribDict.__setattr__
+     ~AttribDict.__setitem__
+     ~AttribDict.__setstate__
+     ~AttribDict.__subclasshook__
+  
+
+  
+  

@@ -1,0 +1,160 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.util &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.segy.util</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">distutils</span> <span class="kn">import</span> <span class="n">sysconfig</span>
+<span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">unpack</span>
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+<span class="c"># Import shared libsegy depending on the platform.</span>
+<span class="c"># create library names</span>
+<span class="n">lib_names</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="c"># platform specific library name</span>
+    <span class="s">&#39;libsegy-</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">-py</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()[:</span><span class="mi">2</span><span class="p">]])),</span>
+     <span class="c"># fallback for pre-packaged libraries</span>
+    <span class="s">&#39;libsegy&#39;</span><span class="p">]</span>
+<span class="c"># get default file extension for shared objects</span>
+<span class="n">lib_extension</span><span class="p">,</span> <span class="o">=</span> <span class="n">sysconfig</span><span class="o">.</span><span class="n">get_config_vars</span><span class="p">(</span><span class="s">&#39;SO&#39;</span><span class="p">)</span>
+<span class="c"># initialize library</span>
+<span class="n">clibsegy</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">for</span> <span class="n">lib_name</span> <span class="ow">in</span> <span class="n">lib_names</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">clibsegy</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span>
+                                       <span class="s">&#39;lib&#39;</span><span class="p">,</span> <span class="n">lib_name</span> <span class="o">+</span> <span class="n">lib_extension</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">clibsegy</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not load shared library for obspy.segy.</span><span class="se">\n\n</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="unpack_header_value"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.util.unpack_header_value.html#obspy.segy.util.unpack_header_value">[docs]</a><span class="k">def</span> <span class="nf">unpack_header_value</span><span class="p">(</span><span class="n">endian</span><span class="p">,</span> <span class="n">packed_value</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">special_format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks a single value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Use special format if necessary.</span>
+    <span class="k">if</span> <span class="n">special_format</span><span class="p">:</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">endian</span><span class="p">,</span> <span class="n">special_format</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unpack</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">packed_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># Unpack according to different lengths.</span>
+    <span class="k">elif</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">h&#39;</span> <span class="o">%</span> <span class="n">endian</span>
+        <span class="k">return</span> <span class="n">unpack</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">packed_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># Update: Seems to be correct. Two&#39;s complement integers seem to be</span>
+    <span class="c"># the common way to store integer values.</span>
+    <span class="k">elif</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">i&#39;</span> <span class="o">%</span> <span class="n">endian</span>
+        <span class="k">return</span> <span class="n">unpack</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">packed_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># The unassigned field. Since it is unclear how this field is</span>
+    <span class="c"># encoded it will just be stored as a string.</span>
+    <span class="k">elif</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">packed_value</span>
+    <span class="c"># Should not happen</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

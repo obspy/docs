@@ -1,0 +1,6 @@
+obspy.gse2.paz.attach_paz
+=========================
+
+.. currentmodule:: obspy.gse2.paz
+
+.. autofunction:: attach_paz

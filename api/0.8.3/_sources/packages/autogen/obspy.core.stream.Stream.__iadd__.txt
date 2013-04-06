@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.__iadd__
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.__iadd__

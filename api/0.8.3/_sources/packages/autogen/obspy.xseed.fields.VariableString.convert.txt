@@ -1,0 +1,6 @@
+obspy.xseed.fields.VariableString.convert
+=========================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: VariableString.convert

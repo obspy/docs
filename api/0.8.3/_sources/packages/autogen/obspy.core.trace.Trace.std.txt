@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.std
+==========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.std

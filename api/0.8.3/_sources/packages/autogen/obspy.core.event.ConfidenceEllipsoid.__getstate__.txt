@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid.__getstate__
+=================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid.__getstate__

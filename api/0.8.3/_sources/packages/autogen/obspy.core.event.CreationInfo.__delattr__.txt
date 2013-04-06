@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.__delattr__
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.__delattr__

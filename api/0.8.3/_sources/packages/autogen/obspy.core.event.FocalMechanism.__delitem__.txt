@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.__delitem__
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.__delitem__

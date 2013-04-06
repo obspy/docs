@@ -1,0 +1,6 @@
+obspy.signal.invsim.pazToFreqResp
+=================================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: pazToFreqResp

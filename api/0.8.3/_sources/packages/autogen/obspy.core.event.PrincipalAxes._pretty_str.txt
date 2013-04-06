@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes._pretty_str
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes._pretty_str

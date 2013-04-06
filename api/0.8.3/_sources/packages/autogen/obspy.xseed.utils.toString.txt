@@ -1,0 +1,6 @@
+obspy.xseed.utils.toString
+==========================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: toString

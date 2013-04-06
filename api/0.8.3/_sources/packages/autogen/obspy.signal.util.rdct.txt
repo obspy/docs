@@ -1,0 +1,6 @@
+obspy.signal.util.rdct
+======================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: rdct

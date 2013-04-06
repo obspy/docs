@@ -1,0 +1,6 @@
+obspy.db.util.parseMappingData
+==============================
+
+.. currentmodule:: obspy.db.util
+
+.. autofunction:: parseMappingData

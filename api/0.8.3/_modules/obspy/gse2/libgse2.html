@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.gse2.libgse2 &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.gse2.libgse2</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: libgse2.py</span>
+<span class="c">#  Purpose: Python wrapper for gse_functions of Stefan Stange</span>
+<span class="c">#   Author: Moritz Beyreuther</span>
+<span class="c">#    Email: moritz.beyreuther@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Moritz Beyreuther</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Lowlevel module internally used for handling GSE2 files</span>
+
+<span class="sd">Python wrappers for gse_functions - The GSE2 library of Stefan Stange.</span>
+<span class="sd">Currently CM6 compressed GSE2 files are supported, this should be</span>
+<span class="sd">sufficient for most cases. Gse_functions is written in C and</span>
+<span class="sd">interfaced via python-ctypes.</span>
+
+<span class="sd">See: http://www.orfeus-eu.org/Software/softwarelib.html#gse</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">distutils</span> <span class="kn">import</span> <span class="n">sysconfig</span>
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core.util</span> <span class="kn">import</span> <span class="n">c_file_p</span>
+<span class="kn">import</span> <span class="nn">ctypes</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">import</span> <span class="nn">doctest</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="c"># Import shared libgse2</span>
+<span class="c"># create library names</span>
+<span class="n">lib_names</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="c"># platform specific library name</span>
+    <span class="s">&#39;libgse2-</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">-py</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()[:</span><span class="mi">2</span><span class="p">]])),</span>
+     <span class="c"># fallback for pre-packaged libraries</span>
+    <span class="s">&#39;libgse2&#39;</span><span class="p">]</span>
+<span class="c"># get default file extension for shared objects</span>
+<span class="n">lib_extension</span><span class="p">,</span> <span class="o">=</span> <span class="n">sysconfig</span><span class="o">.</span><span class="n">get_config_vars</span><span class="p">(</span><span class="s">&#39;SO&#39;</span><span class="p">)</span>
+<span class="c"># initialize library</span>
+<span class="n">clibgse2</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">for</span> <span class="n">lib_name</span> <span class="ow">in</span> <span class="n">lib_names</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">clibgse2</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span>
+                                       <span class="s">&#39;lib&#39;</span><span class="p">,</span> <span class="n">lib_name</span> <span class="o">+</span> <span class="n">lib_extension</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">clibgse2</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Could not load shared library for obspy.gse2.</span><span class="se">\n\n</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ChksumError"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.ChksumError.html#obspy.gse2.libgse2.ChksumError">[docs]</a><span class="k">class</span> <span class="nc">ChksumError</span><span class="p">(</span><span class="ne">StandardError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception type for mismatching checksums</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="GSEUtiError"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.GSEUtiError.html#obspy.gse2.libgse2.GSEUtiError">[docs]</a><span class="k">class</span> <span class="nc">GSEUtiError</span><span class="p">(</span><span class="ne">StandardError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception type for other errors in GSE_UTI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="c"># gse2 header struct</span></div>
+<div class="viewcode-block" id="HEADER"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.HEADER.html#obspy.gse2.libgse2.HEADER">[docs]</a><span class="k">class</span> <span class="nc">HEADER</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ctypes based GSE2 header structure for internal usage.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s">&#39;d_year&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;d_mon&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;d_day&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;t_hour&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;t_min&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;t_sec&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;station&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;channel&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;auxid&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;datatype&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;n_samps&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;samp_rate&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;calib&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;calper&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;instype&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">7</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;hang&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;vang&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_float</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="c"># ctypes, PyFile_AsFile: convert python file pointer/ descriptor to C file</span>
+<span class="c"># pointer descriptor</span></div>
+<span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="o">.</span><span class="n">py_object</span><span class="p">]</span>
+<span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_file_p</span>
+
+<span class="c"># reading C memory into buffer which can be converted to numpy array</span>
+<span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyBuffer_FromMemory</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">]</span>
+<span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyBuffer_FromMemory</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">py_object</span>
+
+<span class="c">## gse_functions read_header</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">read_header</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_file_p</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">HEADER</span><span class="p">)]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">read_header</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span>
+
+<span class="c">## gse_functions decomp_6b</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">decomp_6b</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">c_file_p</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">)]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">decomp_6b</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span>
+
+<span class="c"># gse_functions rem_2nd_diff</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">rem_2nd_diff</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">),</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">rem_2nd_diff</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span>
+
+<span class="c"># gse_functions check_sum</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">check_sum</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">),</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int32</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">check_sum</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span>  <span class="c"># do not know why not C.c_int32</span>
+
+<span class="c"># gse_functions buf_init</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_init</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_init</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c"># gse_functions diff_2nd</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">diff_2nd</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">),</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">diff_2nd</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c"># gse_functions compress_6b</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">compress_6b</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="s">&#39;C_CONTIGUOUS&#39;</span><span class="p">),</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">c_int</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">compress_6b</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int</span>
+
+<span class="c">## gse_functions write_header</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">write_header</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_file_p</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">HEADER</span><span class="p">)]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">write_header</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c">## gse_functions buf_dump</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_dump</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_file_p</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_dump</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c"># gse_functions buf_free</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_free</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">]</span>
+<span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_free</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c"># module wide variable, can be imported by:</span>
+<span class="c"># &gt;&gt;&gt; from obspy.gse2 import gse2head</span>
+<span class="n">gse2head</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">HEADER</span><span class="o">.</span><span class="n">_fields_</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="isGse2"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.isGse2.html#obspy.gse2.libgse2.isGse2">[docs]</a><span class="k">def</span> <span class="nf">isGse2</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks whether a file is GSE2 or not. Returns True or False.</span>
+
+<span class="sd">    :type f : file pointer</span>
+<span class="sd">    :param f : file pointer to start of GSE2 file to be checked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">widi</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">widi</span> <span class="o">!=</span> <span class="s">&#39;WID2&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;File is not in GSE2 format&quot;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="writeHeader"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.writeHeader.html#obspy.gse2.libgse2.writeHeader">[docs]</a><span class="k">def</span> <span class="nf">writeHeader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rewriting the write_header Function of gse_functions.c</span>
+
+<span class="sd">    Different operating systems are delivering different output for the</span>
+<span class="sd">    scientific format of floats (fprinf libc6). Here we ensure to deliver</span>
+<span class="sd">    in a for GSE2 valid format independent of the OS. For speed issues we</span>
+<span class="sd">    simple cut any number ending with E+0XX or E-0XX down to E+XX or E-XX.</span>
+<span class="sd">    This fails for numbers XX&gt;99, but should not occur.</span>
+
+<span class="sd">    :type f: File pointer</span>
+<span class="sd">    :param f: File pointer to to GSE2 file to write</span>
+<span class="sd">    :type head: Ctypes struct</span>
+<span class="sd">    :param head: Ctypes structure to write</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">calib</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%10.2e</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">calib</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s">&quot;WID2 </span><span class="si">%4d</span><span class="s">/</span><span class="si">%02d</span><span class="s">/</span><span class="si">%02d</span><span class="s"> </span><span class="si">%02d</span><span class="s">:</span><span class="si">%02d</span><span class="s">:</span><span class="si">%06.3f</span><span class="s"> </span><span class="si">%-5s</span><span class="s"> </span><span class="si">%-3s</span><span class="s"> </span><span class="si">%-4s</span><span class="s"> </span><span class="si">%-3s</span><span class="s"> </span><span class="si">%8d</span><span class="s"> &quot;</span> <span class="o">+</span> \
+             <span class="s">&quot;</span><span class="si">%11.6f</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%7.3f</span><span class="s"> </span><span class="si">%-6s</span><span class="s"> </span><span class="si">%5.1f</span><span class="s"> </span><span class="si">%4.1f</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">d_year</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">d_mon</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">d_day</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">t_hour</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">t_min</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">t_sec</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">auxid</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">n_samps</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">samp_rate</span><span class="p">,</span>
+            <span class="n">calib</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">calper</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">instype</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">hang</span><span class="p">,</span>
+            <span class="n">head</span><span class="o">.</span><span class="n">vang</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="uncompress_CM6"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.uncompress_CM6.html#obspy.gse2.libgse2.uncompress_CM6">[docs]</a><span class="k">def</span> <span class="nf">uncompress_CM6</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n_samps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uncompress n_samps of CM6 compressed data from file pointer fp.</span>
+
+<span class="sd">    :type f: File Pointer</span>
+<span class="sd">    :param f: File Pointer</span>
+<span class="sd">    :type n_samps: Int</span>
+<span class="sd">    :param n_samps: Number of samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># transform to a C file pointer</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_samps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;int32&#39;</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">clibgse2</span><span class="o">.</span><span class="n">decomp_6b</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">n_samps</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">n_samps</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GSEUtiError</span><span class="p">(</span><span class="s">&quot;Mismatching length in lib.decomp_6b&quot;</span><span class="p">)</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">rem_2nd_diff</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_samps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="verifyChecksum"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.verifyChecksum.html#obspy.gse2.libgse2.verifyChecksum">[docs]</a><span class="k">def</span> <span class="nf">verifyChecksum</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate checksum from data, as in gse_driver.c line 60</span>
+
+<span class="sd">    :type fh: File Pointer</span>
+<span class="sd">    :param fh: File Pointer</span>
+<span class="sd">    :type version: Int</span>
+<span class="sd">    :param version: GSE version, either 1 or 2, defaults to 2.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chksum_data</span> <span class="o">=</span> <span class="n">clibgse2</span><span class="o">.</span><span class="n">check_sum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="c"># find checksum within file</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">chksum_file</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CHK_LINE</span> <span class="o">=</span> <span class="s">&#39;CHK</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">version</span>
+    <span class="k">while</span> <span class="n">buf</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">buf</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">CHK_LINE</span><span class="p">):</span>
+            <span class="n">chksum_file</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">break</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">chksum_data</span> <span class="o">!=</span> <span class="n">chksum_file</span><span class="p">:</span>
+        <span class="c"># 2012-02-12, should be deleted in a year from now</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">chksum_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="n">chksum_file</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Checksum differs only in absolute value. If this file &quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;was written with ObsPy GSE2, this is due to a bug in &quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;the obspy.gse2.write routine (resolved with [3431]), &quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;and thus this message can be safely ignored.&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Mismatching checksums, CHK </span><span class="si">%d</span><span class="s"> != CHK </span><span class="si">%d</span><span class="s">&quot;</span>
+        <span class="k">raise</span> <span class="n">ChksumError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">chksum_data</span><span class="p">,</span> <span class="n">chksum_file</span><span class="p">))</span>
+    <span class="k">return</span>
+
+</div>
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.read.html#obspy.gse2.libgse2.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">verify_chksum</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read GSE2 file and return header and data.</span>
+
+<span class="sd">    Currently supports only CM6 compressed GSE2 files, this should be</span>
+<span class="sd">    sufficient for most cases. Data are in circular frequency counts, for</span>
+<span class="sd">    correction of calper multiply by 2PI and calper: data * 2 * pi *</span>
+<span class="sd">    header[&#39;calper&#39;].</span>
+
+<span class="sd">    :type f: File Pointer</span>
+<span class="sd">    :param f: Open file pointer of GSE2 file to read, opened in binary mode,</span>
+<span class="sd">              e.g. f = open(&#39;myfile&#39;,&#39;rb&#39;)</span>
+<span class="sd">    :type test_chksum: Bool</span>
+<span class="sd">    :param verify_chksum: If True verify Checksum and raise Exception if it</span>
+<span class="sd">                          is not correct</span>
+<span class="sd">    :rtype: Dictionary, Numpy.ndarray int32</span>
+<span class="sd">    :return: Header entries and data as numpy.ndarray of type int32.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">HEADER</span><span class="p">()</span>
+    <span class="n">errcode</span> <span class="o">=</span> <span class="n">clibgse2</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">head</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">errcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GSEUtiError</span><span class="p">(</span><span class="s">&quot;Error in lib.read_header&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">uncompress_CM6</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">head</span><span class="o">.</span><span class="n">n_samps</span><span class="p">)</span>
+    <span class="c"># test checksum only if enabled</span>
+    <span class="k">if</span> <span class="n">verify_chksum</span><span class="p">:</span>
+        <span class="n">verifyChecksum</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">headdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">head</span><span class="o">.</span><span class="n">_fields_</span><span class="p">:</span>
+        <span class="n">headdict</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c"># cleaning up</span>
+    <span class="k">del</span> <span class="n">fp</span><span class="p">,</span> <span class="n">head</span>
+    <span class="k">return</span> <span class="n">headdict</span><span class="p">,</span> <span class="n">data</span>
+
+</div>
+<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.write.html#obspy.gse2.libgse2.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">headdict</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write GSE2 file, given the header and data.</span>
+
+<span class="sd">    Currently supports only CM6 compressed GSE2 files, this should be</span>
+<span class="sd">    sufficient for most cases. Data are in circular frequency counts, for</span>
+<span class="sd">    correction of calper multiply by 2PI and calper:</span>
+<span class="sd">    data * 2 * pi * header[&#39;calper&#39;].</span>
+
+<span class="sd">    Warning: The data are actually compressed in place for performance</span>
+<span class="sd">    issues, if you still want to use the data afterwards use data.copy()</span>
+
+<span class="sd">    :note: headdict dictionary entries C{&#39;datatype&#39;, &#39;n_samps&#39;,</span>
+<span class="sd">           &#39;samp_rate&#39;} are absolutely necessary</span>
+<span class="sd">    :type data: numpy.ndarray dtype int32</span>
+<span class="sd">    :param data: Contains the data.</span>
+<span class="sd">    :type f: File Pointer</span>
+<span class="sd">    :param f: Open file pointer of GSE2 file to write, opened in binary</span>
+<span class="sd">              mode, e.g. f = open(&#39;myfile&#39;,&#39;wb&#39;)</span>
+<span class="sd">    :type inplace: Bool</span>
+<span class="sd">    :param inplace: If True, do compression not on a copy of the data but</span>
+<span class="sd">                    on the data itself --- note this will change the data</span>
+<span class="sd">                    values and make them therefore unusable</span>
+<span class="sd">    :type headdict: Dictionary</span>
+<span class="sd">    :param headdict: Header containing the following entries::</span>
+<span class="sd">        &#39;d_year&#39;: int,</span>
+<span class="sd">        &#39;d_mon&#39;: int,</span>
+<span class="sd">        &#39;d_mon&#39;: int,</span>
+<span class="sd">        &#39;d_day&#39;: int,</span>
+<span class="sd">        &#39;t_hour&#39;: int,</span>
+<span class="sd">        &#39;t_min&#39;: int,</span>
+<span class="sd">        &#39;t_sec&#39;: float,</span>
+<span class="sd">        &#39;station&#39;: char*6,</span>
+<span class="sd">        &#39;station&#39;: char*6,</span>
+<span class="sd">        &#39;channel&#39;: char*4,</span>
+<span class="sd">        &#39;auxid&#39;: char*5,</span>
+<span class="sd">        &#39;datatype&#39;: char*4,</span>
+<span class="sd">        &#39;n_samps&#39;: int,</span>
+<span class="sd">        &#39;samp_rate&#39;: float,</span>
+<span class="sd">        &#39;calib&#39;: float,</span>
+<span class="sd">        &#39;calper&#39;: float,</span>
+<span class="sd">        &#39;instype&#39;: char*7,</span>
+<span class="sd">        &#39;hang&#39;: float,</span>
+<span class="sd">        &#39;vang&#39;: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_init</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+    <span class="c">#</span>
+    <span class="n">chksum</span> <span class="o">=</span> <span class="n">clibgse2</span><span class="o">.</span><span class="n">check_sum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">c_int32</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="c"># Maximum values above 2^26 will result in corrupted/wrong data!</span>
+    <span class="c"># do this after chksum as chksum does the type checking for numpy array</span>
+    <span class="c"># for you</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">26</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">OverflowError</span><span class="p">(</span><span class="s">&quot;Compression Error, data must be less equal 2^26&quot;</span><span class="p">)</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">diff_2nd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ierr</span> <span class="o">=</span> <span class="n">clibgse2</span><span class="o">.</span><span class="n">compress_6b</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ierr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;Error status after compression is NOT 0 but </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">ierr</span>
+    <span class="c"># set some defaults if not available and convert header entries</span>
+    <span class="n">headdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;datatype&#39;</span><span class="p">,</span> <span class="s">&#39;CM6&#39;</span><span class="p">)</span>
+    <span class="n">headdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;vang&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">headdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;calper&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">headdict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;calib&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">HEADER</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">headdict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">gse2head</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">_i</span><span class="p">,</span> <span class="n">headdict</span><span class="p">[</span><span class="n">_i</span><span class="p">])</span>
+    <span class="c"># This is the actual function where the header is written. It avoids</span>
+    <span class="c"># the different format of 10.4e with fprintf on Windows and Linux.</span>
+    <span class="c"># For further details, see the __doc__ of writeHeader</span>
+    <span class="n">writeHeader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">head</span><span class="p">)</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_dump</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;CHK2 </span><span class="si">%8ld</span><span class="se">\n\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">chksum</span><span class="p">)</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">buf_free</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">fp</span><span class="p">,</span> <span class="n">head</span>
+
+</div>
+<div class="viewcode-block" id="readHead"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.readHead.html#obspy.gse2.libgse2.readHead">[docs]</a><span class="k">def</span> <span class="nf">readHead</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return (and read) only the header of gse2 file as dictionary.</span>
+
+<span class="sd">    Currently supports only CM6 compressed GSE2 files, this should be</span>
+<span class="sd">    sufficient for most cases.</span>
+
+<span class="sd">    :type file: File Pointer</span>
+<span class="sd">    :param file: Open file pointer of GSE2 file to read, opened in binary</span>
+<span class="sd">                 mode, e.g. f = open(&#39;myfile&#39;,&#39;rb&#39;)</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    :return: Header entries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">HEADER</span><span class="p">()</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">head</span><span class="p">))</span>
+    <span class="n">headdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">head</span><span class="o">.</span><span class="n">_fields_</span><span class="p">:</span>
+        <span class="n">headdict</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">del</span> <span class="n">fp</span><span class="p">,</span> <span class="n">head</span>
+    <span class="k">return</span> <span class="n">headdict</span>
+
+</div>
+<div class="viewcode-block" id="getStartAndEndTime"><a class="viewcode-back" href="../../../packages/autogen/obspy.gse2.libgse2.getStartAndEndTime.html#obspy.gse2.libgse2.getStartAndEndTime">[docs]</a><span class="k">def</span> <span class="nf">getStartAndEndTime</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return start and endtime/date of GSE2 file</span>
+
+<span class="sd">    Currently supports only CM6 compressed GSE2 files, this should be</span>
+<span class="sd">    sufficient for most cases.</span>
+
+<span class="sd">    :type f: File Pointer</span>
+<span class="sd">    :param f: Open file pointer of GSE2 file to read, opened in binary</span>
+<span class="sd">              mode, e.g. f = open(&#39;myfile&#39;,&#39;rb&#39;)</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    :return: C{[startdate,stopdate,startime,stoptime]} Start and Stop time as</span>
+<span class="sd">             Julian seconds and as date string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyFile_AsFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">HEADER</span><span class="p">()</span>
+    <span class="n">clibgse2</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">pointer</span><span class="p">(</span><span class="n">head</span><span class="p">))</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">t_sec</span><span class="p">)</span>
+    <span class="n">microseconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e6</span> <span class="o">*</span> <span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">t_sec</span> <span class="o">-</span> <span class="n">seconds</span><span class="p">))</span>
+    <span class="n">startdate</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">d_year</span><span class="p">,</span> <span class="n">head</span><span class="o">.</span><span class="n">d_mon</span><span class="p">,</span> <span class="n">head</span><span class="o">.</span><span class="n">d_day</span><span class="p">,</span>
+                            <span class="n">head</span><span class="o">.</span><span class="n">t_hour</span><span class="p">,</span> <span class="n">head</span><span class="o">.</span><span class="n">t_min</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span> <span class="n">microseconds</span><span class="p">)</span>
+    <span class="n">stopdate</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">startdate</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">+</span>
+                           <span class="n">head</span><span class="o">.</span><span class="n">n_samps</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">samp_rate</span><span class="p">))</span>
+    <span class="k">del</span> <span class="n">fp</span><span class="p">,</span> <span class="n">head</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">startdate</span><span class="p">,</span> <span class="n">stopdate</span><span class="p">,</span> <span class="n">startdate</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">stopdate</span><span class="o">.</span><span class="n">timestamp</span><span class="p">]</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

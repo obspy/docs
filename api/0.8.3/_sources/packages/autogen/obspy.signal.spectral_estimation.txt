@@ -1,0 +1,42 @@
+obspy.signal.spectral_estimation
+================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+.. automodule:: obspy.signal.spectral_estimation
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      fft_taper
+      get_NHNM
+      get_NLNM
+      psd
+      welch_taper
+      welch_window
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      PPSD
+   
+   
+
+   
+   
+   

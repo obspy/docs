@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.logbankm
+====================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: logbankm

@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.__init__
+==========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.__init__

@@ -1,0 +1,6 @@
+obspy.core.event.Origin.__setstate__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.__setstate__

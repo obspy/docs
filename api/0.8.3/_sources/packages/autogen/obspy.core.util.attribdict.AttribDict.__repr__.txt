@@ -1,0 +1,6 @@
+obspy.core.util.attribdict.AttribDict.__repr__
+==============================================
+
+.. currentmodule:: obspy.core.util.attribdict
+
+.. automethod:: AttribDict.__repr__

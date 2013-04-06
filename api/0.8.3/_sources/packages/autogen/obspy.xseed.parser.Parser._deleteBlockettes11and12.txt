@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser._deleteBlockettes11and12
+==================================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser._deleteBlockettes11and12

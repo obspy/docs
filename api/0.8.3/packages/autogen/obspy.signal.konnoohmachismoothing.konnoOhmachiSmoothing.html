@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.konnoohmachismoothing" href="obspy.signal.konnoohmachismoothing.html" />
+    <link rel="next" title="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow" href="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow.html" />
+    <link rel="prev" title="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix" href="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow.html" title="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix.html" title="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.konnoohmachismoothing.html" accesskey="U">obspy.signal.konnoohmachismoothing</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-konnoohmachismoothing-konnoohmachismoothing">
+<h1>obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing<a class="headerlink" href="#obspy-signal-konnoohmachismoothing-konnoohmachismoothing" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing">
+<tt class="descname">konnoOhmachiSmoothing</tt><big>(</big><em>spectra</em>, <em>frequencies</em>, <em>bandwidth=40</em>, <em>count=1</em>, <em>enforce_no_matrix=False</em>, <em>max_memory_usage=512</em>, <em>normalize=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/konnoohmachismoothing.html#konnoOhmachiSmoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Smoothes a matrix containing one spectra per row with the Konno-Ohmachi
+smoothing window.</p>
+<p>All spectra need to have frequency bins corresponding to the same
+frequencies.</p>
+<p>This method first will estimate the memory usage and then either use a fast
+and memory intensive method or a slow one with a better memory usage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spectra</strong> <span class="dash" /> numpy.ndarray (float32 or float64)
+One or more spectra per row. If more than one the first spectrum has to
+be accessible via spectra[0], the next via spectra[1], ...</li>
+<li><strong>frequencies</strong> <span class="dash" /> numpy.ndarray (float32 or float64)
+Contains the frequencies for the spectra.</li>
+<li><strong>bandwidth</strong> <span class="dash" /> float &gt; 0.0
+Determines the width of the smoothing peak. Lower values result in a
+broader peak. Defaults to 40.</li>
+<li><strong>count</strong> <span class="dash" /> integer, optional
+How often the apply the filter. For very noisy spectra it is useful to
+apply is more than once. Defaults to 1.</li>
+<li><strong>enforce_no_matrix</strong> <span class="dash" /> boolean, optional
+An efficient but memory intensive matrix-multiplication algorithm is
+used in case more than one spectra is to be smoothed or one spectrum is
+to be smoothed more than once if enough memory is available. This flag
+disables the matrix algorithm altogether. Defaults to False</li>
+<li><strong>max_memory_usage</strong> <span class="dash" /> integer, optional
+Set the maximum amount of extra memory in MB for this method. Decides
+whether or not the matrix multiplication method is used. Defaults to
+512 MB.</li>
+<li><strong>normalize</strong> <span class="dash" /> boolean, optional
+The Konno-Ohmachi smoothing window is normalized on a logarithmic
+scale. Set this parameter to True to normalize it on a normal scale.
+Default to False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothing.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow.html" title="obspy.signal.konnoohmachismoothing.konnoOhmachiSmoothingWindow"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix.html" title="obspy.signal.konnoohmachismoothing.calculateSmoothingMatrix"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.konnoohmachismoothing.html" >obspy.signal.konnoohmachismoothing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>22. Hierarchical Clustering &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="23. Visualizing Probabilistic Power Spectral Densities" href="probabilistic_power_spectral_density.html" />
+    <link rel="prev" title="21. Coordinate Conversions" href="coordinate_conversions.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="probabilistic_power_spectral_density.html" title="23. Visualizing Probabilistic Power Spectral Densities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="coordinate_conversions.html" title="21. Coordinate Conversions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hierarchical-clustering">
+<h1>22. Hierarchical Clustering<a class="headerlink" href="#hierarchical-clustering" title="Permalink to this headline">¶</a></h1>
+<p>An implementation of hierarchical clustering is provided in the package
+<a class="reference external" href="http://pypi.python.org/pypi/hcluster">hcluster</a>. Among other things, it allows to build clusters from similarity
+matrices and make dendrogram plots. The following example shows how to do this
+for an already computed similarity matrix. The similarity data are computed
+from events in an area with induced seismicity (using the cross-correlation
+routines in <a class="reference internal" href="../../packages/obspy.signal.html#module-obspy.signal" title="obspy.signal"><tt class="xref py py-mod docutils literal"><span class="pre">obspy.signal</span></tt></a>) and can be fetched from our
+<a class="reference external" href="http://examples.obspy.org">examples webserver</a>:</p>
+<p>First, we import the necessary modules and load the data stored on our
+webserver:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">urllib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hcluster</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://examples.obspy.org/dissimilarities.pkl&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dissimilarity</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Now, we can start building up the plots. First, we plot the dissimilarity
+matrix:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dissimilarity</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&quot;nearest&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After that, we use <a class="reference external" href="http://pypi.python.org/pypi/hcluster">hcluster</a> to build up and plot the dendrogram into the
+right-hand subplot:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dissimilarity</span> <span class="o">=</span> <span class="n">hcluster</span><span class="o">.</span><span class="n">squareform</span><span class="p">(</span><span class="n">dissimilarity</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span> <span class="o">=</span> <span class="n">hcluster</span><span class="o">.</span><span class="n">linkage</span><span class="p">(</span><span class="n">dissimilarity</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&quot;single&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clusters</span> <span class="o">=</span> <span class="n">hcluster</span><span class="o">.</span><span class="n">fcluster</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s">&quot;distance&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hcluster</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">color_threshold</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;Event number&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;Dissimilarity&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/hierarchical_clustering.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/hierarchical_clustering.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/hierarchical_clustering.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/hierarchical_clustering.png" src="../../_images/hierarchical_clustering.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/hierarchical_clustering.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="probabilistic_power_spectral_density.html" title="23. Visualizing Probabilistic Power Spectral Densities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="coordinate_conversions.html" title="21. Coordinate Conversions"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

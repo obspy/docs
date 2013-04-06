@@ -1,0 +1,6 @@
+obspy.core.event.Comment.clear
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Comment.clear

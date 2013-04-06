@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.write
+==============================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.write

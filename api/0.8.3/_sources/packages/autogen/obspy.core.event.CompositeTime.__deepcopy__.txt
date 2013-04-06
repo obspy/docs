@@ -1,0 +1,6 @@
+obspy.core.event.CompositeTime.__deepcopy__
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CompositeTime.__deepcopy__

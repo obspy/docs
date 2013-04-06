@@ -1,0 +1,6 @@
+obspy.core.util.types.OrderedDict.itervalues
+============================================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: OrderedDict.itervalues

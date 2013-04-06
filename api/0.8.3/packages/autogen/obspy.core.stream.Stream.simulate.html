@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.stream.Stream.simulate &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.stream.Stream" href="obspy.core.stream.Stream.html" />
+    <link rel="next" title="obspy.core.stream.Stream.slice" href="obspy.core.stream.Stream.slice.html" />
+    <link rel="prev" title="obspy.core.stream.Stream.select" href="obspy.core.stream.Stream.select.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.slice.html" title="obspy.core.stream.Stream.slice"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.select.html" title="obspy.core.stream.Stream.select"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" accesskey="U">obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-stream-stream-simulate">
+<h1>obspy.core.stream.Stream.simulate<a class="headerlink" href="#obspy-core-stream-stream-simulate" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.core.stream.Stream.simulate">
+<tt class="descclassname">Stream.</tt><tt class="descname">simulate</tt><big>(</big><em>paz_remove=None</em>, <em>paz_simulate=None</em>, <em>remove_sensitivity=True</em>, <em>simulate_sensitivity=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/stream.html#Stream.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.stream.Stream.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct for instrument response / Simulate new instrument response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>paz_remove</strong> (<em>dict, None</em>) <span class="dash" /> Dictionary containing keys <tt class="docutils literal"><span class="pre">'poles'</span></tt>, <tt class="docutils literal"><span class="pre">'zeros'</span></tt>,
+<tt class="docutils literal"><span class="pre">'gain'</span></tt> (A0 normalization factor). Poles and zeros must be a
+list of complex floating point numbers, gain must be of type float.
+Poles and Zeros are assumed to correct to m/s, SEED convention.
+Use <tt class="docutils literal"><span class="pre">None</span></tt> for no inverse filtering.
+Use <tt class="docutils literal"><span class="pre">'self'</span></tt> to use paz AttribDict in <tt class="docutils literal"><span class="pre">trace.stats</span></tt> for every
+trace in stream.</li>
+<li><strong>paz_simulate</strong> (<em>dict, None</em>) <span class="dash" /> Dictionary containing keys <tt class="docutils literal"><span class="pre">'poles'</span></tt>,
+<tt class="docutils literal"><span class="pre">'zeros'</span></tt>, <tt class="docutils literal"><span class="pre">'gain'</span></tt>. Poles and zeros must be a list of complex
+floating point numbers, gain must be of type float. Or <tt class="docutils literal"><span class="pre">None</span></tt> for
+no simulation.</li>
+<li><strong>remove_sensitivity</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) <span class="dash" /> Determines if data is divided by
+<tt class="docutils literal"><span class="pre">paz_remove['sensitivity']</span></tt> to correct for overall sensitivity of
+recording instrument (seismometer/digitizer) during instrument
+correction.</li>
+<li><strong>simulate_sensitivity</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) <span class="dash" /> Determines if data is multiplied with
+<tt class="docutils literal"><span class="pre">paz_simulate['sensitivity']</span></tt> to simulate overall sensitivity of
+new instrument (seismometer/digitizer) during instrument
+simulation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function corrects for the original instrument response given by
+<tt class="docutils literal"><span class="pre">paz_remove</span></tt> and/or simulates a new instrument response given by
+<tt class="docutils literal"><span class="pre">paz_simulate</span></tt>.</p>
+<p>For additional information and more options to control the instrument
+correction/simulation (e.g. water level, demeaning, tapering, ...) see
+<a class="reference internal" href="obspy.signal.invsim.seisSim.html#obspy.signal.invsim.seisSim" title="obspy.signal.invsim.seisSim"><tt class="xref py py-func docutils literal"><span class="pre">seisSim()</span></tt></a>.</p>
+<p>The keywords <cite>paz_remove</cite> and <cite>paz_simulate</cite> are expected to be
+dictionaries containing information on poles, zeros and gain (and
+usually also sensitivity).</p>
+<p>If both <tt class="docutils literal"><span class="pre">paz_remove</span></tt> and <tt class="docutils literal"><span class="pre">paz_simulate</span></tt> are specified, both steps
+are performed in one go in the frequency domain, otherwise only the
+specified step is performed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operation is performed in place on the actual data arrays. The
+raw data is not accessible anymore afterwards. To keep your
+original data, use <a class="reference internal" href="obspy.core.stream.Stream.copy.html#obspy.core.stream.Stream.copy" title="obspy.core.stream.Stream.copy"><tt class="xref py py-meth docutils literal"><span class="pre">copy()</span></tt></a> to create
+a copy of your stream object.
+This also makes an entry with information on the applied processing
+in <tt class="docutils literal"><span class="pre">stats.processing</span></tt> of every trace.</p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">cornFreq2Paz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz_sts2</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.037004</span><span class="o">+</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.037004</span><span class="o">-</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="o">-</span><span class="mf">251.33</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="o">-</span><span class="mf">131.04</span><span class="o">-</span><span class="mf">467.29</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">131.04</span><span class="o">+</span><span class="mf">467.29</span><span class="n">j</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">],</span>
+<span class="gp">... </span>            <span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">60077000.0</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">2516778400.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz_1hz</span> <span class="o">=</span> <span class="n">cornFreq2Paz</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">damp</span><span class="o">=</span><span class="mf">0.707</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">paz_remove</span><span class="o">=</span><span class="n">paz_sts2</span><span class="p">,</span> <span class="n">paz_simulate</span><span class="o">=</span><span class="n">paz_1hz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/1f40fbd29a_00.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/1f40fbd29a_00.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/1f40fbd29a_00.png" src="../../_images/1f40fbd29a_00.png" />
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/1f40fbd29a_01.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/inline/1f40fbd29a_01.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/1f40fbd29a_01.png" src="../../_images/1f40fbd29a_01.png" />
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.stream.Stream.simulate.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.slice.html" title="obspy.core.stream.Stream.slice"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.stream.Stream.select.html" title="obspy.core.stream.Stream.select"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.stream.html" >obspy.core.stream</a> &raquo;</li>
+          <li><a href="obspy.core.stream.Stream.html" >obspy.core.stream.Stream</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

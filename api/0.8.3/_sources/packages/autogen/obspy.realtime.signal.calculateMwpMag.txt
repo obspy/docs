@@ -1,0 +1,6 @@
+obspy.realtime.signal.calculateMwpMag
+=====================================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: calculateMwpMag

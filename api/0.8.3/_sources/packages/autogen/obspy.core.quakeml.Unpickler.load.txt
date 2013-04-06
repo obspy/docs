@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler.load
+=================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler.load

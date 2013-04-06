@@ -1,0 +1,6 @@
+obspy.segy.core.readSEGY
+========================
+
+.. currentmodule:: obspy.segy.core
+
+.. autofunction:: readSEGY

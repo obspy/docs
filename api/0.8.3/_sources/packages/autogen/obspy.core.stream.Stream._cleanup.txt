@@ -1,0 +1,6 @@
+obspy.core.stream.Stream._cleanup
+=================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream._cleanup

@@ -1,0 +1,6 @@
+obspy.core.event.OriginQuality.update
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: OriginQuality.update

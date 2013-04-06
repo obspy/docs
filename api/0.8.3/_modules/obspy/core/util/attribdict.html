@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.util.attribdict &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.util.attribdict</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">AttribDict class for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+
+
+<div class="viewcode-block" id="AttribDict"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.html#obspy.core.util.attribdict.AttribDict">[docs]</a><span class="k">class</span> <span class="nc">AttribDict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class which behaves like a dictionary.</span>
+
+<span class="sd">    :type data: dict, optional</span>
+<span class="sd">    :param data: Dictionary with initial keywords.</span>
+
+<span class="sd">    .. rubric:: Basic Usage</span>
+
+<span class="sd">    You may use the following syntax to change or access data in this class.</span>
+
+<span class="sd">    &gt;&gt;&gt; stats = AttribDict()</span>
+<span class="sd">    &gt;&gt;&gt; stats.network = &#39;BW&#39;</span>
+<span class="sd">    &gt;&gt;&gt; stats[&#39;station&#39;] = &#39;ROTZ&#39;</span>
+<span class="sd">    &gt;&gt;&gt; stats.get(&#39;network&#39;)</span>
+<span class="sd">    &#39;BW&#39;</span>
+<span class="sd">    &gt;&gt;&gt; stats[&#39;network&#39;]</span>
+<span class="sd">    &#39;BW&#39;</span>
+<span class="sd">    &gt;&gt;&gt; stats.station</span>
+<span class="sd">    &#39;ROTZ&#39;</span>
+<span class="sd">    &gt;&gt;&gt; x = stats.keys()</span>
+<span class="sd">    &gt;&gt;&gt; x = sorted(x)</span>
+<span class="sd">    &gt;&gt;&gt; x[0:3]</span>
+<span class="sd">    [&#39;network&#39;, &#39;station&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">readonly</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="AttribDict.__init__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__init__.html#obspy.core.util.attribdict.AttribDict.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An AttribDict can be initialized in two ways. It can be given an</span>
+<span class="sd">        existing dictionary as a simple argument or alternatively all keyword</span>
+<span class="sd">        arguments will become (key, value) pairs.</span>
+
+<span class="sd">        &gt;&gt;&gt; attrib_dict_1 = AttribDict({&quot;a&quot;:1, &quot;b&quot;:2})</span>
+<span class="sd">        &gt;&gt;&gt; attrib_dict_2 = AttribDict(a=1, b=2)</span>
+<span class="sd">        &gt;&gt;&gt; print attrib_dict_1</span>
+<span class="sd">        AttribDict({&#39;a&#39;: 1, &#39;b&#39;: 2})</span>
+<span class="sd">        &gt;&gt;&gt; assert(attrib_dict_1 == attrib_dict_2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># set default values directly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
+        <span class="c"># use overwritable update method to set arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__repr__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__repr__.html#obspy.core.util.attribdict.AttribDict.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__getitem__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__getitem__.html#obspy.core.util.attribdict.AttribDict.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c"># check if we got any default value given at class level</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="c"># if both are missing check for a given default value</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">return</span> <span class="n">default</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__setitem__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__setitem__.html#obspy.core.util.attribdict.AttribDict.__setitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Attribute &quot;</span><span class="si">%s</span><span class="s">&quot; in </span><span class="si">%s</span><span class="s"> object is read only!&#39;</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__delitem__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__delitem__.html#obspy.core.util.attribdict.AttribDict.__delitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__getstate__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__getstate__.html#obspy.core.util.attribdict.AttribDict.__getstate__">[docs]</a>    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__setstate__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__setstate__.html#obspy.core.util.attribdict.AttribDict.__setstate__">[docs]</a>    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adict</span><span class="p">):</span>
+        <span class="c"># set default values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
+        <span class="c"># update with pickle dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adict</span><span class="p">)</span>
+</div>
+    <span class="n">__getattr__</span> <span class="o">=</span> <span class="n">__getitem__</span>
+    <span class="n">__setattr__</span> <span class="o">=</span> <span class="n">__setitem__</span>
+    <span class="n">__delattr__</span> <span class="o">=</span> <span class="n">__delitem__</span>
+
+<div class="viewcode-block" id="AttribDict.copy"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.copy.html#obspy.core.util.attribdict.AttribDict.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__deepcopy__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__deepcopy__.html#obspy.core.util.attribdict.AttribDict.__deepcopy__">[docs]</a>    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+        <span class="n">ad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">()</span>
+        <span class="n">ad</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ad</span>
+</div>
+<div class="viewcode-block" id="AttribDict.update"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.update.html#obspy.core.util.attribdict.AttribDict.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adict</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">adict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AttribDict._pretty_str"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict._pretty_str.html#obspy.core.util.attribdict.AttribDict._pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">_pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">priorized_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">min_label_length</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return better readable string representation of AttribDict object.</span>
+
+<span class="sd">        :type priorized_keys: List of str, optional</span>
+<span class="sd">        :param priorized_keys: Keywords of current AttribtDict which will be</span>
+<span class="sd">            shown before all other keywords. Those keywords must exists</span>
+<span class="sd">            otherwise an exception will be raised. Defaults to empty list.</span>
+<span class="sd">        :type min_label_length: int, optional</span>
+<span class="sd">        :param min_label_length: Minimum label length for keywords. Defaults</span>
+<span class="sd">            to ``16``.</span>
+<span class="sd">        :return: String representation of current AttribDict object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="c"># determine longest key name for alignment of all items</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]),</span> <span class="n">min_label_length</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c"># no keys</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%%%d</span><span class="s">s: </span><span class="si">%%</span><span class="s">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="c"># check if keys exist</span>
+        <span class="n">other_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">priorized_keys</span><span class="p">]</span>
+        <span class="c"># priorized keys first + all other keys</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">priorized_keys</span> <span class="o">+</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">other_keys</span><span class="p">)</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__iter__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__iter__.html#obspy.core.util.attribdict.AttribDict.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AttribDict.__len__"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.attribdict.AttribDict.__len__.html#obspy.core.util.attribdict.AttribDict.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

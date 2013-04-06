@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude._pretty_str
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude._pretty_str

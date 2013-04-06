@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.normalize
+========================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.normalize

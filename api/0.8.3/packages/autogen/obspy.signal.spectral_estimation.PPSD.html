@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.spectral_estimation.PPSD &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.signal.spectral_estimation" href="obspy.signal.spectral_estimation.html" />
+    <link rel="next" title="obspy.signal.spectral_estimation.PPSD.add" href="obspy.signal.spectral_estimation.PPSD.add.html" />
+    <link rel="prev" title="obspy.signal.spectral_estimation.welch_window" href="obspy.signal.spectral_estimation.welch_window.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.PPSD.add.html" title="obspy.signal.spectral_estimation.PPSD.add"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.welch_window.html" title="obspy.signal.spectral_estimation.welch_window"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.html" accesskey="U">obspy.signal.spectral_estimation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-signal-spectral-estimation-ppsd">
+<h1>obspy.signal.spectral_estimation.PPSD<a class="headerlink" href="#obspy-signal-spectral-estimation-ppsd" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.signal.spectral_estimation.PPSD">
+<em class="property">class </em><tt class="descname">PPSD</tt><big>(</big><em>stats, paz=None, parser=None, skip_on_gaps=False, is_rotational_data=False, db_bins=[-200, -50, 0.5]</em><big>)</big><a class="reference internal" href="../../_modules/obspy/signal/spectral_estimation.html#PPSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.signal.spectral_estimation.PPSD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to compile probabilistic power spectral densities for one combination
+of network/station/location/channel/sampling_rate.</p>
+<p>Calculations are based on the routine used by <a class="reference internal" href="../../citations.html#mcnamara2004">[McNamara2004]</a>.
+For information on New High/Low Noise Model see <a class="reference internal" href="../../citations.html#peterson2003">[Peterson2003]</a>.</p>
+<p class="rubric">Basic Usage</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">PPSD</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s">&quot;EHZ&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;gain&#39;</span><span class="p">:</span> <span class="mf">60077000.0</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&#39;poles&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.037004</span><span class="o">+</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.037004</span><span class="o">-</span><span class="mf">0.037016</span><span class="n">j</span><span class="p">,</span>
+<span class="gp">... </span>                 <span class="o">-</span><span class="mf">251.33</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">131.04</span><span class="o">-</span><span class="mf">467.29</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">131.04</span><span class="o">+</span><span class="mf">467.29</span><span class="n">j</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="s">&#39;sensitivity&#39;</span><span class="p">:</span> <span class="mf">2516778400.0</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&#39;zeros&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="n">j</span><span class="p">]}</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span> <span class="o">=</span> <span class="n">PPSD</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="n">paz</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ppsd</span><span class="o">.</span><span class="n">id</span>
+<span class="go">BW.RJOB..EHZ</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ppsd</span><span class="o">.</span><span class="n">times</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>Now we could add data to the probabilistic psd (all processing like
+demeaning, tapering and so on is done internally) and plot it like ...</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">st</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ppsd</span><span class="o">.</span><span class="n">times</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span> 
+</pre></div>
+</div>
+<p>... but the example stream is too short and does not contain enough data.</p>
+<p>And/or we could save the ppsd data in a pickled file ...</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;myfile.pkl&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>... that later can be loaded again using the <cite>pickle</cite> module in the Python
+Standard Library, e.g. to add more data or plot it again.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ppsd</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;myfile.pkl&quot;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>For a real world example see the <a class="reference external" href="http://docs.obspy.org/tutorial/">ObsPy Tutorial</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is safer (but a bit slower) to provide a
+<a class="reference internal" href="obspy.xseed.parser.Parser.html#obspy.xseed.parser.Parser" title="obspy.xseed.parser.Parser"><tt class="xref py py-class docutils literal"><span class="pre">Parser</span></tt></a> instance with information from
+e.g. a Dataless SEED than to just provide a static PAZ dictionary.</p>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.add.html#obspy.signal.spectral_estimation.PPSD.add" title="obspy.signal.spectral_estimation.PPSD.add"><tt class="xref py py-obj docutils literal"><span class="pre">add</span></tt></a></td>
+<td>Process all traces with compatible information and add their spectral estimates to the histogram containg the probabilistic psd.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.get_percentile.html#obspy.signal.spectral_estimation.PPSD.get_percentile" title="obspy.signal.spectral_estimation.PPSD.get_percentile"><tt class="xref py py-obj docutils literal"><span class="pre">get_percentile</span></tt></a></td>
+<td>Returns periods and approximate psd values for given percentile value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.plot.html#obspy.signal.spectral_estimation.PPSD.plot" title="obspy.signal.spectral_estimation.PPSD.plot"><tt class="xref py py-obj docutils literal"><span class="pre">plot</span></tt></a></td>
+<td>Plot the 2D histogram of the current PPSD.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.plot_coverage.html#obspy.signal.spectral_estimation.PPSD.plot_coverage" title="obspy.signal.spectral_estimation.PPSD.plot_coverage"><tt class="xref py py-obj docutils literal"><span class="pre">plot_coverage</span></tt></a></td>
+<td>Plot the data coverage of the histogram of the current PPSD.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.save.html#obspy.signal.spectral_estimation.PPSD.save" title="obspy.signal.spectral_estimation.PPSD.save"><tt class="xref py py-obj docutils literal"><span class="pre">save</span></tt></a></td>
+<td>Saves PPSD instance as a pickled file that can be loaded again using</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__check_time_present.html#obspy.signal.spectral_estimation.PPSD._PPSD__check_time_present" title="obspy.signal.spectral_estimation.PPSD._PPSD__check_time_present"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__check_time_present</span></tt></a></td>
+<td>Checks if the given UTCDateTime is already part of the current PPSD</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__get_normalized_cumulative_histogram.html#obspy.signal.spectral_estimation.PPSD._PPSD__get_normalized_cumulative_histogram" title="obspy.signal.spectral_estimation.PPSD._PPSD__get_normalized_cumulative_histogram"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__get_normalized_cumulative_histogram</span></tt></a></td>
+<td>Returns the current histogram in a cumulative version normalized per period column, i.e.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__insert_data_times.html#obspy.signal.spectral_estimation.PPSD._PPSD__insert_data_times" title="obspy.signal.spectral_estimation.PPSD._PPSD__insert_data_times"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__insert_data_times</span></tt></a></td>
+<td>Gets gap information of stream and adds the encountered gaps to the gap</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__insert_gap_times.html#obspy.signal.spectral_estimation.PPSD._PPSD__insert_gap_times" title="obspy.signal.spectral_estimation.PPSD._PPSD__insert_gap_times"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__insert_gap_times</span></tt></a></td>
+<td>Gets gap information of stream and adds the encountered gaps to the gap</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__insert_used_time.html#obspy.signal.spectral_estimation.PPSD._PPSD__insert_used_time" title="obspy.signal.spectral_estimation.PPSD._PPSD__insert_used_time"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__insert_used_time</span></tt></a></td>
+<td>Inserts the given UTCDateTime at the right position in the list keeping</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__plot_coverage.html#obspy.signal.spectral_estimation.PPSD._PPSD__plot_coverage" title="obspy.signal.spectral_estimation.PPSD._PPSD__plot_coverage"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__plot_coverage</span></tt></a></td>
+<td>Helper function to plot coverage into given axes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__process.html#obspy.signal.spectral_estimation.PPSD._PPSD__process" title="obspy.signal.spectral_estimation.PPSD._PPSD__process"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__process</span></tt></a></td>
+<td>Processes a one-hour segment of data and adds the information to the</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__sanity_check.html#obspy.signal.spectral_estimation.PPSD._PPSD__sanity_check" title="obspy.signal.spectral_estimation.PPSD._PPSD__sanity_check"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__sanity_check</span></tt></a></td>
+<td>Checks if trace is compatible for use in the current PPSD instance.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins.html#obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins" title="obspy.signal.spectral_estimation.PPSD._PPSD__setup_bins"><tt class="xref py py-obj docutils literal"><span class="pre">_PPSD__setup_bins</span></tt></a></td>
+<td>Makes an initial dummy psd and thus sets up the bins and all the rest.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.signal.spectral_estimation.PPSD.__init__.html#obspy.signal.spectral_estimation.PPSD.__init__" title="obspy.signal.spectral_estimation.PPSD.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Initialize the PPSD object setting all fixed information on the station</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.signal.spectral_estimation.PPSD.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.PPSD.add.html" title="obspy.signal.spectral_estimation.PPSD.add"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.signal.spectral_estimation.welch_window.html" title="obspy.signal.spectral_estimation.welch_window"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.signal.html" >obspy.signal - Signal Processing Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.signal.spectral_estimation.html" >obspy.signal.spectral_estimation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

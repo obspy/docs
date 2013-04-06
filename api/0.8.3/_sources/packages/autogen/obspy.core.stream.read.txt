@@ -1,0 +1,6 @@
+obspy.core.stream.read
+======================
+
+.. currentmodule:: obspy.core.stream
+
+.. autofunction:: read

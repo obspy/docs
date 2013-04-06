@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.seg2.seg2 &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.seg2.seg2</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SEG-2 support for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    Lion Krischer (krischer@geophysik.uni-muenchen.de), 2011</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">unpack</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Trace</span><span class="p">,</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">UTCDateTime</span>
+<span class="kn">from</span> <span class="nn">obspy.core</span> <span class="kn">import</span> <span class="n">AttribDict</span>
+<span class="kn">from</span> <span class="nn">header</span> <span class="kn">import</span> <span class="n">MONTHS</span>
+
+
+<div class="viewcode-block" id="SEG2BaseError"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2BaseError.html#obspy.seg2.seg2.SEG2BaseError">[docs]</a><span class="k">class</span> <span class="nc">SEG2BaseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all SEG-2 specific errors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SEG2InvalidFileError"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2InvalidFileError.html#obspy.seg2.seg2.SEG2InvalidFileError">[docs]</a><span class="k">class</span> <span class="nc">SEG2InvalidFileError</span><span class="p">(</span><span class="n">SEG2BaseError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Will be raised if something is not correct with the SEG-2 file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SEG2"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.html#obspy.seg2.seg2.SEG2">[docs]</a><span class="k">class</span> <span class="nc">SEG2</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to read and write SEG 2 formatted files. The main reason this is</span>
+<span class="sd">    realized as a class is for the ease of passing the various parameters from</span>
+<span class="sd">    one function to the next.</span>
+
+<span class="sd">    Do not change the file_pointer attribute while using this class. It will</span>
+<span class="sd">    be used to keep track of which parts have been read yet and which not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SEG2.__init__"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.__init__.html#obspy.seg2.seg2.SEG2.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="SEG2.readFile"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.readFile.html#obspy.seg2.seg2.SEG2.readFile">[docs]</a>    <span class="k">def</span> <span class="nf">readFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads the following file and will return a Stream object. If</span>
+<span class="sd">        file_object is a string it will be treated as a filename, otherwise it</span>
+<span class="sd">        will be expected to be a file like object with read(), seek() and</span>
+<span class="sd">        tell() methods.</span>
+
+<span class="sd">        If it is a file_like object, file.seek(0, 0) is expected to be the</span>
+<span class="sd">        beginning of the SEG-2 file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Read the file if it is a filename.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_object</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_object</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span> <span class="o">=</span> <span class="n">file_object</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="p">()</span>
+
+        <span class="c"># Read the file descriptor block. This will also determine the</span>
+        <span class="c"># endianness.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readFileDescriptorBlock</span><span class="p">()</span>
+
+        <span class="c"># Loop over every trace, read it and append it to the Stream.</span>
+        <span class="k">for</span> <span class="n">tr_pointer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace_pointers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tr_pointer</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parseNextTrace</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span>
+</div>
+<div class="viewcode-block" id="SEG2.readFileDescriptorBlock"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.readFileDescriptorBlock.html#obspy.seg2.seg2.SEG2.readFileDescriptorBlock">[docs]</a>    <span class="k">def</span> <span class="nf">readFileDescriptorBlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles the reading of the file descriptor block and the free form</span>
+<span class="sd">        section following it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_descriptor_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+
+        <span class="c"># Determine the endianness and check if the block id is valid.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x55</span><span class="p">)</span> <span class="ow">and</span> \
+           <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x3a</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x3a</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x55</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Wrong File Descriptor Block ID&#39;</span>
+            <span class="k">raise</span> <span class="n">SEG2InvalidFileError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Check the revision number.</span>
+        <span class="n">revision_number</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span>
+                                <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">revision_number</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Only SEG 2 revision 1 is officially supported. This file &#39;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;has revision </span><span class="si">%i</span><span class="s">. Reading it might fail.&#39;</span> <span class="o">%</span> <span class="n">revision_number</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Please contact the ObsPy developers with a sample file.&#39;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">size_of_trace_pointer_sub_block</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span>
+                                       <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">number_of_traces</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span>
+                                  <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Define the string and line terminators.</span>
+        <span class="n">size_of_string_terminator</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">8</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">first_string_terminator_char</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">9</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">second_string_terminator_char</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">,</span>
+                                               <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">10</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">size_of_line_terminator</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">11</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">first_line_terminator_char</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">12</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">second_line_terminator_char</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">13</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Assemble the string terminator.</span>
+        <span class="k">if</span> <span class="n">size_of_string_terminator</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">string_terminator</span> <span class="o">=</span> <span class="n">first_string_terminator_char</span>
+        <span class="k">elif</span> <span class="n">size_of_string_terminator</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">string_terminator</span> <span class="o">=</span> <span class="n">first_string_terminator_char</span> <span class="o">+</span> \
+                                     <span class="n">second_string_terminator_char</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Wrong size of string terminator.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEG2InvalidFileError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c"># Assemble the line terminator.</span>
+        <span class="k">if</span> <span class="n">size_of_line_terminator</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">line_terminator</span> <span class="o">=</span> <span class="n">first_line_terminator_char</span>
+        <span class="k">elif</span> <span class="n">size_of_line_terminator</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">line_terminator</span> <span class="o">=</span> <span class="n">first_line_terminator_char</span> <span class="o">+</span> \
+                                     <span class="n">second_line_terminator_char</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Wrong size of line terminator.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEG2InvalidFileError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># Read the trace pointer sub-block and retrieve all the pointers.</span>
+        <span class="n">trace_pointer_sub_block</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size_of_trace_pointer_sub_block</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_pointers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">number_of_traces</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">_i</span> <span class="o">*</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trace_pointers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">L&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span>
+                       <span class="n">trace_pointer_sub_block</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c"># The rest of the header up to where the first trace pointer points is</span>
+        <span class="c"># a free form section.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">seg2</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parseFreeForm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>\
+                           <span class="bp">self</span><span class="o">.</span><span class="n">trace_pointers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">tell</span><span class="p">()),</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">seg2</span><span class="p">)</span>
+
+        <span class="c"># Get the time information from the file header.</span>
+        <span class="c"># XXX: Need some more generic date/time parsers.</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">seg2</span><span class="o">.</span><span class="n">ACQUISITION_TIME</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">seg2</span><span class="o">.</span><span class="n">ACQUISITION_DATE</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">day</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">MONTHS</span><span class="p">[</span><span class="n">date</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()],</span> <span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SEG2.parseNextTrace"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.parseNextTrace.html#obspy.seg2.seg2.SEG2.parseNextTrace">[docs]</a>    <span class="k">def</span> <span class="nf">parseNextTrace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the next trace in the trace pointer list and return a Trace</span>
+<span class="sd">        object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">trace_descriptor_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="c"># Check if the trace descripter block id is valid.</span>
+        <span class="k">if</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span> <span class="n">trace_descriptor_block</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> \
+           <span class="mh">0x4422</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Invalid trace descripter block id.&#39;</span>
+            <span class="k">raise</span> <span class="n">SEG2InvalidFileError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">size_of_this_block</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span>
+                                    <span class="n">trace_descriptor_block</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_size_of_corresponding_data_block</span> <span class="o">=</span> \
+                <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">L&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span> <span class="n">trace_descriptor_block</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">number_of_samples_in_data_block</span> <span class="o">=</span> \
+                <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">L&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">endian</span><span class="p">,</span> <span class="n">trace_descriptor_block</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data_format_code</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">trace_descriptor_block</span><span class="p">[</span><span class="mi">12</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Parse the data format code.</span>
+        <span class="k">if</span> <span class="n">data_format_code</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;float32&#39;</span>
+            <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">data_format_code</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;float64&#39;</span>
+            <span class="n">sample_size</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">data_format_code</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> \
+             <span class="p">(</span><span class="n">data_format_code</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> \
+             <span class="p">(</span><span class="n">data_format_code</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Data format code </span><span class="si">%i</span><span class="s"> not supported yet.</span><span class="se">\n</span><span class="s">&#39;</span> \
+                    <span class="o">%</span> <span class="n">data_format_code</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;Please contact the ObsPy developers with a sample file.&#39;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Unrecognized data format code&#39;</span>
+            <span class="k">raise</span> <span class="n">SEG2InvalidFileError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c"># The rest of the trace block is free form.</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;seg2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parseFreeForm</span><span class="p">(</span>\
+                         <span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size_of_this_block</span> <span class="o">-</span> <span class="mi">32</span><span class="p">),</span>
+                          <span class="n">header</span><span class="p">[</span><span class="s">&#39;seg2&#39;</span><span class="p">])</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s">&#39;seg2&#39;</span><span class="p">][</span><span class="s">&#39;SAMPLE_INTERVAL&#39;</span><span class="p">])</span>
+        <span class="c"># Set to the file&#39;s starttime.</span>
+        <span class="n">header</span><span class="p">[</span><span class="s">&#39;starttime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starttime</span><span class="p">)</span>
+        <span class="c"># Unpack the data.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>\
+                <span class="n">number_of_samples_in_data_block</span> <span class="o">*</span> <span class="n">sample_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Trace</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SEG2.parseFreeForm"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.SEG2.parseFreeForm.html#obspy.seg2.seg2.SEG2.parseFreeForm">[docs]</a>    <span class="k">def</span> <span class="nf">parseFreeForm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">free_form_str</span><span class="p">,</span> <span class="n">attrib_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the free form section stored in free_form_str and save it in</span>
+<span class="sd">        attrib_dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Separate the strings.</span>
+        <span class="n">strings</span> <span class="o">=</span> <span class="n">free_form_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_terminator</span><span class="p">)</span>
+        <span class="c"># This is not fully according to the SEG-2 format specification (or</span>
+        <span class="c"># rather the specification only speaks about on offset of 2 bytes</span>
+        <span class="c"># between strings and a string_terminator between two free form</span>
+        <span class="c"># strings. The file I have show the following separation between two</span>
+        <span class="c"># strings: &#39;random offset byte&#39;, &#39;string_terminator&#39;,</span>
+        <span class="c"># &#39;random offset byte&#39;</span>
+        <span class="c"># Therefore every string has to be at least 3 bytes wide to be</span>
+        <span class="c"># acceptable after being split at the string terminator.</span>
+        <span class="n">strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">_i</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="n">strings</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_i</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="c"># Every string has the structure OPTION&lt;SPACE&gt;VALUE. Write to</span>
+        <span class="c"># stream.stats attribute.</span>
+        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+            <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">attrib_dict</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c"># Parse the notes string again.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">attrib_dict</span><span class="p">,</span> <span class="s">&#39;NOTE&#39;</span><span class="p">):</span>
+            <span class="n">notes</span> <span class="o">=</span> <span class="n">attrib_dict</span><span class="o">.</span><span class="n">NOTE</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line_terminator</span><span class="p">)</span>
+            <span class="n">attrib_dict</span><span class="o">.</span><span class="n">NOTE</span> <span class="o">=</span> <span class="n">AttribDict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">notes</span><span class="p">:</span>
+                <span class="n">note</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">note</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">note</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">note</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">attrib_dict</span><span class="o">.</span><span class="n">NOTE</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="isSEG2"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.isSEG2.html#obspy.seg2.seg2.isSEG2">[docs]</a><span class="k">def</span> <span class="nf">isSEG2</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">is_filename</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">file_pointer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">is_filename</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">file_pointer</span> <span class="o">=</span> <span class="n">filename</span>
+
+    <span class="n">file_descriptor_block</span> <span class="o">=</span> <span class="n">file_pointer</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_filename</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">file_pointer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Determine the endianness and check if the block id is valid.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x55</span><span class="p">)</span> <span class="ow">and</span> \
+           <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x3a</span><span class="p">):</span>
+            <span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x3a</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="p">(</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0x55</span><span class="p">):</span>
+            <span class="n">endian</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Check the revision number.</span>
+    <span class="n">revision_number</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">H&#39;</span> <span class="o">%</span> <span class="n">endian</span><span class="p">,</span>
+                            <span class="n">file_descriptor_block</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">revision_number</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="readSEG2"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.readSEG2.html#obspy.seg2.seg2.readSEG2">[docs]</a><span class="k">def</span> <span class="nf">readSEG2</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="n">seg2</span> <span class="o">=</span> <span class="n">SEG2</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">seg2</span><span class="o">.</span><span class="n">readFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="writeSEG2"><a class="viewcode-back" href="../../../packages/autogen/obspy.seg2.seg2.writeSEG2.html#obspy.seg2.seg2.writeSEG2">[docs]</a><span class="k">def</span> <span class="nf">writeSEG2</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c"># @UnusedVariable</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Writing SEG-2 files is not implemented so far.&#39;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

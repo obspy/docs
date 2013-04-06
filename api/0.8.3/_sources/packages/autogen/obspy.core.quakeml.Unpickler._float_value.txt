@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._float_value
+=========================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._float_value

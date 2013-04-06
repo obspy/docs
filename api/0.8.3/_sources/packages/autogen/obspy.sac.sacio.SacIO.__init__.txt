@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.__init__
+==============================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.__init__

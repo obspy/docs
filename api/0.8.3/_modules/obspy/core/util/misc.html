@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.util.misc &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.core.util.misc</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Various additional utilities for ObsPy.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<span class="c"># The following dictionary maps the first character of the channel_id to the</span>
+<span class="c"># lowest sampling rate this so called Band Code should be used for according</span>
+<span class="c"># to: SEED MANUAL p.124</span>
+<span class="c"># We use this e.g. in seihub.client.getWaveform to request two samples more on</span>
+<span class="c"># both start and end to cut to the samples that really are nearest to requested</span>
+<span class="c"># start/endtime afterwards.</span>
+<span class="n">BAND_CODE</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;F&#39;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+             <span class="s">&#39;G&#39;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+             <span class="s">&#39;D&#39;</span><span class="p">:</span> <span class="mf">250.0</span><span class="p">,</span>
+             <span class="s">&#39;C&#39;</span><span class="p">:</span> <span class="mf">250.0</span><span class="p">,</span>
+             <span class="s">&#39;E&#39;</span><span class="p">:</span> <span class="mf">80.0</span><span class="p">,</span>
+             <span class="s">&#39;S&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
+             <span class="s">&#39;H&#39;</span><span class="p">:</span> <span class="mf">80.0</span><span class="p">,</span>
+             <span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
+             <span class="s">&#39;M&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+             <span class="s">&#39;L&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+             <span class="s">&#39;V&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+             <span class="s">&#39;U&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+             <span class="s">&#39;R&#39;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+             <span class="s">&#39;P&#39;</span><span class="p">:</span> <span class="mf">0.000001</span><span class="p">,</span>
+             <span class="s">&#39;T&#39;</span><span class="p">:</span> <span class="mf">0.0000001</span><span class="p">,</span>
+             <span class="s">&#39;Q&#39;</span><span class="p">:</span> <span class="mf">0.00000001</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="guessDelta"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.guessDelta.html#obspy.core.util.misc.guessDelta">[docs]</a><span class="k">def</span> <span class="nf">guessDelta</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate time delta in seconds between each sample from given channel name.</span>
+
+<span class="sd">    :type channel: str</span>
+<span class="sd">    :param channel: Channel name, e.g. ``&#39;BHZ&#39;`` or ``&#39;H&#39;``</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :return: Returns ``0`` if band code is not given or unknown.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; print(guessDelta(&#39;BHZ&#39;))</span>
+<span class="sd">    0.1</span>
+
+<span class="sd">    &gt;&gt;&gt; print(guessDelta(&#39;H&#39;))</span>
+<span class="sd">    0.0125</span>
+
+<span class="sd">    &gt;&gt;&gt; print(guessDelta(&#39;XZY&#39;))  # doctest: +SKIP</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">BAND_CODE</span><span class="p">[</span><span class="n">channel</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;No or unknown channel id provided. Specifying a channel id &quot;</span> <span class="o">+</span> \
+              <span class="s">&quot;could lead to better selection of first/last samples of &quot;</span> <span class="o">+</span> \
+              <span class="s">&quot;fetched traces.&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span>
+
+</div>
+<div class="viewcode-block" id="scoreatpercentile"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.scoreatpercentile.html#obspy.core.util.misc.scoreatpercentile">[docs]</a><span class="k">def</span> <span class="nf">scoreatpercentile</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">per</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="p">(),</span> <span class="n">issorted</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the score at the given per percentile of the sequence a.</span>
+
+<span class="sd">    For example, the score at ``per=50`` is the median.</span>
+
+<span class="sd">    If the desired quantile lies between two data points, we interpolate</span>
+<span class="sd">    between them.</span>
+
+<span class="sd">    If the parameter ``limit`` is provided, it should be a tuple (lower,</span>
+<span class="sd">    upper) of two values.  Values of ``a`` outside this (closed) interval</span>
+<span class="sd">    will be ignored.</span>
+
+<span class="sd">    .. rubric:: Examples</span>
+
+<span class="sd">    &gt;&gt;&gt; a = [1, 2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 25)</span>
+<span class="sd">    1.75</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 50)</span>
+<span class="sd">    2.5</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 75)</span>
+<span class="sd">    3.25</span>
+
+<span class="sd">    &gt;&gt;&gt; a = [6, 47, 49, 15, 42, 41, 7, 39, 43, 40, 36]</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 25)</span>
+<span class="sd">    25.5</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 50)</span>
+<span class="sd">    40</span>
+<span class="sd">    &gt;&gt;&gt; scoreatpercentile(a, 75)</span>
+<span class="sd">    42.5</span>
+
+<span class="sd">    This function is taken from :func:`scipy.stats.scoreatpercentile`.</span>
+
+<span class="sd">    Copyright (c) Gary Strangman</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">issorted</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[(</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">fraction</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">fraction</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">per</span> <span class="o">/</span> <span class="mf">100.</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_interpolate</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)],</span> <span class="n">values</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">1</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="flatnotmaskedContiguous"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.flatnotmaskedContiguous.html#obspy.core.util.misc.flatnotmaskedContiguous">[docs]</a><span class="k">def</span> <span class="nf">flatnotmaskedContiguous</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find contiguous unmasked data in a masked array along the given axis.</span>
+
+<span class="sd">    This function is taken from</span>
+<span class="sd">    :func:`numpy.ma.extras.flatnotmasked_contiguous`.</span>
+
+<span class="sd">    Copyright (c) Pierre Gerard-Marchant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">flatnotmasked_contiguous</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmask</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">nomask</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ravel</span><span class="p">()):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">result</span> <span class="ow">or</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="complexifyString"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.complexifyString.html#obspy.core.util.misc.complexifyString">[docs]</a><span class="k">def</span> <span class="nf">complexifyString</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string in the form &quot;(real, imag)&quot; into a complex type.</span>
+
+<span class="sd">    :type line: str</span>
+<span class="sd">    :param line: String in the form ``&quot;(real, imag)&quot;``.</span>
+<span class="sd">    :rtype: complex</span>
+<span class="sd">    :return: Complex number.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; complexifyString(&quot;(1,2)&quot;)</span>
+<span class="sd">    (1+2j)</span>
+
+<span class="sd">    &gt;&gt;&gt; complexifyString(&quot; ( 1 , 2 ) &quot;)</span>
+<span class="sd">    (1+2j)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">complex</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+</div>
+<div class="viewcode-block" id="toIntOrZero"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.toIntOrZero.html#obspy.core.util.misc.toIntOrZero">[docs]</a><span class="k">def</span> <span class="nf">toIntOrZero</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts given value to an integer or returns 0 if it fails.</span>
+
+<span class="sd">    :param value: Arbitrary data type.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">numpy.version.version</span>
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    &gt;&gt;&gt; toIntOrZero(&quot;12&quot;)</span>
+<span class="sd">    12</span>
+
+<span class="sd">    &gt;&gt;&gt; toIntOrZero(&quot;x&quot;)</span>
+<span class="sd">    0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="c"># import numpy loadtxt and check if ndlim parameter is available</span></div>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">loadtxt</span>
+    <span class="n">loadtxt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">ndlim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+    <span class="c"># otherwise redefine loadtxt</span>
+<div class="viewcode-block" id="loadtxt"><a class="viewcode-back" href="../../../../packages/autogen/obspy.core.util.misc.loadtxt.html#obspy.core.util.misc.loadtxt">[docs]</a>    <span class="k">def</span> <span class="nf">loadtxt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replacement for older numpy.loadtxt versions not supporting ndlim</span>
+<span class="sd">        parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;ndlim&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c"># ok we got a ndlim param</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;ndlim&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c"># for now we support only one dimensional arrays</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Upgrade your NumPy version!&#39;</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;ndlim&#39;</span><span class="p">]</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;dtype&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="c"># lets get the data</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c"># raises in older versions if no data could be read</span>
+            <span class="k">if</span> <span class="s">&#39;reached before encountering data&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                <span class="c"># return empty array</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="c"># otherwise just raise</span>
+            <span class="k">raise</span>
+        <span class="c"># ensures that an array is returned</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">exclude_empty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

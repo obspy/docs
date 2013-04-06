@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.signal.polarization &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.signal.polarization</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c"># Filename: polarization.py</span>
+<span class="c">#   Author: Conny Hammer</span>
+<span class="c">#    Email: conny.hammer@geo.uni-potsdam.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2008-2012 Conny Hammer</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Polarization Analysis</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="eigval"><a class="viewcode-back" href="../../../packages/autogen/obspy.signal.polarization.eigval.html#obspy.signal.polarization.eigval">[docs]</a><span class="k">def</span> <span class="nf">eigval</span><span class="p">(</span><span class="n">datax</span><span class="p">,</span> <span class="n">datay</span><span class="p">,</span> <span class="n">dataz</span><span class="p">,</span> <span class="n">fk</span><span class="p">,</span> <span class="n">normf</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Polarization attributes of a signal.</span>
+
+<span class="sd">    Computes the rectilinearity, the planarity and the eigenvalues of the given</span>
+<span class="sd">    data which can be windowed or not.</span>
+<span class="sd">    The time derivatives are calculated by central differences and the</span>
+<span class="sd">    parameter ``fk`` describes the coefficients of the used polynomial. The</span>
+<span class="sd">    values of ``fk`` depend on the order of the derivative you want to</span>
+<span class="sd">    calculate. If you do not want to use derivatives you can simply</span>
+<span class="sd">    use [1,1,1,1,1] for ``fk``.</span>
+
+<span class="sd">    The algorithm is mainly based on the paper by Jurkevics. The rest is just</span>
+<span class="sd">    the numerical differentiation by central differences (carried out by the</span>
+<span class="sd">    routine :func:`scipy.signal.lfilter(data, 1, fk)`).</span>
+
+<span class="sd">    :type datax: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param datax: Data of x component.</span>
+<span class="sd">    :type datay: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param datay: Data of y component.</span>
+<span class="sd">    :type dataz: :class:`~numpy.ndarray`</span>
+<span class="sd">    :param dataz: Data of z component.</span>
+<span class="sd">    :type fk: list</span>
+<span class="sd">    :param fk: Coefficients of polynomial used for calculating the time</span>
+<span class="sd">        derivatives.</span>
+<span class="sd">    :param normf: Factor for normalization.</span>
+<span class="sd">    :return: **leigenv1, leigenv2, leigenv3, rect, plan, dleigenv, drect,</span>
+<span class="sd">        dplan** - Smallest eigenvalue, Intermediate eigenvalue, Largest</span>
+<span class="sd">        eigenvalue, Rectilinearity, Planarity, Time derivative of eigenvalues,</span>
+<span class="sd">        time derivative of rectilinearity, Time derivative of planarity.</span>
+
+<span class="sd">    .. seealso:: [Jurkevics1988]_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">covmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="n">leigenv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">leigenv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">leigenv3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">dleigenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">rect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">plan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">datax</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">datax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">covmat</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">datax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">datay</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                                             <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">covmat</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">datax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">dataz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                                             <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">datay</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">covmat</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">dataz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">datay</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                                             <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">covmat</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">dataz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">rowvar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">_eigvec</span><span class="p">,</span> <span class="n">eigenval</span><span class="p">,</span> <span class="n">_v</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">covmat</span><span class="p">))</span>
+        <span class="n">eigenv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">eigenval</span><span class="p">)</span>
+        <span class="n">leigenv1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">leigenv2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">leigenv3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">rect</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">((</span><span class="n">eigenv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">plan</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">eigenv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigenv</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">leigenv1</span> <span class="o">=</span> <span class="n">leigenv1</span> <span class="o">/</span> <span class="n">normf</span>
+    <span class="n">leigenv2</span> <span class="o">=</span> <span class="n">leigenv2</span> <span class="o">/</span> <span class="n">normf</span>
+    <span class="n">leigenv3</span> <span class="o">=</span> <span class="n">leigenv3</span> <span class="o">/</span> <span class="n">normf</span>
+
+    <span class="n">leigenv1_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">leigenv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+           <span class="n">leigenv1</span><span class="p">),</span> <span class="p">[</span><span class="n">leigenv1</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">leigenv1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dleigenv1</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">leigenv1_add</span><span class="p">)</span>
+    <span class="n">dleigenv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dleigenv1</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="c">#dleigenv1 = dleigenv1[np.size(fk) // 2:(np.size(dleigenv1) - np.size(fk) /</span>
+    <span class="c">#        2)]</span>
+
+    <span class="n">leigenv2_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">leigenv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+           <span class="n">leigenv2</span><span class="p">),</span> <span class="p">[</span><span class="n">leigenv2</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">leigenv2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dleigenv2</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">leigenv2_add</span><span class="p">)</span>
+    <span class="n">dleigenv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dleigenv2</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="c">#dleigenv2 = dleigenv2[np.size(fk) // 2:(np.size(dleigenv2) - np.size(fk) /</span>
+    <span class="c">#        2)]</span>
+
+    <span class="n">leigenv3_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">leigenv3</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+           <span class="n">leigenv3</span><span class="p">),</span> <span class="p">[</span><span class="n">leigenv3</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">leigenv3</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dleigenv3</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">leigenv3_add</span><span class="p">)</span>
+    <span class="n">dleigenv</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dleigenv3</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="c">#dleigenv3 = dleigenv3[np.size(fk) // 2:(np.size(dleigenv3) - np.size(fk) /</span>
+    <span class="c">#        2)]</span>
+
+    <span class="n">rect_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+           <span class="n">rect</span><span class="p">),</span> <span class="p">[</span><span class="n">rect</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">drect</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rect_add</span><span class="p">)</span>
+    <span class="n">drect</span> <span class="o">=</span> <span class="n">drect</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="c">#drect = drect[np.size(fk) // 2:(np.size(drect3) - np.size(fk) // 2)]</span>
+
+    <span class="n">plan_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">plan</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+           <span class="n">plan</span><span class="p">),</span> <span class="p">[</span><span class="n">plan</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dplan</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plan_add</span><span class="p">)</span>
+    <span class="n">dplan</span> <span class="o">=</span> <span class="n">dplan</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fk</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="c">#dplan = dplan[np.size(fk) // 2:(np.size(dplan) - np.size(fk) // 2)]</span>
+
+    <span class="k">return</span> <span class="n">leigenv1</span><span class="p">,</span> <span class="n">leigenv2</span><span class="p">,</span> <span class="n">leigenv3</span><span class="p">,</span> <span class="n">rect</span><span class="p">,</span> <span class="n">plan</span><span class="p">,</span> <span class="n">dleigenv</span><span class="p">,</span> <span class="n">drect</span><span class="p">,</span> <span class="n">dplan</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

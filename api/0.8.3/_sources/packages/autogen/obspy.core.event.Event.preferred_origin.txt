@@ -1,0 +1,6 @@
+obspy.core.event.Event.preferred_origin
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Event.preferred_origin

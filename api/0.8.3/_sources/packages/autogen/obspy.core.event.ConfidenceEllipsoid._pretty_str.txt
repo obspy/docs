@@ -1,0 +1,6 @@
+obspy.core.event.ConfidenceEllipsoid._pretty_str
+================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ConfidenceEllipsoid._pretty_str

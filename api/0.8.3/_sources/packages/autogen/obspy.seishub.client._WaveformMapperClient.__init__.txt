@@ -1,0 +1,6 @@
+obspy.seishub.client._WaveformMapperClient.__init__
+===================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _WaveformMapperClient.__init__

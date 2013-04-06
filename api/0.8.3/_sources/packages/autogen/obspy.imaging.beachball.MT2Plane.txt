@@ -1,0 +1,6 @@
+obspy.imaging.beachball.MT2Plane
+================================
+
+.. currentmodule:: obspy.imaging.beachball
+
+.. autofunction:: MT2Plane

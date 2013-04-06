@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.max
+==========================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.max

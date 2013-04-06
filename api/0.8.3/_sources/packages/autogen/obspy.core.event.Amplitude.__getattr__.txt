@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.__getattr__
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.__getattr__

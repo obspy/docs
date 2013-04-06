@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.InitArrays
+================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.InitArrays

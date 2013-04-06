@@ -1,0 +1,86 @@
+obspy.seishub.client._WaveformMapperClient
+==========================================
+
+.. currentmodule:: obspy.seishub.client
+.. autoclass:: _WaveformMapperClient
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~_WaveformMapperClient.__dict__
+     ~_WaveformMapperClient.__doc__
+     ~_WaveformMapperClient.__module__
+     ~_WaveformMapperClient.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_WaveformMapperClient.getChannelIds
+     ~_WaveformMapperClient.getLatency
+     ~_WaveformMapperClient.getLocationIds
+     ~_WaveformMapperClient.getNetworkIds
+     ~_WaveformMapperClient.getPreview
+     ~_WaveformMapperClient.getPreviewByIds
+     ~_WaveformMapperClient.getStationIds
+     ~_WaveformMapperClient.getWaveform
+  
+
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~_WaveformMapperClient.__init__
+  
+
+  
+  

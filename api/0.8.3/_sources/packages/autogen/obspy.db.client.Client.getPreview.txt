@@ -1,0 +1,6 @@
+obspy.db.client.Client.getPreview
+=================================
+
+.. currentmodule:: obspy.db.client
+
+.. automethod:: Client.getPreview

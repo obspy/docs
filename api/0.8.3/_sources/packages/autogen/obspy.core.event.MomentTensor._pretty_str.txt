@@ -1,0 +1,6 @@
+obspy.core.event.MomentTensor._pretty_str
+=========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: MomentTensor._pretty_str

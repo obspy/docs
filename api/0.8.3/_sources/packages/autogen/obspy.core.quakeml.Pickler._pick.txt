@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._pick
+================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._pick

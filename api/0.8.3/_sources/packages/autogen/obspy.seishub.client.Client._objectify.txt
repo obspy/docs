@@ -1,0 +1,6 @@
+obspy.seishub.client.Client._objectify
+======================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client._objectify

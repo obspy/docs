@@ -1,0 +1,6 @@
+obspy.iris.client.Client._toFileOrData
+======================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client._toFileOrData

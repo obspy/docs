@@ -1,0 +1,6 @@
+obspy.realtime.signal.mwpIntegral
+=================================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: mwpIntegral

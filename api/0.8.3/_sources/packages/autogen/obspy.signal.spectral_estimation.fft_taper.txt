@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.fft_taper
+==========================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. autofunction:: fft_taper

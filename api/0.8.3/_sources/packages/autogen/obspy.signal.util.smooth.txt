@@ -1,0 +1,6 @@
+obspy.signal.util.smooth
+========================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: smooth

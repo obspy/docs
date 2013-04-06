@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.popitem
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.popitem

@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.get
+===================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.get

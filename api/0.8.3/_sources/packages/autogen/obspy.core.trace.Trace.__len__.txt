@@ -1,0 +1,6 @@
+obspy.core.trace.Trace.__len__
+==============================
+
+.. currentmodule:: obspy.core.trace
+
+.. automethod:: Trace.__len__

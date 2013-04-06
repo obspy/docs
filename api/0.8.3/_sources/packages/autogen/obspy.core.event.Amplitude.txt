@@ -1,0 +1,195 @@
+obspy.core.event.Amplitude
+==========================
+
+.. currentmodule:: obspy.core.event
+.. autoclass:: Amplitude
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~Amplitude.__abstractmethods__
+     ~Amplitude.__dict__
+     ~Amplitude.__doc__
+     ~Amplitude.__hash__
+     ~Amplitude.__module__
+     ~Amplitude.__weakref__
+     ~Amplitude.defaults
+     ~Amplitude.item
+     ~Amplitude.key
+     ~Amplitude.readonly
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Amplitude.clear
+     ~Amplitude.copy
+     ~Amplitude.get
+     ~Amplitude.items
+     ~Amplitude.iteritems
+     ~Amplitude.iterkeys
+     ~Amplitude.itervalues
+     ~Amplitude.keys
+     ~Amplitude.pop
+     ~Amplitude.popitem
+     ~Amplitude.setdefault
+     ~Amplitude.update
+     ~Amplitude.values
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Amplitude._pretty_str
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~Amplitude.__contains__
+     ~Amplitude.__deepcopy__
+     ~Amplitude.__delattr__
+     ~Amplitude.__delitem__
+     ~Amplitude.__eq__
+     ~Amplitude.__getattr__
+     ~Amplitude.__getitem__
+     ~Amplitude.__getstate__
+     ~Amplitude.__init__
+     ~Amplitude.__iter__
+     ~Amplitude.__len__
+     ~Amplitude.__ne__
+     ~Amplitude.__nonzero__
+     ~Amplitude.__repr__
+     ~Amplitude.__setattr__
+     ~Amplitude.__setitem__
+     ~Amplitude.__setstate__
+     ~Amplitude.__str__
+     ~Amplitude.__subclasshook__
+  
+
+  
+  

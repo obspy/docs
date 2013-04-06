@@ -1,0 +1,6 @@
+obspy.core.stream.Stream.trigger
+================================
+
+.. currentmodule:: obspy.core.stream
+
+.. automethod:: Stream.trigger

@@ -1,0 +1,6 @@
+obspy.core.event.ResourceIdentifier.__repr__
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: ResourceIdentifier.__repr__

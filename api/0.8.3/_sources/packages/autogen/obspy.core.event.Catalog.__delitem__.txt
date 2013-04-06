@@ -1,0 +1,6 @@
+obspy.core.event.Catalog.__delitem__
+====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Catalog.__delitem__

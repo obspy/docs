@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.iris.client.Client.station &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.iris.client.Client" href="obspy.iris.client.Client.html" />
+    <link rel="next" title="obspy.iris.client.Client.timeseries" href="obspy.iris.client.Client.timeseries.html" />
+    <link rel="prev" title="obspy.iris.client.Client.saveWaveform" href="obspy.iris.client.Client.saveWaveform.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.timeseries.html" title="obspy.iris.client.Client.timeseries"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.saveWaveform.html" title="obspy.iris.client.Client.saveWaveform"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" accesskey="U">obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-iris-client-client-station">
+<h1>obspy.iris.client.Client.station<a class="headerlink" href="#obspy-iris-client-client-station" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="obspy.iris.client.Client.station">
+<tt class="descclassname">Client.</tt><tt class="descname">station</tt><big>(</big><em>network</em>, <em>station</em>, <em>location='*'</em>, <em>channel='*'</em>, <em>starttime=None</em>, <em>endtime=None</em>, <em>level='sta'</em>, <em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/obspy/iris/client.html#Client.station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.iris.client.Client.station" title="Permalink to this definition">¶</a></dt>
+<dd><p>Low-level interface for <cite>station</cite> Web service of IRIS
+(<a class="reference external" href="http://www.iris.edu/ws/station/">http://www.iris.edu/ws/station/</a>) - release 1.3.6 (2012-04-30).</p>
+<p>This method provides access to station metadata in the IRIS DMC
+database. The results are returned in XML format using the StationXML
+schema (<a class="reference external" href="http://www.data.scec.org/xml/station/">http://www.data.scec.org/xml/station/</a>). Users can query for
+station metadata by network, station, channel, location, time and other
+search criteria and request results at multiple levels (station,
+channel, response, etc.).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code, e.g. <tt class="docutils literal"><span class="pre">'IU'</span></tt>.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code, e.g. <tt class="docutils literal"><span class="pre">'ANMO'</span></tt>, wildcards allowed.</li>
+<li><strong>location</strong> (<em>str, optional</em>) <span class="dash" /> Location code, e.g. <tt class="docutils literal"><span class="pre">'00'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.</li>
+<li><strong>channel</strong> (<em>str, optional</em>) <span class="dash" /> Channel code, e.g. <tt class="docutils literal"><span class="pre">'BHZ'</span></tt>, wildcards allowed.
+Defaults to <tt class="docutils literal"><span class="pre">'*'</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Geographic constraints - bounding rectangle</strong></p>
+<p>The following four parameters work together to specify a boundary
+rectangle. All four parameters are optional, but they may not be mixed
+with the parameters used for searching within a defined radius.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>minlat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the southern boundary. The minimum latitude must
+be between -90 and 90 degrees inclusive (and less than or equal to
+maxlat). If not specified, then this value defaults to <tt class="docutils literal"><span class="pre">-90</span></tt>.</li>
+<li><strong>maxlat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the northern boundary. The maximum latitude must
+be between -90 and 90 degrees inclusive and greater than or equal
+to minlat. If not specified, then this value defaults to <tt class="docutils literal"><span class="pre">90</span></tt>.</li>
+<li><strong>minlon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the western boundary. The minimum longitude must
+be between -180 and 180 degrees inclusive. If not specified, then
+this value defaults to <tt class="docutils literal"><span class="pre">-180</span></tt>. If minlon &gt; maxlon, then the
+boundary will cross the -180/180 meridian</li>
+<li><strong>maxlon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the eastern boundary. The minimum longitude must
+be between -180 and 180 degrees inclusive. If not specified, then
+this value defaults to +180. If maxlon &lt; minlon, then the boundary
+will cross the -180/180 meridian</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Geographic constraints - bounding radius</strong></p>
+<p>The following four parameters work together to specify a circular
+bounding area. <tt class="docutils literal"><span class="pre">lat</span></tt>, <tt class="docutils literal"><span class="pre">lon</span></tt>, and <tt class="docutils literal"><span class="pre">maxradius</span></tt> are all required,
+and must be used together. <tt class="docutils literal"><span class="pre">minradius</span></tt> is optional, and defaults
+to <tt class="docutils literal"><span class="pre">0</span></tt>. These parameters are incompatible with the boundary-box
+parameters described above.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lat</strong> (<em>float, optional</em>) <span class="dash" /> Specify the central latitude point, in degrees. This value
+must be between -90 and 90 degrees. This MUST be used in
+conjunction with the lon and maxradius parameters.</li>
+<li><strong>lon</strong> (<em>float, optional</em>) <span class="dash" /> Specify the central longitude point, in degrees. This MUST
+be used in conjunction with the lat and maxradius parameters.</li>
+<li><strong>maxradius</strong> (<em>float, optional</em>) <span class="dash" /> Specify the maximum radius, in degrees. Only
+earthquakes within maxradius degrees of the lat/lon point will be
+retrieved. This MUST be used in conjunction with the lat and lon
+parameters.</li>
+<li><strong>minradius</strong> (<em>float, optional</em>) <span class="dash" /> This optional parameter allows for the exclusion of
+events that are closer than minradius degrees from the specified
+lat/lon point. This MUST be used in conjunction with the lat, lon,
+and maxradius parameters and is subject to the same restrictions.
+If this parameter isn&#8217;t specified, then it defaults to <tt class="docutils literal"><span class="pre">0.0</span></tt>
+degrees.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Temporal constraints</strong></p>
+<p>The following parameters impose various time constrants on the query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>starttime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the stations that were operational
+on or after this time.</li>
+<li><strong>endtime</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the stations that were operational on
+or before this time.</li>
+<li><strong>startbefore</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>,
+optional) <span class="dash" /> Limit results to the stations starting before this
+time.</li>
+<li><strong>startafter</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>,
+optional) <span class="dash" /> Limit results to the stations starting after this
+time.</li>
+<li><strong>endbefore</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the stations ending before this
+time.</li>
+<li><strong>endafter</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>, optional) <span class="dash" /> Limit results to the stations ending after this time.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Miscelleneous options</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>updatedafter</strong> (<a class="reference internal" href="obspy.core.utcdatetime.UTCDateTime.html#obspy.core.utcdatetime.UTCDateTime" title="obspy.core.utcdatetime.UTCDateTime"><tt class="xref py py-class docutils literal"><span class="pre">UTCDateTime</span></tt></a>,
+optional) <span class="dash" /> Only show stations that were updated after a
+specific time.</li>
+<li><strong>level</strong> (<tt class="docutils literal"><span class="pre">'net'</span></tt>, <tt class="docutils literal"><span class="pre">'sta'</span></tt>, <tt class="docutils literal"><span class="pre">'chan'</span></tt>, or <tt class="docutils literal"><span class="pre">'resp'</span></tt>, optional) <span class="dash" /> Specify whether to include channel/response metadata or
+not. Defaults to <tt class="docutils literal"><span class="pre">'sta'</span></tt>.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) <span class="dash" /> Name of a output file. If this parameter is given
+nothing will be returned. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">str or <tt class="docutils literal"><span class="pre">None</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">StationXML file as string if no <tt class="docutils literal"><span class="pre">filename</span></tt> is given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.iris</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2006-03-01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2006-09-01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">station_xml</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">station</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="s">&quot;IU&quot;</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="s">&quot;ANMO&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">location</span><span class="o">=</span><span class="s">&quot;00&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s">&quot;BHZ&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">starttime</span><span class="o">=</span><span class="n">t1</span><span class="p">,</span> <span class="n">endtime</span><span class="o">=</span><span class="n">t2</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s">&quot;net&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">station_xml</span><span class="p">)</span> 
+<span class="go">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+
+<span class="go">&lt;StaMessage ...&gt;</span>
+<span class="go"> ...</span>
+<span class="go"> &lt;Network net_code=&quot;IU&quot;&gt;</span>
+<span class="go">  &lt;StartDate&gt;1988-01-01T00:00:00&lt;/StartDate&gt;</span>
+<span class="go">  &lt;EndDate&gt;2500-12-12T23:59:59&lt;/EndDate&gt;</span>
+<span class="go">  &lt;Description&gt;Global Seismograph Network ...&lt;/Description&gt;</span>
+<span class="go">  &lt;TotalNumberStations&gt;91&lt;/TotalNumberStations&gt;</span>
+<span class="go">  &lt;SelectedNumberStations&gt;0&lt;/SelectedNumberStations&gt;</span>
+<span class="go"> &lt;/Network&gt;</span>
+<span class="go">&lt;/StaMessage&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.iris.client.Client.station.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.timeseries.html" title="obspy.iris.client.Client.timeseries"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.iris.client.Client.saveWaveform.html" title="obspy.iris.client.Client.saveWaveform"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.iris.html" >obspy.iris - IRIS Web service client for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.iris.client.html" >obspy.iris.client</a> &raquo;</li>
+          <li><a href="obspy.iris.client.Client.html" >obspy.iris.client.Client</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

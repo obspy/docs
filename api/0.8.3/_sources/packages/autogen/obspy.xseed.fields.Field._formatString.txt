@@ -1,0 +1,6 @@
+obspy.xseed.fields.Field._formatString
+======================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Field._formatString

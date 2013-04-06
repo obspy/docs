@@ -1,0 +1,169 @@
+obspy.sac.sacio.SacIO
+=====================
+
+.. currentmodule:: obspy.sac.sacio
+.. autoclass:: SacIO
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~SacIO.__dict__
+     ~SacIO.__doc__
+     ~SacIO.__module__
+     ~SacIO.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SacIO.GetHvalue
+     ~SacIO.GetHvalueFromFile
+     ~SacIO.InitArrays
+     ~SacIO.IsSACfile
+     ~SacIO.IsValidSacFile
+     ~SacIO.IsValidXYSacFile
+     ~SacIO.ListStdValues
+     ~SacIO.PrintFValue
+     ~SacIO.PrintIValue
+     ~SacIO.PrintSValue
+     ~SacIO.ReadSacFile
+     ~SacIO.ReadSacHeader
+     ~SacIO.ReadSacXY
+     ~SacIO.ReadSacXYHeader
+     ~SacIO.SetHvalue
+     ~SacIO.SetHvalueInFile
+     ~SacIO.WriteSacBinary
+     ~SacIO.WriteSacHeader
+     ~SacIO.WriteSacXY
+     ~SacIO.fromarray
+     ~SacIO.get_obspy_header
+     ~SacIO.readTrace
+     ~SacIO.swap_byte_order
+  
+
+  
+  .. rubric:: Private Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SacIO._chck_header
+     ~SacIO._get_date
+     ~SacIO._get_dist
+  
+
+  
+  .. rubric:: Special Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~SacIO.__getattr__
+     ~SacIO.__init__
+  
+
+  
+  

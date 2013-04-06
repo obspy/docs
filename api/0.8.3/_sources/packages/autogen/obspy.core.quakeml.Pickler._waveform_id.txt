@@ -1,0 +1,6 @@
+obspy.core.quakeml.Pickler._waveform_id
+=======================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Pickler._waveform_id

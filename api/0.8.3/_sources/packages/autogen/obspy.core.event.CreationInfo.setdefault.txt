@@ -1,0 +1,6 @@
+obspy.core.event.CreationInfo.setdefault
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: CreationInfo.setdefault

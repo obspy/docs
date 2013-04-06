@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._value
+===================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._value

@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.fromarray
+===============================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.fromarray

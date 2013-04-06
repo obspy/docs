@@ -1,0 +1,6 @@
+obspy.arclink.client.Client._request
+====================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client._request

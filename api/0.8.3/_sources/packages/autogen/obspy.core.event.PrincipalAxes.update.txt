@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.update
+=====================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.update

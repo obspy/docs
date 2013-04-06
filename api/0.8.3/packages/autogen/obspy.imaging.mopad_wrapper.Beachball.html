@@ -1,0 +1,237 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.imaging.mopad_wrapper.Beachball &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.imaging.mopad_wrapper" href="obspy.imaging.mopad_wrapper.html" />
+    <link rel="next" title="obspy.imaging.scripts.scan" href="obspy.imaging.scripts.scan.html" />
+    <link rel="prev" title="obspy.imaging.mopad_wrapper.Beach" href="obspy.imaging.mopad_wrapper.Beach.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.scripts.scan.html" title="obspy.imaging.scripts.scan"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.mopad_wrapper.Beach.html" title="obspy.imaging.mopad_wrapper.Beach"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.mopad_wrapper.html" accesskey="U">obspy.imaging.mopad_wrapper</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-imaging-mopad-wrapper-beachball">
+<h1>obspy.imaging.mopad_wrapper.Beachball<a class="headerlink" href="#obspy-imaging-mopad-wrapper-beachball" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="obspy.imaging.mopad_wrapper.Beachball">
+<tt class="descname">Beachball</tt><big>(</big><em>fm</em>, <em>linewidth=2</em>, <em>facecolor='b'</em>, <em>bgcolor='w'</em>, <em>edgecolor='k'</em>, <em>alpha=1.0</em>, <em>xy=(0</em>, <em>0)</em>, <em>width=200</em>, <em>size=100</em>, <em>nofill=False</em>, <em>zorder=100</em>, <em>mopad_basis='USE'</em>, <em>outfile=None</em>, <em>format=None</em>, <em>fig=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/imaging/mopad_wrapper.html#Beachball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.imaging.mopad_wrapper.Beachball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a beach ball diagram of an earthquake focal mechanism. Based on
+MoPaD.</p>
+<p>S1, D1, and R1, the strike, dip and rake of one of the focal planes, can
+be vectors of multiple focal mechanisms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fm</strong> <span class="dash" /> Focal mechanism that is either number of mechanisms (NM) by 3
+(strike, dip, and rake) or NM x 6 (M11, M22, M33, M12, M13, M23 - the
+six independent components of the moment tensor, where the coordinate
+system is 1,2,3 = Up,South,East which equals r,theta,phi). The strike
+is of the first plane, clockwise relative to north.
+The dip is of the first plane, defined clockwise and perpendicular to
+strike, relative to horizontal such that 0 is horizontal and 90 is
+vertical. The rake is of the first focal plane solution. 90 moves the
+hanging wall up-dip (thrust), 0 moves it in the strike direction
+(left-lateral), -90 moves it down-dip (normal), and 180 moves it
+opposite to strike (right-lateral).</li>
+<li><strong>facecolor</strong> <span class="dash" /> Color to use for quadrants of tension; can be a string,
+e.g. <tt class="docutils literal"><span class="pre">'r'</span></tt>, <tt class="docutils literal"><span class="pre">'b'</span></tt> or three component color vector, [R G B].
+Defaults to <tt class="docutils literal"><span class="pre">'b'</span></tt> (blue).</li>
+<li><strong>bgcolor</strong> <span class="dash" /> The background color. Defaults to <tt class="docutils literal"><span class="pre">'w'</span></tt> (white).</li>
+<li><strong>edgecolor</strong> <span class="dash" /> Color of the edges. Defaults to <tt class="docutils literal"><span class="pre">'k'</span></tt> (black).</li>
+<li><strong>alpha</strong> <span class="dash" /> The alpha level of the beach ball. Defaults to <tt class="docutils literal"><span class="pre">1.0</span></tt>
+(opaque).</li>
+<li><strong>xy</strong> <span class="dash" /> Origin position of the beach ball as tuple. Defaults to
+<tt class="docutils literal"><span class="pre">(0,</span> <span class="pre">0)</span></tt>.</li>
+<li><strong>width</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) <span class="dash" /> Symbol size of beach ball. Defaults to <tt class="docutils literal"><span class="pre">200</span></tt>.</li>
+<li><strong>size</strong> <span class="dash" /> Controls the number of interpolation points for the
+curves. Minimum is automatically set to <tt class="docutils literal"><span class="pre">100</span></tt>.</li>
+<li><strong>nofill</strong> <span class="dash" /> Do not fill the beach ball, but only plot the planes.</li>
+<li><strong>zorder</strong> <span class="dash" /> Set zorder. Artists with lower zorder values are drawn
+first.</li>
+<li><strong>mopad_basis</strong> <span class="dash" /> The basis system. Defaults to <tt class="docutils literal"><span class="pre">'USE'</span></tt>. See the
+<a class="reference internal" href="#supported-basis-systems">Supported Basis Systems</a> section below for a full list of supported
+systems.</li>
+<li><strong>outfile</strong> <span class="dash" /> Output file string. Also used to automatically
+determine the output format. Supported file formats depend on your
+matplotlib backend. Most backends support png, pdf, ps, eps and
+svg. Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>format</strong> <span class="dash" /> Format of the graph picture. If no format is given the
+outfile parameter will be used to try to automatically determine
+the output format. If no format is found it defaults to png output.
+If no outfile is specified but a format is, than a binary
+imagestring will be returned.
+Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>fig</strong> <span class="dash" /> Give an existing figure instance to plot into. New Figure if
+set to <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric"><span class="target" id="supported-basis-systems">Supported Basis Systems</span></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="26%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Short</th>
+<th class="head">Basis vectors</th>
+<th class="head">Usage</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">'NED'</span></tt></td>
+<td>North, East, Down</td>
+<td>Jost and Herrmann 1989</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">'USE'</span></tt></td>
+<td>Up, South, East</td>
+<td>Global CMT Catalog, Larson et al. 2010</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">'XYZ'</span></tt></td>
+<td>East, North, Up</td>
+<td>General formulation, Jost and Herrmann 1989</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">'RT'</span></tt></td>
+<td>Radial, Transverse,
+Tangential</td>
+<td>psmeca (GMT), Wessel and Smith 1999</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">'NWU'</span></tt></td>
+<td>North, West, Up</td>
+<td>Stein and Wysession 2003</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<ol class="arabic">
+<li><p class="first">Using basis system <tt class="docutils literal"><span class="pre">'NED'</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.imaging.mopad_wrapper</span> <span class="kn">import</span> <span class="n">Beachball</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Beachball</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">mopad_basis</span><span class="o">=</span><span class="s">&#39;NED&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/inline/9b7c4ce0a6.py">source code</a>]</p>
+<p>Exception occurred rendering plot.</p>
+</li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.imaging.mopad_wrapper.Beachball.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.scripts.scan.html" title="obspy.imaging.scripts.scan"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.imaging.mopad_wrapper.Beach.html" title="obspy.imaging.mopad_wrapper.Beach"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.imaging.html" >obspy.imaging - Plotting Routines for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.imaging.mopad_wrapper.html" >obspy.imaging.mopad_wrapper</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

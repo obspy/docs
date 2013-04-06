@@ -1,0 +1,6 @@
+obspy.core.event.TimeWindow.itervalues
+======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: TimeWindow.itervalues

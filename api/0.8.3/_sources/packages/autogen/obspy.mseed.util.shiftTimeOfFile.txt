@@ -1,0 +1,6 @@
+obspy.mseed.util.shiftTimeOfFile
+================================
+
+.. currentmodule:: obspy.mseed.util
+
+.. autofunction:: shiftTimeOfFile

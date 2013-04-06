@@ -1,0 +1,6 @@
+obspy.realtime.rtmemory.RtMemory.updateOutput
+=============================================
+
+.. currentmodule:: obspy.realtime.rtmemory
+
+.. automethod:: RtMemory.updateOutput

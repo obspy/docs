@@ -1,0 +1,6 @@
+obspy.core.event.Pick.__getstate__
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Pick.__getstate__

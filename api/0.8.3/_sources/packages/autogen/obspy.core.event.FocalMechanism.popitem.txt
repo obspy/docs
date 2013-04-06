@@ -1,0 +1,6 @@
+obspy.core.event.FocalMechanism.popitem
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: FocalMechanism.popitem

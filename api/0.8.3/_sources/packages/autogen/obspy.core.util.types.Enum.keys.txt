@@ -1,0 +1,6 @@
+obspy.core.util.types.Enum.keys
+===============================
+
+.. currentmodule:: obspy.core.util.types
+
+.. automethod:: Enum.keys

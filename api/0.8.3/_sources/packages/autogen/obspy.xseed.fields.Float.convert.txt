@@ -1,0 +1,6 @@
+obspy.xseed.fields.Float.convert
+================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Float.convert

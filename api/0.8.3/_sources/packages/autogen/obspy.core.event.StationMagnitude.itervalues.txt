@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitude.itervalues
+============================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitude.itervalues

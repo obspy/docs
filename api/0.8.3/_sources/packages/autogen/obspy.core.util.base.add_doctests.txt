@@ -1,0 +1,6 @@
+obspy.core.util.base.add_doctests
+=================================
+
+.. currentmodule:: obspy.core.util.base
+
+.. autofunction:: add_doctests

@@ -1,0 +1,6 @@
+obspy.core.ascii.isTSPAIR
+=========================
+
+.. currentmodule:: obspy.core.ascii
+
+.. autofunction:: isTSPAIR

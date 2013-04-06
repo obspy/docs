@@ -1,0 +1,6 @@
+obspy.signal.util.nearestPow2
+=============================
+
+.. currentmodule:: obspy.signal.util
+
+.. autofunction:: nearestPow2

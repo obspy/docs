@@ -1,0 +1,6 @@
+obspy.iris.client.Client.flinnengdahl
+=====================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.flinnengdahl

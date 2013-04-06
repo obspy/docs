@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.GetHvalue
+===============================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.GetHvalue

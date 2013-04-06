@@ -1,0 +1,6 @@
+obspy.core.event.Axis.clear
+===========================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Axis.clear

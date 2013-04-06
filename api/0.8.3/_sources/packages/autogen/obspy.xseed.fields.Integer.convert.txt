@@ -1,0 +1,6 @@
+obspy.xseed.fields.Integer.convert
+==================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: Integer.convert

@@ -1,0 +1,6 @@
+obspy.signal.freqattributes.bwith
+=================================
+
+.. currentmodule:: obspy.signal.freqattributes
+
+.. autofunction:: bwith

@@ -1,0 +1,6 @@
+obspy.xseed.parser.Parser.getPAZ
+================================
+
+.. currentmodule:: obspy.xseed.parser
+
+.. automethod:: Parser.getPAZ

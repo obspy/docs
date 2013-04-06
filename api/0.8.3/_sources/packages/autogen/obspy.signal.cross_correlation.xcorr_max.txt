@@ -1,0 +1,6 @@
+obspy.signal.cross_correlation.xcorr_max
+========================================
+
+.. currentmodule:: obspy.signal.cross_correlation
+
+.. autofunction:: xcorr_max

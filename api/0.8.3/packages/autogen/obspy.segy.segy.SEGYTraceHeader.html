@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.segy.SEGYTraceHeader &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.segy.segy" href="obspy.segy.segy.html" />
+    <link rel="next" title="obspy.segy.segy.SEGYTraceHeader.write" href="obspy.segy.segy.SEGYTraceHeader.write.html" />
+    <link rel="prev" title="obspy.segy.segy.SEGYTrace.__str__" href="obspy.segy.segy.SEGYTrace.__str__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.SEGYTraceHeader.write.html" title="obspy.segy.segy.SEGYTraceHeader.write"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.SEGYTrace.__str__.html" title="obspy.segy.segy.SEGYTrace.__str__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.segy.html" accesskey="U">obspy.segy.segy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-segy-segy-segytraceheader">
+<h1>obspy.segy.segy.SEGYTraceHeader<a class="headerlink" href="#obspy-segy-segy-segytraceheader" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.segy.segy.SEGYTraceHeader">
+<em class="property">class </em><tt class="descname">SEGYTraceHeader</tt><big>(</big><em>header=None</em>, <em>endian='&gt;'</em>, <em>unpack_headers=False</em><big>)</big><a class="reference internal" href="../../_modules/obspy/segy/segy.html#SEGYTraceHeader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.segy.segy.SEGYTraceHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Convenience class that handles reading and writing of the trace headers.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader.write.html#obspy.segy.segy.SEGYTraceHeader.write" title="obspy.segy.segy.SEGYTraceHeader.write"><tt class="xref py py-obj docutils literal"><span class="pre">write</span></tt></a></td>
+<td>Writes the header to an open file like object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader._createEmptyTraceHeader.html#obspy.segy.segy.SEGYTraceHeader._createEmptyTraceHeader" title="obspy.segy.segy.SEGYTraceHeader._createEmptyTraceHeader"><tt class="xref py py-obj docutils literal"><span class="pre">_createEmptyTraceHeader</span></tt></a></td>
+<td>Init the trace header with zeros.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader._readTraceHeader.html#obspy.segy.segy.SEGYTraceHeader._readTraceHeader" title="obspy.segy.segy.SEGYTraceHeader._readTraceHeader"><tt class="xref py py-obj docutils literal"><span class="pre">_readTraceHeader</span></tt></a></td>
+<td>Reads the 240 byte long header and unpacks all values into</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader.__getattr__.html#obspy.segy.segy.SEGYTraceHeader.__getattr__" title="obspy.segy.segy.SEGYTraceHeader.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td>This method is only called if the attribute is not found in the usual places (i.e.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader.__init__.html#obspy.segy.segy.SEGYTraceHeader.__init__" title="obspy.segy.segy.SEGYTraceHeader.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td>Will take the 240 byte of the trace header and unpack all values with the given endianness.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.segy.segy.SEGYTraceHeader.__str__.html#obspy.segy.segy.SEGYTraceHeader.__str__" title="obspy.segy.segy.SEGYTraceHeader.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Just returns all header values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.segy.segy.SEGYTraceHeader.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.SEGYTraceHeader.write.html" title="obspy.segy.segy.SEGYTraceHeader.write"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.segy.segy.SEGYTrace.__str__.html" title="obspy.segy.segy.SEGYTrace.__str__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.segy.html" >obspy.segy - SEG Y and SU read and write support for ObsPy</a> &raquo;</li>
+          <li><a href="obspy.segy.segy.html" >obspy.segy.segy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

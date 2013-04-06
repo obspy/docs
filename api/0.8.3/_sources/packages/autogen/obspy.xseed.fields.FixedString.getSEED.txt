@@ -1,0 +1,6 @@
+obspy.xseed.fields.FixedString.getSEED
+======================================
+
+.. currentmodule:: obspy.xseed.fields
+
+.. automethod:: FixedString.getSEED

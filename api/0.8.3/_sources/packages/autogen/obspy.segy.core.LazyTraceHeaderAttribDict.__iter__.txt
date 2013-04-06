@@ -1,0 +1,6 @@
+obspy.segy.core.LazyTraceHeaderAttribDict.__iter__
+==================================================
+
+.. currentmodule:: obspy.segy.core
+
+.. automethod:: LazyTraceHeaderAttribDict.__iter__

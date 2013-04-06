@@ -1,0 +1,6 @@
+obspy.core.event.WaveformStreamID.clear
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: WaveformStreamID.clear

@@ -1,0 +1,6 @@
+obspy.seishub.client.Client._fetch
+==================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: Client._fetch

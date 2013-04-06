@@ -1,0 +1,6 @@
+obspy.seishub.client._WaveformMapperClient.getPreviewByIds
+==========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _WaveformMapperClient.getPreviewByIds

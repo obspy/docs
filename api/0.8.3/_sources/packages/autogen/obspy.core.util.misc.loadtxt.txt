@@ -1,0 +1,6 @@
+obspy.core.util.misc.loadtxt
+============================
+
+.. currentmodule:: obspy.core.util.misc
+
+.. autofunction:: loadtxt

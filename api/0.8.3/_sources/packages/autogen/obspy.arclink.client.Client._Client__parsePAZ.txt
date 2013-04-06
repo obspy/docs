@@ -1,0 +1,6 @@
+obspy.arclink.client.Client._Client__parsePAZ
+=============================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client._Client__parsePAZ

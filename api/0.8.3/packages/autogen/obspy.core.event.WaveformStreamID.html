@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.core.event.WaveformStreamID &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="obspy.core.event" href="obspy.core.event.html" />
+    <link rel="next" title="obspy.core.event.WaveformStreamID.clear" href="obspy.core.event.WaveformStreamID.clear.html" />
+    <link rel="prev" title="obspy.core.event.TimeWindow.__subclasshook__" href="obspy.core.event.TimeWindow.__subclasshook__.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.WaveformStreamID.clear.html" title="obspy.core.event.WaveformStreamID.clear"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.TimeWindow.__subclasshook__.html" title="obspy.core.event.TimeWindow.__subclasshook__"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" accesskey="U">obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="obspy-core-event-waveformstreamid">
+<h1>obspy.core.event.WaveformStreamID<a class="headerlink" href="#obspy-core-event-waveformstreamid" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="obspy.core.event.WaveformStreamID">
+<em class="property">class </em><tt class="descname">WaveformStreamID</tt><big>(</big><em>network_code=None</em>, <em>station_code=None</em>, <em>location_code=None</em>, <em>channel_code=None</em>, <em>resource_uri=None</em>, <em>seed_string=None</em><big>)</big><a class="reference internal" href="../../_modules/obspy/core/event.html#WaveformStreamID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#obspy.core.event.WaveformStreamID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">obspy.core.event.__WaveformStreamID</span></tt></p>
+<p>Pointer to a stream description in an inventory.</p>
+<p>This is mostly equivalent to the combination of network_code, station_code,
+location_code, and channel_code. However, additional information, e. g.,
+sampling rate, can be referenced by the resource_uri.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>network</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Network code.</li>
+<li><strong>station</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) <span class="dash" /> Station code.</li>
+<li><strong>location</strong> (<em>str, optional</em>) <span class="dash" /> Location code.</li>
+<li><strong>channel</strong> (<em>str, optional</em>) <span class="dash" /> Channel code.</li>
+<li><strong>resource_uri</strong> (<a class="reference internal" href="obspy.core.event.ResourceIdentifier.html#obspy.core.event.ResourceIdentifier" title="obspy.core.event.ResourceIdentifier"><tt class="xref py py-class docutils literal"><span class="pre">ResourceIdentifier</span></tt></a>, optional) <span class="dash" /> Resource identifier for the waveform stream.</li>
+<li><strong>seed_string</strong> (<em>str, optional</em>) <span class="dash" /> Provides an alternative initialization way by passing a
+SEED waveform string in the form network.station.location.channel, e.g.
+BW.FUR..EHZ, which will be used to populate the WaveformStreamID&#8217;s
+attributes.
+It will only be used if the network, station, location and channel
+keyword argument are ALL None.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Can be initialized with a SEED string or with individual components.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stream_id</span> <span class="o">=</span> <span class="n">WaveformStreamID</span><span class="p">(</span><span class="n">network_code</span><span class="o">=</span><span class="s">&quot;BW&quot;</span><span class="p">,</span> <span class="n">station_code</span><span class="o">=</span><span class="s">&quot;FUR&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">location_code</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">channel_code</span><span class="o">=</span><span class="s">&quot;EHZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">stream_id</span>
+<span class="go">WaveformStreamID(network_code=&#39;BW&#39;, station_code=&#39;FUR&#39;, channel_code=&#39;EHZ&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stream_id</span> <span class="o">=</span> <span class="n">WaveformStreamID</span><span class="p">(</span><span class="n">seed_string</span><span class="o">=</span><span class="s">&quot;BW.FUR..EHZ&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">stream_id</span>
+<span class="go">WaveformStreamID(network_code=&#39;BW&#39;, station_code=&#39;FUR&#39;, channel_code=&#39;EHZ&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Can also return the SEED string.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">stream_id</span><span class="o">.</span><span class="n">getSEEDString</span><span class="p">()</span>
+<span class="go">BW.FUR..EHZ</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__abstractmethods__</span></tt></td>
+<td>frozenset() -&gt; empty frozenset object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__dict__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__doc__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__hash__</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">__module__</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">__weakref__</span></tt></td>
+<td>list of weak references to the object (if defined)</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">defaults</span></tt></td>
+<td>dict() -&gt; new empty dictionary</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">item</span></tt></td>
+<td>tuple() -&gt; empty tuple</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">key</span></tt></td>
+<td>str(object) -&gt; string</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">readonly</span></tt></td>
+<td>list() -&gt; new empty list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Public Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.clear.html#obspy.core.event.WaveformStreamID.clear" title="obspy.core.event.WaveformStreamID.clear"><tt class="xref py py-obj docutils literal"><span class="pre">clear</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.copy.html#obspy.core.event.WaveformStreamID.copy" title="obspy.core.event.WaveformStreamID.copy"><tt class="xref py py-obj docutils literal"><span class="pre">copy</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.get.html#obspy.core.event.WaveformStreamID.get" title="obspy.core.event.WaveformStreamID.get"><tt class="xref py py-obj docutils literal"><span class="pre">get</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.getSEEDString.html#obspy.core.event.WaveformStreamID.getSEEDString" title="obspy.core.event.WaveformStreamID.getSEEDString"><tt class="xref py py-obj docutils literal"><span class="pre">getSEEDString</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.items.html#obspy.core.event.WaveformStreamID.items" title="obspy.core.event.WaveformStreamID.items"><tt class="xref py py-obj docutils literal"><span class="pre">items</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.iteritems.html#obspy.core.event.WaveformStreamID.iteritems" title="obspy.core.event.WaveformStreamID.iteritems"><tt class="xref py py-obj docutils literal"><span class="pre">iteritems</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.iterkeys.html#obspy.core.event.WaveformStreamID.iterkeys" title="obspy.core.event.WaveformStreamID.iterkeys"><tt class="xref py py-obj docutils literal"><span class="pre">iterkeys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.itervalues.html#obspy.core.event.WaveformStreamID.itervalues" title="obspy.core.event.WaveformStreamID.itervalues"><tt class="xref py py-obj docutils literal"><span class="pre">itervalues</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.keys.html#obspy.core.event.WaveformStreamID.keys" title="obspy.core.event.WaveformStreamID.keys"><tt class="xref py py-obj docutils literal"><span class="pre">keys</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.pop.html#obspy.core.event.WaveformStreamID.pop" title="obspy.core.event.WaveformStreamID.pop"><tt class="xref py py-obj docutils literal"><span class="pre">pop</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.popitem.html#obspy.core.event.WaveformStreamID.popitem" title="obspy.core.event.WaveformStreamID.popitem"><tt class="xref py py-obj docutils literal"><span class="pre">popitem</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.setdefault.html#obspy.core.event.WaveformStreamID.setdefault" title="obspy.core.event.WaveformStreamID.setdefault"><tt class="xref py py-obj docutils literal"><span class="pre">setdefault</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.update.html#obspy.core.event.WaveformStreamID.update" title="obspy.core.event.WaveformStreamID.update"><tt class="xref py py-obj docutils literal"><span class="pre">update</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.values.html#obspy.core.event.WaveformStreamID.values" title="obspy.core.event.WaveformStreamID.values"><tt class="xref py py-obj docutils literal"><span class="pre">values</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Private Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID._pretty_str.html#obspy.core.event.WaveformStreamID._pretty_str" title="obspy.core.event.WaveformStreamID._pretty_str"><tt class="xref py py-obj docutils literal"><span class="pre">_pretty_str</span></tt></a></td>
+<td>Return better readable string representation of AttribDict object.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Special Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__contains__.html#obspy.core.event.WaveformStreamID.__contains__" title="obspy.core.event.WaveformStreamID.__contains__"><tt class="xref py py-obj docutils literal"><span class="pre">__contains__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__deepcopy__.html#obspy.core.event.WaveformStreamID.__deepcopy__" title="obspy.core.event.WaveformStreamID.__deepcopy__"><tt class="xref py py-obj docutils literal"><span class="pre">__deepcopy__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__delattr__.html#obspy.core.event.WaveformStreamID.__delattr__" title="obspy.core.event.WaveformStreamID.__delattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__delattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__delitem__.html#obspy.core.event.WaveformStreamID.__delitem__" title="obspy.core.event.WaveformStreamID.__delitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__delitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__eq__.html#obspy.core.event.WaveformStreamID.__eq__" title="obspy.core.event.WaveformStreamID.__eq__"><tt class="xref py py-obj docutils literal"><span class="pre">__eq__</span></tt></a></td>
+<td>Two instances are considered equal if all attributes and all lists</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__getattr__.html#obspy.core.event.WaveformStreamID.__getattr__" title="obspy.core.event.WaveformStreamID.__getattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__getattr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__getitem__.html#obspy.core.event.WaveformStreamID.__getitem__" title="obspy.core.event.WaveformStreamID.__getitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__getitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__getstate__.html#obspy.core.event.WaveformStreamID.__getstate__" title="obspy.core.event.WaveformStreamID.__getstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__getstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__init__.html#obspy.core.event.WaveformStreamID.__init__" title="obspy.core.event.WaveformStreamID.__init__"><tt class="xref py py-obj docutils literal"><span class="pre">__init__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__iter__.html#obspy.core.event.WaveformStreamID.__iter__" title="obspy.core.event.WaveformStreamID.__iter__"><tt class="xref py py-obj docutils literal"><span class="pre">__iter__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__len__.html#obspy.core.event.WaveformStreamID.__len__" title="obspy.core.event.WaveformStreamID.__len__"><tt class="xref py py-obj docutils literal"><span class="pre">__len__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__ne__.html#obspy.core.event.WaveformStreamID.__ne__" title="obspy.core.event.WaveformStreamID.__ne__"><tt class="xref py py-obj docutils literal"><span class="pre">__ne__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__nonzero__.html#obspy.core.event.WaveformStreamID.__nonzero__" title="obspy.core.event.WaveformStreamID.__nonzero__"><tt class="xref py py-obj docutils literal"><span class="pre">__nonzero__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__repr__.html#obspy.core.event.WaveformStreamID.__repr__" title="obspy.core.event.WaveformStreamID.__repr__"><tt class="xref py py-obj docutils literal"><span class="pre">__repr__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__setattr__.html#obspy.core.event.WaveformStreamID.__setattr__" title="obspy.core.event.WaveformStreamID.__setattr__"><tt class="xref py py-obj docutils literal"><span class="pre">__setattr__</span></tt></a></td>
+<td>Custom property implementation that works if the class is</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__setitem__.html#obspy.core.event.WaveformStreamID.__setitem__" title="obspy.core.event.WaveformStreamID.__setitem__"><tt class="xref py py-obj docutils literal"><span class="pre">__setitem__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__setstate__.html#obspy.core.event.WaveformStreamID.__setstate__" title="obspy.core.event.WaveformStreamID.__setstate__"><tt class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></tt></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__str__.html#obspy.core.event.WaveformStreamID.__str__" title="obspy.core.event.WaveformStreamID.__str__"><tt class="xref py py-obj docutils literal"><span class="pre">__str__</span></tt></a></td>
+<td>Fairly extensive in an attempt to cover several use cases.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="obspy.core.event.WaveformStreamID.__subclasshook__.html#obspy.core.event.WaveformStreamID.__subclasshook__" title="obspy.core.event.WaveformStreamID.__subclasshook__"><tt class="xref py py-obj docutils literal"><span class="pre">__subclasshook__</span></tt></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/packages/autogen/obspy.core.event.WaveformStreamID.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.WaveformStreamID.clear.html" title="obspy.core.event.WaveformStreamID.clear"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="obspy.core.event.TimeWindow.__subclasshook__.html" title="obspy.core.event.TimeWindow.__subclasshook__"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Library Reference</a> &raquo;</li>
+          <li><a href="../obspy.core.html" >obspy.core - Core classes of ObsPy</a> &raquo;</li>
+          <li><a href="obspy.core.event.html" >obspy.core.event</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

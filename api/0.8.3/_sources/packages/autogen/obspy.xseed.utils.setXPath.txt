@@ -1,0 +1,6 @@
+obspy.xseed.utils.setXPath
+==========================
+
+.. currentmodule:: obspy.xseed.utils
+
+.. autofunction:: setXPath

@@ -1,0 +1,6 @@
+obspy.core.util.decorator.skip
+==============================
+
+.. currentmodule:: obspy.core.util.decorator
+
+.. autofunction:: skip

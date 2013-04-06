@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.getPAZ
+==================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.getPAZ

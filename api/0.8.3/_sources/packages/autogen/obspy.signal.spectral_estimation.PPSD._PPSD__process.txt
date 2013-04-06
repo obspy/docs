@@ -1,0 +1,6 @@
+obspy.signal.spectral_estimation.PPSD._PPSD__process
+====================================================
+
+.. currentmodule:: obspy.signal.spectral_estimation
+
+.. automethod:: PPSD._PPSD__process

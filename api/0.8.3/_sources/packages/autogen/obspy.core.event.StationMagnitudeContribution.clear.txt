@@ -1,0 +1,6 @@
+obspy.core.event.StationMagnitudeContribution.clear
+===================================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: StationMagnitudeContribution.clear

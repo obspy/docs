@@ -1,0 +1,30 @@
+obspy.gse2.libgse1
+==================
+
+.. currentmodule:: obspy.gse2.libgse1
+.. automodule:: obspy.gse2.libgse1
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      read
+      readHeader
+      readIntegerData
+   
+   
+
+   
+   
+   
+
+   
+   
+   

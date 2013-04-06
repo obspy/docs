@@ -1,0 +1,6 @@
+obspy.sac.core.readSAC
+======================
+
+.. currentmodule:: obspy.sac.core
+
+.. autofunction:: readSAC

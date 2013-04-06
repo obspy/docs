@@ -1,0 +1,6 @@
+obspy.earthworm.client.Client.__init__
+======================================
+
+.. currentmodule:: obspy.earthworm.client
+
+.. automethod:: Client.__init__

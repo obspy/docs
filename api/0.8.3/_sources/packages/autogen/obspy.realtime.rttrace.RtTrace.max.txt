@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.max
+==================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.max

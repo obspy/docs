@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. Poles and Zeros, Frequency Response &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../index.html" />
+    <link rel="up" title="ObsPy Tutorial" href="../index.html" />
+    <link rel="next" title="13. Seismometer Correction/Simulation" href="seismometer_correction_simulation.html" />
+    <link rel="prev" title="11.2.7. obspy.signal.trigger.arPick" href="../../packages/autogen/obspy.signal.trigger.arPick.html" />
+<link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seismometer_correction_simulation.html" title="13. Seismometer Correction/Simulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../../packages/autogen/obspy.signal.trigger.arPick.html" title="11.2.7. obspy.signal.trigger.arPick"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" accesskey="U">ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="poles-and-zeros-frequency-response">
+<h1>12. Poles and Zeros, Frequency Response<a class="headerlink" href="#poles-and-zeros-frequency-response" title="Permalink to this headline">¶</a></h1>
+<p>The following lines show how to calculate and visualize the frequency response
+of a LE-3D/1s seismometer with sampling interval 0.005s and 16384 points of
+fft. Two things have to be taken into account for the phase (actually for the
+imaginary part of the response):</p>
+<ul class="simple">
+<li>the fft that is used is defined as exp(-i*phi), but this minus sign is
+missing for the visualization, so we have to add it again</li>
+<li>we want the phase to go from 0 to 2*pi, instead of the output from atan2
+that goes from -pi to pi</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">obspy.signal</span> <span class="kn">import</span> <span class="n">pazToFreqResp</span>
+
+<span class="n">poles</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">4.440</span> <span class="o">+</span> <span class="mf">4.440</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.440</span> <span class="o">-</span> <span class="mf">4.440</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.083</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">]</span>
+<span class="n">zeros</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.0</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.0</span> <span class="o">+</span> <span class="mf">0.0</span><span class="n">j</span><span class="p">]</span>
+<span class="n">scale_fac</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">h</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">pazToFreqResp</span><span class="p">(</span><span class="n">poles</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">scale_fac</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">,</span> <span class="mi">16384</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency [Hz]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Amplitude&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="c">#take negative of imaginary part</span>
+<span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">real</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogx</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">phase</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency [Hz]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Phase [radian]&#39;</span><span class="p">)</span>
+<span class="c"># title, centered above both subplots</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">&#39;Frequency Response of LE-3D/1s Seismometer&#39;</span><span class="p">)</span>
+<span class="c"># make more room in between subplots for the ylabel of right plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>[<a class="reference external" href="../../plot_directive/tutorial/code_snippets/frequency_response.py">source code</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/frequency_response.hires.png">hires.png</a>, <a class="reference external" href="../../plot_directive/tutorial/code_snippets/frequency_response.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../../_images/frequency_response.png" src="../../_images/frequency_response.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/code_snippets/frequency_response.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seismometer_correction_simulation.html" title="13. Seismometer Correction/Simulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../../packages/autogen/obspy.signal.trigger.arPick.html" title="11.2.7. obspy.signal.trigger.arPick"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../index.html" >ObsPy Tutorial</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

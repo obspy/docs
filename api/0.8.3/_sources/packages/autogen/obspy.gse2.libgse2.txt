@@ -1,0 +1,54 @@
+obspy.gse2.libgse2
+==================
+
+.. currentmodule:: obspy.gse2.libgse2
+.. automodule:: obspy.gse2.libgse2
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      getStartAndEndTime
+      isGse2
+      read
+      readHead
+      uncompress_CM6
+      verifyChecksum
+      write
+      writeHeader
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      HEADER
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      ChksumError
+      GSEUtiError
+   
+   

@@ -1,0 +1,6 @@
+obspy.core.event.Origin.update
+==============================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.update

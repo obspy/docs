@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.__eq__
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.__eq__

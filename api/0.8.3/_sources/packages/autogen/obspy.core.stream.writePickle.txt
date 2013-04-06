@@ -1,0 +1,6 @@
+obspy.core.stream.writePickle
+=============================
+
+.. currentmodule:: obspy.core.stream
+
+.. autofunction:: writePickle

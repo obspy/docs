@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.arclink - ArcLink/WebDC request client for ObsPy &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../index.html" />
+    <link rel="up" title="ObsPy Library Reference" href="index.html" />
+    <link rel="next" title="obspy.arclink.client.Client" href="autogen/obspy.arclink.client.Client.html" />
+    <link rel="prev" title="obspy.wav.core.writeWAV" href="autogen/obspy.wav.core.writeWAV.html" />
+<link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.arclink.client.Client.html" title="obspy.arclink.client.Client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.wav.core.writeWAV.html" title="obspy.wav.core.writeWAV"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" accesskey="U">ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-obspy.arclink"></span><div class="section" id="obspy-arclink-arclink-webdc-request-client-for-obspy">
+<h1>obspy.arclink - ArcLink/WebDC request client for ObsPy<a class="headerlink" href="#obspy-arclink-arclink-webdc-request-client-for-obspy" title="Permalink to this headline">¶</a></h1>
+<p>ArcLink is a distributed data request protocol usable to access archived
+waveform data in the MiniSEED or SEED format and associated meta information as
+Dataless SEED files. It has been originally founded within the German WebDC
+initiative of <a class="reference external" href="http://geofon.gfz-potsdam.de">GEOFON</a> (Geoforschungsnetz) and <a class="reference external" href="http://www.bgr.de">BGR</a> (Bundesanstalt für
+Geowissenschaften und Rohstoffe). ArcLink has been designed as a &#8220;straight
+consequent continuation&#8221; of the NetDC concept originally developed by the <a class="reference external" href="http://www.iris.edu">IRIS</a>
+DMC. Instead of requiring waveform data via E-mail or FTP requests, ArcLink
+offers a direct TCP/IP communication approach. A prototypic web-based request
+tool is available via the WebDC homepage at <a class="reference external" href="http://www.webdc.eu">http://www.webdc.eu</a>.</p>
+<p>Recent development efforts within the <a class="reference external" href="http://www.neries-eu.org">NERIES</a> (Network of Excellence of
+Research and Infrastructures for European Seismology) project focuses on
+extending the ArcLink network to all major seismic data centers within Europe
+in order to create an European Integrated Data Center (EIDAC). Currently
+(September 2009) there are four European data centers contributing to this
+network: <a class="reference external" href="http://www.orfeus-eu.org">ORFEUS</a>, <a class="reference external" href="http://www.gfz-potsdam.de">GFZ</a> (GeoForschungsZentrum), <a class="reference external" href="http://www.ingv.it">INGV</a> (Istituto Nazionale di
+Geofisica e Vulcanologia), and <a class="reference external" href="http://www.ipgp.fr">IPGP</a> (Institut de Physique du Globe de Paris).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">The ObsPy Development Team (<a class="reference external" href="mailto:devs&#37;&#52;&#48;obspy&#46;org">devs<span>&#64;</span>obspy<span>&#46;</span>org</a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">GNU Lesser General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/lesser.html">http://www.gnu.org/copyleft/lesser.html</a>)</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The default client needs to open port 18002 to the host webdc.eu via TCP/IP
+in order to download the requested data. Please make sure that no firewall
+is blocking access to this server/port combination.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">user</span></tt> keyword in the following examples is used for identification
+with the ArcLink server as well as for usage statistics within the data
+center, so please provide a meaningful user id such as an email address.</p>
+</div>
+<ol class="arabic">
+<li><p class="first"><a class="reference internal" href="autogen/obspy.arclink.client.Client.getWaveform.html#obspy.arclink.client.Client.getWaveform" title="obspy.arclink.client.Client.getWaveform"><tt class="xref py py-meth docutils literal"><span class="pre">getWaveform()</span></tt></a>: The following example
+illustrates how to request and plot 18 seconds of all three single band
+channels (<tt class="docutils literal"><span class="pre">&quot;EH*&quot;</span></tt>) of station Jochberg/Hochstaufen (<tt class="docutils literal"><span class="pre">&quot;RJOB&quot;</span></tt>)
+of the Bavarian network (<tt class="docutils literal"><span class="pre">&quot;BW&quot;</span></tt>) for an seismic event around
+2009-08-20 04:03:12 (UTC).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="s">&quot;2009-08-20 04:03:12&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getWaveform</span><span class="p">(</span><span class="s">&quot;BW&quot;</span><span class="p">,</span> <span class="s">&quot;RJOB&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;EH*&quot;</span><span class="p">,</span> <span class="n">t</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">15</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">st</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>Waveform data fetched from an ArcLink node is converted into an ObsPy
+<a class="reference internal" href="autogen/obspy.core.stream.Stream.html#obspy.core.stream.Stream" title="obspy.core.stream.Stream"><tt class="xref py py-class docutils literal"><span class="pre">Stream</span></tt></a> object. The seismogram is truncated by
+the ObsPy client to the actual requested time span, as ArcLink internally
+cuts SEED files for performance reasons on record base in order to avoid
+uncompressing the waveform data. The output of the script above is shown in
+the next picture.</p>
+<p>[<a class="reference external" href="../plot_directive/inline/5d0b5afe74.hires.png">hires.png</a>, <a class="reference external" href="../plot_directive/inline/5d0b5afe74.pdf">pdf</a>]</p>
+<div class="figure">
+<img alt="../_images/5d0b5afe74.png" src="../_images/5d0b5afe74.png" />
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.arclink.client.Client.getPAZ.html#obspy.arclink.client.Client.getPAZ" title="obspy.arclink.client.Client.getPAZ"><tt class="xref py py-meth docutils literal"><span class="pre">getPAZ()</span></tt></a>: Requests poles, zeros, gain
+and sensitivity of a single channel at a given time.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getPAZ</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;MANZ&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paz</span>  
+<span class="go">AttribDict({&#39;poles&#39;: [(-0.037004+0.037016j), (-0.037004-0.037016j),</span>
+<span class="go">                      (-251.33+0j), (-131.04-467.29j), (-131.04+467.29j)],</span>
+<span class="go">            &#39;sensitivity&#39;: 2516778600.0,</span>
+<span class="go">            &#39;zeros&#39;: [0j, 0j],</span>
+<span class="go">            &#39;name&#39;: &#39;LMU:STS-2/N/g=1500&#39;,</span>
+<span class="go">            &#39;gain&#39;: 60077000.0})</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.arclink.client.Client.saveResponse.html#obspy.arclink.client.Client.saveResponse" title="obspy.arclink.client.Client.saveResponse"><tt class="xref py py-meth docutils literal"><span class="pre">saveResponse()</span></tt></a>: Writes a response
+information into a file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveResponse</span><span class="p">(</span><span class="s">&#39;BW.MANZ..EHZ.dataless&#39;</span><span class="p">,</span> <span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;MANZ&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;SEED&quot;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.arclink.client.Client.saveWaveform.html#obspy.arclink.client.Client.saveWaveform" title="obspy.arclink.client.Client.saveWaveform"><tt class="xref py py-meth docutils literal"><span class="pre">saveWaveform()</span></tt></a>: Writes the requested
+waveform unmodified into your local file system. Here we request a Full
+SEED volume.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">saveWaveform</span><span class="p">(</span><span class="s">&#39;BW.MANZ..EHZ.seed&#39;</span><span class="p">,</span> <span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;MANZ&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">t</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;FSEED&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="autogen/obspy.arclink.client.Client.getInventory.html#obspy.arclink.client.Client.getInventory" title="obspy.arclink.client.Client.getInventory"><tt class="xref py py-meth docutils literal"><span class="pre">getInventory()</span></tt></a>: Request inventory
+data.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">obspy.arclink.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s">&#39;test@obspy.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inv</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getInventory</span><span class="p">(</span><span class="s">&#39;BW&#39;</span><span class="p">,</span> <span class="s">&#39;M*&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;EHZ&#39;</span><span class="p">,</span> <span class="n">restricted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">permanent</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">min_longitude</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">max_longitude</span><span class="o">=</span><span class="mf">12.2</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inv</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>  
+<span class="go">[&#39;BW.MROB&#39;, &#39;BW.MANZ..EHZ&#39;, &#39;BW&#39;, &#39;BW.MANZ&#39;, &#39;BW.MROB..EHZ&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inv</span><span class="p">[</span><span class="s">&#39;BW&#39;</span><span class="p">]</span>  
+<span class="go">AttribDict({&#39;description&#39;: &#39;BayernNetz&#39;, &#39;region&#39;: &#39;Germany&#39;, ...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inv</span><span class="p">[</span><span class="s">&#39;BW.MROB&#39;</span><span class="p">]</span>  
+<span class="go">AttribDict({&#39;code&#39;: &#39;MROB&#39;, &#39;description&#39;: &#39;Rosenbuehl, Bavaria&#39;, ...</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="further-resources">
+<h2>Further Resources<a class="headerlink" href="#further-resources" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>ArcLink protocol specifications:<ul>
+<li><a class="reference external" href="http://www.seiscomp3.org/wiki/doc/applications/arclink">http://www.seiscomp3.org/wiki/doc/applications/arclink</a></li>
+<li><a class="reference external" href="http://geofon.gfz-potsdam.de/_sc3_neries_/arclink.pdf">http://geofon.gfz-potsdam.de/_sc3_neries_/arclink.pdf</a></li>
+<li><a class="reference external" href="https://raw.github.com/obspy/obspy/master/obspy/arclink/docs/protocol.txt">https://raw.github.com/obspy/obspy/master/obspy/arclink/docs/protocol.txt</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="http://www.webdc.eu/webdc_sum.html">Short introduction</a> to the ArcLink
+protocol</li>
+<li>Latest <a class="reference external" href="ftp://ftp.gfz-potsdam.de/pub/home/st/GEOFON/software/SeisComP/ArcLink/">ArcLink server</a></li>
+<li><a class="reference external" href="http://neriesdataportalblog.freeflux.net/webservices/">SeismoLink</a>: a SOAP
+Web service on top of the ArcLink network</li>
+</ul>
+</div>
+<div class="section" id="classes-functions">
+<h2>Classes &amp; Functions<a class="headerlink" href="#classes-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.arclink.client.Client.html#obspy.arclink.client.Client" title="obspy.arclink.client.Client"><tt class="xref py py-obj docutils literal"><span class="pre">client.Client</span></tt></a></td>
+<td>The ArcLink/WebDC client.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autogen/obspy.arclink.client.html#module-obspy.arclink.client" title="obspy.arclink.client"><tt class="xref py py-obj docutils literal"><span class="pre">client</span></tt></a></td>
+<td>ArcLink/WebDC client for ObsPy.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">obspy.arclink - ArcLink/WebDC request client for ObsPy</a><ul>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#further-resources">Further Resources</a></li>
+<li><a class="reference internal" href="#classes-functions">Classes &amp; Functions</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/packages/obspy.arclink.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.arclink.client.Client.html" title="obspy.arclink.client.Client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autogen/obspy.wav.core.writeWAV.html" title="obspy.wav.core.writeWAV"
+             >previous</a> |</li>
+        <li><a href="../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="index.html" >ObsPy Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

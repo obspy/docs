@@ -1,0 +1,6 @@
+obspy.seishub.client._StationMapperClient.getCoordinates
+========================================================
+
+.. currentmodule:: obspy.seishub.client
+
+.. automethod:: _StationMapperClient.getCoordinates

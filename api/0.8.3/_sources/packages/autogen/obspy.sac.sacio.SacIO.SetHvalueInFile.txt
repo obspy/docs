@@ -1,0 +1,6 @@
+obspy.sac.sacio.SacIO.SetHvalueInFile
+=====================================
+
+.. currentmodule:: obspy.sac.sacio
+
+.. automethod:: SacIO.SetHvalueInFile

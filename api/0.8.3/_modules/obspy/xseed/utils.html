@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.xseed.utils &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.xseed.utils</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Various additional utilities for ObsPy xseed.</span>
+
+<span class="sd">:copyright:</span>
+<span class="sd">    The ObsPy Development Team (devs@obspy.org)</span>
+<span class="sd">:license:</span>
+<span class="sd">    GNU Lesser General Public License, Version 3</span>
+<span class="sd">    (http://www.gnu.org/copyleft/lesser.html)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="c"># Ignore Attributes of Blockettes</span>
+<span class="n">IGNORE_ATTR</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;blockette_id&#39;</span><span class="p">,</span> <span class="s">&#39;blockette_name&#39;</span><span class="p">,</span> <span class="s">&#39;compact&#39;</span><span class="p">,</span> <span class="s">&#39;debug&#39;</span><span class="p">,</span>
+               <span class="s">&#39;seed_version&#39;</span><span class="p">,</span> <span class="s">&#39;strict&#39;</span><span class="p">,</span> <span class="s">&#39;xseed_version&#39;</span><span class="p">,</span>
+               <span class="s">&#39;length_of_blockette&#39;</span><span class="p">,</span> <span class="s">&#39;blockette_type&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="SEEDParserException"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.SEEDParserException.html#obspy.xseed.utils.SEEDParserException">[docs]</a><span class="k">class</span> <span class="nc">SEEDParserException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="toTag"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.toTag.html#obspy.xseed.utils.toTag">[docs]</a><span class="k">def</span> <span class="nf">toTag</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a XML tag from a given string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;fir_&#39;</span><span class="p">,</span> <span class="s">&#39;FIR_&#39;</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;a0_&#39;</span><span class="p">,</span> <span class="s">&#39;A0_&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp</span>
+
+</div>
+<div class="viewcode-block" id="toString"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.toString.html#obspy.xseed.utils.toString">[docs]</a><span class="k">def</span> <span class="nf">toString</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a pretty string from any given XML tag.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;Fir&#39;</span><span class="p">,</span> <span class="s">&#39;FIR&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp</span>
+
+</div>
+<div class="viewcode-block" id="DateTime2String"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.DateTime2String.html#obspy.xseed.utils.DateTime2String">[docs]</a><span class="k">def</span> <span class="nf">DateTime2String</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a valid SEED time string from a UTCDateTime object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">UTCDateTime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">formatSEED</span><span class="p">(</span><span class="n">compact</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">UTCDateTime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">formatSEED</span><span class="p">(</span><span class="n">compact</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Invalid datetime </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="compareSEED"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.compareSEED.html#obspy.xseed.utils.compareSEED">[docs]</a><span class="k">def</span> <span class="nf">compareSEED</span><span class="p">(</span><span class="n">seed1</span><span class="p">,</span> <span class="n">seed2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compares two SEED files.</span>
+
+<span class="sd">    Only works with a record length of 4096 bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Each SEED string should be a multiple of the record length.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seed1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4096</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Length of first SEED string should be a multiple of 4096 bytes&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seed2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4096</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Length of second SEED string should be a multiple of 4096 bytes&quot;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># Loop over each record and remove empty ones. obspy.xseed doesn&#39;t write</span>
+    <span class="c"># empty records. Redundant code to ease coding...</span>
+    <span class="n">recnums</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4096</span>
+    <span class="n">new_seed1</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recnums</span><span class="p">):</span>
+        <span class="n">cur_record</span> <span class="o">=</span> <span class="n">seed1</span><span class="p">[</span><span class="n">_i</span> <span class="o">*</span> <span class="mi">4096</span> <span class="o">+</span> <span class="mi">8</span><span class="p">:(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cur_record</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">new_seed1</span> <span class="o">+=</span> <span class="n">seed1</span><span class="p">[</span><span class="n">_i</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">:(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">]</span>
+    <span class="n">seed1</span> <span class="o">=</span> <span class="n">new_seed1</span>
+    <span class="n">recnums</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4096</span>
+    <span class="n">new_seed2</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recnums</span><span class="p">):</span>
+        <span class="n">cur_record</span> <span class="o">=</span> <span class="n">seed2</span><span class="p">[</span><span class="n">_i</span> <span class="o">*</span> <span class="mi">4096</span> <span class="o">+</span> <span class="mi">8</span><span class="p">:(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cur_record</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">new_seed2</span> <span class="o">+=</span> <span class="n">seed2</span><span class="p">[</span><span class="n">_i</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">:(</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">]</span>
+    <span class="n">seed2</span> <span class="o">=</span> <span class="n">new_seed2</span>
+    <span class="c"># length should be the same</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed2</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Length of SEED strings differ! (</span><span class="si">%d</span><span class="s"> != </span><span class="si">%d</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seed1</span><span class="p">),</span>
+                                                             <span class="nb">len</span><span class="p">(</span><span class="n">seed2</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="c"># version string is always &#39; 2.4&#39; for output</span>
+    <span class="k">if</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39; 2.3&#39;</span><span class="p">:</span>
+        <span class="n">seed1</span> <span class="o">=</span> <span class="n">seed1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; 2.3&#39;</span><span class="p">,</span> <span class="s">&#39; 2.4&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;02.3&#39;</span><span class="p">:</span>
+        <span class="n">seed1</span> <span class="o">=</span> <span class="n">seed1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;02.3&#39;</span><span class="p">,</span> <span class="s">&#39; 2.4&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c"># check for missing &#39;~&#39; in blockette 10 (faulty dataless from BW network)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seed1</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">15</span><span class="p">])</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">temp</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="c"># added a &#39;~&#39; and remove a space before the next record</span>
+        <span class="c"># record length for now 4096</span>
+        <span class="n">seed1</span> <span class="o">=</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;</span><span class="si">%04i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">15</span><span class="p">:(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)]</span> <span class="o">+</span> <span class="s">&#39;~&#39;</span> <span class="o">+</span> \
+                <span class="n">seed1</span><span class="p">[(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">8</span><span class="p">):</span><span class="mi">4095</span><span class="p">]</span> <span class="o">+</span> <span class="n">seed1</span><span class="p">[</span><span class="mi">4096</span><span class="p">:]</span>
+    <span class="c"># check each byte</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed1</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">seed1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">seed2</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">seed1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">seed2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="s">&#39;0+&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="s">&#39;0 &#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="s">&#39; +&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="s">&#39;- &#39;</span><span class="p">:</span>
+            <span class="c"># -056.996398+0031.0</span>
+            <span class="c">#  -56.996398  +31.0</span>
+            <span class="k">continue</span>
+
+</div>
+<div class="viewcode-block" id="LookupCode"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.LookupCode.html#obspy.xseed.utils.LookupCode">[docs]</a><span class="k">def</span> <span class="nf">LookupCode</span><span class="p">(</span><span class="n">blockettes</span><span class="p">,</span> <span class="n">blkt_number</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">lookup_code</span><span class="p">,</span>
+               <span class="n">lookup_code_number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loops over a list of blockettes until it finds the blockette with the</span>
+<span class="sd">    right number and lookup code.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># List of all possible names for lookup</span>
+    <span class="k">for</span> <span class="n">blockette</span> <span class="ow">in</span> <span class="n">blockettes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">blockette</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">blkt_number</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">lookup_code</span><span class="p">)</span> <span class="o">!=</span> <span class="n">lookup_code_number</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="formatRESP"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.formatRESP.html#obspy.xseed.utils.formatRESP">[docs]</a><span class="k">def</span> <span class="nf">formatRESP</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Formats a number according to the RESP format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format_string</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%%</span><span class="s">-10.</span><span class="si">%d</span><span class="s">E&quot;</span> <span class="o">%</span> <span class="n">digits</span>
+    <span class="k">return</span> <span class="n">format_string</span> <span class="o">%</span> <span class="p">(</span><span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Blockette34Lookup"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.Blockette34Lookup.html#obspy.xseed.utils.Blockette34Lookup">[docs]</a><span class="k">def</span> <span class="nf">Blockette34Lookup</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="n">lookup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets certain values from blockette 34. Needed for RESP output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">l1</span> <span class="o">=</span> <span class="n">LookupCode</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="s">&#39;unit_name&#39;</span><span class="p">,</span> <span class="s">&#39;unit_lookup_code&#39;</span><span class="p">,</span> <span class="n">lookup</span><span class="p">)</span>
+        <span class="n">l2</span> <span class="o">=</span> <span class="n">LookupCode</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="s">&#39;unit_description&#39;</span><span class="p">,</span> <span class="s">&#39;unit_lookup_code&#39;</span><span class="p">,</span>
+                        <span class="n">lookup</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l1</span> <span class="o">+</span> <span class="s">&#39; - &#39;</span> <span class="o">+</span> <span class="n">l2</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Warning: Abbreviation reference not found.&#39;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&#39;No Abbreviation Referenced&#39;</span>
+
+</div>
+<div class="viewcode-block" id="setXPath"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.setXPath.html#obspy.xseed.utils.setXPath">[docs]</a><span class="k">def</span> <span class="nf">setXPath</span><span class="p">(</span><span class="n">blockette</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an X-Path String to a blockette with the correct identifier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;X-Path identifier needs to be an integer.&#39;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">abbr_path</span> <span class="o">=</span> <span class="s">&#39;/xseed/abbreviation_dictionary_control_header/&#39;</span>
+    <span class="n">end_of_path</span> <span class="o">=</span> <span class="s">&#39;[text()=&quot;</span><span class="si">%s</span><span class="s">&quot;]/parent::*&#39;</span>
+    <span class="k">if</span> <span class="n">blockette</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbr_path</span> <span class="o">+</span> \
+            <span class="s">&#39;data_format_dictionary/data_format_identifier_code&#39;</span> <span class="o">+</span> \
+            <span class="n">end_of_path</span> <span class="o">%</span> <span class="n">identifier</span>
+    <span class="k">elif</span> <span class="n">blockette</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbr_path</span> <span class="o">+</span> \
+            <span class="s">&#39;comment_description/comment_code_key&#39;</span> <span class="o">+</span> \
+            <span class="n">end_of_path</span> <span class="o">%</span> <span class="n">identifier</span>
+    <span class="k">elif</span> <span class="n">blockette</span> <span class="o">==</span> <span class="mi">33</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbr_path</span> <span class="o">+</span> \
+            <span class="s">&#39;generic_abbreviation/abbreviation_lookup_code&#39;</span> <span class="o">+</span> \
+            <span class="n">end_of_path</span> <span class="o">%</span> <span class="n">identifier</span>
+    <span class="k">elif</span> <span class="n">blockette</span> <span class="o">==</span> <span class="mi">34</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbr_path</span> <span class="o">+</span> \
+            <span class="s">&#39;units_abbreviations/unit_lookup_code&#39;</span> <span class="o">+</span> \
+            <span class="n">end_of_path</span> <span class="o">%</span> <span class="n">identifier</span>
+    <span class="c"># All dictionary blockettes.</span>
+    <span class="k">elif</span> <span class="n">blockette</span> <span class="o">==</span> <span class="s">&#39;dictionary&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbr_path</span> <span class="o">+</span> \
+            <span class="s">&#39;*/response_lookup_key&#39;</span> <span class="o">+</span> \
+            <span class="n">end_of_path</span> <span class="o">%</span> <span class="n">identifier</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;XPath for blockette </span><span class="si">%d</span><span class="s"> not implemented yet.&#39;</span> <span class="o">%</span> <span class="n">blockette</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="getXPath"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.getXPath.html#obspy.xseed.utils.getXPath">[docs]</a><span class="k">def</span> <span class="nf">getXPath</span><span class="p">(</span><span class="n">xpath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns lookup key of XPath expression on abbreviation dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">xpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+</div>
+<div class="viewcode-block" id="uniqueList"><a class="viewcode-back" href="../../../packages/autogen/obspy.xseed.utils.uniqueList.html#obspy.xseed.utils.uniqueList">[docs]</a><span class="k">def</span> <span class="nf">uniqueList</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="c"># Not order preserving</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
+        <span class="n">keys</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">keys</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

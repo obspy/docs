@@ -1,0 +1,6 @@
+obspy.core.event.NodalPlane.__delattr__
+=======================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: NodalPlane.__delattr__

@@ -1,0 +1,6 @@
+obspy.core.event.Amplitude.popitem
+==================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Amplitude.popitem

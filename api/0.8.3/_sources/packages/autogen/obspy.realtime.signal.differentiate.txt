@@ -1,0 +1,6 @@
+obspy.realtime.signal.differentiate
+===================================
+
+.. currentmodule:: obspy.realtime.signal
+
+.. autofunction:: differentiate

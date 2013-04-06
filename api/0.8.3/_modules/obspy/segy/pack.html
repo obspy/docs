@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>obspy.segy.pack &mdash; ObsPy Documentation (0.8.3)</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="ObsPy Documentation (0.8.3)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for obspy.segy.pack</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="c">#-------------------------------------------------------------------</span>
+<span class="c">#  Filename: unpack.py</span>
+<span class="c">#  Purpose: Routines for unpacking SEG Y data formats.</span>
+<span class="c">#   Author: Lion Krischer</span>
+<span class="c">#    Email: krischer@geophysik.uni-muenchen.de</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2010 Lion Krischer</span>
+<span class="c">#---------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions that will all take a file pointer and the sample count and return a</span>
+<span class="sd">NumPy array with the unpacked values.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">LOG2</span> <span class="o">=</span> <span class="mf">0.3010299956639812</span>
+<span class="c"># Get the system byteorder.</span>
+<span class="n">BYTEORDER</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span>
+<span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">==</span> <span class="s">&#39;little&#39;</span><span class="p">:</span>
+    <span class="n">BYTEORDER</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">BYTEORDER</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span>
+
+
+<div class="viewcode-block" id="WrongDtypeException"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.WrongDtypeException.html#obspy.segy.pack.WrongDtypeException">[docs]</a><span class="k">class</span> <span class="nc">WrongDtypeException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="pack_4byte_IBM"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_4byte_IBM.html#obspy.segy.pack.pack_4byte_IBM">[docs]</a><span class="k">def</span> <span class="nf">pack_4byte_IBM</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Packs 4 byte IBM floating points. This will only work if the host system</span>
+<span class="sd">    internally uses little endian byteorders.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Check the dtype and raise exception otherwise!</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s">&#39;float64&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s">&#39;float32&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">WrongDtypeException</span>
+    <span class="c"># Calculate the values. The theory is explained in</span>
+    <span class="c"># http://www.codeproject.com/KB/applications/libnumber.aspx</span>
+
+    <span class="c"># Calculate the signs.</span>
+    <span class="n">signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+    <span class="n">temp_signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c"># Negative numbers are encoded as sign bit 1, positive ones as bit 0.</span>
+    <span class="n">signs</span><span class="p">[</span><span class="n">temp_signs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">signs</span><span class="p">[</span><span class="n">temp_signs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">128</span>
+
+    <span class="c"># Make absolute values.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c"># Store the zeros and add an offset for numerical stability,</span>
+    <span class="c"># they will be set to zero later on again</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">zeros</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1e-32</span>
+
+    <span class="c"># Calculate the exponent for the IBM data format.</span>
+    <span class="n">exponent</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="n">LOG2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span> <span class="o">+</span> <span class="mi">65</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;uint32&#39;</span><span class="p">)</span>
+
+    <span class="c"># Now calculate the fraction using single precision.</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">)</span> <span class="o">/</span> \
+                   <span class="p">(</span><span class="mf">16.0</span> <span class="o">**</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">exponent</span><span class="p">,</span> <span class="s">&#39;float32&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">64</span><span class="p">))</span>
+
+    <span class="c"># Normalization.</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c"># Find numbers smaller than 1/16 but not zero.</span>
+        <span class="n">non_normalized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0625</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_normalized</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">fraction</span><span class="p">[</span><span class="n">non_normalized</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">16</span>
+        <span class="n">exponent</span><span class="p">[</span><span class="n">non_normalized</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="c"># If the fraction is one, change it to 1/16 and increase the exponent by</span>
+    <span class="c"># one.</span>
+    <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fraction</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">fraction</span><span class="p">[</span><span class="n">ones</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0625</span>
+    <span class="n">exponent</span><span class="p">[</span><span class="n">ones</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># Times 2^24 to be able to get a long.</span>
+    <span class="n">fraction</span> <span class="o">*=</span> <span class="mf">16777216.0</span>
+    <span class="c"># Convert to unsigned long.</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="s">&#39;uint64&#39;</span><span class="p">)</span>
+
+    <span class="c"># Use 8 bit integers to be able to store every byte separately.</span>
+    <span class="n">new_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+
+    <span class="c"># The first bit is the sign and the following 7 are the exponent.</span>
+    <span class="n">byte_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">signs</span> <span class="o">+</span> <span class="n">exponent</span><span class="p">,</span> <span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+    <span class="c"># All following 24 bit are the fraction.</span>
+    <span class="n">byte_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">right_shift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="mh">0x00ff0000</span><span class="p">),</span>
+                                       <span class="mi">16</span><span class="p">),</span> <span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+    <span class="n">byte_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">right_shift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="mh">0x0000ff00</span><span class="p">),</span>
+                                       <span class="mi">8</span><span class="p">),</span> <span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+    <span class="n">byte_3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="mh">0x000000ff</span><span class="p">),</span> <span class="s">&#39;uint8&#39;</span><span class="p">)</span>
+
+    <span class="c"># Depending on the endianness store the data different.</span>
+    <span class="c"># big endian.</span>
+    <span class="k">if</span> <span class="n">endian</span> <span class="o">==</span> <span class="s">&#39;&gt;&#39;</span><span class="p">:</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_0</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_1</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_2</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_3</span>
+    <span class="c"># little endian&gt;</span>
+    <span class="k">elif</span> <span class="n">endian</span> <span class="o">==</span> <span class="s">&#39;&lt;&#39;</span><span class="p">:</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_3</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_2</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_1</span>
+        <span class="n">new_data</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte_0</span>
+    <span class="c"># Should not happen.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span>
+    <span class="c"># Write the zeros again.</span>
+    <span class="n">new_data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="s">&#39;uint32&#39;</span>
+    <span class="n">new_data</span><span class="p">[</span><span class="n">zeros</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c"># Write to file.</span>
+    <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_data</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="pack_4byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_4byte_Integer.html#obspy.segy.pack.pack_4byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">pack_4byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Packs 4 byte integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Check the dtype and raise exception otherwise!</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s">&#39;int32&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">WrongDtypeException</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="c"># Write the file.</span>
+    <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="pack_2byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_2byte_Integer.html#obspy.segy.pack.pack_2byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">pack_2byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Packs 2 byte integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Check the dtype and raise exception otherwise!</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s">&#39;int16&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">WrongDtypeException</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="c"># Write the file.</span>
+    <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="pack_4byte_Fixed_point"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_4byte_Fixed_point.html#obspy.segy.pack.pack_4byte_Fixed_point">[docs]</a><span class="k">def</span> <span class="nf">pack_4byte_Fixed_point</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div>
+<div class="viewcode-block" id="pack_4byte_IEEE"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_4byte_IEEE.html#obspy.segy.pack.pack_4byte_IEEE">[docs]</a><span class="k">def</span> <span class="nf">pack_4byte_IEEE</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Packs 4 byte IEEE floating points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Check the dtype and raise exception otherwise!</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s">&#39;float32&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">WrongDtypeException</span>
+    <span class="c"># Swap the byteorder if necessary.</span>
+    <span class="k">if</span> <span class="n">BYTEORDER</span> <span class="o">!=</span> <span class="n">endian</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span>
+    <span class="c"># Write the file.</span>
+    <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="pack_1byte_Integer"><a class="viewcode-back" href="../../../packages/autogen/obspy.segy.pack.pack_1byte_Integer.html#obspy.segy.pack.pack_1byte_Integer">[docs]</a><span class="k">def</span> <span class="nf">pack_1byte_Integer</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s">&#39;&gt;&#39;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ObsPy Documentation</a>
+          &raquo;</li>
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, The ObsPy Development Team (devs@obspy.org).
+      Last updated on 2012-12-18T06:34:54. (0.8.3, <a href="log.txt">build log</a>)
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

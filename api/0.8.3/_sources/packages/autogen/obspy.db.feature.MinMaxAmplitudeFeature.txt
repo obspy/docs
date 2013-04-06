@@ -1,0 +1,47 @@
+obspy.db.feature.MinMaxAmplitudeFeature
+=======================================
+
+.. currentmodule:: obspy.db.feature
+.. autoclass:: MinMaxAmplitudeFeature
+  :show-inheritance:
+
+  
+  
+  .. rubric:: Attributes
+
+  .. autosummary::
+  
+     ~MinMaxAmplitudeFeature.__dict__
+     ~MinMaxAmplitudeFeature.__doc__
+     ~MinMaxAmplitudeFeature.__module__
+     ~MinMaxAmplitudeFeature.__weakref__
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  .. rubric:: Public Methods
+
+  .. autosummary::
+    :toctree: .
+    :nosignatures:
+  
+     ~MinMaxAmplitudeFeature.process
+  
+
+  
+
+  
+
+  
+  

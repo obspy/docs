@@ -1,0 +1,6 @@
+obspy.core.event.Origin.__subclasshook__
+========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: Origin.__subclasshook__

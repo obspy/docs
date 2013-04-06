@@ -1,0 +1,6 @@
+obspy.core.event.PrincipalAxes.__contains__
+===========================================
+
+.. currentmodule:: obspy.core.event
+
+.. automethod:: PrincipalAxes.__contains__

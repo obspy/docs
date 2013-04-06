@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._nodal_plane
+=========================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._nodal_plane

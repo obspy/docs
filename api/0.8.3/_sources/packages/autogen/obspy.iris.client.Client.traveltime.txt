@@ -1,0 +1,6 @@
+obspy.iris.client.Client.traveltime
+===================================
+
+.. currentmodule:: obspy.iris.client
+
+.. automethod:: Client.traveltime

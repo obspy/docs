@@ -1,0 +1,6 @@
+obspy.core.quakeml.Unpickler._focal_mechanism
+=============================================
+
+.. currentmodule:: obspy.core.quakeml
+
+.. automethod:: Unpickler._focal_mechanism

@@ -1,0 +1,6 @@
+obspy.realtime.rttrace.RtTrace.split
+====================================
+
+.. currentmodule:: obspy.realtime.rttrace
+
+.. automethod:: RtTrace.split

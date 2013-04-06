@@ -1,0 +1,6 @@
+obspy.signal.invsim.estimateWoodAndersonAmplitude
+=================================================
+
+.. currentmodule:: obspy.signal.invsim
+
+.. autofunction:: estimateWoodAndersonAmplitude

@@ -1,0 +1,6 @@
+obspy.arclink.client.Client.getNetworks
+=======================================
+
+.. currentmodule:: obspy.arclink.client
+
+.. automethod:: Client.getNetworks

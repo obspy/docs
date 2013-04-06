@@ -1,0 +1,33 @@
+obspy.core.ascii
+================
+
+.. currentmodule:: obspy.core.ascii
+.. automodule:: obspy.core.ascii
+
+   .. comment to end block
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree: .
+      :nosignatures:
+
+   
+      isSLIST
+      isTSPAIR
+      readSLIST
+      readTSPAIR
+      writeSLIST
+      writeTSPAIR
+   
+   
+
+   
+   
+   
+
+   
+   
+   
