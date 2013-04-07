@@ -1,9 +1,12 @@
 # ObsPy Docs
 
-Additional documents like presentations, posters and workshop material
+Additional documents like presentations, posters and workshop material. Some material might be outdated.
+See the ObsPy homepage http://www.obspy.org for an up-to-date version of the API documentation and
+tutorial.
 
 
-## Direct links
+
+## Direct links to the PDFs
 
 ### API
 
