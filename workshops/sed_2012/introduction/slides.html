@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>ObsPy - Infrastructure</title>
+    <meta charset='utf-8'>
+    <script
+      src='slides.js'></script>
+  </head>
+
+  <style>
+    .slides.template-default article.biglogo {
+        background: white url(images/obspy-logo.png) 50% 50% no-repeat !important;
+    }
+    .slides.template-default > article:not(.nobackground):not(.biglogo) {
+        background: white url(images/obspy-logo.png) 600px 630px no-repeat !important;
+    } 
+    ol:first-child {
+      margin-top: 0;
+    }
+    ol li::before {
+      content: '' !important;
+    }
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+
+      <article>
+        <h1>
+          ObsPy &amp; Use Cases
+        </h1>
+        <p>
+          <small>September 07, 2012</small>
+        </p>
+      </article>
+
+      <article>
+        <h3>
+          Program
+        </h3>
+        <ul>
+          <li>General Introduction / Programming Paradigms (Robert)</li>
+          <li>Reusing C Code (Moritz)</li>
+          <li>First Steps: Basic Classes and Their Usage (Lion)</li>
+          <li>Practical: Processing Workflow (Tobias)</li>
+          <li>Use Case: pSysmon (Stefan)</li>
+          <li>Use Case: Wavesdownloader / TMT (Fabrizio)</li>
+          <li>Submitting Code to ObsPy (Tobias)</li>
+        </ul>
+      </article>
+
+      <article>
+        <h1>
+          ObsPy: Introduction
+        </h1>
+        <p>
+          Robert Barsch<br />
+          <small>barsch@egu.eu</small>
+        </p>
+        <p>
+          <small>September 07, 2012</small>
+        </p>
+      </article>
+
+      <article>
+        <h3>
+          Table of Contents
+        </h3>
+        <ul>
+          <li>General Introduction</li>
+          <li>Extreme Programming (XP)</li>
+          <ul>
+            <li>Tests</li>
+            <li>Documentation</li>
+          </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h2>
+          ObsPy: General Introduction
+        </h2>
+      </article>
+      
+      <article>
+        <h3>
+          ObsPy: General Introduction
+        </h3>
+        <ul>
+          <li>Python toolbox for seismologists</li>
+          <li>Modular architecture</li>
+          <li>Waveform data: DATAMARK, GSE1/2, MiniSEED, SAC, SEISAN, SEG2, SEGY, Q/ASCII, WAV</li>
+          <li>Inventory data: Dataless SEED, XML-SEED, RESP, SAC PZ</li>
+          <li>Data request clients: ArcLink/WebDC, IRIS DMC WS, SeisHub, NERIES/Seismic Data Portal WS, Earthworm, SEEDLink (experimental)</li>
+          <li>Signal processing: Filters, triggers, instrument correction, rotation, array analysis, beamforming</li>
+          <li>Waveform indexer</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          ObsPy: General Introduction
+        </h3>
+        <ul>
+          <li>Open source (LGPL or GPL)</li>
+          <li>Test-driven development (TDD), currently more than 470 unit tests
+(http://tests.obspy.org)</li>
+          <li>Reliance of well-known third-party libraries (numpy, scipy, matplotlib)</li>
+          <li>Reusing well established code, e.g. libmseed, GSE UTI</li>
+          <li>Automatic generated API documentation</li>
+          <li>Binary distributions: Python Package Index (PyPI), Windows Installer (&
+Debian/Ubuntu packages)</li>
+          <li>Central source code repository, community webpage, tutorials, installation
+instructions, ticket system, mailing list</li>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          ObsPy: General Introduction
+        </h3>
+        <h4>Statistics: ObsPy trunk</h4>
+        <table>
+          <tr><th>&nbsp;</th><th>lines of code</th><th>lines of comments</th></tr>
+          <tr><th>Python</th><td>41687</td><td>28278</td></tr>
+          <tr><th>C</th><td>18946</td><td>5287</td></tr>
+          <tr><th>Fortran 77</th><td>1820</td><td>857</td></tr>
+        </table>
+        <ul>
+          <li>devs w/ repository write access: 25</li>
+          <li>first check-in: 08/2007</li>
+          <li># of check-ins: 4051</li>
+          <li>subscribers user mailingliste: 172</li>
+          <li>used on, e.g. RasperyPI till SuperMUC</li>
+        </ul>
+      </article>
+
+      <article>
+        <h2>
+          Extreme Programming (XP)
+        </h2>
+      </article>
+
+      <article>
+        <h3>
+          Extreme Programming
+        </h3>
+        <ul>
+          <li>software development methodology by Kent Beck (1999)</li>
+          <li>general XP Concepts</li>
+          <ul>
+            <li>Simplicity</li>
+            <li>Communication</li>
+            <li>Feedback</li>
+            <li>Courage</li>
+          </ul>
+          <li>derived concreted XP Principles &amp; Practices</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          XP Concepts
+        </h3>
+        <h4>Simplicity</h4>
+        <ul>
+          <li>“The art of maximizing the amount of work not done”</li>
+          <li>encourages simplicity in software
+design and coding in order to minimize the cost of change</li>
+          <li>heart of XP &ndash; affects all other concepts significantly</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          XP Concepts
+        </h3>
+        <h4>Communication</h4>
+        <ul>
+          <li>source code documentation</li>
+          <ul>
+            <li>code communicates best when the concept of simplicity is applied.</li>
+            <li>source code comments</li>
+            <li>self-documenting code</li>
+            <li>unit tests are required</li>
+          </ul>
+          <li>communication between developers and/or end users</li>
+          <ul>
+            <li>should be done on a regular basis sharing and
+validating ideas and further project requirements</li>
+          </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          XP Concepts
+        </h3>
+        <h4>Feedback</h4>
+        <ul>
+          <li>short release cycles resulting in immediate feedback of end users</li>
+          <li>feedback on the quality of code via unit tests</li>
+          <li>bugs are best communicated by unit tests that proves the failure of a certain piece of code</li>
+          <li>heavily relies on all other three concepts</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          XP Concepts
+        </h3>
+        <h4>Courage</h4>
+        <ul>
+          <li>to take time to try out different approaches</li>
+          <li>to be able throw code away for the sake of simplicity</li>
+          <li>to report bugs or request new features</li>
+          <li>to contribute there own code or even get a team member</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <p><small>None of the following principles are completely new – most are as old as
+programming itself and its techniques have been proven over decades.</small></p>
+        <ul>
+          <li>The Planning Game</li>
+          <li>Simple design &amp; Refactoring</li>
+          <li>Documentation*</li>
+          <li>Unit Tests*</li>
+          <li>Test-driven development (TDD)*</li>
+          <li>Pair programming </li>
+          <li>Collective ownership</li>
+          <li>Coding standards</li>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>The Planning Game</h4>
+        <ul>
+          <li>scope of the next release is constantly changed to the current
+need</li>
+          <li>usage of ticketing system to reorder and prioritize identified short term tasks
+in order to reach long term goals</li>
+          <li>ObsPy:</li>
+          <ul>
+             <li>Support requests via <a href="http://obspy.org/newticket">Trac</a> or ObsPy users mailing list (<a href="mailto:users@lists.obspy.org">users@lists.obspy.org</a>)</li>
+             <li>Developer sprints</li>
+             <li>Implementation if needed</li>
+          </ul>
+        </ul>
+        <h4>Simple design &amp; Refactoring</h4>
+        <ul>
+          <li>constant design improvement in order to fit the concept of
+            simplicity or add further flexibility</li>
+          <li>but elegant simple code needs experience and effort</li>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>Pair programming</h4>
+        <ul>
+          <li>two or more programmers together directly reviewing each others work</li>
+          <li>direct communication between developers increases the overall productivity and
+motivation</li>
+          <li>ObsPy: sprints, mailing lists, ticket system</li>
+          </ul>
+        </ul>
+        <h4>Collective ownership</h4>
+        <ul>
+          <li>any developer can change any code at any time</li>
+          <li>ObsPy:</li>
+          <ul>
+            <li>public available source code from the very beginning</li>
+            <li>open source</li>
+            <li>fast at giving contributers write access</li>
+          </ul>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>Coding Standards</h4>
+        <ul>
+          <li>PEP 8 (Style Guide for Python Code)</li>
+          <li>PEP 257 (Docstring Conventions)</li>
+          <li><a target="_blank" href="http://docs.obspy.org/coding_style.html">ObsPy specific modification</a></li>
+          <ul>
+            <li>Import Conventions</li>
+            <li>Naming Conventions</li>
+            <li>Doc Strings</li>
+          </ul>
+        </ul>
+      </article>
+
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>Documentation</h4>
+        <ul>
+          <li>Source code comments and self-documenting code are key factors for the
+readability of code &rArr; software without it is plain useless</li>
+          <li><a href="http://lukeplant.me.uk/blog/posts/docs-or-it-doesnt-exist/">Docs or it doesn't exist!</a></li>
+          <li>ObsPy:</li>
+          <ul>
+            <li><code>doctest</code>*</li>
+            <li><a href="http://sphinx.pocoo.org/"><code>sphinx</code></a> using reStructuredText (reST) syntax</li>
+            <ul>
+              <li>Output: HTML, PDF</li>
+              <li><a href="http://docs.obspy.org">http://docs.obspy.org</a></li>
+              <li><a href="http://tutorial.obspy.org">http://tutorial.obspy.org</a></li>
+              <li><a href="http://gallery.obspy.org">http://gallery.obspy.org</a></li>
+            </ul>
+          </ul>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>Documentation: reStructuredText Example</h4>
+<pre>
+def formatException(etype, value, tb, limit=None):
+    """
+    Format the exception with a traceback.
+
+    :param etype: exception type
+    :param value: exception value
+    :param tb: traceback object
+    :param limit: maximum number of stack frames to show
+    :type limit: integer or None
+    :rtype: list of strings
+    :return: Traceback messages.
+    """
+    pass
+</pre>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          XP Principles &amp; Practices
+        </h3>
+        <h4>Documentation: reStructuredText Output</h4>
+
+        <img src="images/formatException.png" />
+      </article>
+
+      <article>
+        <h3>
+          ObsPy Documentation (<a href="http://docs.obspy.org" target="_blank">http://docs.obspy.org</a>)
+        </h3>
+        <iframe src='http://docs.obspy.org'></iframe>
+      </article>
+
+      <article>
+        <h3>
+          ObsPy Tutorial  (<a href="http://tutorial.obspy.org" target="_blank">http://tutorial.obspy.org</a>)
+        </h3>
+        <iframe src='http://tutorial.obspy.org'></iframe>
+      </article>
+
+      <article>
+        <h3>
+          ObsPy Gallery (<a href="http://gallery.obspy.org" target="_blank">http://gallery.obspy.org</a>)
+        </h3>
+        <iframe src='http://gallery.obspy.org'></iframe>
+      </article>
+
+      <article>
+        <h2>
+          Testing
+        </h2>
+      </article>
+
+      <article>
+        <h3>
+          Table of Contents
+        </h3>
+        <ul>
+          <li>Why testing?</li>
+          <li><code>unittest</code></li>
+          <li><code>doctest</code></li>
+          <li>Test-driven development (TDD)</li>
+          <li>ObsPy Test Infrastructure</li>
+          <ul>
+            <li><code>obspy-runtests</code></li>
+            <li>Buildbot</li>
+            <li>Coverage</li>
+          </ul>
+        </ul>
+      </article>
+
+      <article>
+        <q>
+          Untested code is broken code
+        </q>
+        <div class='author'>
+          Philipp von Weitershausen and Martin Aspeli
+        </div>
+      </article>
+
+      <article>
+        <h3>
+          Why testing?
+        </h3>
+        <h4>Pros:</h4>
+        <ul>
+          <li>safes time: faster pinpointing of errors, less usage of debugger</li>
+          <li>allows testing on remote environments (BuildBot)</li>
+          <li>validation &amp; correctness of code</li>
+          <li>allows to "play" with code (if tested)) even you don't know all details of it's implementation</li>
+          <li>when people report bugs, you want to make sure you can reproduce them</li>
+          <li>when you fix bugs you want to make sure they <b>stay</b> fixes</li>
+          <li>documentation</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Why testing?
+        </h3>
+        <h4>Cons:</h4>
+        <ul>
+          <li>maintenance overhead</li>
+          <li>harder to implement afterwards for non test-driven projects</li>
+          <li>difficult where full functional tests are required</li>
+          <ul>
+            <li>user interfaces, databases connections, specific network set-ups</li>
+            <li>But: workarounds with fake/mock objects</li>
+          </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          <code>unittest</code>
+        </h3>
+        <ul>
+          <li>Python standard module</li>
+          <li>test automation</li>
+          <li>sharing of setup and shutdown code for tests</li>
+          <li>aggregation of tests into collections</li>
+          <li>independence of the tests from the reporting framework</li>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          <code>unittest</code> Example
+        </h3>
+        <pre>
+from obspy.core import UTCDateTime
+import unittest
+
+class UTCDateTimeTestCase(unittest.TestCase):
+    """
+    Test suite for obspy.core.utcdatetime.UTCDateTime.
+    """
+    def test_weekday(self):
+        """
+        Tests weekday method.
+        """
+        dt = UTCDateTime(2008, 10, 1, 12, 30, 35, 45020)
+        self.assertEquals(dt.weekday, 2)
+
+    def test_invalidDates(self):
+        """
+        Tests invalid dates.
+        """
+        self.assertRaises(ValueError, UTCDateTime, 2010, 9, 31)
+        self.assertRaises(ValueError, UTCDateTime, '2010-09-31')
+
+def suite():
+    return unittest.makeSuite(UTCDateTimeTestCase, 'test')
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='suite')
+</pre>
+      </article>
+
+      <article>
+        <h3>
+          <code>doctest</code>
+        </h3>
+        <ul>
+          <li>tests exercise APIs and demonstrate how to use them</li>
+          <li>included in Python standard library</li>
+          <li>based on output from the Python interpreter shell</li>
+          <ul>
+            <li>many programmers use shell to test their code</li>
+            <li>simple way of generating tests via cut &amp; paste</li>
+          </ul>
+          <li>used to document modules by example: mixture of text and tests</li>
+          <li>tests and code are together - more likely to be kept up-to-date</li>
+          <li>only failing tests return an error message, otherwise no output</li>
+        </ul>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          <code>doctest</code> Example
+        </h3>
+<pre>
+class UTCDateTime(object):
+
+    def __add__(self, value):
+        """
+        Adds seconds and microseconds to current UTCDateTime object.
+
+        :type value: int, float
+        :param value: Seconds to add
+        :rtype: :class:`~obspy.core.utcdatetime.UTCDateTime`
+        :return: New UTCDateTime object.
+
+        .. rubric:: Example
+
+        >>> dt = UTCDateTime(1970, 1, 1, 0, 0)
+        >>> dt + 1.123456
+        UTCDateTime(1970, 1, 1, 0, 0, 1, 123456)
+        """
+        if isinstance(value, datetime.timedelta):
+            value = (value.microseconds + (value.seconds + value.days * \
+                86400) * 1000000) / 1000000.0
+        return UTCDateTime(self.timestamp + value)
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(exclude_empty=True)
+</pre>
+      </article>
+
+      <article class="smaller">
+        <h3>
+          Test-driven development (TDD)
+        </h3>
+        <p>“A programmer taking a TDD approach refuses to write
+a new function until there is first a test that fails because
+that function isn’t present. In fact, they refuse to add
+even a single line of code until a test exists for it.”</p>
+        <h4>TDD Cycle</h4>
+        <ol>
+          <li>Add one or more tests, which should fail</li>
+          <li>Run all tests and see if new one fail</li>
+          <li>Write your functional code</li>
+          <li>Run the automated tests and see them succeed</li>
+          <li>Refactor code, as long tests succeed</li>
+          <li>Repeat</li>
+        </ol>
+        <h4>=> write test before functional code</h4>
+      </article>
+
+      <article class="smaller">
+         <h3><code>obspy-runtests</code></h3>
+         <ul>
+           <li>command-line program that runs all ObsPy tests</li>
+           <li>optional report to ObsPy Buildbot - no need for extra build/test software</li>
+         </ul>
+         <h4>Usage</h4>
+<p>Run local tests via command line:</p>
+<pre>
+$ obspy-runtests [packages|module] [--all] [-v]
+</pre>
+<p>or via Python interpreter:</p>
+<pre>
+>>> import obspy.core
+>>> obspy.core.runTests()
+</pre>
+      </article>
+
+      <article>
+        <h3>
+          Buildbot (<a target="_blank" href="http://tests.obspy.org/">http://tests.obspy.org/</a>)
+        </h3>
+        <iframe src="http://tests.obspy.org/"></iframe>
+      </article>
+
+      <article>
+        <h3>
+          Coverage (<a target="_blank" href="http://docs.obspy.org/coverage/">http://docs.obspy.org/coverage/</a>)
+        </h3>
+        <iframe src="http://docs.obspy.org/coverage/index.html"></iframe>
+      </article>
+
+
+
+      <article>
+        <h3>
+          Example: "Bad" bug report
+        </h3>
+        <iframe src='http://obspy.org/ticket/394'></iframe>
+      </article>
+
+      <article>
+        <h3>
+          Example: "Good" bug report
+        </h3>
+        <iframe src='http://obspy.org/ticket/94'></iframe>
+      </article>
+
+      
+      <article>
+        <h2>
+          Thank you!
+        </h2>
+      </article>
+
+    </section>
+
+  </body>
+</html>
