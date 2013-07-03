@@ -11,6 +11,7 @@ tutorial.
 ### API
 
 * [0.8.3](https://github.com/obspy/docs/tree/master/api/0.8.3)
+* [0.8.4 and upwards](https://github.com/obspy/obspy/releases)
 
 ### Posters
 
