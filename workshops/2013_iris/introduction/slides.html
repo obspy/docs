@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>ObsPy - Infrastructure</title>
+    <meta charset='utf-8'>
+    <script
+      src='slides.js'></script>
+  </head>
+
+  <style>
+    .slides.template-default article.biglogo {
+        background: white url(images/obspy-logo-waveform.png) 10% 10% no-repeat !important;
+    }
+    .slides.template-default > article:not(.nobackground):not(.biglogo) {
+        background: white url(images/obspy-logo-waveform.png) 700px 530px no-repeat !important;
+    } 
+    ol:first-child {
+      margin-top: 0;
+    }
+    ol li::before {
+      content: '' !important;
+    }
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular'>
+
+      <article>
+        <h1>
+        <img src="images/obspy-logo.png" width=700px />
+        </h1>
+        <p>
+          Tobias Megies<br />
+          <small>megies@geophysik.uni-muenchen.de</small>
+        </p>
+        <p>
+        Earthscope USArray/IRIS Advanced Course</br>
+          <small>Evanston, August 14th, 2013</small>
+        </p>
+      </article>
+
+    </section>
+    <section class='slides layout-regular template-default'>
+
+      <article>
+        <h3>
+          Program
+        </h3>
+        <ul>
+          <li>General Introduction</li>
+          <li>ObsPy Basics</li>
+        </ul>
+        <br/>
+          --- Break ---
+        <ul>
+          <li>ObsPy Use Cases</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          General Introduction
+        </h3>
+        <ul>
+          <li>What does it do?</li>
+          <li>What's the beauty of it?</li>
+          <li>Do people actually use it?</li>
+          <li>Who's behind it?</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          What does it do?
+      </h3>
+      <p>
+        Provide complete framework to work with any type seismological data in Python
+      </p>
+        <ul>
+          <li>read/write file format support</li>
+            <ul>
+            <small>
+              <li>waveforms (MiniSEED, SAC, GSE, SEISAN, SEG-Y, ...)</li>
+              <li>metadata (SEED, QuakeML, <i>StationXML)</i></li>
+            </small>
+            </ul>
+          <li>data center access</li>
+            <ul>
+            <small>
+                <li>IRIS webservices, ArcLink, Neries/Nera, Earthworm, NEIC, Seishub, <i>SeedLink</i></li>
+            </small>
+            </ul>
+          <li>unified object classes</li>
+          <li>basic signal processing routines</li>
+            <ul>
+            <small>
+                <li>trimming, merging, tapering, rotating, resampling, ...</li>
+                <li>filtering, instrument correction, ...</li>
+                <li>beamforming, cpx trace analysis, CC routines, PPSD, triggers, ...</li>
+            </small>
+            </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          What's the beauty of it?
+      </h3>
+        <ul>
+            <li>Runs on all Platforms
+                <ul>
+                <small>
+                <li>Windows, Mac, Linux  (Installers, Debian/Ubuntu repository)</li>
+                <li>from RaspberryPi (35$) to SuperMUC (&gt;150 Mio.$)</li>
+                </small>
+                </ul>
+          <li>Free and open source (LGPL/GPL)</li>
+          <li>Community pages: <a href="https://github.com/obspy/obspy">GitHub</a>, <a href="https://github.com/obspy/obspy/wiki">wiki</a>, <a href="http://docs.obspy.org/tutorial/">tutorials</a>, <a href="https://github.com/obspy/obspy/wiki#installation">installation instructions</a>, <a href="https://github.com/obspy/obspy/issues?state=open">ticket system</a>, <a href="http://lists.swapbytes.de/mailman/listinfo/obspy-users">mailing list</a></li>
+            <li>Well documented source code, auto-generated <a href="http://docs.obspy.org">API docs</a></li>
+          <li>Test-driven development (a.t.m. <a href="http://tests.obspy.org">more than 900 unit tests</a>)</li>
+          <li>Reuses well established third-party code</li>
+                <ul>
+                <small>
+                <li>Python community: numpy, scipy, matplotlib, ...</li>
+                <li>Seismo community: libmseed, GSE UTI, ...</li>
+                </small>
+                </ul>
+          <li>Python!</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Python!
+      </h3>
+        <ul>
+<li> One of the most used programming languages</li>
+<li> Easy to learn, very concise and easy-to-read syntax</li>
+<li> Free and Open Source, large community</li>
+<li> Cross-platform: Runs everywhere from RaspberryPi to large supercomputers</li>
+<li> General purpose language (in contrast to many other tools used in science)</li>
+<li> No need to compile and interactive shell available</li>
+<li> "Batteries included"</li>
+<li> Mature third party libraries</li>
+<li> Easy to interact with existing C and Fortran code</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Do people actually use it?
+      </h3>
+        <ul>
+            <li>~250 people on users mailing list</li>
+            <li>30+ scientific citations</li>
+            <img src="images/ObspyMailinglist.png"  width="600" />
+            <img src="images/ObsPyUsers.png" width="590" />
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Who's behind it?
+        </h3>
+        <ul>
+            <li>development started in 2008</li>
+            <li>~4 core developers in Munich</li>
+            <li>since then around 20-25 people from all around the world contributed</li>
+            <li>4000+ code commits</li>
+            <img src="images/commits.png" width="700" />
+            <li>600+ tickets and pull requests</li>
+        </ul>
+      </article>
+
+      <article>
+        <h2>
+          Up next:<br/> Practical Introduction to ObsPy basics
+        </h2>
+      </article>
+
+    </section>
+
+  </body>
+</html>
