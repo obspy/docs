@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>ObsPy - Infrastructure</title>
+    <meta charset='utf-8'>
+    <script
+      src='slides.js'></script>
+  </head>
+
+  <style>
+    .slides.template-default article.biglogo {
+        background: white url(images/obspy_logo_only_waveform_lightgray.svg) 10% 10% no-repeat !important;
+    }
+    .slides.template-default > article:not(.nobackground):not(.biglogo) {
+        background: white url(images/obspy_logo_only_waveform_lightgray.svg) 730px 550px no-repeat scroll !important;
+    } 
+    ol:first-child {
+      margin-top: 0;
+    }
+    ol li::before {
+      content: '' !important;
+    }
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular'>
+
+      <article>
+        <h1>
+        <img src="images/obspy-logo.png" width=700px />
+        </h1>
+        <p>
+          Tobias Megies<br />
+          <small>megies@geophysik.uni-muenchen.de</small>
+        </p>
+        <p>
+        MESS 2014</br>
+          <small>Sudelfeld, February 23-28, 2014</small>
+        </p>
+      </article>
+
+      <article>
+        <h1>
+        <img src="images/obspy-logo-borg.png" width=700px />
+        </h1>
+        <p>
+          Tobias Megies<br />
+          <small>megies@geophysik.uni-muenchen.de</small>
+        </p>
+        <p>
+        MESS 2014</br>
+          <small>Sudelfeld, February 23-28, 2014</small>
+        </p>
+      </article>
+
+    </section>
+    <section class='slides layout-regular template-default'>
+
+      <article>
+        <h3>
+          Program
+        </h3>
+        <ul>
+          <li>General Introduction</li>
+        <br/>
+          <li>Working with basic Obspy data types</li>
+            <ul>
+              <li>Waveform Data</li>
+              <li>Station Metadata</li>
+              <li>Event Metadata</li>
+            </ul>
+          <li>Using the FDSN Client to request data</li>
+          <li>Short overview of builtin signal processing routines</li>
+        </ul>
+        <br/>
+        <br/>
+        .. some more advanced Python</li>
+        <br/>
+        .. array analysis part</li>
+        <br/>
+      </article>
+
+      <article>
+        <h3>
+          General Introduction
+        </h3>
+        <br/>
+        Obspy..
+        <br/>
+        <br/>
+        <br/>
+        ..what does it do?
+        <br/>
+        ..what's the beauty of it?
+        <br/>
+        ..do people actually use it?
+        <br/>
+        ..who's behind it?
+      </article>
+
+      <article>
+        <h3>
+          What does it do?
+      </h3>
+      <p>
+        Provide complete framework to jointly work with any type of seismological data in Python
+      </p>
+        <ul>
+          <li>unified object classes</li>
+          <li>read/write file format support</li>
+            <ul>
+            <small>
+              <li>waveforms (MiniSEED, SAC, GSE, SEISAN, SEG-Y, ...)</li>
+              <li>metadata (StationXML, SEED, QuakeML, ...)</li>
+            </small>
+            </ul>
+          <li>data center access</li>
+            <ul>
+            <small>
+                <li>FDSN web services (IRIS, ...), ArcLink (EIDA, ...), Neries/Nera, Earthworm, Seishub, SeedLink, ...</li>
+            </small>
+            </ul>
+          <li>basic signal processing routines</li>
+            <ul>
+            <small>
+                <li>filter, instrument correction, trim, merge, taper, rotate, resample, ...</li>
+                <li>array analysis, CC routines, PPSD, triggers, cpx trace analysis, ...</li>
+            </small>
+            </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          What's the beauty of it?
+      </h3>
+        <ul>
+            <li>Runs on all Platforms
+                <small>
+                <ul>
+                <li>Windows, Mac, Linux, FreeBSD (Installers, Debian/Ubuntu repository, ...)</li>
+                <li>from RaspberryPi (35$) to SuperMUC (&gt;150 Mio.$)</li>
+                </ul>
+                </small>
+                <li>Free and open source (<a href="http://en.wikipedia.org/wiki/LGPL">LGPL</a>)</li>
+          <li>Community pages: <a href="https://github.com/obspy/obspy">GitHub</a>, <a href="https://github.com/obspy/obspy/wiki">wiki</a>, <a href="http://docs.obspy.org/tutorial/">tutorials</a>, <a href="http://docs.obspy.org/gallery.html">gallery</a>, <a href="https://github.com/obspy/obspy/wiki#installation">installation instructions</a>, <a href="https://github.com/obspy/obspy/issues?state=open">ticket system</a>, <a href="http://lists.swapbytes.de/mailman/listinfo/obspy-users">mailing list</a></li>
+          <li><a href="http://docs.obspy.org/packages/autogen/obspy.core.stream.read.html">Well documented source code</a>, auto-generated <a href="http://docs.obspy.org">API docs</a></li>
+          <li>Test-driven development<small> (<a href="http://tests.obspy.org">1100+ unit tests</a>, <a href="https://coveralls.io/r/obspy/obspy?branch=master">82% Test Coverage</a>, <a href="https://travis-ci.org/obspy/obspy">CI</a>)</small></li>
+          <li>Reuses well established third-party code</li>
+                <ul>
+                <small>
+                    <li>Python community: numpy, scipy, <a href="http://matplotlib.org/gallery.html">matplotlib</a>, ...</li>
+                <li>Seismo community: libmseed, GSE UTI, evalresp, ...</li>
+                </small>
+                </ul>
+          <li>Python!</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Python!
+      </h3>
+        <ul>
+<li> Quick to learn, very concise and easy-to-read syntax</li>
+<li> One of the most used programming languages</li>
+<li> Free and Open Source, large community</li>
+<li> Cross-platform: Runs everywhere from RaspberryPi to large supercomputers</li>
+<li> No need to compile, interactive shell available</li>
+<li> General purpose language (in contrast to many other tools used in science)</li>
+<li> <a href="http://docs.python.org/2/library/">"Batteries included"</a> <small>(debugging, http access, ...)</small></li>
+<li> Mature third party libraries <small>(plotting, big data, ..)</small></li>
+<li> Easy to interact with existing C and Fortran code</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Do people actually use it?
+      </h3>
+        <ul>
+            <li>~270 people on users <a href="http://lists.swapbytes.de/mailman/listinfo/obspy-users">mailing list</a></li>
+            <li><a href="http://scholar.google.com/scholar?cites=14340313791097274856&as_sdt=400005&sciodt=0,14&hl=en">40 scientific citations</a> (thanks guys!)</li>
+            <img src="images/ObspyMailinglist.png"  width="600" />
+            <img src="images/ObsPyUsers.png" width="590" />
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Who's behind it?
+        </h3>
+        <ul>
+            <li>development started in 2008</li>
+            <li>~4 core developers in Munich</li>
+            <li>since then <a href="https://github.com/obspy/obspy/graphs/contributors">around 30 people</a> from all around the world <a href="http://docs.obspy.org/credits.html">contributed</a></li>
+            <li>5000+ code commits</li>
+            <img src="images/commits.png" width="700" />
+            <li>700+ tickets and pull requests</li><br/>
+            <li><b>Contributions welcome!</b></li>
+                <ul>
+                <small>
+                <li>Send pull requests, open tickets, drop a mail on the mailing list, ...</li>
+                </small>
+                </ul>
+        </ul>
+      </article>
+
+      <article>
+        <h2>
+          Up next:<br/> Practical Introduction to ObsPy basics
+        </h2>
+      </article>
+
+    </section>
+
+  </body>
+</html>
