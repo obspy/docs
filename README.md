@@ -20,6 +20,7 @@ tutorial.
 * [2011 - AGU Fall](https://github.com/obspy/docs/raw/master/posters/2011_agu/agu2011_poster.pdf)
 * [2012 - EGU](https://github.com/obspy/docs/raw/master/posters/2012_egu/obspy.pdf)
 * [2013 - EGU](https://github.com/obspy/docs/raw/master/posters/2013_egu/egu2013_poster.pdf)
+* [2014 - LMU](https://github.com/obspy/docs/raw/master/posters/2014_lmu/poster.pdf)
 
 ### Presentations
 
