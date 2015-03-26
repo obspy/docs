@@ -24,7 +24,9 @@ tutorial.
 
 ### Presentations
 
-* [2011 - Edinburgh](https://github.com/obspy/docs/raw/master/presentations/2011_edinburgh/edinburgh_2011.pdf)
+* [2009 - Liverpool](https://github.com/obspy/docs/raw/master/presentations/2009_liverpool/2009_liverpool.pdf)
+* [2010 - Zürich](https://github.com/obspy/docs/raw/master/presentations/2010_zurich/2010_zurich.pdf)
+* [2011 - Edinburgh](https://github.com/obspy/docs/raw/master/presentations/2011_edinburgh/2011_edinburgh.pdf)
 * [2012 - Erice](https://github.com/obspy/docs/raw/master/presentations/2012_erice/presentation.pdf)
 * [2013 - April Recent Version](https://github.com/obspy/docs/raw/master/presentations/recent_version/presentation.pdf)
 * [2014 - LMU](https://github.com/obspy/docs/raw/master/presentations/2014_lmu/obspy_lmu_2014.pdf)
