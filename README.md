@@ -13,6 +13,10 @@ tutorial.
 * [0.8.3](https://github.com/obspy/docs/tree/master/api/0.8.3)
 * [0.8.4 and upwards](https://github.com/obspy/obspy/releases)
 
+### Notebooks
+
+* [Direct Access to Seismological Data using Python and ObsPy](http://nbviewer.ipython.org/github/obspy/docs/blob/master/notebooks/Direct Access to Seismological Data using Python and ObsPy.ipynb)
+
 ### Posters
 
 * [2010 - DGG](https://github.com/obspy/docs/raw/master/posters/2010_dgg/poster.pdf)
