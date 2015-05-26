@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>ObsPy - Infrastructure</title>
+    <meta charset='utf-8'>
+    <script
+      src='slides.js'></script>
+  </head>
+
+  <style>
+    .slides.template-default article.biglogo {
+        background: white url(images/obspy_logo_only_waveform_lightgray.svg) 10% 10% no-repeat !important;
+    }
+    .slides.template-default > article:not(.nobackground):not(.biglogo) {
+        background: white url(images/obspy_logo_only_waveform_lightgray.svg) 730px 550px no-repeat scroll !important;
+    } 
+    ol:first-child {
+      margin-top: 0;
+    }
+    ol li::before {
+      content: '' !important;
+    }
+
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+
+      <article>
+        <h3>
+            <a href="https://github.com/obspy/obspy/wiki#use-cases--applications-using-obspy">Some Example Projects Using ObsPy</a><small>&nbsp;&nbsp; (in no particular order)</small>
+        </h3>
+        <ul>
+            <li><a href="http://www.lasif.net/">LASIF</a><small> &nbsp;&nbsp;&nbsp; large scale full waveform inversion</small></li>
+            <li><a href="http://www.msnoise.org/">MSNoise</a><small> &nbsp;&nbsp;&nbsp; monitoring seismic velocity changes w/ seismic noise</small></li>
+            <li><a href="https://github.com/markcwill/hashpy">HASHpy</a><small> &nbsp;&nbsp;&nbsp; python wrapper for HASH focal mechanism code</small></li>
+            <li><a href="https://github.com/bonaime/seedlink_plotter">SeedLink plotter</a><small> &nbsp;&nbsp;&nbsp; realtime wave monitor</small></li>
+            <li><a href="http://students.ceid.upatras.gr/~triantafyl/scisola/">scisola</a><small> &nbsp;&nbsp;&nbsp; automatic real-time moment tensor calculation</small></li>
+            <li><a href="http://www.instaseis.net/">Instaseis</a><small> &nbsp;&nbsp;&nbsp; instant global high frequency seismograms</small></li>
+            <li><a href="https://github.com/krischer/hypoDDpy">hypoDDpy</a><small> &nbsp;&nbsp;&nbsp; automated event relocations using HypoDD</small></li>
+            <li><a href="https://github.com/barsch/seishub.core">SeisHub</a><small> &nbsp;&nbsp;&nbsp; a seismological XML/SQL database server</small></li>
+            <li>...</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+            <a href="http://www.lasif.net/">LASIF</a>
+        </h3>
+        <small>
+        <ul>
+          <li>text</li>
+          <img src="images/lasif1.jpg"  height="350" />
+        </ul>
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="http://www.lasif.net/">LASIF</a>
+        </h3>
+        <small>
+        <ul>
+          <li>text</li>
+          <img src="images/lasif2.png"  height="350" />
+        </ul>
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="http://www.msnoise.org/">MSNoise</a>
+        </h3>
+        <small>
+        <ul>
+          <li>monitoring of seismic velocity changes by cross-correlation of continuous waveforms</li>
+          <li>handles: signal processing, database storage of cross-correlations, calculation of derived velocity variations and visualization</li>
+          <img src="images/msnoise.png"  height="350" />
+        </ul>
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="https://github.com/markcwill/hashpy">HASHpy</a>
+        </h3>
+        <small>
+        <ul>
+          <li>wraps HASH fortran code (Hardebeck/Shearer) for convenient use</li>
+          <li>focal mechanism calculations based on QuakeML event information</li>
+          <img src="images/hashpy.png"  height="450" />
+        </ul>
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="https://github.com/bonaime/seedlink_plotter">SeedLink plotter</a>
+        </h3>
+        <small>
+        <ul>
+          <li>command line tool to display realtime waveform data acquired via seedlink</li>
+          <li>either single "drum" plot or multi station plot</li>
+        </ul>
+          <img src="images/seedlinkplotter1.png"  height="350" />
+          <img src="images/seedlinkplotter2.png"  height="350" />
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="http://students.ceid.upatras.gr/~triantafyl/scisola/">scisola</a>
+        </h3>
+        <small>
+        <ul>
+          <li>moment tensor calculations using ISOLA and events served in real-time from SeisComP3 instance</li>
+        </ul>
+          <img src="images/scisola1.png"  height="450" />
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="http://www.instaseis.net/">Instaseis</a>
+        </h3>
+        <small>
+        <ul>
+          <li>instantaneous calculation and visualization of broadband seismograms from Green's function databases generated with AxiSEM</li>
+        </ul>
+          <img src="images/instaseis1.png"  height="450" />
+        </small>
+      </article>
+
+      <article>
+        <h3>
+            <a href="https://github.com/krischer/hypoDDpy">hypoDDpy</a>
+        </h3>
+        <small>
+        <ul>
+          <li>automated relocation of large amounts of earthquakes including automated cross correlation pick alignment using HypoDD</li>
+        </ul>
+        </small>
+        <h3>
+            <a href="https://github.com/barsch/seishub.core">SeisHub</a>
+        </h3>
+        <small>
+        <ul>
+          <li>hybrid XML/SQL/file-system database for seismological waveform/station/event data and server suited for personal/work group or small to intermediate size data center usage</li>
+        </ul>
+        </small>
+      </article>
+
+
+    </section>
+
+  </body>
+</html>
