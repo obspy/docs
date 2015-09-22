@@ -12,6 +12,9 @@ tutorial.
 
 * [0.8.3](https://github.com/obspy/docs/tree/master/api/0.8.3)
 * [0.8.4 and upwards](https://github.com/obspy/obspy/releases)
+* [current stable release](http://docs.obspy.org/)
+* [current development snapshot](http://docs.obspy.org/master/)
+* [archive](http://docs.obspy.org/archive/)
 
 ### Notebooks
 
@@ -25,6 +28,7 @@ tutorial.
 * [2012 - EGU](https://github.com/obspy/docs/raw/master/posters/2012_egu/obspy.pdf)
 * [2013 - EGU](https://github.com/obspy/docs/raw/master/posters/2013_egu/egu2013_poster.pdf)
 * [2014 - LMU](https://github.com/obspy/docs/raw/master/posters/2014_lmu/poster.pdf)
+* [...](https://github.com/obspy/docs/tree/master/posters)
 
 ### Presentations
 
@@ -34,6 +38,7 @@ tutorial.
 * [2012 - Erice](https://github.com/obspy/docs/raw/master/presentations/2012_erice/presentation.pdf)
 * [2013 - April Recent Version](https://github.com/obspy/docs/raw/master/presentations/recent_version/presentation.pdf)
 * [2014 - LMU](https://github.com/obspy/docs/raw/master/presentations/2014_lmu/obspy_lmu_2014.pdf)
+* [...](https://github.com/obspy/docs/tree/master/presentations)
 
 ### Workshops
 
@@ -42,6 +47,4 @@ tutorial.
 * [2013 - IPGP](https://github.com/obspy/docs/raw/master/workshops/2013_ipgp/introduction_to_obspy.pdf)
 * [2013 - MESS](https://github.com/obspy/docs/raw/master/workshops/2013_mess/introduction_to_obspy.pdf)
 * [2013 - Earthscope USArray/IRIS](https://github.com/obspy/docs/raw/master/workshops/2013_iris/introduction.html)
-
-
-
+* [...](https://github.com/obspy/docs/tree/master/workshops)
