@@ -2,7 +2,7 @@
 # 1st column: Snow cover [cm] at Obere Firstalm/Schlierseer Berge
 # 2nd column: Sunshine hours at Rosenheim
 # 3rd column: Mean air temperature [deg C] at Kiefersfelden-Gach
-# Source/Quelle: Deutscher Wetterdienst 2015 (http://www.dwd.de/WESTE)
+# Source/Quelle: Deutscher Wetterdienst 2015 (https://www.dwd.de/WESTE)
 0.0   0.0 2.5
 0.0   0.0 2.5
 0.0   0.0 2.5
