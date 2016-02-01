@@ -1,4 +1,4 @@
-# ObsPy Docs
+# ObsPy Teaching Material (Workshops / Posters / Presentations)
 
 Additional documents like presentations, posters and workshop material. Some material might be outdated.
 See the ObsPy homepage http://docs.obspy.org (and
