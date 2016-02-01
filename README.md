@@ -26,7 +26,7 @@ API documentation and tutorial.
 
 ### Workshops
 
-* [2015 - Earthscope USArray/IRIS short course](https://github.com/obspy/docs/tree/master/workshops/2015_iris)
-* [2015 - MESS](https://github.com/obspy/docs/tree/master/workshops/2015_mess)
-* [2015 - Münster](https://github.com/obspy/docs/tree/master/workshops/2015_muenster)
+* [2015 - Earthscope USArray/IRIS short course](https://github.com/obspy/docs/tree/master/workshops/2015-08-03_iris)
+* [2015 - MESS](https://github.com/obspy/docs/tree/master/workshops/2015-02-23_mess)
+* [2015 - Münster](https://github.com/obspy/docs/tree/master/workshops/2015-07-07_muenster)
 * [(... more)](https://github.com/obspy/docs/tree/master/workshops)
