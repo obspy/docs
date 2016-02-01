@@ -18,7 +18,7 @@ tutorial.
 
 ### Notebooks
 
-* [Direct Access to Seismological Data using Python and ObsPy](http://nbviewer.ipython.org/github/obspy/docs/blob/master/notebooks/Direct_Access_to_Seismological_Data_using_Python_and_ObsPy.ipynb)
+* [Direct Access to Seismological Data using Python and ObsPy](https://nbviewer.jupyter.org/github/obspy/docs/blob/master/notebooks/Direct_Access_to_Seismological_Data_using_Python_and_ObsPy.ipynb)
 
 ### Posters
 
