@@ -1,8 +1,8 @@
 # ObsPy Teaching Material (Workshops / Posters / Presentations)
 
 Additional documents like presentations, posters and workshop material. Some material might be outdated.
-See the ObsPy homepage http://docs.obspy.org (and
-http://docs.obspy.org/archive/ or https://github.com/obspy/obspy/releases) for
+See the ObsPy homepage https://docs.obspy.org (and
+https://docs.obspy.org/archive/ or https://github.com/obspy/obspy/releases) for
 API documentation and tutorial.
 
 ## Direct links to the PDFs
