@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   viewBox="158.16535 116.165354 856.6693 434.6693"
+   width="856.6693pt"
+   height="434.6693pt"
+   id="svg2"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="header.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview64"
+     showgrid="false"
+     inkscape:zoom="0.81881062"
+     inkscape:cx="480.81222"
+     inkscape:cy="313.29843"
+     inkscape:current-layer="g16" />
+  <metadata
+     id="metadata4"> Produced by OmniGraffle 6.0.3 <dc:date>2016-04-11 13:31Z</dc:date>
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <defs
+     id="defs6">
+    <font-face
+       font-family="Helvetica Neue"
+       font-size="35"
+       panose-1="2 0 5 3 0 0 0 2 0 4"
+       units-per-em="1000"
+       underline-position="-100"
+       underline-thickness="50"
+       slope="0"
+       x-height="517"
+       cap-height="714"
+       ascent="951.99585"
+       descent="-212.99744"
+       font-weight="500"
+       id="font-face8">
+      <font-face-src>
+        <font-face-name
+           name="HelveticaNeue" />
+      </font-face-src>
+    </font-face>
+    <font-face
+       font-family="Helvetica Neue"
+       font-size="20"
+       panose-1="2 0 4 3 0 0 0 2 0 4"
+       units-per-em="1000"
+       underline-position="-100"
+       underline-thickness="50"
+       slope="0"
+       x-height="530"
+       cap-height="728"
+       ascent="966.99524"
+       descent="-212.99744"
+       font-weight="300"
+       id="font-face10">
+      <font-face-src>
+        <font-face-name
+           name="HelveticaNeue-Light" />
+      </font-face-src>
+    </font-face>
+  </defs>
+  <g
+     stroke="none"
+     stroke-opacity="1"
+     stroke-dasharray="none"
+     fill="none"
+     fill-opacity="1"
+     id="g12">
+    <title
+       id="title14">Canvas 1</title>
+    <g
+       id="g16">
+      <title
+         id="title18">Layer 1</title>
+      <rect
+         x="161.5748"
+         y="119.05512"
+         width="850.3937"
+         height="428.0315"
+         id="rect20"
+         fill="#d2314b"
+         style="fill:#ff9800;fill-opacity:1" />
+      <rect
+         x="731.33862"
+         y="119.05512"
+         width="280.62991"
+         height="428.03149"
+         id="rect30"
+         style="fill:#fff9c4;fill-opacity:1" />
+      <text
+         transform="translate(771.3386 309.07086)"
+         fill="#d3d3d3"
+         id="text32" />
+      <path
+         d="M 507.32295 119.05512 L 613.85796 119.05512 L 587.2242 547.0866 L 480.6892 547.0866 Z"
+         fill="#56be2a"
+         id="path34" />
+      <path
+         d="M 590.23935 119.05512 L 696.77436 119.05512 L 670.1406 547.0866 L 563.6056 547.0866 Z"
+         fill="#277d00"
+         id="path36" />
+      <path
+         d="M 602.80244 119.05512 L 709.33745 119.05512 L 682.7037 547.0866 L 576.1687 547.0866 Z"
+         fill="#3baa04"
+         id="path38" />
+      <path
+         d="M 615.36553 119.05512 L 721.90054 119.05512 L 695.2668 547.0866 L 588.73178 547.0866 Z"
+         fill="#78dc4e"
+         id="path40" />
+      <path
+         d="M 630.44125 119.05512 L 736.97626 119.05512 L 710.3425 547.0866 L 603.8075 547.0866 Z"
+         fill="#9feb7e"
+         id="path42" />
+      <path
+         d="M 643.65737 119.05512 L 750.1924 119.05512 L 723.55863 547.0866 L 617.02362 547.0866 Z"
+         fill="#de7036"
+         id="path44"
+         style="fill:#3f51b5;fill-opacity:1" />
+      <path
+         d="M 726.57377 119.05512 L 833.1088 119.05512 L 806.47503 547.0866 L 699.94002 547.0866 Z"
+         fill="#913500"
+         id="path46"
+         style="fill:#1a237e;fill-opacity:1" />
+      <path
+         d="M 739.13687 119.05512 L 845.6719 119.05512 L 819.0381 547.0866 L 712.5031 547.0866 Z"
+         fill="#c64f12"
+         id="path48"
+         style="fill:#303f9f;fill-opacity:1" />
+      <path
+         d="M 751.69996 119.05512 L 858.23497 119.05512 L 831.6012 547.0866 L 725.0662 547.0866 Z"
+         fill="#ff985f"
+         id="path50"
+         style="fill:#7986cb;fill-opacity:1" />
+      <path
+         d="M 766.77567 119.05512 L 873.3107 119.05512 L 846.67693 547.0866 L 740.1419 547.0866 Z"
+         fill="#ffb78d"
+         id="path52"
+         style="fill:#c5cae9;fill-opacity:1" />
+      <path
+         d="M 781.85136 119.05512 L 888.3864 119.05512 L 861.7526 547.0866 L 755.2176 547.0866 Z"
+         fill="#258468"
+         id="path54"
+         style="fill:#ffeb3b;fill-opacity:1" />
+      <path
+         d="M 864.76776 119.05512 L 971.3028 119.05512 L 944.669 547.0866 L 838.134 547.0866 Z"
+         fill="#0b5840"
+         id="path56"
+         style="fill:#f57f17;fill-opacity:1" />
+      <path
+         d="M 877.33085 119.05512 L 983.86587 119.05512 L 957.2321 547.0866 L 850.6971 547.0866 Z"
+         fill="#137757"
+         id="path58"
+         style="fill:#fbc02d;fill-opacity:1" />
+      <path
+         d="M 889.89395 119.05512 L 996.42896 119.05512 L 969.7952 547.0866 L 863.2602 547.0866 Z"
+         fill="#3e9d80"
+         id="path60"
+         style="fill:#fff176;fill-opacity:1" />
+      <path
+         d="M 904.96966 119.05512 L 1011.5047 119.05512 L 984.8709 547.0866 L 878.3359 547.0866 Z"
+         fill="#6ec2ab"
+         id="path62"
+         style="fill:#fff9c4;fill-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:31.99999809px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="186.98761"
+         y="181.51851"
+         id="text4192"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4194"
+           x="186.98761"
+           y="181.51851"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue';fill:#ffffff;fill-opacity:1;font-size:27.99999866px">CIG All Hands Meeting</tspan><tspan
+           sodipodi:role="line"
+           x="186.98761"
+           y="221.55179"
+           id="tspan4198"
+           style="font-style:normal;font-variant:normal;font-weight:100;font-stretch:normal;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Thin';fill:#ffffff;fill-opacity:1;font-size:27.99999866px">June 17-24 2016</tspan></text>
+    </g>
+  </g>
+</svg>
