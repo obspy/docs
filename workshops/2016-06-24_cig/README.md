@@ -14,6 +14,5 @@ and then checkout this tutorial with `git`.
 ### Running
 
 ```bash
-$ cd cig_all_hands_2016_obspy_and_python_tutorial
 $ jupyter-notebook
 ```
