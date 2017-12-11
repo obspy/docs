@@ -13,7 +13,7 @@ API documentation and tutorial.
 
 ### Posters
 
-* [2015 - AGU](https://github.com/obspy/docs/raw/master/posters/2015_agu/AGU_2015_ObsPy.pdf)
+* [2017 - AGU](https://github.com/obspy/docs/raw/master/posters/2017_agu/obspy_poster_agu_2017.pdf)
 * [(... more)](https://github.com/obspy/docs/tree/master/posters)
 
 ### Presentations
