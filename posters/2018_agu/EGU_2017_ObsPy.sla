@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SCRIBUSUTF8NEW Version="1.5.2">
+    <DOCUMENT ANZPAGES="1" PAGEWIDTH="4705.51181102362" PAGEHEIGHT="3288.18897637795" BORDERLEFT="0" BORDERRIGHT="0" BORDERTOP="0" BORDERBOTTOM="0" PRESET="0" BleedTop="113.388661417323" BleedLeft="113.388661417323" BleedRight="113.388661417323" BleedBottom="113.388661417323" ORIENTATION="1" PAGESIZE="Custom" FIRSTNUM="1" BOOK="0" AUTOSPALTEN="1" ABSTSPALTEN="0.3881" UNITS="4" DFONT="Arial Regular" DSIZE="12" DCOL="1" DGAP="0" TabFill="" TabWidth="36" AUTHOR="" COMMENTS="" KEYWORDS="" PUBLISHER="" DOCDATE="" DOCTYPE="" DOCFORMAT="" DOCIDENT="" DOCSOURCE="" DOCLANGINFO="" DOCRELATION="" DOCCOVER="" DOCRIGHTS="" DOCCONTRIB="" TITLE="" SUBJECT="" VHOCH="33" VHOCHSC="66" VTIEF="33" VTIEFSC="66" VKAPIT="75" BASEGRID="14.4" BASEO="0" AUTOL="100" UnderlinePos="-1" UnderlineWidth="-1" StrikeThruPos="-1" StrikeThruWidth="-1" GROUPC="9" HCMS="0" DPSo="0" DPSFo="0" DPuse="0" DPgam="0" DPbla="1" DPPr="Fogra27L CMYK Coated Press" DPIn="sRGB IEC61966-2.1" DPInCMYK="Fogra27L CMYK Coated Press" DPIn2="sRGB IEC61966-2.1" DPIn3="Fogra27L CMYK Coated Press" DISc="1" DIIm="0" ALAYER="0" LANGUAGE="en_GB" MINWORDLEN="3" HYCOUNT="2" AUTOMATIC="1" AUTOCHECK="0" GUIDELOCK="0" SnapToGuides="0" SnapToGrid="0" SnapToElement="0" MINGRID="20.0012598425197" MAJGRID="100.00062992126" SHOWGRID="0" SHOWGUIDES="1" showcolborders="1" previewMode="0" SHOWFRAME="1" SHOWControl="0" SHOWLAYERM="0" SHOWMARGIN="1" SHOWBASE="1" SHOWPICT="1" SHOWLINK="0" rulerMode="1" showrulers="1" showBleed="1" rulerXoffset="0" rulerYoffset="0" GuideRad="10" GRAB="4" POLYC="4" POLYF="0.707106781186548" POLYR="0" POLYIR="0" POLYCUR="0" POLYOCUR="0" POLYS="0" arcStartAngle="30" arcSweepAngle="300" spiralStartAngle="0" spiralEndAngle="1080" spiralFactor="1.2" AutoSave="1" AutoSaveTime="600000" AutoSaveCount="1" AutoSaveKeep="0" AUtoSaveInDocDir="1" AutoSaveDir="" ScratchBottom="20.0012598425197" ScratchLeft="100.00062992126" ScratchRight="100.00062992126" ScratchTop="20.0012598425197" GapHorizontal="0" GapVertical="39.9996850393701" StartArrow="0" EndArrow="0" PEN="Black" BRUSH="None" PENLINE="d" PENTEXT="Black" StrokeText="Black" TextBackGround="None" TextLineColor="None" TextBackGroundShade="100" TextLineShade="100" TextPenShade="100" TextStrokeShade="100" STIL="1" STILLINE="1" WIDTH="1" WIDTHLINE="1" PENSHADE="100" LINESHADE="100" BRUSHSHADE="100" CPICT="None" PICTSHADE="100" CSPICT="None" PICTSSHADE="100" PICTSCX="1" PICTSCY="1" PSCALE="1" PASPECT="1" EmbeddedPath="0" HalfRes="1" dispX="0" dispY="0" constrain="15" MINORC="#00ff00" MAJORC="#00ff00" GuideC="#000080" BaseC="#c0c0c0" renderStack="0 1 2 3 4" GridType="0" PAGEC="#ffffff" MARGC="#0000ff" RANDF="0" currentProfile="PDF 1.5" calligraphicPenFillColor="Black" calligraphicPenLineColor="Black" calligraphicPenFillColorShade="100" calligraphicPenLineColorShade="100" calligraphicPenLineWidth="1" calligraphicPenAngle="0" calligraphicPenWidth="10" calligraphicPenStyle="1">
+        <CheckProfile Name="PDF 1.3" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <CheckProfile Name="PDF 1.4" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <CheckProfile Name="PDF 1.5" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="0" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <CheckProfile Name="PDF/X-1a" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="1" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <CheckProfile Name="PDF/X-3" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="1" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <CheckProfile Name="PostScript" ignoreErrors="0" autoCheck="1" checkGlyphs="1" checkOrphans="1" checkOverflow="1" checkPictures="1" checkPartFilledImageFrames="0" checkResolution="1" checkTransparency="1" minResolution="144" maxResolution="2400" checkAnnotations="0" checkRasterPDF="1" checkForGIF="1" ignoreOffLayers="0" checkNotCMYKOrSpot="0" checkDeviceColorsAndOutputIntent="0" checkFontNotEmbedded="0" checkFontIsOpenType="0" checkAppliedMasterDifferentSide="1" checkEmptyTextFrames="1"/>
+        <COLOR NAME="#800000" RGB="#966432"/>
+        <COLOR NAME="Black" CMYK="#000000ff"/>
+        <COLOR NAME="Blue" RGB="#0000ff"/>
+        <COLOR NAME="Cool Black" CMYK="#990000ff"/>
+        <COLOR NAME="Cyan" CMYK="#ff000000"/>
+        <COLOR NAME="FromSVG#000000" RGB="#000000"/>
+        <COLOR NAME="FromSVG#111111" RGB="#111111"/>
+        <COLOR NAME="FromSVG#1c6434" RGB="#1c6434"/>
+        <COLOR NAME="FromSVG#24265d" RGB="#24265d"/>
+        <COLOR NAME="FromSVG#27963c" RGB="#27963c"/>
+        <COLOR NAME="FromSVG#2c3892" RGB="#2c3892"/>
+        <COLOR NAME="FromSVG#36ab9c" RGB="#36ab9c"/>
+        <COLOR NAME="FromSVG#3871c1" RGB="#3871c1"/>
+        <COLOR NAME="FromSVG#40b93c" RGB="#40b93c"/>
+        <COLOR NAME="FromSVG#40bb6a" RGB="#40bb6a"/>
+        <COLOR NAME="FromSVG#51ade5" RGB="#51ade5"/>
+        <COLOR NAME="FromSVG#5e2590" RGB="#5e2590"/>
+        <COLOR NAME="FromSVG#6638ff" RGB="#6638ff"/>
+        <COLOR NAME="FromSVG#80cc28" RGB="#80cc28"/>
+        <COLOR NAME="FromSVG#8d198f" RGB="#8d198f"/>
+        <COLOR NAME="FromSVG#9c1661" RGB="#9c1661"/>
+        <COLOR NAME="FromSVG#bf1b2c" RGB="#bf1b2c"/>
+        <COLOR NAME="FromSVG#c3cb15" RGB="#c3cb15"/>
+        <COLOR NAME="FromSVG#d3d2d2" RGB="#d3d2d2"/>
+        <COLOR NAME="FromSVG#da1259" RGB="#da1259"/>
+        <COLOR NAME="FromSVG#ed127c" RGB="#ed127c"/>
+        <COLOR NAME="FromSVG#ed1c24" RGB="#ed1c24"/>
+        <COLOR NAME="FromSVG#f14624" RGB="#f14624"/>
+        <COLOR NAME="FromSVG#f2d61f" RGB="#f2d61f"/>
+        <COLOR NAME="FromSVG#f68712" RGB="#f68712"/>
+        <COLOR NAME="FromSVG#f9a72b" RGB="#f9a72b"/>
+        <COLOR NAME="FromSVG#ffffff" RGB="#ffffff"/>
+        <COLOR NAME="Green" RGB="#00ff00"/>
+        <COLOR NAME="Grey1" RGB="#c8c8c8"/>
+        <COLOR NAME="Grey2" RGB="#b4b4b4"/>
+        <COLOR NAME="Magenta" CMYK="#00ff0000"/>
+        <COLOR NAME="Red" RGB="#ff0000"/>
+        <COLOR NAME="Registration" CMYK="#ffffffff" Register="1"/>
+        <COLOR NAME="Rich Black" CMYK="#996666ff"/>
+        <COLOR NAME="Warm Black" CMYK="#00994cff"/>
+        <COLOR NAME="White" CMYK="#00000000"/>
+        <COLOR NAME="Yellow" CMYK="#0000ff00"/>
+        <HYPHEN/>
+        <STYLE NAME="Default Paragraph Style" DefaultStyle="1" ALIGN="0" LINESPMode="0" LINESP="15" INDENT="0" RMARGIN="0" FIRST="0" VOR="0" NACH="0" ParagraphEffectOffset="0" DROP="0" DROPLIN="2"/>
+        <STYLE NAME="Bulleted Ecosystem Contents" LINESPMode="2" INDENT="36.8503937" FIRST="-36.8503937" VOR="0" FONT="Apple Garamond Regular" FONTSIZE="28" LANGUAGE="">
+            <Tabs Type="0" Pos="17.00787402" Fill=""/>
+        </STYLE>
+        <STYLE NAME="Ecosystem Contents" ALIGN="3" LINESPMode="2" INDENT="0" FIRST="0" VOR="0" FONT="Apple Garamond Regular" FONTSIZE="28" LANGUAGE=""/>
+        <STYLE NAME="Contents" ALIGN="3" LINESPMode="2" INDENT="0" FIRST="0" VOR="0" NACH="30" FONT="Apple Garamond Regular" FONTSIZE="35" LANGUAGE=""/>
+        <STYLE NAME="Contributors" LINESPMode="0" LINESP="17" INDENT="1.02047244094488" FIRST="-1.02047244094488" FONT="Apple Garamond Regular" FONTSIZE="20" LANGUAGE=""/>
+        <STYLE NAME="Title" LINESPMode="2" NACH="30" CPARENT="Title"/>
+        <STYLE NAME="Subtitle" LINESPMode="2" NACH="35" CPARENT="Subtitle"/>
+        <CHARSTYLE CNAME="Default Character Style" DefaultStyle="1" FONT="Arial Regular" FONTSIZE="12" FEATURES="inherit" FCOLOR="Black" FSHADE="100" SCOLOR="Black" SSHADE="100" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1" SCALEH="100" SCALEV="100" BASEO="0" KERN="0" LANGUAGE=""/>
+        <CHARSTYLE CNAME="Title" FONT="Helvetica Bold" FONTSIZE="50" LANGUAGE=""/>
+        <CHARSTYLE CNAME="Subtitle" FONT="Helvetica Light" FONTSIZE="35" LANGUAGE=""/>
+        <TableStyle NAME="Default Table Style" DefaultStyle="1" FillColor="None" FillShade="100">
+            <TableBorderLeft>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderLeft>
+            <TableBorderRight>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderRight>
+            <TableBorderTop>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderTop>
+            <TableBorderBottom>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderBottom>
+        </TableStyle>
+        <CellStyle NAME="Default Cell Style" DefaultStyle="1" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+            <TableBorderLeft>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderLeft>
+            <TableBorderRight>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderRight>
+            <TableBorderTop>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderTop>
+            <TableBorderBottom>
+                <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+            </TableBorderBottom>
+        </CellStyle>
+        <LAYERS NUMMER="0" LEVEL="1" NAME="Background" SICHTBAR="1" DRUCKEN="1" EDIT="1" SELECT="0" FLOW="1" TRANS="1" BLEND="0" OUTL="0" LAYERC="#000000"/>
+        <LAYERS NUMMER="1" LEVEL="0" NAME="Filled Background" SICHTBAR="1" DRUCKEN="1" EDIT="0" SELECT="0" FLOW="1" TRANS="1" BLEND="0" OUTL="0" LAYERC="#ff0000"/>
+        <Printer firstUse="1" toFile="0" useAltPrintCommand="0" outputSeparations="0" useSpotColors="1" useColor="1" mirrorH="0" mirrorV="0" useICC="0" doGCR="0" doClip="0" setDevParam="0" useDocBleeds="1" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" includePDFMarks="1" PSLevel="3" PDLanguage="3" markLength="0" markOffset="0" BleedTop="113.388661417323" BleedLeft="113.388661417323" BleedRight="113.388661417323" BleedBottom="113.388661417323" printer="" filename="/Users/lion/Dropbox/Doktorarbeit/Posters/2014_12--AGU_ObsPy/AGU_2014_ObsPy.ps" separationName="All" printerCommand=""/>
+        <PDF firstUse="0" Thumbnails="0" Articles="0" Bookmarks="0" Compress="1" CMethod="2" Quality="0" EmbedPDF="1" MirrorH="0" MirrorV="0" Clip="0" rangeSel="0" rangeTxt="" RotateDeg="0" PresentMode="0" RecalcPic="0" FontEmbedding="0" Grayscale="0" RGBMode="1" UseProfiles="0" UseProfiles2="0" Binding="0" PicRes="300" Resolution="300" Version="15" Intent="1" Intent2="0" SolidP="sRGB IEC61966-2.1" ImageP="sRGB IEC61966-2.1" PrintP="Fogra27L CMYK Coated Press" InfoString="" BTop="0" BLeft="0" BRight="0" BBottom="0" useDocBleeds="0" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" docInfoMarks="0" markLength="1.00062992125984" markOffset="0" ImagePr="0" PassOwner="" PassUser="" Permissions="-4" Encrypt="0" UseLayers="0" UseLpi="0" UseSpotColors="1" doMultiFile="0" displayBookmarks="0" displayFullscreen="0" displayLayers="0" displayThumbs="0" hideMenuBar="0" hideToolBar="0" fitWindow="0" openAfterExport="0" PageLayout="0" openAction="">
+            <Fonts Name="Apple Garamond Bold"/>
+            <Fonts Name="Apple Garamond Regular"/>
+            <Fonts Name="Helvetica Light"/>
+            <Subset Name="Arial Regular"/>
+            <Subset Name="Heiti TC Medium"/>
+            <Subset Name="Helvetica Bold"/>
+            <Subset Name="Helvetica Neue Italic"/>
+            <Subset Name="Helvetica Regular"/>
+            <LPI Color="" Frequency="133" Angle="45" SpotFunction="3"/>
+            <LPI Color="Black" Frequency="133" Angle="45" SpotFunction="3"/>
+            <LPI Color="Cyan" Frequency="133" Angle="105" SpotFunction="3"/>
+            <LPI Color="Magenta" Frequency="133" Angle="75" SpotFunction="3"/>
+            <LPI Color="Yellow" Frequency="133" Angle="90" SpotFunction="3"/>
+        </PDF>
+        <DocItemAttributes/>
+        <TablesOfContents/>
+        <NotesStyles>
+            <notesStyle Name="Default" Start="1" Endnotes="0" Type="Type_1_2_3" Range="0" Prefix="" Suffix=")" AutoHeight="1" AutoWidth="1" AutoRemove="1" AutoWeld="1" SuperNote="1" SuperMaster="1" MarksStyle="" NotesStyle=""/>
+        </NotesStyles>
+        <NotesFrames/>
+        <PageSets>
+            <Set Name="Single Page" FirstPage="0" Rows="1" Columns="1"/>
+            <Set Name="Double Sided" FirstPage="1" Rows="1" Columns="2">
+                <PageNames Name="Left Page"/>
+                <PageNames Name="Right Page"/>
+            </Set>
+            <Set Name="3-Fold" FirstPage="0" Rows="1" Columns="3">
+                <PageNames Name="Left Page"/>
+                <PageNames Name="Middle"/>
+                <PageNames Name="Right Page"/>
+            </Set>
+            <Set Name="4-Fold" FirstPage="0" Rows="1" Columns="4">
+                <PageNames Name="Left Page"/>
+                <PageNames Name="Middle Left"/>
+                <PageNames Name="Middle Right"/>
+                <PageNames Name="Right Page"/>
+            </Set>
+        </PageSets>
+        <Sections>
+            <Section Number="0" Name="0" From="0" To="0" Type="Type_1_2_3" Start="1" Reversed="0" Active="1" FillChar="0" FieldWidth="0"/>
+        </Sections>
+        <MASTERPAGE PAGEXPOS="100.00062992126" PAGEYPOS="20.0012598425197" PAGEWIDTH="4535.43307086614" PAGEHEIGHT="3118.11023622047" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" NUM="0" NAM="Normal" MNAM="" Size="Custom" Orientation="1" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0"/>
+        <PAGE PAGEXPOS="100.00062992126" PAGEYPOS="20.0012598425197" PAGEWIDTH="4535.43307086614" PAGEHEIGHT="3118.11023622047" BORDERLEFT="40" BORDERRIGHT="40" BORDERTOP="40" BORDERBOTTOM="40" NUM="0" NAM="" MNAM="Normal" Size="Custom" Orientation="1" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0"/>
+        <PAGEOBJECT XPOS="1601.28728730555" YPOS="60.0012598425197" OwnPage="0" ItemID="1150033207" PTYPE="2" WIDTH="1532.85975609756" HEIGHT="524" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="ObsPy Logo" LOCALSCX="0.399390243902439" LOCALSCY="0.399390243902439" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="obspy_logo.png" IRENDER="0" EMBEDDED="0" LOCKR="1" path="M0 0 L1532.86 0 L1532.86 524 L0 524 L0 0 Z" copath="M0 0 L1532.86 0 L1532.86 524 L0 524 L0 0 Z" gXpos="1270.8378339785" gYpos="0" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3291.1316927874" YPOS="2000.11492125984" OwnPage="0" ItemID="1159062839" PTYPE="6" WIDTH="1303.802008" HEIGHT="403.323346456696" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="online resources box" path="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 374.977 C1303.8 390.632 1291.11 403.323 1275.46 403.323 L28.3465 403.323 C12.6911 403.323 0 390.632 0 374.977 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 374.977 C1303.8 390.632 1291.11 403.323 1275.46 403.323 L28.3465 403.323 C12.6911 403.323 0 390.632 0 374.977 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="3291.1316927874" YPOS="2426.5" OwnPage="0" ItemID="1162737463" PTYPE="6" WIDTH="1303.802008" HEIGHT="671.111496062987" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="References box" path="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 642.765 C1303.8 658.42 1291.11 671.111 1275.46 671.111 L28.3465 671.111 C12.6911 671.111 0 658.42 0 642.765 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 642.765 C1303.8 658.42 1291.11 671.111 1275.46 671.111 L28.3465 671.111 C12.6911 671.111 0 658.42 0 642.765 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="140.5" YPOS="71.75" OwnPage="0" ItemID="1162734391" PTYPE="6" WIDTH="1304.00669291339" HEIGHT="1108.75" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="ObsPy in a Nutshell Box" path="M28.3465 0 L1275.66 0 C1291.32 0 1304.01 12.6911 1304.01 28.3465 L1304.01 1080.4 C1304.01 1096.06 1291.32 1108.75 1275.66 1108.75 L28.3465 1108.75 C12.6911 1108.75 0 1096.06 0 1080.4 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.66 0 C1291.32 0 1304.01 12.6911 1304.01 28.3465 L1304.01 1080.4 C1304.01 1096.06 1291.32 1108.75 1275.66 1108.75 L28.3465 1108.75 C12.6911 1108.75 0 1096.06 0 1080.4 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="3291.1316927874" YPOS="1433.88952755905" OwnPage="0" ItemID="1162643767" PTYPE="6" WIDTH="1303.802008" HEIGHT="538.682598425199" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="1" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="Whats new box" path="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 510.336 C1303.8 525.991 1291.11 538.683 1275.46 538.683 L28.3465 538.683 C12.6911 538.683 0 525.991 0 510.336 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 13.6661 1303.8 30.5243 L1303.8 508.159 C1303.8 525.017 1291.11 538.683 1275.46 538.683 L28.3465 538.683 C12.6911 538.683 0 525.017 0 508.159 L0 30.5243 C0 13.6661 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="140.5" YPOS="1204.5" OwnPage="0" ItemID="1162636599" PTYPE="6" WIDTH="1304.006063" HEIGHT="1893.11149606299" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="1" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="ObsPy as a bridge box" path="M28.3465 0 L1275.66 0 C1291.31 0 1304.01 12.6911 1304.01 28.3465 L1304.01 1864.77 C1304.01 1880.42 1291.31 1893.11 1275.66 1893.11 L28.3465 1893.11 C12.6911 1893.11 0 1880.42 0 1864.77 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.66 0 C1291.31 0 1304.01 12.6214 1304.01 28.1907 L1304.01 1864.92 C1304.01 1880.49 1291.31 1893.11 1275.66 1893.11 L28.3465 1893.11 C12.6911 1893.11 0 1880.49 0 1864.92 L0 28.1907 C0 12.6214 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="2690.00131301802" YPOS="-108.301316745131" OwnPage="0" ItemID="1162783031" PTYPE="4" WIDTH="955.457918378818" HEIGHT="99.9999999999789" FRTYPE="0" CLIPEDIT="0" ROT="-325" PWIDTH="1" PCOLOR="Magenta" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L955.458 0 L955.458 100 L0 100 L0 0 Z" copath="M0 0 L955.458 0 L955.458 100 L0 100 L0 0 Z" gXpos="2690.00131301802" gYpos="-108.301316745131" gWidth="0" gHeight="0" ALIGN="1" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle ALIGN="1"/>
+                <para ALIGN="1"/>
+                <para ALIGN="1"/>
+                <para ALIGN="1"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="40" FCOLOR="White" FSHADE="100" CH="Try it now: seismo-live.org"/>
+                <trail ALIGN="1"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3291.13169291339" YPOS="71.75" OwnPage="0" ItemID="1166761271" PTYPE="6" WIDTH="1303.80200787401" HEIGHT="1329.25346456693" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="Is It used Box" path="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 1300.91 C1303.8 1316.56 1291.11 1329.25 1275.46 1329.25 L28.3465 1329.25 C12.6911 1329.25 0 1316.56 0 1300.91 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1275.46 0 C1291.11 0 1303.8 12.6911 1303.8 28.3465 L1303.8 1300.91 C1303.8 1316.56 1291.11 1329.25 1275.46 1329.25 L28.3465 1329.25 C12.6911 1329.25 0 1316.56 0 1300.91 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="1500.46716535433" YPOS="2108.5" OwnPage="0" ItemID="1167155511" PTYPE="6" WIDTH="1734.5" HEIGHT="989.111496062987" RADRECT="28.34645669" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="ExamplesBox" path="M28.3465 0 L1706.15 0 C1721.81 0 1734.5 12.6911 1734.5 28.3465 L1734.5 960.765 C1734.5 976.42 1721.81 989.111 1706.15 989.111 L28.3465 989.111 C12.6911 989.111 0 976.42 0 960.765 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1706.15 0 C1721.81 0 1734.5 12.6911 1734.5 28.3465 L1734.5 960.765 C1734.5 976.42 1721.81 989.111 1706.15 989.111 L28.3465 989.111 C12.6911 989.111 0 976.42 0 960.765 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="1500.46716535433" YPOS="853.887086614173" OwnPage="0" ItemID="1167163703" PTYPE="6" WIDTH="1734.5" HEIGHT="1221.61291338583" RADRECT="28.3464566929134" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="FromSVG#ffffff" PCOLOR2="Black" PLINEART="1" ANNAME="WhatCanIDoWithObsPyBox" path="M28.3465 0 L1706.15 0 C1721.81 0 1734.5 12.6911 1734.5 28.3465 L1734.5 1193.27 C1734.5 1208.92 1721.81 1221.61 1706.15 1221.61 L28.3465 1221.61 C12.6911 1221.61 0 1208.92 0 1193.27 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" copath="M28.3465 0 L1706.15 0 C1721.81 0 1734.5 12.6911 1734.5 28.3465 L1734.5 1193.27 C1734.5 1208.92 1721.81 1221.61 1706.15 1221.61 L28.3465 1221.61 C12.6911 1221.61 0 1208.92 0 1193.27 L0 28.3465 C0 12.6911 12.6911 0 28.3465 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="1503.15023622047" YPOS="854" OwnPage="0" ItemID="1167160631" PTYPE="4" WIDTH="1729.13385826772" HEIGHT="1221.11937007874" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1729.13 0 L1729.13 1221.12 L0 1221.12 L0 0 Z" copath="M0 0 L1729.13 0 L1729.13 1221.12 L0 1221.12 L0 0 Z" gXpos="1215.24218856804" gYpos="687.58707417075" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONTSIZE="50" CH="What Can I Do With Ob­sPy?"/>
+                <para PARENT="Title" ALIGN="1"/>
+                <ITEXT FONTSIZE="35" CH="Easy to use help­er func­tions to ac­cess loc­al files and on­line data cen­ters give "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="quick ac­cess to all data nec­essary for seis­mo­lo­gic­al data ana­lys­is"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="All ac­quired in­form­a­tion is ex­posed to the user in "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="Ob­sPy’s core classes that handle wave­form data, sta­tion and event metadata in a uni­fied, con­sist­ent fash­ion, re­gard­less of the data source"/>
+                <ITEXT FONTSIZE="35" CH=". This makes it easy to com­bine data from dif­fer­ent sources in uni­fied work­flows, both in­ter­act­ively and auto­mated."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="Ob­sPy’s core classes have many con­veni­ence routines for sig­nal pro­cessing dir­ectly at­tached for "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="quick, re­pro­du­cible and well tested ex­e­cu­tion of com­mon pro­cessing tasks"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <trail PARENT="Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="136" YPOS="85.1981102362205" OwnPage="0" ItemID="1167257911" PTYPE="4" WIDTH="1310.45732283465" HEIGHT="1124.14834645669" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1310.46 0 L1310.46 1124.15 L0 1124.15 L0 0 Z" copath="M0 0 L1310.46 0 L1310.46 1124.14 L0 1124.14 L0 0 Z" gXpos="-4" gYpos="50.7719599183268" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONTSIZE="35" CH="sum­mary"/>
+                <para PARENT="Subtitle"/>
+                <ITEXT FONTSIZE="50" CH="Ob­sPy in a Nut­shell"/>
+                <para PARENT="Title"/>
+                <ITEXT FONTSIZE="35" CH="Py­thon com­bines the power of a "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="full-blown pro­gram­ming"/>
+                <ITEXT FONTSIZE="35" CH=" lan­guage with the flex­ib­il­ity and fast code de­vel­op­ment of an "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="in­ter­act­ive script­ing lan­guage"/>
+                <ITEXT FONTSIZE="35" CH=". Its ex­tens­ive stand­ard lib­rary and large vari­ety of freely avail­able high qual­ity sci­entif­ic mod­ules cov­er most needs in "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="de­vel­op­ing sci­entif­ic pro­cessing work­flows"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="Ob­sPy ex­tends Py­thon’s cap­ab­il­it­ies to fit the spe­cif­ic needs that arise when work­ing with seis­mo­lo­gic­al data"/>
+                <ITEXT FONTSIZE="35" CH=". It a) provides "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="read and write sup­port for all of the most im­port­ant wave­form, sta­tion and event metadata formats"/>
+                <ITEXT FONTSIZE="35" CH=" b) en­ables "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="dir­ect ac­cess to all im­port­ant data cen­ters, web ser­vices and data­bases"/>
+                <ITEXT FONTSIZE="35" CH=" to eas­ily re­trieve wave­form data and sta­tion/event metadata and c) comes with a con­tinu­ously grow­ing "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="power­ful sig­nal pro­cessing tool­box"/>
+                <ITEXT FONTSIZE="35" CH=" that cov­ers all every-day tasks in seis­mo­lo­gic­al ana­lys­is."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="In com­bin­a­tion with ma­ture and free Py­thon pack­ages like NumPy, SciPy, Mat­plot­lib, IPy­thon/Jupyter, sympy, pandas and scikit-learn, "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="Ob­sPy makes it pos­sible to de­vel­op com­plete seis­mo­lo­gic­al pro­cessing work­flows"/>
+                <ITEXT FONTSIZE="35" CH=", ran­ging from read­ing loc­ally stored data or re­quest­ing data from one or more dif­fer­ent data cen­ters via sig­nal ana­lys­is and data pro­cessing to visu­al­iz­a­tion in GUI and web ap­plic­a­tions, out­put of mod­i­fied/de­rived data and the cre­ation of pub­lic­a­tion-qual­ity fig­ures. All func­tion­al­ity is "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="ex­tens­ively doc­u­mented"/>
+                <ITEXT FONTSIZE="35" CH=" and the on­line "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="Ob­sPy Tu­tori­al and Gal­lery"/>
+                <ITEXT FONTSIZE="35" CH=" give a good im­pres­sion of the wide range of pos­sible use cases. Ob­sPy is tested and "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="run­ning on Linux, Ma­c OS X and Win­dows"/>
+                <ITEXT FONTSIZE="35" CH=" and comes with in­stall­a­tion routines for these sys­tems. Ob­sPy is de­veloped in a test-driv­en ap­proach and is avail­able un­der the "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="LG­PLv3 open source li­cence"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="Users are wel­come to re­quest help, re­port bugs, pro­pose en­hance­ments or con­trib­ute code via either the user mail­ing list or the "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="pro­ject page on Git­Hub"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <trail PARENT="Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3294.49669291338" YPOS="66" OwnPage="0" ItemID="1167254839" PTYPE="4" WIDTH="1303.93700787402" HEIGHT="1334.1062992126" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="1" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 1334.11 L0 1334.11 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 1334.1 L0 1334.1 L0 0 Z" gXpos="2809.54559584376" gYpos="47.5911670839701" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle LINESPMode="2"/>
+                <ITEXT FONTSIZE="35" CH="im­pact, sus­tain­ab­il­ity, and ap­plic­a­tions"/>
+                <para PARENT="Subtitle" LINESPMode="2"/>
+                <ITEXT FONTSIZE="50" CH="Is It Used?"/>
+                <para PARENT="Title" LINESPMode="2"/>
+                <ITEXT FONTSIZE="35" CH="Seven years after the be­gin­nings of the pro­ject, Ob­sPy is used by seis­mo­lo­gists all around the world. With "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="more than 600 down­loads for Debi­an/Ubuntu Linux"/>
+                <ITEXT FONTSIZE="35" CH=" alone and "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="6000 conda downloads for the latest version alone"/>
+                <ITEXT FONTSIZE="35" CH=", we es­tim­ate — in­clud­ing Mac, Win­dows and oth­er Linux/Unix users — an "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="act­ive user base of several thousand people"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="Since Ob­sPy’s start by a "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="core de­veloper team of 3 – 5 people"/>
+                <ITEXT FONTSIZE="35" CH=" at LMU Mu­nich, Ob­sPy has evolved in­to a com­munity ef­fort with "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="con­tri­bu­tions to the code base by 57 in­di­vidu­als"/>
+                <ITEXT FONTSIZE="35" CH="."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="The busy user mail­ing list cur­rently has around "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="450 sub­scribers"/>
+                <ITEXT FONTSIZE="35" CH=" and serves as a place for dis­cus­sions and ask­ing for help from more ex­per­i­enced users."/>
+                <para PARENT="Contents"/>
+                <ITEXT FONTSIZE="35" CH="The "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="im­pact of Ob­sPy and the ap­pre­ci­ation with­in the seis­mo­lo­gic­al com­munity"/>
+                <ITEXT FONTSIZE="35" CH=" finds ex­pres­sion in the"/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH=" in­creas­ing num­ber of sci­entif­ic cita­tions, which stands at over 212 as of Decem­ber 2016"/>
+                <ITEXT FONTSIZE="35" CH=". Ap­plic­a­tions are nu­mer­ous and in­clude event (re)loc­a­tions, am­bi­ent seis­mic noise ana­lys­is, seis­mic tomo­graphy, ro­ta­tion­al seis­mo­logy stud­ies, time-de­pend­ent seis­mo­logy, and more."/>
+                <ITEXT CH=" Additionally, a large variety of programs built on top of ObsPy are appearing (full list including URLs at obspy.org):"/>
+                <para PARENT="Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="140.00062992126" YPOS="1204.5" OwnPage="0" ItemID="1167283511" PTYPE="4" WIDTH="1303.93700787402" HEIGHT="1893.61149606299" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 1893.61 L0 1893.61 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 1893.61 L0 1893.61 L0 0 Z" gXpos="0" gYpos="1010.91219780231" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONTSIZE="35" CH="ob­spy as a bridge"/>
+                <para PARENT="Subtitle"/>
+                <ITEXT CH="The Sci­entif­ic Py­thon Eco­sys­tem"/>
+                <para PARENT="Title"/>
+                <ITEXT FONTSIZE="35" CH="Over the last dec­ade, Py­thon grew a vast and rich eco­sys­tem of sci­entif­ic third party lib­rar­ies. "/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH="Ob­sPy serves as a bridge"/>
+                <ITEXT FONTSIZE="35" CH=" and en­ables its users to ef­fort­lessly tie in­to this sys­tem giv­ing ac­cess to large amounts of tools de­signed to pro­cess and ana­lyze data. This box quickly in­tro­duces the core pack­ages needed for sci­entif­ic ana­lys­is."/>
+                <trail PARENT="Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1441.79228346457" YPOS="495.308346456694" OwnPage="0" ItemID="1167211831" PTYPE="4" WIDTH="1851.84976377953" HEIGHT="192.691653543306" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" LOCK="1" LOCKR="1" path="M0 0 L1851.85 0 L1851.85 192.692 L0 192.692 L0 0 Z" copath="M0 0 L1851.85 0 L1851.85 192.692 L0 192.692 L0 0 Z" gXpos="1215.24218856804" gYpos="417.784465143216" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Regular" FONTSIZE="77" CH="Sustainability, New Features, and Applications"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <para LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH="Tobias Megies"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" FEATURES="inherit superscript" BASEO="0" CH="1"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH=", Lion Krischer"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" FEATURES="inherit superscript" CH="1,2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH=", Elliott Sales de Andrade"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" FEATURES="inherit superscript" CH="3"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH=", Robert Barsch"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" FEATURES="inherit superscript" CH="4"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH=", Jonathan MacCarthy"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" FEATURES="inherit superscript" CH="5"/>
+                <ITEXT FEATURES="inherit" CH=","/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="40" CH="and the Obspy Development Team"/>
+                <trail ALIGN="1" LINESPMode="2"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1503.15023635433" YPOS="702.00125984252" OwnPage="0" ItemID="1167218999" PTYPE="4" WIDTH="1729.133858" HEIGHT="145.716535433071" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="2" COLGAP="0" AUTOTEXT="0" EXTRA="141.732283464567" TEXTRA="0" BEXTRA="0" REXTRA="141.732283464567" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" LOCKR="1" path="M0 0 L1729.13 0 L1729.13 145.717 L0 145.717 L0 0 Z" copath="M0 0 L1729.13 0 L1729.13 145.717 L0 145.717 L0 0 Z" gXpos="1215.24218868738" gYpos="575.392181696213" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit superscript" CH="1"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit" CH="Ludwig Maximilian University of Munich"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit superscript" CH="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit" CH="ETH Zurich"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit superscript" CH="3"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit" CH="University of Toronto"/>
+                <para ALIGN="1" LINESPMode="2" LINESP="35"/>
+                <para ALIGN="0" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" FEATURES="inherit" CH="Contact: devs@obspy.org"/>
+                <para ALIGN="0" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit superscript" CH="4"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit" CH="EGU Executive Office"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" CH=" Munich"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" FEATURES="inherit superscript" CH="5"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="25" CH="Los Alamos National Lab"/>
+                <para ALIGN="1" LINESPMode="2"/>
+                <para ALIGN="0" LINESPMode="2"/>
+                <para ALIGN="0" LINESPMode="2"/>
+                <para ALIGN="0" LINESPMode="2"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="25" FEATURES="inherit" CH="                                                 "/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" FEATURES="inherit" CH="https://www.obspy.org"/>
+                <trail ALIGN="0" LINESPMode="2"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="140.00062992126" YPOS="1519.52881889764" OwnPage="0" ItemID="1167233335" PTYPE="4" WIDTH="908" HEIGHT="226.771653543307" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 226.772 L0 226.772 L0 0 Z" copath="M0 0 L908 0 L908 226.771 L0 226.771 L0 0 Z" gXpos="0" gYpos="0" gWidth="1275.55905463" gHeight="225.805826771654" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="Jupyter: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Web Notebooks and Interactive Console"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="•"/>
+                <tab/>
+                <ITEXT CH="Powerful interactive shells (terminal and Qt-based)"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT CH="•"/>
+                <tab/>
+                <ITEXT CH="A browser-based notebook with support for code, text, mathematical expressions, inline plots and other rich media. Recently featured in Nature."/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT CH="•"/>
+                <tab/>
+                <ITEXT CH="Easy to use, high performance tools for parallel computing"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1119.50062992126" YPOS="1520.66598425197" OwnPage="0" ItemID="1167230263" PTYPE="2" WIDTH="223" HEIGHT="223.031496062992" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.165185185185185" LOCALSCY="0.165185185185185" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="jupyter.png" IRENDER="0" EMBEDDED="0" path="M0 0 L223 0 L223 223.031 L0 223.031 L0 0 Z" copath="M0 0 L223 0 L223 223.031 L0 223.031 L0 0 Z" gXpos="979.5" gYpos="1.13716535433082" gWidth="1275.55905463" gHeight="225.805826771654" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="168.31559055126" YPOS="1744.83464566929" OwnPage="0" ItemID="1167222583" PTYPE="5" WIDTH="1247.244094" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="28.31496063" gYpos="225.305826771654" gWidth="1275.55905463" gHeight="225.805826771654" LAYER="0"/>
+        <PAGEOBJECT XPOS="168.315590551181" YPOS="1981.57606299213" OwnPage="0" ItemID="1167240503" PTYPE="5" WIDTH="1247.24409448819" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="0" gYpos="232.906771653544" gWidth="1275.6220472441" gHeight="233.406771653544" LAYER="0"/>
+        <PAGEOBJECT XPOS="535.937637795276" YPOS="1748.66929133858" OwnPage="0" ItemID="1167318327" PTYPE="4" WIDTH="908" HEIGHT="232.906771653544" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 232.907 L0 232.907 L0 0 Z" copath="M0 0 L908 0 L908 232.906 L0 232.906 L0 0 Z" gXpos="367.622047244095" gYpos="0" gWidth="1275.6220472441" gHeight="233.406771653544" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="NumPy: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Modern Array Processing"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="NumPy is the fun­da­ment­al pack­age needed for sci­entif­ic com­put­ing with Py­thon. Be­sides its ob­vi­ous sci­entif­ic uses, NumPy can also be used as an ef­fi­cient multi-di­men­sion­al con­tain­er of gen­er­ic data. Ar­bit­rary data-types can be defined. This al­lows NumPy to seam­lessly and speedily in­teg­rate with a wide variety of databases."/>
+                <trail PARENT="Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="238.807716532284" YPOS="1776.71468503937" OwnPage="0" ItemID="1167143223" PTYPE="2" WIDTH="177" HEIGHT="176.815984251973" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.124781922549028" LOCALSCY="0.124781922549028" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="numpylogoicon.png" IRENDER="0" EMBEDDED="0" path="M0 0 L177 0 L177 176.816 L0 176.816 L0 0 Z" copath="M0 0 L177 0 L177 176.816 L0 176.816 L0 0 Z" gXpos="70.492125981103" gYpos="2.45338582677186" gWidth="1275.6220472441" gHeight="233.406771653544" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="169.937637795276" YPOS="1767.111496063" OwnPage="0" ItemID="1150030135" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image1496" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="1.622047244095" gYpos="18.4422047244138" gWidth="1275.6220472441" gHeight="233.406771653544" LAYER="0"/>
+        <PAGEOBJECT XPOS="168.31559055126" YPOS="2215.50393700787" OwnPage="0" ItemID="1150027063" PTYPE="5" WIDTH="1247.244094" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="28.31496063" gYpos="230.093228346456" gWidth="1275.55905463" gHeight="230.593228346456" LAYER="0"/>
+        <PAGEOBJECT XPOS="140.00062992126" YPOS="1985.41070866142" OwnPage="0" ItemID="1150107447" PTYPE="4" WIDTH="908" HEIGHT="235.58929133858" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 235.589 L0 235.589 L0 0 Z" copath="M0 0 L908 0 L908 235.589 L0 235.589 L0 0 Z" gXpos="0" gYpos="0" gWidth="1275.55905463" gHeight="230.593228346456" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="SciPy: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Fundamental Library for Scientific Computing"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="SciPy is open-source software for mathematics, science, and engineering. The SciPy library is built to work with NumPy arrays, and provides many user-friendly and efficient numerical routines such as routines for numerical integration and optimization."/>
+                <trail PARENT="Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1127.00062992126" YPOS="2013.45732283465" OwnPage="0" ItemID="1150102327" PTYPE="2" WIDTH="186.228346456693" HEIGHT="174" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.344867308253135" LOCALSCY="0.344867308253135" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="scipy_logo.png" IRENDER="0" EMBEDDED="0" path="M0 0 L186.228 0 L186.228 174 L0 174 L0 0 Z" copath="M0 0 L186.228 0 L186.228 174 L0 174 L0 0 Z" gXpos="987" gYpos="18.1214174982283" gWidth="1275.55905463" gHeight="230.593228346456" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1048.00062992126" YPOS="2015.27685073229" OwnPage="0" ItemID="1166465335" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image1895" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="908" gYpos="29.8661420708702" gWidth="1275.55905463" gHeight="230.593228346456" LAYER="0"/>
+        <PAGEOBJECT XPOS="168.31559055126" YPOS="2399.40073490813" OwnPage="0" ItemID="1167292727" PTYPE="5" WIDTH="1247.244094" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="0" gYpos="177.227506561678" gWidth="1275.62204724402" gHeight="177.727506561678" LAYER="0"/>
+        <PAGEOBJECT XPOS="535.937637795276" YPOS="2222.17322834646" OwnPage="0" ItemID="1167140151" PTYPE="4" WIDTH="908" HEIGHT="177.227506561678" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 177.228 L0 177.228 L0 0 Z" copath="M0 0 L908 0 L908 177.227 L0 177.227 L0 0 Z" gXpos="367.622047244016" gYpos="0" gWidth="1275.62204724402" gHeight="177.727506561678" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="Mat­plot­lib: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Com­pre­hens­ive, high-qual­ity Plot­ting"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="2D and 3D plot­ting lib­rary for Py­thon that pro­duces high qual­ity fig­ures that"/>
+                <para PARENT="Ecosystem Contents" ALIGN="3"/>
+                <ITEXT CH="can be used in vari­ous hard­copy and in­ter­act­ive en­vir­on­ments."/>
+                <trail PARENT="Ecosystem Contents" ALIGN="3"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="187.839212595276" YPOS="2280.28698162729" OwnPage="0" ItemID="1167130935" PTYPE="2" WIDTH="330.1968504" HEIGHT="61" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.275164042" LOCALSCY="0.275164042" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="matplotlib_logo.png" IRENDER="0" EMBEDDED="0" path="M0 0 L330.197 0 L330.197 61 L0 61 L0 0 Z" copath="M0 0 L330.197 0 L330.197 61 L0 61 L0 0 Z" gXpos="19.523622044016" gYpos="58.1137532808389" gWidth="1275.62204724402" gHeight="177.727506561678" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="169.937637795276" YPOS="2267.61543307087" OwnPage="0" ItemID="1142956343" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image2294" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="1.62204724401602" gYpos="45.4422047244116" gWidth="1275.62204724402" gHeight="177.727506561678" LAYER="0"/>
+        <PAGEOBJECT XPOS="168.31559055126" YPOS="2633.89595732808" OwnPage="0" ItemID="1143057207" PTYPE="5" WIDTH="1247.244094" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="28.31496063" gYpos="233.495222419948" gWidth="1275.55905463" gHeight="233.995222419948" LAYER="0"/>
+        <PAGEOBJECT XPOS="140.00062992126" YPOS="2400.40073490813" OwnPage="0" ItemID="1143054135" PTYPE="4" WIDTH="908" HEIGHT="233.495222419948" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 233.495 L0 233.495 L0 0 Z" copath="M0 0 L908 0 L908 233.495 L0 233.495 L0 0 Z" gXpos="0" gYpos="0" gWidth="1275.55905463" gHeight="233.995222419948" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="SymPy: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Sym­bol­ic Math­em­at­ics"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="SymPy is a Py­thon lib­rary for sym­bol­ic math­em­at­ics. It aims to be­come a full-fea­tured com­puter al­gebra sys­tem (CAS) while keep­ing the code as simple as pos­sible in or­der to be com­pre­hens­ible and eas­ily ex­tens­ible. SymPy is writ­ten en­tirely in Py­thon and does not re­quire any ex­tern­al lib­rar­ies."/>
+                <trail PARENT="Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1111.90220452126" YPOS="2434.25265080544" OwnPage="0" ItemID="1143154487" PTYPE="2" WIDTH="238.1968508" HEIGHT="165.791390625329" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.1190984254" LOCALSCY="0.1190984254" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="Sympy_logo.svg.png" IRENDER="0" EMBEDDED="0" path="M0 0 L238.197 0 L238.197 165.791 L0 165.791 L0 0 Z" copath="M0 0 L238.197 0 L238.197 165.792 L0 165.792 L0 0 Z" gXpos="971.9015746" gYpos="33.8519158973095" gWidth="1275.55905463" gHeight="233.995222419948" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1048.00062992126" YPOS="2432.17448886614" OwnPage="0" ItemID="1162791735" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image2693" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="809.478212898061" gYpos="2289.05090518864" gWidth="3972" gHeight="2744" LAYER="0"/>
+        <PAGEOBJECT XPOS="535.937637795276" YPOS="2634.89595732808" OwnPage="0" ItemID="1158010167" PTYPE="4" WIDTH="908" HEIGHT="236.825931419948" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 236.826 L0 236.826 L0 0 Z" copath="M0 0 L908 0 L908 236.826 L0 236.826 L0 0 Z" gXpos="367.622047244016" gYpos="0" gWidth="1275.62204724402" gHeight="237.325931419948" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="pandas: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Data Structure &amp; Analysis"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="pandas is a Python package providing fast, flexible, and expressive data structures designed to make working with “relational” or “labeled” data both easy and intuitive. It aims to be the fundamental high-level building block for doing practical, real world data analysis in Python."/>
+                <trail PARENT="Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="187.83937007874" YPOS="2719.72980919333" OwnPage="0" ItemID="1162779959" PTYPE="2" WIDTH="330.196535433071" HEIGHT="67.1582276894511" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.471709336332959" LOCALSCY="0.471709336332959" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="pandas.png" IRENDER="0" EMBEDDED="0" path="M0 0 L330.197 0 L330.197 67.1582 L0 67.1582 L0 0 Z" copath="M0 0 L330.197 0 L330.197 67.1583 L0 67.1583 L0 0 Z" gXpos="19.52377952748" gYpos="84.8338518652486" gWidth="1275.62204724402" gHeight="237.325931419948" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="168.31559055126" YPOS="2871.72188874803" OwnPage="0" ItemID="1162776887" PTYPE="5" WIDTH="1247.244094" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" path="" gXpos="0" gYpos="236.825931419948" gWidth="1275.62204724402" gHeight="237.325931419948" LAYER="0"/>
+        <PAGEOBJECT XPOS="169.937637795276" YPOS="2667.50519718897" OwnPage="0" ItemID="1162801463" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image3091" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="26.6887176579005" gYpos="2508.94596259177" gWidth="3972" gHeight="2744" LAYER="0"/>
+        <PAGEOBJECT XPOS="2774.16023622047" YPOS="968.303306015319" OwnPage="0" ItemID="1162773815" PTYPE="2" WIDTH="399.538832233721" HEIGHT="348.000185409539" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" TEXTFLOWMODE="3" LOCALSCX="0.452991873280863" LOCALSCY="0.452991873280863" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="columns.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L399.539 0 L399.539 348 L0 348 L0 0 Z" copath="M-74.51 -15.9092 L442.5 -14.8941 L449.62 347.131 L-74.51 349.749 L-74.51 -15.9092 Z" gXpos="2323.27814286813" gYpos="804.658255729993" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1886.96829021372" YPOS="1361.41858267717" OwnPage="0" ItemID="1162764087" PTYPE="2" WIDTH="961.497750281216" HEIGHT="679" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1.14117647058824" LOCALSCY="1.14117647058824" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="obspy_workflow.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L961.498 0 L961.498 679 L0 679 L0 0 Z" copath="M0 0 L961.498 0 L961.498 679 L0 679 L0 0 Z" gXpos="1557.41438286811" gYpos="1185.42718246923" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1688.42383488881" YPOS="2221.64362204727" OwnPage="0" ItemID="1167309111" PTYPE="12" WIDTH="1358.58666093104" HEIGHT="339.90425196849" FRTYPE="0" CLIPEDIT="0" ANNAME="Group7" groupWidth="1358.58666093104" groupHeight="339.90425196849" groupClips="1" path="M0 0 L1358.59 0 L1358.59 339.904 L0 339.904 L0 0 Z" copath="M0 0 L1358.59 0 L1358.59 339.904 L0 339.904 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="1688.42383488881" YPOS="2221.64362204727" OwnPage="0" ItemID="1167301943" PTYPE="2" WIDTH="600.57616511119" HEIGHT="339.90425196849" RADRECT="5.66929133858268" FRTYPE="2" CLIPEDIT="0" PWIDTH="1" PCOLOR="Grey1" SHADE="40" PLINEART="1" LOCALSCX="1.37" LOCALSCY="1.37" LOCALX="-33.1053508822346" LOCALY="-33.1053508822346" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" Pagenumber="0" PFILE="example.py.pdf" IRENDER="0" EMBEDDED="0" path="M5.66929 0 L594.907 0 C598.038 0 600.576 2.53823 600.576 5.66929 L600.576 334.235 C600.576 337.366 598.038 339.904 594.907 339.904 L5.66929 339.904 C2.53823 339.904 0 337.366 0 334.235 L0 5.66929 C0 2.53823 2.53823 0 5.66929 0 Z" copath="M5.66929 0 L594.907 0 C598.038 0 600.576 2.53823 600.576 5.66929 L600.576 334.235 C600.576 337.366 598.038 339.904 594.907 339.904 L5.66929 339.904 C2.53823 339.904 0 337.366 0 334.235 L0 5.66929 C0 2.53823 2.53823 0 5.66929 0 Z" gXpos="0" gYpos="0" gWidth="1358.58666093104" gHeight="339.90425196849" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+            <PAGEOBJECT XPOS="2590.29294265685" YPOS="2242.59574803151" OwnPage="0" ItemID="1142406967" PTYPE="2" WIDTH="456.717553162998" HEIGHT="298" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1.01267750147006" LOCALSCY="1.01267750147006" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="obspy_example.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L456.718 0 L456.718 298 L0 298 L0 0 Z" copath="M0 0 L456.718 0 L456.718 298 L0 298 L0 0 Z" gXpos="901.86910776804" gYpos="20.95212598424" gWidth="1358.58666093104" gHeight="339.90425196849" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1646.31559055118" YPOS="2844.5" OwnPage="0" ItemID="1162768183" PTYPE="2" WIDTH="467.716535433071" HEIGHT="244.347231995181" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.203622693329318" LOCALSCY="0.203622693329318" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="time_frequency_misfit_ex1.hires.png" IRENDER="0" EMBEDDED="0" path="M0 0 L467.717 0 L467.717 244.347 L0 244.347 L0 0 Z" copath="M0 0 L467.717 0 L467.717 244.348 L0 244.348 L0 0 Z" gXpos="1325.72523777764" gYpos="2530.78294799152" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2820" YPOS="2802.76503937007" OwnPage="0" ItemID="1166397239" PTYPE="2" WIDTH="269.276220472436" HEIGHT="268" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="fk" LOCALSCX="0.1675" LOCALSCY="0.1675" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="beamforming_fk_analysis_2.hires.png" IRENDER="0" EMBEDDED="0" path="M0 0 L269.276 0 L269.276 268 L0 268 L0 0 Z" copath="M0 0 L269.276 0 L269.276 268 L0 268 L0 0 Z" gXpos="2384.11456032909" gYpos="2424.54534385075" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1646.15811023622" YPOS="2604.39483375133" OwnPage="0" ItemID="1142401847" PTYPE="2" WIDTH="467.716535433071" HEIGHT="243.850295939403" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.19488188976378" LOCALSCY="0.19488188976378" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="GCMT_Catalog_1976-2010.png" IRENDER="0" EMBEDDED="0" path="M0 0 L467.717 0 L467.717 243.85 L0 243.85 L0 0 Z" copath="M0 0 L467.717 0 L467.717 243.85 L0 243.85 L0 0 Z" gXpos="1342.73311179339" gYpos="2253.05558427957" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2113.87464566929" YPOS="2604.39483375133" OwnPage="0" ItemID="1162756919" PTYPE="2" WIDTH="325.133858267717" HEIGHT="243.850393700787" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.0677362204724408" LOCALSCY="0.0677362204724408" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="ppsd.png" IRENDER="0" EMBEDDED="0" path="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" copath="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" gXpos="1759.70045237184" gYpos="2253.05558427957" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2439.00850393701" YPOS="2604.39483375133" OwnPage="0" ItemID="1141257527" PTYPE="2" WIDTH="325.133858267717" HEIGHT="243.850393700787" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.0677362204724408" LOCALSCY="0.0677362204724408" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="cumpsd.png" IRENDER="0" EMBEDDED="0" path="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" copath="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" gXpos="2049.55593094366" gYpos="2253.05558427957" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2764.14236220472" YPOS="2604.39483375133" OwnPage="0" ItemID="1143099191" PTYPE="2" WIDTH="325.133858267717" HEIGHT="243.850393700787" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.203208661417322" LOCALSCY="0.203208661417322" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="obspy-station-inventory-Inventory-plot_response-1.hires.png" IRENDER="0" EMBEDDED="0" path="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" copath="M0 0 L325.134 0 L325.134 243.85 L0 243.85 L0 0 Z" gXpos="2339.41140951546" gYpos="2253.05558427957" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1562.6764701034" YPOS="2584.68629887401" OwnPage="0" ItemID="1162751799" PTYPE="5" WIDTH="1615.75065898124" HEIGHT="1" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PCOLOR2="Black" PLINEART="1" ANNAME="Copy of Example Line" path="" gXpos="1243.0259722988" gYpos="2220.32448585849" gWidth="3972" gHeight="2744" LAYER="0"/>
+        <PAGEOBJECT XPOS="4065.0982530568" YPOS="652.412751643218" OwnPage="0" ItemID="1162836279" PTYPE="2" WIDTH="499.894128943893" HEIGHT="189.63575229379" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" TEXTFLOWMODE="3" LOCALSCX="0.38572077850609" LOCALSCY="0.38572077850609" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="all_stats.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L499.894 0 L499.894 189.636 L0 189.636 L0 0 Z" copath="M-24.0617 -18.3351 L523.927 -18.3351 L523.927 207.868 L-24.0617 207.868 L-24.0617 -18.3351 Z" gXpos="1.0982530567976" gYpos="504.319029146607" gWidth="500.992382000691" gHeight="726" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="4064" YPOS="215.73755865707" OwnPage="0" ItemID="1141252407" PTYPE="2" WIDTH="499.894128943893" HEIGHT="350.26244134293" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" TEXTFLOWMODE="3" LOCALSCX="0.694297401310963" LOCALSCY="0.694297401310963" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="obspy-deb.1.0.2-1.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L499.894 0 L499.894 350.262 L0 350.262 L0 0 Z" copath="M-24.0617 -25.2585 L523.927 -25.2585 L513 511.58 L-23 533.583 L-24.0617 -25.2585 Z" gXpos="0" gYpos="0" gWidth="500.992382000691" gHeight="726" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3291.4966927874" YPOS="2921.33858267716" OwnPage="0" ItemID="1143208759" PTYPE="4" WIDTH="1303.937008" HEIGHT="196.930393700788" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="8" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="0" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 196.93 L0 196.93 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 196.93 L0 196.93 L0 0 Z" gXpos="2809.54559573145" gYpos="2547.12156004642" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONTSIZE="16" CH="• Ammon, Charles J."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Antunes, Emanuel"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Arnarsson, Ólafur St."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Bank, Markus"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Barsch, Robert"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Behr, Yannik"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Bernardi, Fabrizio"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Bernauer, Felix"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Beyreuther, Moritz"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Bonaimé, Sébastien"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Carothers, Lloyd"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Chamberlain, Calum"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Danecek, Peter"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• van Driel, Martin"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Egdorf, Sven"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Engels, Fabian"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Ermert, Laura"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Eulenfeld, Tom"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Fabbri, Tommaso"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Falco, Nicholas"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Fee, Jeremy"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Grellier, Clément"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Grunberg, Marc"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Hammer, Conny"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Heimann, Sebastian"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Heiniger, Lukas"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Hope, Gaute"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Igel, Heiner"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Inza, Adolfo"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Isken, Marius"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Ketchum, David"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Koymans, Mathijs"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Kremers, Simon"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Kress, Victor"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Krieger, Lars"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Krischer, Lion"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Käufl, Paul"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Köhler, Andreas"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Lecocq, Thomas"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Leeman, John"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Lesage, Philippe"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Lomax, Anthony"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Lopes, Rui L."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• MacCarthy, Jonathan"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Maggi, Alessia"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Martin, Henri"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Megies, Tobias"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Meschede, Matthias"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Michelini, Alberto"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Miller, Nathaniel C."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Morgenstern, Bernhard"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Nof, Ran Novitsky"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Panning, Mark P."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Rapagnani, Giovanni"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Reyes, Celso"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Ringler, Adam"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Rothenhäusler, Nicolas"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Russo, Emiliano"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Sales de Andrade, Elliott"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Satriano, Claudio"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Saul, Joachim"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Scheingraber, Chris"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Sippl, Christian"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Snoke, Arthur"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Stange, Stefan"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Sullivan, Benjamin"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Trabant, Chad"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Uieda, Leonardo"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Walker, Andrew"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Walther, Marcus"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Wassermann, Joachim"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Williams, Mark C."/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Winkelman, Andrew"/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="• Zad, Seyed Kasra "/>
+                <para PARENT="Contributors"/>
+                <ITEXT FONTSIZE="16" CH="   Hosseini"/>
+                <trail PARENT="Contributors"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3291.4966927874" YPOS="2426.61543307087" OwnPage="0" ItemID="1166757175" PTYPE="4" WIDTH="1303.937008" HEIGHT="514.384566929133" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="0" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 514.385 L0 514.385 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 514.384 L0 514.384 L0 0 Z" gXpos="2809.54559573145" gYpos="2103.40323688042" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT CPARENT="Subtitle" CH="thank you"/>
+                <para PARENT="Subtitle"/>
+                <ITEXT CPARENT="Title" CH="Ref­er­ences and Con­trib­ut­ors"/>
+                <para PARENT="Title"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="20" FEATURES="inherit smallcaps" SCALEH="100" KERN="0" CH="Beyreuth­er, M., R. Barsch, L. Krischer, T. Megies, Y. Behr and J. Wasser­mann (2010)"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="20" SCALEH="100" KERN="0" CH="Ob­sPy: A Py­thon Tool­box for Seis­mo­logy"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Regular" FONTSIZE="20" SCALEH="100" KERN="0" CH="Seis­mo­lo­gic­al Re­search Let­ters, 81(3):530-533, doi:10.1785/gss­rl.81.3.530"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <para LINESPMode="1"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="20" FEATURES="inherit smallcaps" SCALEH="100" KERN="0" CH="Megies, T., M. Beyreuth­er, R. Barsch, L. Krischer and J. Wasser­mann (2011)"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="20" SCALEH="100" KERN="0" CH="Ob­sPy – What can it do for data cen­ters and ob­ser­vat­or­ies?"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Regular" FONTSIZE="20" SCALEH="100" KERN="0" CH="An­nals Of Geo­phys­ics, 54(1), 47-58, doi:10.4401/ag-4838"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <para LINESPMode="1"/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="20" FEATURES="inherit smallcaps" SCALEH="100" KERN="0" CH="Krischer, L., T. Megies, R. Barsch, M. Beyreuth­er, T. Le­cocq, C. Caudron and J. Wasser­mann (2015)"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="20" SCALEH="100" KERN="0" CH="Ob­sPy: A Bridge for Seis­mo­logy in­to the Sci­entif­ic Py­thon Eco­sys­tem"/>
+                <para ALIGN="0" LINESPMode="0" LINESP="22"/>
+                <ITEXT FONT="Helvetica Regular" FONTSIZE="20" SCALEH="100" KERN="0" CH="Com­pu­ta­tion­al Sci­ence &amp; Dis­cov­ery, 8, doi:10.1088/1749-4699/8/1/014003"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <para LINESPMode="0" LINESP="22"/>
+                <ITEXT FONTSIZE="30" CH="We would like to thank our con­trib­ut­ors, whose ef­forts make this soft­ware what it is. These people have helped by writ­ing code and doc­u­ment­a­tion, and by test­ing. They have cre­ated and main­tained this product, its as­so­ci­ated lib­rar­ies and ap­plic­a­tions, our build tools and our web sites."/>
+                <trail PARENT="Contents" LINESPMode="2"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3292.49669292126" YPOS="2002.58393700787" OwnPage="0" ItemID="1167306039" PTYPE="4" WIDTH="1303.937008" HEIGHT="404.416062992126" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 404.416 L0 404.416 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 404.416 L0 404.416 L0 0 Z" gXpos="2809.54559585079" gYpos="1738.90588141398" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT CPARENT="Subtitle" CH="obspy's online resources"/>
+                <para LINESPMode="1"/>
+                <ITEXT CPARENT="Title" CH="Where Can I Learn More?"/>
+                <para LINESPMode="1"/>
+                <para LINESPMode="1"/>
+                <ITEXT FONTSIZE="38" CH="•"/>
+                <ITEXT FONTSIZE="35" CH=" Source Code, Bug Tracker, and Wiki"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT FONTSIZE="35" CH="• Extensive documentation and example gallery"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT FONTSIZE="35" CH="• Tutorial on how to get started"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT FONTSIZE="35" CH="•"/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="35" CH=" [obspy-users]"/>
+                <ITEXT FONTSIZE="35" CH=" mailing list"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT FONTSIZE="35" CH="• Installation instructions for various platforms"/>
+                <para PARENT="Bulleted Ecosystem Contents"/>
+                <ITEXT FONTSIZE="35" CH="• Use cases and user application showcases"/>
+                <trail PARENT="Bulleted Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="4315.33477120785" YPOS="2018.41858267717" OwnPage="0" ItemID="1167359799" PTYPE="2" WIDTH="266.255571237558" HEIGHT="268.791338582677" FRTYPE="0" CLIPEDIT="1" PWIDTH="226.771653543307" PLINEART="1" LOCALSCX="0.232944506769517" LOCALSCY="0.232944506769517" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="website.png" IRENDER="0" EMBEDDED="0" path="M0 0 L266.256 0 L266.256 268.791 L0 268.791 L0 0 Z" copath="M0 0 L266.256 0 L266.256 268.791 L0 268.791 L0 0 Z" gXpos="3689.93633524896" gYpos="1762.6917543147" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="4082.87401574803" YPOS="2207.52094488189" OwnPage="0" ItemID="1162616631" PTYPE="4" WIDTH="200.00125984252" HEIGHT="37.677165354331" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L200.001 0 L200.001 37.6772 L0 37.6772 L0 0 Z" copath="M0 0 L200.001 0 L200.001 37.6772 L0 37.6772 L0 0 Z" gXpos="3487.25735575554" gYpos="1922.00227361329" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Apple Garamond Bold" FONTSIZE="31" CH="https://obspy.org"/>
+                <trail ALIGN="1"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="4157.70929133859" YPOS="2270.84377952756" OwnPage="0" ItemID="1162611511" PTYPE="12" WIDTH="384.976377952756" HEIGHT="85.8346456692911" FRTYPE="0" CLIPEDIT="1" ANNAME="Group6" groupWidth="384.976377952756" groupHeight="85.8346456692911" groupClips="1" path="M0 0 L384.976 0 L384.976 85.8346 L0 85.8346 L0 0 Z" copath="M0 0 L384.976 0 L384.976 85.8346 L0 85.8346 L0 0 Z" gXpos="3553.97269182027" gYpos="1978.45185557337" gWidth="3972" gHeight="2744" LAYER="0">
+            <PAGEOBJECT XPOS="4213.68566929134" YPOS="2279.67842519685" OwnPage="0" ItemID="1162831159" PTYPE="4" WIDTH="329" HEIGHT="76" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L329 0 L329 76 L0 76 L0 0 Z" copath="M0 0 L329 0 L329 76 L0 76 L0 0 Z" gXpos="55.9763779527493" gYpos="8.83464566929024" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+                <StoryText>
+                    <DefaultStyle/>
+                    <ITEXT FONT="Apple Garamond Bold" FONTSIZE="22" CH="@obspy"/>
+                    <para/>
+                    <para/>
+                    <para/>
+                    <ITEXT FONT="Apple Garamond Bold" FONTSIZE="22" CH="https://github.com/obspy/obspy"/>
+                    <trail/>
+                </StoryText>
+            </PAGEOBJECT>
+            <PAGEOBJECT XPOS="4157.70929133859" YPOS="2270.84377952756" OwnPage="0" ItemID="1162826039" PTYPE="2" WIDTH="43.9763779527557" HEIGHT="42" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.0386096382377135" LOCALSCY="0.0386096382377135" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="Twitter_logo_blue.png" IRENDER="0" EMBEDDED="0" path="M0 0 L43.9764 0 L43.9764 42 L0 42 L0 0 Z" copath="M0 0 L43.9764 0 L43.9764 42 L0 42 L0 0 Z" gXpos="0" gYpos="0" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+            <PAGEOBJECT XPOS="4157.70929133996" YPOS="2314.67842519685" OwnPage="0" ItemID="1143170871" PTYPE="2" WIDTH="43.97637795" HEIGHT="42" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.075" LOCALSCY="0.075" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="GitHub-Mark.png" IRENDER="0" EMBEDDED="0" path="M0 0 L43.9764 0 L43.9764 42 L0 42 L0 0 Z" copath="M0 0 L43.9764 0 L43.9764 42 L0 42 L0 0 Z" gXpos="1.36969902087003e-09" gYpos="43.8346456692902" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="2303.94551183465" YPOS="796.331968503937" OwnPage="0" ItemID="1143165751" PTYPE="4" WIDTH="180.582677165355" HEIGHT="55.0393700787403" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" LOCK="1" LOCKR="1" path="M0 0 L180.583 0 L180.583 55.0394 L0 55.0394 L0 0 Z" copath="M0 0 L180.583 0 L180.583 55.0394 L0 55.0394 L0 0 Z" gXpos="56.0472441417296" gYpos="10.834646" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Neue Italic" FONTSIZE="40" CH="@obspy"/>
+                <para/>
+                <para/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="2247.89826769292" YPOS="785.497322503937" OwnPage="0" ItemID="1143162679" PTYPE="2" WIDTH="59.8031496535418" HEIGHT="57" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.0525049601874818" LOCALSCY="0.0525049601874818" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="Twitter_logo_blue.png" IRENDER="0" EMBEDDED="0" LOCK="1" LOCKR="1" path="M0 0 L59.8031 0 L59.8031 57 L0 57 L0 0 Z" copath="M0 0 L59.8031 0 L59.8031 57 L0 57 L0 0 Z" gXpos="0" gYpos="0" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3291.4966927874" YPOS="1434.01452755905" OwnPage="0" ItemID="1143244087" PTYPE="4" WIDTH="1303.937008" HEIGHT="242.468412073491" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="28.3464566929134" BEXTRA="0" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 242.468 L0 242.468 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 242.468 L0 242.468 L0 0 Z" gXpos="2809.54559573145" gYpos="1260.08494839289" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT CPARENT="Subtitle" CH="recent developments"/>
+                <para LINESPMode="1"/>
+                <ITEXT CPARENT="Title" CH="What's New?"/>
+                <para LINESPMode="1"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3291.49669292126" YPOS="1550.70992125984" OwnPage="0" ItemID="1143238967" PTYPE="4" WIDTH="1303.937008" HEIGHT="426.29007874016" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.3464566929134" TEXTRA="0" BEXTRA="28.3464566929134" REXTRA="28.3464566929134" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1303.94 0 L1303.94 426.29 L0 426.29 L0 0 Z" copath="M0 0 L1303.94 0 L1303.94 426.291 L0 426.291 L0 0 Z" gXpos="2809.54559585079" gYpos="1371.06081148144" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Support all active Python versions (2.7 – 3.5)"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• New formats: Guralp Compressed Format (GCF), Reftek 130 (rt130), Nordic format (s-file),"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="    GSE2.0 bulletin, NNSA KB Core"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Quality control module (on its way to being standardized)"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Much improved io.sac module (including a SACTrace class for full header control)"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Iterative reading of arbitrarily large SEG-Y and SU files"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Mass downloader for FDSN web services and SDS file system client"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Tested support for essentially all common Linux distributions"/>
+                <para PARENT="Default Paragraph Style" LINESPMode="2"/>
+                <ITEXT FONT="Apple Garamond Regular" FONTSIZE="37" CH="• Several hundred bugfixes, stability improvements and other small enhancements"/>
+                <trail PARENT="Default Paragraph Style" LINESPMode="2"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="140.00062992126" YPOS="2872.72188874803" OwnPage="0" ItemID="1143096119" PTYPE="4" WIDTH="908" HEIGHT="233.4952224" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L908 0 L908 233.495 L0 233.495 L0 0 Z" copath="M0 0 L908 0 L908 233.495 L0 233.495 L0 0 Z" gXpos="0" gYpos="0" gWidth="1210.0984258" gHeight="233.4952224" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Helvetica Bold" FONTSIZE="35" CH="scikit-learn: "/>
+                <ITEXT FONT="Helvetica Light" FONTSIZE="35" CH="Machine Learning in Python"/>
+                <para ALIGN="3" LINESPMode="2" LINESP="40"/>
+                <para ALIGN="3" LINESPMode="1" LINESP="40"/>
+                <ITEXT CH="Simple and efficient tools for data mining and data analysis. Includes classification, regression, clustering, dimensionality reduction, model selection, preprocessing and feature extraction, and a lot more."/>
+                <trail PARENT="Ecosystem Contents"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1111.90220492126" YPOS="2883.68209814803" OwnPage="0" ItemID="1143090999" PTYPE="2" WIDTH="238.1968508" HEIGHT="211.5748036" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.130091125505188" LOCALSCY="0.130091125505188" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="sklearn-logo.png" IRENDER="0" EMBEDDED="0" path="M0 0 L238.197 0 L238.197 211.575 L0 211.575 L0 0 Z" copath="M0 0 L238.197 0 L238.197 211.575 L0 211.575 L0 0 Z" gXpos="971.901575" gYpos="10.9602094000002" gWidth="1210.0984258" gHeight="233.4952224" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="1048.00062992126" YPOS="2902.72566963779" OwnPage="0" ItemID="1143085879" PTYPE="6" WIDTH="366" HEIGHT="22" FRTYPE="3" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Image8892" path="M0 0 L366 0 L366 22 L0 22 L0 0 Z" copath="M0 0 L366 0 L366 22 L0 22 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0"/>
+        <PAGEOBJECT XPOS="2999" YPOS="2108.76503937007" OwnPage="0" ItemID="1143235895" PTYPE="2" WIDTH="230.645736954326" HEIGHT="230" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" SHADE="0" PLINEART="1" ANNAME="Beachballs" LOCALSCX="0.153333333333333" LOCALSCY="0.153333333333333" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="image5.png" IRENDER="0" EMBEDDED="0" path="M0 0 L230.646 0 L230.646 230 L0 230 L0 0 Z" copath="M0 0 L230.646 0 L230.646 230 L0 230 L0 0 Z" gXpos="1997.17578749091" gYpos="2437.91719831903" gWidth="3972" gHeight="2744" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="100.00062992126" YPOS="20.0012598425197" OwnPage="0" ItemID="1150221623" PTYPE="6" WIDTH="4535.43307086614" HEIGHT="3117.61023622047" FRTYPE="0" CLIPEDIT="0" GRTYP="6" PWIDTH="1" PLINEART="1" path="M0 0 L4535.43 0 L4535.43 3117.61 L0 3117.61 L0 0 Z" copath="M0 0 L4535.43 0 L4535.43 3117.61 L0 3117.61 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" GRSTARTX="0" GRSTARTY="3117.61023622047" GRENDX="4535.43307086614" GRENDY="0" GRFOCALX="0" GRFOCALY="3117.61023622047" GRSCALE="1" GRSKEW="0" GRExt="3" LAYER="1">
+            <CSTOP RAMP="0" NAME="Grey1" SHADE="100" TRANS="0.2"/>
+            <CSTOP RAMP="1" NAME="Grey2" SHADE="100" TRANS="0.2"/>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="1503.15023592126" YPOS="2109.13511811024" OwnPage="0" ItemID="1162687799" PTYPE="4" WIDTH="1729.133858" HEIGHT="562.864881889764" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="28.34645669" TEXTRA="28.34645669" BEXTRA="28.34645669" REXTRA="28.34645669" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L1729.13 0 L1729.13 562.865 L0 562.865 L0 0 Z" copath="M0 0 L1729.13 0 L1729.13 562.865 L0 562.865 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONTSIZE="50" CH="Basic Example"/>
+                <trail PARENT="Title"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="3322.31035433071" YPOS="1173.36761811024" OwnPage="0" ItemID="1162680631" PTYPE="2" WIDTH="297.637795275591" HEIGHT="163.68531496063" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.537252338042583" LOCALSCY="0.537252338042583" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="EQcorrscan_logo.pdf" IRENDER="0" EMBEDDED="0" path="M0 0 L297.638 0 L297.638 163.685 L0 163.685 L0 0 Z" copath="M0 0 L297.638 0 L297.638 163.685 L0 163.685 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3644.52" YPOS="1137.57248031496" OwnPage="0" ItemID="1143330103" PTYPE="2" WIDTH="297.637795275591" HEIGHT="235.275590551181" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.122686642735198" LOCALSCY="0.122686642735198" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="msnoise.png" IRENDER="0" EMBEDDED="0" path="M0 0 L297.638 0 L297.638 235.276 L0 235.276 L0 0 Z" copath="M0 0 L297.638 0 L297.638 235.276 L0 235.276 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3966.72964566929" YPOS="1137.57248031496" OwnPage="0" ItemID="1167340343" PTYPE="2" WIDTH="297.637795275591" HEIGHT="109.328490813649" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.099212598425197" LOCALSCY="0.099212598425197" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="471199867225.tiff" PRFILE="Embedded Generic RGB Profile" EPROF="Embedded Generic RGB Profile" IRENDER="0" path="M0 0 L297.638 0 L297.638 109.328 L0 109.328 L0 0 Z" copath="M0 0 L297.638 0 L297.638 109.328 L0 109.328 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3985.87399606299" YPOS="1253.34807086614" OwnPage="0" ItemID="1162677559" PTYPE="2" WIDTH="259.349094488189" HEIGHT="119.5" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.668425501258219" LOCALSCY="0.668425501258219" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="471200411112.tiff" PRFILE="Embedded Generic RGB Profile" EPROF="Embedded Generic RGB Profile" IRENDER="0" path="M0 0 L259.349 0 L259.349 119.5 L0 119.5 L0 0 Z" copath="M0 0 L259.349 0 L259.349 119.5 L0 119.5 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="4307.5" YPOS="1137.57248031496" OwnPage="0" ItemID="1162919223" PTYPE="2" WIDTH="260.516377952756" HEIGHT="235.275590551181" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.156850393700787" LOCALSCY="0.156850393700787" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="pyasdf_logo.png" IRENDER="0" EMBEDDED="0" path="M0 0 L260.516 0 L260.516 235.276 L0 235.276 L0 0 Z" copath="M0 0 L260.516 0 L260.516 235.276 L0 235.276 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="3687.5" YPOS="1288.75" OwnPage="0" ItemID="1162899767" PTYPE="4" WIDTH="218.75" HEIGHT="77.7079527559056" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L218.75 0 L218.75 77.708 L0 77.708 L0 0 Z" copath="M0 0 L218.75 0 L218.75 77.708 L0 77.708 L0 0 Z" gXpos="0" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+            <StoryText>
+                <DefaultStyle/>
+                <ITEXT FONT="Heiti TC Medium" FONTSIZE="40" FCOLOR="Grey2" FSHADE="100" CH="MSNoise"/>
+                <trail ALIGN="1"/>
+            </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="2282.20665353544" YPOS="2842.50507006299" OwnPage="0" ItemID="1162894647" PTYPE="2" WIDTH="264.564330724411" HEIGHT="243.8503937" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" LOCALSCX="0.12192519685" LOCALSCY="0.12192519685" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="ttimes.png" IRENDER="0" EMBEDDED="0" path="M0 0 L264.564 0 L264.564 243.85 L0 243.85 L0 0 Z" copath="M0 0 L264.564 0 L264.564 243.85 L0 243.85 L0 0 Z" gXpos="-187.086614173228" gYpos="0" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2575.07874015749" YPOS="2844.83464566929" OwnPage="0" ItemID="1143324983" PTYPE="2" WIDTH="250.488818897625" HEIGHT="244" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.313111023622031" LOCALSCY="0.313111023622031" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="fancy_beachball.png" IRENDER="0" EMBEDDED="0" path="M0 0 L250.489 0 L250.489 244 L0 244 L0 0 Z" copath="M0 0 L250.489 0 L250.489 244 L0 244 L0 0 Z" gXpos="2575.07874015749" gYpos="2844.83464566929" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="2014.68503937008" YPOS="2843.83464566929" OwnPage="0" ItemID="1162916151" PTYPE="2" WIDTH="238" HEIGHT="245" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="0.250255362614913" LOCALSCY="0.250255362614913" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="0" RATIO="1" Pagenumber="0" PFILE="fancy_raypaths.png" IRENDER="0" EMBEDDED="0" path="M0 0 L238 0 L238 245 L0 245 L0 0 Z" copath="M0 0 L238 0 L238 245 L0 245 L0 0 Z" gXpos="2014.68503937008" gYpos="2843.83464566929" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1"/>
+        <PAGEOBJECT XPOS="4102.21322834646" YPOS="2035" OwnPage="0" ItemID="1164287799" PTYPE="12" WIDTH="160" HEIGHT="160" FRTYPE="0" CLIPEDIT="0" ANNAME="Copy of Group6" groupWidth="160" groupHeight="160" groupClips="1" path="M0 0 L160 0 L160 160 L0 160 L0 0 Z" copath="M0 0 L160 0 L160 160 L0 160 L0 0 Z" gXpos="4102.21322834646" gYpos="2035" gWidth="0" gHeight="0" LAYER="0">
+            <PAGEOBJECT XPOS="112.80062992126" YPOS="32.8012598425197" OwnPage="0" ItemID="1163254071" PTYPE="12" WIDTH="134.4" HEIGHT="134.4" FRTYPE="0" CLIPEDIT="0" ANNAME="layer1" groupWidth="134.4" groupHeight="134.4" groupClips="1" path="M0 0 L134.4 0 L134.4 134.4 L0 134.4 L0 0 Z" copath="M0 0 L1 0 L1 1 L0 1 L0 0 Z" gXpos="12.8" gYpos="12.8" gWidth="160" gHeight="160" LAYER="0">
+                <PAGEOBJECT XPOS="112.80062992126" YPOS="122.40125984252" OwnPage="0" ItemID="1150669111" PTYPE="7" WIDTH="44.8" HEIGHT="44.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 22.4 L0 0 L22.4 0 L44.8 0 L44.8 22.4 L44.8 44.8 L22.4 44.8 L0 44.8 L0 22.4 M38.4 22.4 L38.4 6.4 L22.4 6.4 L6.4 6.4 L6.4 22.4 L6.4 38.4 L22.4 38.4 L38.4 38.4 L38.4 22.4 " fillRule="0" gXpos="0" gYpos="89.6" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="125.60062992126" YPOS="135.20125984252" OwnPage="0" ItemID="1163054903" PTYPE="6" WIDTH="19.2" HEIGHT="19.2" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 9.6 L0 0 L9.6 0 L19.2 0 L19.2 9.6 L19.2 19.2 L9.6 19.2 L0 19.2 L0 9.6 Z" fillRule="0" gXpos="12.8" gYpos="102.4" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="112.80062992126" YPOS="32.8012598425197" OwnPage="0" ItemID="1162743607" PTYPE="7" WIDTH="134.4" HEIGHT="134.4" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M51.2 124.8 L51.2 115.2 L54.4 115.2 L57.6 115.2 L57.6 112 L57.6 108.8 L54.4 108.8 L51.2 108.8 L51.2 96 L51.2 83.2 L57.6 83.2 L64 83.2 L64 80 L64 76.8 L67.2 76.8 L70.4 76.8 L70.4 80 L70.4 83.2 L67.2 83.2 L64 83.2 L64 86.4 L64 89.6 L70.4 89.6 L76.8 89.6 L76.8 86.4 L76.8 83.2 L80 83.2 L83.2 83.2 L83.2 86.4 L83.2 89.6 L86.4 89.6 L89.6 89.6 L89.6 86.4 L89.6 83.2 L92.8 83.2 L96 83.2 L96 80 L96 76.8 L99.2 76.8 L102.4 76.8 L102.4 70.4 L102.4 64 L96 64 L89.6 64 L89.6 67.2 L89.6 70.4 L83.2 70.4 L76.8 70.4 L76.8 67.2 L76.8 64 L70.4 64 L64 64 L64 67.2 L64 70.4 L60.8 70.4 L57.6 70.4 L57.6 73.6 L57.6 76.8 L54.4 76.8 L51.2 76.8 L51.2 73.6 L51.2 70.4 L38.4 70.4 L25.6 70.4 L25.6 73.6 L25.6 76.8 L35.2 76.8 L44.8 76.8 L44.8 80 L44.8 83.2 L28.8 83.2 L12.8 83.2 L12.8 80 L12.8 76.8 L16 76.8 L19.2 76.8 L19.2 73.6 L19.2 70.4 L12.8 70.4 L6.4 70.4 L6.4 67.2 L6.4 64 L3.2 64 L0 64 L0 57.6 L0 51.2 L9.6 51.2 L19.2 51.2 L19.2 54.4 L19.2 57.6 L22.4 57.6 L25.6 57.6 L25.6 54.4 L25.6 51.2 L38.4 51.2 L51.2 51.2 L51.2 44.8 L51.2 38.4 L54.4 38.4 L57.6 38.4 L57.6 41.6 L57.6 44.8 L60.8 44.8 L64 44.8 L64 38.4 L64 32 L60.8 32 L57.6 32 L57.6 25.6 L57.6 19.2 L54.4 19.2 L51.2 19.2 L51.2 16 L51.2 12.8 L54.4 12.8 L57.6 12.8 L57.6 9.6 L57.6 6.4 L60.8 6.4 L64 6.4 L64 3.2 L64 0 L70.4 0 L76.8 0 L76.8 3.2 L76.8 6.4 L73.6 6.4 L70.4 6.4 L70.4 9.6 L70.4 12.8 L73.6 12.8 L76.8 12.8 L76.8 16 L76.8 19.2 L80 19.2 L83.2 19.2 L83.2 22.4 L83.2 25.6 L80 25.6 L76.8 25.6 L76.8 22.4 L76.8 19.2 L73.6 19.2 L70.4 19.2 L70.4 32 L70.4 44.8 L73.6 44.8 L76.8 44.8 L76.8 41.6 L76.8 38.4 L80 38.4 L83.2 38.4 L83.2 44.8 L83.2 51.2 L89.6 51.2 L96 51.2 L96 54.4 L96 57.6 L102.4 57.6 L108.8 57.6 L108.8 67.2 L108.8 76.8 L112 76.8 L115.2 76.8 L115.2 80 L115.2 83.2 L112 83.2 L108.8 83.2 L108.8 92.8 L108.8 102.4 L112 102.4 L115.2 102.4 L115.2 108.8 L115.2 115.2 L118.4 115.2 L121.6 115.2 L121.6 118.4 L121.6 121.6 L124.8 121.6 L128 121.6 L128 118.4 L128 115.2 L131.2 115.2 L134.4 115.2 L134.4 118.4 L134.4 121.6 L131.2 121.6 L128 121.6 L128 124.8 L128 128 L131.2 128 L134.4 128 L134.4 131.2 L134.4 134.4 L128 134.4 L121.6 134.4 L121.6 128 L121.6 121.6 L118.4 121.6 L115.2 121.6 L115.2 118.4 L115.2 115.2 L112 115.2 L108.8 115.2 L108.8 121.6 L108.8 128 L112 128 L115.2 128 L115.2 131.2 L115.2 134.4 L108.8 134.4 L102.4 134.4 L102.4 121.6 L102.4 108.8 L105.6 108.8 L108.8 108.8 L108.8 105.6 L108.8 102.4 L102.4 102.4 L96 102.4 L96 99.2 L96 96 L99.2 96 L102.4 96 L102.4 92.8 L102.4 89.6 L96 89.6 L89.6 89.6 L89.6 92.8 L89.6 96 L83.2 96 L76.8 96 L76.8 99.2 L76.8 102.4 L80 102.4 L83.2 102.4 L83.2 105.6 L83.2 108.8 L86.4 108.8 L89.6 108.8 L89.6 112 L89.6 115.2 L86.4 115.2 L83.2 115.2 L83.2 121.6 L83.2 128 L86.4 128 L89.6 128 L89.6 131.2 L89.6 134.4 L83.2 134.4 L76.8 134.4 L76.8 128 L76.8 121.6 L73.6 121.6 L70.4 121.6 L70.4 128 L70.4 134.4 L67.2 134.4 L64 134.4 L64 128 L64 121.6 L60.8 121.6 L57.6 121.6 L57.6 128 L57.6 134.4 L54.4 134.4 L51.2 134.4 L51.2 124.8 M70.4 118.4 L70.4 115.2 L73.6 115.2 L76.8 115.2 L76.8 108.8 L76.8 102.4 L73.6 102.4 L70.4 102.4 L70.4 99.2 L70.4 96 L67.2 96 L64 96 L64 102.4 L64 108.8 L67.2 108.8 L70.4 108.8 L70.4 112 L70.4 115.2 L67.2 115.2 L64 115.2 L64 118.4 L64 121.6 L67.2 121.6 L70.4 121.6 L70.4 118.4 M108.8 80 L108.8 76.8 L105.6 76.8 L102.4 76.8 L102.4 80 L102.4 83.2 L105.6 83.2 L108.8 83.2 L108.8 80 M19.2 60.8 L19.2 57.6 L16 57.6 L12.8 57.6 L12.8 60.8 L12.8 64 L16 64 L19.2 64 L19.2 60.8 M32 60.8 L32 57.6 L28.8 57.6 L25.6 57.6 L25.6 60.8 L25.6 64 L28.8 64 L32 64 L32 60.8 M51.2 60.8 L51.2 57.6 L44.8 57.6 L38.4 57.6 L38.4 60.8 L38.4 64 L44.8 64 L51.2 64 L51.2 60.8 M89.6 60.8 L89.6 57.6 L86.4 57.6 L83.2 57.6 L83.2 54.4 L83.2 51.2 L80 51.2 L76.8 51.2 L76.8 54.4 L76.8 57.6 L80 57.6 L83.2 57.6 L83.2 60.8 L83.2 64 L86.4 64 L89.6 64 L89.6 60.8 M64 54.4 L64 51.2 L67.2 51.2 L70.4 51.2 L70.4 48 L70.4 44.8 L67.2 44.8 L64 44.8 L64 48 L64 51.2 L60.8 51.2 L57.6 51.2 L57.6 54.4 L57.6 57.6 L60.8 57.6 L64 57.6 L64 54.4 " fillRule="0" gXpos="0" gYpos="0" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="240.80062992126" YPOS="135.20125984252" OwnPage="0" ItemID="1162740535" PTYPE="6" WIDTH="6.40000000000001" HEIGHT="6.40000000000001" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="128" gYpos="102.4" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="228.00062992126" YPOS="116.00125984252" OwnPage="0" ItemID="1164082999" PTYPE="6" WIDTH="19.2" HEIGHT="12.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 9.6 L0 6.4 L3.2 6.4 L6.4 6.4 L6.4 3.2 L6.4 0 L12.8 0 L19.2 0 L19.2 6.4 L19.2 12.8 L9.6 12.8 L0 12.8 L0 9.6 Z" fillRule="0" gXpos="115.2" gYpos="83.2" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="112.80062992126" YPOS="109.60125984252" OwnPage="0" ItemID="1163658039" PTYPE="6" WIDTH="6.4" HEIGHT="6.39999999999999" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="0" gYpos="76.8" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="228.00062992126" YPOS="90.4012598425197" OwnPage="0" ItemID="1163786039" PTYPE="6" WIDTH="19.2" HEIGHT="19.2" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M6.4 16 L6.4 12.8 L3.2 12.8 L0 12.8 L0 9.6 L0 6.4 L6.4 6.4 L12.8 6.4 L12.8 3.2 L12.8 0 L16 0 L19.2 0 L19.2 6.4 L19.2 12.8 L16 12.8 L12.8 12.8 L12.8 16 L12.8 19.2 L9.6 19.2 L6.4 19.2 L6.4 16 Z" fillRule="0" gXpos="115.2" gYpos="57.6" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="228.00062992126" YPOS="84.0012598425197" OwnPage="0" ItemID="1163782967" PTYPE="6" WIDTH="6.40000000000001" HEIGHT="6.40000000000001" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="115.2" gYpos="51.2" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="112.80062992126" YPOS="32.8012598425197" OwnPage="0" ItemID="1163582263" PTYPE="7" WIDTH="44.8" HEIGHT="44.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 22.4 L0 0 L22.4 0 L44.8 0 L44.8 22.4 L44.8 44.8 L22.4 44.8 L0 44.8 L0 22.4 M38.4 22.4 L38.4 6.4 L22.4 6.4 L6.4 6.4 L6.4 22.4 L6.4 38.4 L22.4 38.4 L38.4 38.4 L38.4 22.4 " fillRule="0" gXpos="0" gYpos="0" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="125.60062992126" YPOS="45.6012598425197" OwnPage="0" ItemID="1159877943" PTYPE="6" WIDTH="19.2" HEIGHT="19.2" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 9.6 L0 0 L9.6 0 L19.2 0 L19.2 9.6 L19.2 19.2 L9.6 19.2 L0 19.2 L0 9.6 Z" fillRule="0" gXpos="12.8" gYpos="12.8" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="202.40062992126" YPOS="32.8012598425197" OwnPage="0" ItemID="1159872823" PTYPE="7" WIDTH="44.8" HEIGHT="44.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 22.4 L0 0 L22.4 0 L44.8 0 L44.8 22.4 L44.8 44.8 L22.4 44.8 L0 44.8 L0 22.4 M38.4 22.4 L38.4 6.4 L22.4 6.4 L6.4 6.4 L6.4 22.4 L6.4 38.4 L22.4 38.4 L38.4 38.4 L38.4 22.4 " fillRule="0" gXpos="89.6" gYpos="0" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+                <PAGEOBJECT XPOS="215.20062992126" YPOS="45.6012598425197" OwnPage="0" ItemID="1164142903" PTYPE="6" WIDTH="19.2" HEIGHT="19.2" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#000000" PLINEART="1" TEXTFLOWMODE="1" path="M0 9.6 L0 0 L9.6 0 L19.2 0 L19.2 9.6 L19.2 19.2 L9.6 19.2 L0 19.2 L0 9.6 Z" fillRule="0" gXpos="102.4" gYpos="12.8" gWidth="134.4" gHeight="134.4" LAYER="0"/>
+            </PAGEOBJECT>
+            <PAGEOBJECT XPOS="100.00062992126" YPOS="20.0012598425197" OwnPage="0" ItemID="1164139831" PTYPE="12" WIDTH="160" HEIGHT="160" FRTYPE="0" CLIPEDIT="0" ANNAME="layer2" groupWidth="160" groupHeight="160" groupClips="1" path="M0 0 L160 0 L160 160 L0 160 L0 0 Z" copath="M0 0 L1 0 L1 1 L0 1 L0 0 Z" gXpos="0" gYpos="0" gWidth="160" gHeight="160" LAYER="0">
+                <PAGEOBJECT XPOS="100.00062992126" YPOS="20.0012598425197" OwnPage="0" ItemID="1164130103" PTYPE="7" WIDTH="160" HEIGHT="160" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 80 L0 0 L80 0 L160 0 L160 80 L160 160 L80 160 L0 160 L0 80 M57.6 124.8 L57.6 102.4 L35.2 102.4 L12.8 102.4 L12.8 124.8 L12.8 147.2 L35.2 147.2 L57.6 147.2 L57.6 124.8 M70.4 140.8 L70.4 134.4 L73.6 134.4 L76.8 134.4 L76.8 140.8 L76.8 147.2 L80 147.2 L83.2 147.2 L83.2 140.8 L83.2 134.4 L86.4 134.4 L89.6 134.4 L89.6 140.8 L89.6 147.2 L96 147.2 L102.4 147.2 L102.4 144 L102.4 140.8 L99.2 140.8 L96 140.8 L96 134.4 L96 128 L99.2 128 L102.4 128 L102.4 124.8 L102.4 121.6 L99.2 121.6 L96 121.6 L96 118.4 L96 115.2 L92.8 115.2 L89.6 115.2 L89.6 112 L89.6 108.8 L96 108.8 L102.4 108.8 L102.4 105.6 L102.4 102.4 L108.8 102.4 L115.2 102.4 L115.2 105.6 L115.2 108.8 L112 108.8 L108.8 108.8 L108.8 112 L108.8 115.2 L115.2 115.2 L121.6 115.2 L121.6 118.4 L121.6 121.6 L118.4 121.6 L115.2 121.6 L115.2 134.4 L115.2 147.2 L121.6 147.2 L128 147.2 L128 144 L128 140.8 L124.8 140.8 L121.6 140.8 L121.6 134.4 L121.6 128 L124.8 128 L128 128 L128 131.2 L128 134.4 L131.2 134.4 L134.4 134.4 L134.4 140.8 L134.4 147.2 L140.8 147.2 L147.2 147.2 L147.2 144 L147.2 140.8 L144 140.8 L140.8 140.8 L140.8 137.6 L140.8 134.4 L144 134.4 L147.2 134.4 L147.2 131.2 L147.2 128 L144 128 L140.8 128 L140.8 131.2 L140.8 134.4 L137.6 134.4 L134.4 134.4 L134.4 131.2 L134.4 128 L131.2 128 L128 128 L128 121.6 L128 115.2 L124.8 115.2 L121.6 115.2 L121.6 105.6 L121.6 96 L124.8 96 L128 96 L128 92.8 L128 89.6 L124.8 89.6 L121.6 89.6 L121.6 80 L121.6 70.4 L115.2 70.4 L108.8 70.4 L108.8 67.2 L108.8 64 L102.4 64 L96 64 L96 57.6 L96 51.2 L92.8 51.2 L89.6 51.2 L89.6 54.4 L89.6 57.6 L86.4 57.6 L83.2 57.6 L83.2 44.8 L83.2 32 L86.4 32 L89.6 32 L89.6 35.2 L89.6 38.4 L92.8 38.4 L96 38.4 L96 35.2 L96 32 L92.8 32 L89.6 32 L89.6 28.8 L89.6 25.6 L86.4 25.6 L83.2 25.6 L83.2 22.4 L83.2 19.2 L86.4 19.2 L89.6 19.2 L89.6 16 L89.6 12.8 L83.2 12.8 L76.8 12.8 L76.8 16 L76.8 19.2 L73.6 19.2 L70.4 19.2 L70.4 22.4 L70.4 25.6 L67.2 25.6 L64 25.6 L64 28.8 L64 32 L67.2 32 L70.4 32 L70.4 38.4 L70.4 44.8 L73.6 44.8 L76.8 44.8 L76.8 51.2 L76.8 57.6 L73.6 57.6 L70.4 57.6 L70.4 54.4 L70.4 51.2 L67.2 51.2 L64 51.2 L64 57.6 L64 64 L51.2 64 L38.4 64 L38.4 67.2 L38.4 70.4 L35.2 70.4 L32 70.4 L32 67.2 L32 64 L22.4 64 L12.8 64 L12.8 70.4 L12.8 76.8 L16 76.8 L19.2 76.8 L19.2 80 L19.2 83.2 L25.6 83.2 L32 83.2 L32 86.4 L32 89.6 L28.8 89.6 L25.6 89.6 L25.6 92.8 L25.6 96 L41.6 96 L57.6 96 L57.6 92.8 L57.6 89.6 L48 89.6 L38.4 89.6 L38.4 86.4 L38.4 83.2 L51.2 83.2 L64 83.2 L64 86.4 L64 89.6 L67.2 89.6 L70.4 89.6 L70.4 86.4 L70.4 83.2 L73.6 83.2 L76.8 83.2 L76.8 80 L76.8 76.8 L83.2 76.8 L89.6 76.8 L89.6 80 L89.6 83.2 L96 83.2 L102.4 83.2 L102.4 80 L102.4 76.8 L108.8 76.8 L115.2 76.8 L115.2 83.2 L115.2 89.6 L112 89.6 L108.8 89.6 L108.8 92.8 L108.8 96 L105.6 96 L102.4 96 L102.4 99.2 L102.4 102.4 L99.2 102.4 L96 102.4 L96 99.2 L96 96 L92.8 96 L89.6 96 L89.6 99.2 L89.6 102.4 L83.2 102.4 L76.8 102.4 L76.8 99.2 L76.8 96 L80 96 L83.2 96 L83.2 92.8 L83.2 89.6 L80 89.6 L76.8 89.6 L76.8 92.8 L76.8 96 L70.4 96 L64 96 L64 108.8 L64 121.6 L67.2 121.6 L70.4 121.6 L70.4 124.8 L70.4 128 L67.2 128 L64 128 L64 137.6 L64 147.2 L67.2 147.2 L70.4 147.2 L70.4 140.8 M147.2 118.4 L147.2 115.2 L144 115.2 L140.8 115.2 L140.8 118.4 L140.8 121.6 L144 121.6 L147.2 121.6 L147.2 118.4 M147.2 102.4 L147.2 96 L140.8 96 L134.4 96 L134.4 99.2 L134.4 102.4 L131.2 102.4 L128 102.4 L128 105.6 L128 108.8 L137.6 108.8 L147.2 108.8 L147.2 102.4 M19.2 92.8 L19.2 89.6 L16 89.6 L12.8 89.6 L12.8 92.8 L12.8 96 L16 96 L19.2 96 L19.2 92.8 M140.8 86.4 L140.8 83.2 L144 83.2 L147.2 83.2 L147.2 76.8 L147.2 70.4 L144 70.4 L140.8 70.4 L140.8 73.6 L140.8 76.8 L134.4 76.8 L128 76.8 L128 80 L128 83.2 L131.2 83.2 L134.4 83.2 L134.4 86.4 L134.4 89.6 L137.6 89.6 L140.8 89.6 L140.8 86.4 M134.4 67.2 L134.4 64 L131.2 64 L128 64 L128 67.2 L128 70.4 L131.2 70.4 L134.4 70.4 L134.4 67.2 M57.6 35.2 L57.6 12.8 L35.2 12.8 L12.8 12.8 L12.8 35.2 L12.8 57.6 L35.2 57.6 L57.6 57.6 L57.6 35.2 M147.2 35.2 L147.2 12.8 L124.8 12.8 L102.4 12.8 L102.4 35.2 L102.4 57.6 L124.8 57.6 L147.2 57.6 L147.2 35.2 " fillRule="0" gXpos="0" gYpos="0" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="119.20062992126" YPOS="128.80125984252" OwnPage="0" ItemID="1164232503" PTYPE="7" WIDTH="32" HEIGHT="32" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 16 L0 0 L16 0 L32 0 L32 16 L32 32 L16 32 L0 32 L0 16 M25.6 16 L25.6 6.4 L16 6.4 L6.4 6.4 L6.4 16 L6.4 25.6 L16 25.6 L25.6 25.6 L25.6 16 " fillRule="0" gXpos="19.2" gYpos="108.8" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="176.80062992126" YPOS="128.80125984252" OwnPage="0" ItemID="1164227895" PTYPE="6" WIDTH="12.8" HEIGHT="25.6" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 22.4 L0 19.2 L3.2 19.2 L6.4 19.2 L6.4 16 L6.4 12.8 L3.2 12.8 L0 12.8 L0 6.4 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L9.6 6.4 L12.8 6.4 L12.8 12.8 L12.8 19.2 L9.6 19.2 L6.4 19.2 L6.4 22.4 L6.4 25.6 L3.2 25.6 L0 25.6 L0 22.4 Z" fillRule="0" gXpos="76.8" gYpos="108.8" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="215.20062992126" YPOS="109.60125984252" OwnPage="0" ItemID="1164220727" PTYPE="6" WIDTH="6.40000000000001" HEIGHT="6.39999999999999" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="115.2" gYpos="89.6" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="125.60062992126" YPOS="90.4012598425197" OwnPage="0" ItemID="1164217655" PTYPE="6" WIDTH="6.4" HEIGHT="6.39999999999999" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="25.6" gYpos="70.4" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="138.40062992126" YPOS="90.4012598425197" OwnPage="0" ItemID="1164193591" PTYPE="6" WIDTH="6.40000000000001" HEIGHT="6.39999999999999" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="38.4" gYpos="70.4" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="151.20062992126" YPOS="90.4012598425197" OwnPage="0" ItemID="1164190519" PTYPE="6" WIDTH="12.8" HEIGHT="6.39999999999999" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 3.2 L0 0 L6.4 0 L12.8 0 L12.8 3.2 L12.8 6.4 L6.4 6.4 L0 6.4 L0 3.2 Z" fillRule="0" gXpos="51.2" gYpos="70.4" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="189.60062992126" YPOS="84.0012598425197" OwnPage="0" ItemID="1164183351" PTYPE="6" WIDTH="12.8" HEIGHT="12.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M6.4 9.6 L6.4 6.4 L3.2 6.4 L0 6.4 L0 3.2 L0 0 L3.2 0 L6.4 0 L6.4 3.2 L6.4 6.4 L9.6 6.4 L12.8 6.4 L12.8 9.6 L12.8 12.8 L9.6 12.8 L6.4 12.8 L6.4 9.6 Z" fillRule="0" gXpos="89.6" gYpos="64" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="170.40062992126" YPOS="77.6012598425197" OwnPage="0" ItemID="1164307767" PTYPE="6" WIDTH="12.8" HEIGHT="12.8" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 9.6 L0 6.4 L3.2 6.4 L6.4 6.4 L6.4 3.2 L6.4 0 L9.6 0 L12.8 0 L12.8 3.2 L12.8 6.4 L9.6 6.4 L6.4 6.4 L6.4 9.6 L6.4 12.8 L3.2 12.8 L0 12.8 L0 9.6 Z" fillRule="0" gXpos="70.4" gYpos="57.6" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="119.20062992126" YPOS="39.2012598425197" OwnPage="0" ItemID="1164301111" PTYPE="7" WIDTH="32" HEIGHT="32" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 16 L0 0 L16 0 L32 0 L32 16 L32 32 L16 32 L0 32 L0 16 M25.6 16 L25.6 6.4 L16 6.4 L6.4 6.4 L6.4 16 L6.4 25.6 L16 25.6 L25.6 25.6 L25.6 16 " fillRule="0" gXpos="19.2" gYpos="19.2" gWidth="160" gHeight="160" LAYER="0"/>
+                <PAGEOBJECT XPOS="208.80062992126" YPOS="39.2012598425197" OwnPage="0" ItemID="1164294455" PTYPE="7" WIDTH="32" HEIGHT="32" FRTYPE="3" CLIPEDIT="1" PWIDTH="0.08" PCOLOR="FromSVG#ffffff" PLINEART="1" TEXTFLOWMODE="1" path="M0 16 L0 0 L16 0 L32 0 L32 16 L32 32 L16 32 L0 32 L0 16 M25.6 16 L25.6 6.4 L16 6.4 L6.4 6.4 L6.4 16 L6.4 25.6 L16 25.6 L25.6 25.6 L25.6 16 " fillRule="0" gXpos="108.8" gYpos="19.2" gWidth="160" gHeight="160" LAYER="0"/>
+            </PAGEOBJECT>
+        </PAGEOBJECT>
+    </DOCUMENT>
+</SCRIBUSUTF8NEW>
